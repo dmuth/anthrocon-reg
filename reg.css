@@ -1,0 +1,41 @@
+/**
+* These classes have been copied from system.css.
+* These copies allow us a little more control over our registration form.
+*/
+.reg-form-item {
+	margin-bottom: 1em;
+}
+
+tr.odd .reg-form-item, tr.even .reg-form-item {
+  margin-top: 0;
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+.reg-form-item input.error, .reg-form-item textarea.error, .reg-form-item select.error {
+  border: 2px solid red;
+}
+.reg-form-item .description {
+  font-size: 0.85em;
+}
+.reg-form-item label {
+  font-weight: bold;
+}
+.reg-form-item label.option {
+  display: inline;
+  font-weight: normal;
+}
+
+td .reg-name {
+	width: 200px;
+	vertical-align: top;
+}
+
+td .reg-value {
+	width: 500px;
+}
+
+.reg-form-required {
+  color: #f00;
+  font-weight: bold;
+}
+

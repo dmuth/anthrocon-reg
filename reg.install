@@ -1,0 +1,346 @@
+<?php
+/**
+* Our installer file for the registration system.  At this time, only 
+* MySQL is supported.  Sorry, Postgres folks!
+*/
+
+
+include_once("reg.class.php");
+
+
+/**
+* This function is called when the module is installed.
+*/
+function reg_install() {
+
+	$db = $GLOBALS["db_type"];
+
+	if ($db == "mysql" || $db == "mysqli") {
+
+		//
+		// Reg table.  Holds registrations.
+		// In order for a registration to get in here, the credit card
+		// must have been charged successfully or entered manually by 
+		// an admin.
+		//
+		$query = "CREATE TABLE reg ( "
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "created DATETIME, "
+			. "modified DATETIME, "
+			//
+			// 4-digit year
+			//
+			. "year INTEGER, "
+			. "INDEX reg_year(year), "
+			//
+			// The membership type.  
+			// Values are stored in the reg_type table.
+			//
+			. "reg_type_id INTEGER NOT NULL, "
+			//
+			// The membership status.
+			// Values are stored in the reg_status
+			//
+			. "reg_status_id INTEGER NOT NULL, "
+			//
+			// Badge number and name.  The badge name can be blank.
+			//
+			. "badge_num INTEGER NOT NULL, "
+			. "UNIQUE INDEX reg_year_badge_num(year, badge_num), "
+			. "badge_name VARCHAR(255), "
+			//
+			// Basic info on the badge holder
+			//
+			. "first VARCHAR(255), "
+			. "middle VARCHAR(255), "
+			. "last VARCHAR(255), "
+			. "birthdate DATE, "
+			. "address1 VARCHAR(255), "
+			. "address2 VARCHAR(255), "
+			. "city VARCHAR(255), "
+			. "state VARCHAR(255), "
+			. "zip VARCHAR(255), "
+			. "country VARCHAR(255), "
+			. "email VARCHAR(255), "
+			. "phone VARCHAR(255), "
+			//
+			// The shirt size for staff and super sponsors.
+			//
+			. "shirt_size VARCHAR(255) "
+			. ")"
+			;
+		db_query($query);
+
+		//
+		// Our different membership types, such as "sponsor", "staff", etc.
+		// This is mainly for what gets printed on the badges and how the
+		// user is referred to.  One of the reasons for this t able is that
+		// the user can have multiple membertype types, such as 
+		// "staff/sponsor", but this doesn't happen often enough (nor are 
+		// there enough combinations) to make it necessary for setting up
+		// a many-to-many relationship.
+		//
+		$query = "CREATE TABLE reg_type ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "member_type VARCHAR(255) "
+			. ") "
+			;
+		db_query($query);
+
+		$query = "INSERT INTO reg_type (member_type) "
+			. "VALUES "
+			. "('Attending'), "
+			. "('Sponsor'), "
+			. "('Super Sponsor'), "
+			. "('Dealer'), "
+			. "('Dealer Asst.'), "
+			. "('Staff'), "
+			. "('Board'), "
+			. "('Guest'), "
+			. "('Guest of Honor'), "
+			. "('Friday'), "
+			. "('Saturday'), "
+			. "('Sunday') "
+			;
+		db_query($query);
+
+		//
+		// Our different membership statuses.
+		//
+		$query = "CREATE TABLE reg_status ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "status VARCHAR(255), "
+			. "detail VARCHAR(255) "
+			. ")"
+			;
+		db_query($query);
+		
+		$query = "INSERT INTO reg_status (status, detail) "
+			. "VALUES "
+			. "('Complete', 'Badge is paid'), "
+			. "('Defer', 'Badge is deferred until next year'), "
+			. "('Refund', 'Badge was refunded'), "
+			. "('Donate', 'Badge was cancelled, but value was donated "
+				. "to the con, not refunded.'), "
+			. "('New', 'Badge has been entered, but not yet paid for') "
+			;
+		db_query($query);
+
+
+		//
+		// Our different membership levels, such as member, sponsor, etc.
+		// It is consulted when printing up the main registration form.
+		//
+		$query = "CREATE TABLE reg_levels ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+
+			//
+			// The human-readable name 
+			//
+			. "name VARCHAR(255), "
+
+			//
+			// What year the leve is for?  This allows us to have historic 
+			// data.
+			//
+			. "year INTEGER, "
+
+			//
+			// The membership type.  
+			// Values are stored in the reg_type table.
+			//
+			. "reg_type_id INTEGER NOT NULL, "
+
+			//
+			// How much does this cost?
+			//
+			. "price DECIMAL(10,2), "
+
+			//
+			// How long the membership type is available
+			//
+			. "start DATE, "
+			. "end DATE "
+
+			. ")"
+			;
+		db_query($query);
+
+		//
+		// This table holds transactions related to registrations.
+		// Note that if an initial transaction was not successful, it will
+		// not go in here, since the registration would not have gone 
+		// through.  However, there will still be a record in reg_log.
+		//
+		$query = "CREATE TABLE reg_trans ( "
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "created DATE NOT NULL, "
+			. "reg_id INTEGER NOT NULL, "
+			. "INDEX reg_trans_reg_id(reg_id), "
+
+			//
+			// Is this a purchase, refund, upgrade, etc.?
+			// Full list in reg::get_trans_types()
+			//
+			. "trans_type VARCHAR(255), "
+			//
+			// How was the membership paid for?
+			// cc, cash, check, comp, volunteer, board, staff, etc.
+			// Full list in reg::get_trans_type()
+			//
+			. "payment_type VARCHAR(255), "
+
+			//
+			// Basic info on the badge holder
+			//
+			. "first VARCHAR(255), "
+			. "middle VARCHAR(255), "
+			. "last VARCHAR(255), "
+			. "birthdate DATE, "
+			. "address1 VARCHAR(255), "
+			. "address2 VARCHAR(255), "
+			. "city VARCHAR(255), "
+			. "state VARCHAR(255), "
+			. "zip VARCHAR(255), "
+			. "country VARCHAR(255), "
+
+			//
+			// Credit card info.
+			// The "num" is really the last 4 digits.  We don't want to
+			// store any actual card numbers here.
+			//
+			. "reg_cc_type_id INTEGER, "
+			. "card_num VARCHAR(255), "
+			. "card_expire DATE, "
+			. "badge_cost DECIMAL(10, 2), "
+			. "donation DECIMAL(10, 2), "
+			. "total_cost DECIMAL(10, 2) "
+
+			. ")"
+			;
+		db_query($query);
+
+		//
+		// This table holds the different credit card types
+		//
+		$query = "CREATE TABLE reg_cc_type ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "cc_type VARCHAR(255) "
+			. ")"
+			;
+		db_query($query);
+
+		$query = "INSERT INTO reg_cc_type (cc_type) "
+			. "VALUES "
+			. "('MasterCard'), "
+			. "('Visa'), "
+			. "('American Express'), "
+			. "('Discover') "
+			;
+		db_query($query);
+
+		//
+		// This table is a log of all registration system activity.
+		// All registrations, unsuccessful charges, records of manual 
+		// registrations, manual resending of emails, etc. is all kept here.
+		//
+		$query = "CREATE TABLE reg_log ( "
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			//
+			// Foreign key to the registration table. (optional)
+			//
+			. "reg_id INTEGER, "
+			. "INDEX reg_log_reg_id(reg_id), "
+			//
+			// User ID
+			//
+			. "uid INTEGER, "
+			. "INDEX reg_log_uid(uid), "
+			//
+			// Timestamp
+			//
+			. "date DATETIME, "
+			//
+			// URL info
+			//
+			. "url VARCHAR(255), "
+			. "referrer VARCHAR(255), "
+			. "remote_addr VARCHAR(32), "
+			//
+			// The message
+			//
+			. "message TEXT "
+			. ")";
+			;
+		db_query($query);
+
+		//
+		// Create our table that holds years and the most recent badge 
+		// number.  This table will be accessed by reg::get_badge_num().
+		//
+		$query = "CREATE TABLE reg_badge_num ("
+			. "year INTEGER PRIMARY KEY, "
+			. "badge_num INTEGER NOT NULL "
+			. ")";
+		db_query($query);
+
+		//
+		// Insert our initial badge number.
+		//
+		$year = reg::YEAR;
+		$badge_num = reg::START_BADGE_NUM;
+		$query = "INSERT INTO reg_badge_num "
+			. "VALUES ($year, $badge_num) "
+			;
+		db_query($query);
+
+	} else if ($db == "pgsql") {
+		$error = "We're sorry, but we don't have Postgres support in "
+			. "this module.  ";
+		drupal_set_message($error, "error");
+
+	}
+
+} // End of reg_install()
+
+
+/**
+* This function is called when the module is uninstalled after being disabled.
+*/
+function reg_uninstall() {
+} // End of reg_uninstall()
+
+
+/**
+* This will remove all registration data from the system, and should only
+* be used for testing.  For the love of Dog, do NOT use this in 
+* production, EVER.
+*/
+function reg_wipe() {
+
+	$query = "DROP TABLE IF EXISTS reg";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_type";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_status";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_levels";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_trans";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_cc_type";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_log";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_badge_num";
+	db_query($query);
+
+} // End of reg_wipe()
+

@@ -1,0 +1,202 @@
+<?php
+/**
+* Anthrocon's registration module.
+*
+* This code is copyright 2008 by Douglas Muth.  Permission is granted
+*	to redistribute under the Gnu Public License.
+*
+* Additional module building info:
+*	http://drupal.org/node/82920
+*	http://api.drupal.org/
+*
+*/
+
+/**
+* Done:
+- Database schema
+	- http://api.drupal.org/api/group/database/5
+	- db_query(), db_fetch_array()
+	- db_lock_table(), db_unlock_tables()
+	- db_query_range(), pager_query(), tablesort_sql()
+
+30 Apr 2008:
+- Got theming working on the main registration form
+	- Created reg.css and copied over some form CSS
+	- Wrote reg::theme()
+	- Got error handling for form elements working
+	- Got required asterisk working on form elements
+- Split admin into separate class called reg_admin
+- Added config value for Standards of Conduct path
+
+11 May 2008:
+- Add checkbox to reg form for agreeing to Standards of Conduct
+- Wrote theme_checkbox()
+- Theme code for checkbox
+- Split out themeing code into reg::theme_*() functions
+- Write theme_date()
+- Add rest of required fields
+- Did logic for credit card date checking
+- Did logic for checking email addresses
+
+
+*/
+
+
+/**
+* TODO:
+
+- Admin interface for "Membership levels"
+	- Add new level
+
+- Processing on submissions
+	- Come back to this later with membership levels
+
+- Registration form submit function
+
+- Admin
+	- Settings page
+		- http://drupal.org/node/82967
+	- Membership levels
+		- Test edge cases in main form
+	- View recent registrations
+	- Search for registrations
+		- Separate search page with search form and advanced search form
+	- Other business-type stuff
+		- Edit/update a registration
+		- Manually enter a registration
+		- Resend confirmation email
+			- Send confirmation email to another address
+
+- Class architecture
+	- Function for card types
+	- Function to check for SSL
+	- Function to log an event based on ID from reg table
+	- Function to send confirmation email for a specific registration
+		- Store this confirmation email as a variable?
+	- Functions for generating months and years for dropdowns?
+
+- Authorize.net or something else entirely?
+
+*/
+
+
+function reg_perm() {
+	include_once("reg.class.php");
+	return(reg::perm());
+}
+
+
+/**
+* Create our menu items.
+*/
+function reg_menu($may_cache) {
+
+	include_once("reg.class.php");
+// TODO: Get rid of this debug stuff
+	//if ($may_cache) {
+		$items = reg::menu();
+	//}
+
+	return($items);
+
+} // End of reg_menu()
+
+
+/**
+* Our registration page.
+*/
+function reg_registration() {
+	include_once("reg.class.php");
+	return(reg::registration());
+}
+
+
+/**
+* Our registration form.
+*/
+function reg_registration_form() {
+	include_once("reg.class.php");
+	return(reg::registration_form());
+}
+
+function reg_registration_form_validate($form_id, $data) {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	reg::registration_form_validate($form_id, $data);
+}
+
+function reg_registration_form_submit($form_id, $data) {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	//reg_admin::admin_form_submit($form_id, $data);
+//print "TEST SUBMIT";
+}
+
+/**
+* Our admin page.
+*/
+function reg_admin() {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	return(reg_admin::main());
+}
+
+function reg_admin_levels() {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	return(reg_admin::levels());
+}
+
+function reg_admin_levels_edit() {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	return(reg_admin::levels_edit());
+}
+
+function reg_admin_level_form($id = "") {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	return(reg_admin::level_form($id));
+}
+
+
+/**
+* Our admin form.
+*/
+function reg_admin_form() {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	return(reg_admin::form());
+}
+
+function reg_admin_form_validate($form_id, $data) {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	reg_admin::form_validate($form_id, $data);
+}
+
+function reg_admin_form_submit($form_id, $data) {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	reg_admin::form_submit($form_id, $data);
+}
+
+function theme_reg_theme($form) {
+	include_once("reg.class.php");
+	return(reg::theme($form));
+}
+
+/*
+include("reg.install");
+reg_wipe();
+reg_install();
+*/
+
+//include_once("reg.class.php");
+//echo "TEST";
+//echo "badge NUM: " . reg::get_badge_num() . "<br>\n";
+//print "TEST2: " . print_r(reg::get_types(), true) . "<br>\n";
+//print "TEST3: " . print_r(reg::get_statuses(), true) . "<br>\n";
+//print "TEST4: " . print_r(reg::get_cc_types(), true) . "<br>\n";
+
+
