@@ -141,22 +141,37 @@ function reg_admin() {
 	return(reg_admin::main());
 }
 
+/**
+* Membership level editing stuff.
+*/
 function reg_admin_levels() {
 	include_once("reg.class.php");
 	include_once("reg_admin.class.php");
 	return(reg_admin::levels());
 }
 
-function reg_admin_levels_edit() {
+function reg_admin_levels_edit($id = "") {
 	include_once("reg.class.php");
 	include_once("reg_admin.class.php");
-	return(reg_admin::levels_edit());
+	return(reg_admin::levels_edit($id));
 }
 
-function reg_admin_level_form($id = "") {
+function reg_admin_level_form($id) {
 	include_once("reg.class.php");
 	include_once("reg_admin.class.php");
 	return(reg_admin::level_form($id));
+}
+
+function reg_admin_level_form_validate($form_id, $data) {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	reg_admin::level_form_validate($form_id, $data);
+}
+
+function reg_admin_level_form_submit($form_id, $data) {
+	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+	reg_admin::level_form_submit($form_id, $data);
 }
 
 

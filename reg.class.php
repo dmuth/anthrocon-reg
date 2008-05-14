@@ -134,6 +134,18 @@ class reg {
 			"type" => MENU_LOCAL_TASK,
 			);
 
+		//
+		// Used for editing a membership level.
+		//
+		$retval[] = array(
+			"path" => "admin/reg/levels/edit",
+			"title" => t("Add"),
+			"callback" => "reg_admin_levels_edit",
+			"callback_arguments" => array(arg(4)),
+			"access" => user_access(self::PERM_ADMIN),
+			"type" => MENU_CALLBACK,
+			);
+
 		return($retval);
 
 	} // End of menu()
