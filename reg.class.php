@@ -93,6 +93,9 @@ class reg {
 
 		$retval = array();
 
+		//
+		// Public link
+		//
 		$retval[] = array(
 			"path" => "reg",
 			"title" => t("Registration"),
@@ -101,27 +104,45 @@ class reg {
 			"type" => MENU_NORMAL_ITEM,
 			);
 
+		//
+		// Admin section
+		//
 		$retval[] = array(
 			"path" => "admin/reg",
 			"title" => t("Registration Admin"),
-			"callback" => "reg_admin",
+			"callback" => "reg_admin_stats",
 			"access" => user_access(self::PERM_ADMIN),
 			"type" => MENU_NORMAL_ITEM,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/stats",
+			"title" => t("Stats"),
+			"callback" => "reg_admin_stats",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/settings",
+			"title" => t("Settings"),
+			"callback" => "reg_admin_settings",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 4,
 			);
 
 		$retval[] = array(
 			"path" => "admin/reg/levels",
 			"title" => t("Membership Levels"),
 			"callback" => "reg_admin_levels",
-			"access" => user_access(self::PERM_ADMIN),
-			"type" => MENU_NORMAL_ITEM,
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 3,
 			);
 
 		$retval[] = array(
 			"path" => "admin/reg/levels/list",
 			"title" => t("List"),
 			"callback" => "reg_admin_levels",
-			"access" => user_access(self::PERM_ADMIN),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
@@ -130,7 +151,6 @@ class reg {
 			"path" => "admin/reg/levels/add",
 			"title" => t("Add"),
 			"callback" => "reg_admin_levels_edit",
-			"access" => user_access(self::PERM_ADMIN),
 			"type" => MENU_LOCAL_TASK,
 			);
 
@@ -142,8 +162,52 @@ class reg {
 			"title" => t("Add"),
 			"callback" => "reg_admin_levels_edit",
 			"callback_arguments" => array(arg(4)),
-			"access" => user_access(self::PERM_ADMIN),
 			"type" => MENU_CALLBACK,
+			);
+
+		//
+		// Used for interacting with registrations
+		//
+		$retval[] = array(
+			"path" => "admin/reg/registrations",
+			"title" => t("Registrations"),
+			"callback" => "reg_admin_registrations",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/registrations/recent",
+			"title" => t("Recent"),
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/registrations/search",
+			"title" => t("Search"),
+			"callback" => "reg_admin_registrations_search",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/registrations/add",
+			"title" => t("Add"),
+			"callback" => "reg_admin_registrations_add",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
+
+		//
+		// Viewing registration-related logs.
+		//
+		$retval[] = array(
+			"path" => "admin/reg/logs",
+			"title" => t("Logs"),
+			"callback" => "reg_admin_logs",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
 			);
 
 		return($retval);

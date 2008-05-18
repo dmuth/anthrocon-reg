@@ -56,8 +56,6 @@
 - Admin
 	- Settings page
 		- http://drupal.org/node/82967
-	- Membership levels
-		- Test edge cases in main form
 	- View recent registrations
 	- Search for registrations
 		- Separate search page with search form and advanced search form
@@ -80,8 +78,19 @@
 */
 
 
-function reg_perm() {
+/**
+* Load all required files.
+* Yeah I like to split my stuff up into smaller "bite sized" files, instead of
+* having one large monolithic file.
+*/
+function reg_load_files() {
 	include_once("reg.class.php");
+	include_once("reg_admin.class.php");
+}
+
+
+function reg_perm() {
+	reg_load_files();
 	return(reg::perm());
 }
 
@@ -91,7 +100,7 @@ function reg_perm() {
 */
 function reg_menu($may_cache) {
 
-	include_once("reg.class.php");
+	reg_load_files();
 // TODO: Get rid of this debug stuff
 	//if ($may_cache) {
 		$items = reg::menu();
@@ -103,101 +112,119 @@ function reg_menu($may_cache) {
 
 
 /**
-* Our registration page.
+* Our public registration page.
 */
 function reg_registration() {
-	include_once("reg.class.php");
+	reg_load_files();
 	return(reg::registration());
 }
 
-
-/**
-* Our registration form.
-*/
 function reg_registration_form() {
-	include_once("reg.class.php");
+	reg_load_files();
 	return(reg::registration_form());
 }
 
 function reg_registration_form_validate($form_id, $data) {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
+	reg_load_files();
 	reg::registration_form_validate($form_id, $data);
 }
 
 function reg_registration_form_submit($form_id, $data) {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
+	reg_load_files();
 	//reg_admin::admin_form_submit($form_id, $data);
 //print "TEST SUBMIT";
 }
 
+
 /**
-* Our admin page.
+* Our settings form.
 */
-function reg_admin() {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
-	return(reg_admin::main());
+function reg_admin_settings() {
+	reg_load_files();
+	return(reg_admin::settings());
+}
+
+function reg_admin_settings_form() {
+	reg_load_files();
+	return(reg_admin::settings_form());
+}
+
+function reg_admin_settings_form_validate($form_id, $data) {
+	reg_load_files();
+	reg_admin::settings_form_validate($form_id, $data);
+}
+
+function reg_admin_settings_form_submit($form_id, $data) {
+	reg_load_files();
+	reg_admin::settings_form_submit($form_id, $data);
 }
 
 /**
 * Membership level editing stuff.
 */
 function reg_admin_levels() {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
+	reg_load_files();
 	return(reg_admin::levels());
 }
 
 function reg_admin_levels_edit($id = "") {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
+	reg_load_files();
 	return(reg_admin::levels_edit($id));
 }
 
 function reg_admin_level_form($id) {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
+	reg_load_files();
 	return(reg_admin::level_form($id));
 }
 
 function reg_admin_level_form_validate($form_id, $data) {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
+	reg_load_files();
 	reg_admin::level_form_validate($form_id, $data);
 }
 
 function reg_admin_level_form_submit($form_id, $data) {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
+	reg_load_files();
 	reg_admin::level_form_submit($form_id, $data);
+}
+
+/**
+* Viewing recent registrations.
+*/
+function reg_admin_registrations() {
+return("This is where a list of recent registrations would go");
+}
+
+/**
+* Searching registrations.
+*/
+function reg_admin_registrations_search() {
+return("This is where our search interface for registrations would be.");
+}
+
+function reg_admin_registrations_add() {
+return("This is where our interface to add registrations would be.");
+}
+
+/**
+* Viewing logs.
+*/
+function reg_admin_logs() {
+return("This is where our log viewer would go.");
+}
+
+/**
+* Viewing registration stats.
+*/
+function reg_admin_stats() {
+return("This is where our stats page would go.");
 }
 
 
 /**
-* Our admin form.
+* Our theme function for creating form elements in the reg system.
 */
-function reg_admin_form() {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
-	return(reg_admin::form());
-}
-
-function reg_admin_form_validate($form_id, $data) {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
-	reg_admin::form_validate($form_id, $data);
-}
-
-function reg_admin_form_submit($form_id, $data) {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
-	reg_admin::form_submit($form_id, $data);
-}
-
 function theme_reg_theme($form) {
-	include_once("reg.class.php");
+	reg_load_files();
 	return(reg::theme($form));
 }
 

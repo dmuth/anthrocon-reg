@@ -19,10 +19,10 @@ class reg_admin {
 	/**
 	* Our main admin page.
 	*/
-	static function main() {
+	static function settings() {
 
 		$retval = "";
-		$retval = drupal_get_form("reg_admin_form");
+		$retval = drupal_get_form("reg_admin_settings_form");
 
 		return($retval);
 
@@ -311,7 +311,7 @@ class reg_admin {
 	*
 	* @return array Associative array of registration form.
 	*/
-	static function form() {
+	static function settings_form() {
 
 		$retval = array();
 
@@ -349,7 +349,7 @@ class reg_admin {
 	* If there are any issues, form_set_error() should be called so
 	* that form processing does not continue.
 	*/
-	static function form_validate(&$form_id, &$data) {
+	static function settings_form_validate(&$form_id, &$data) {
 
 		//
 		// If a path was entered, make sure it is a valid alias or
@@ -379,7 +379,7 @@ class reg_admin {
 	* conclusion of this funciton, the user is redirected back to the 
 	* form page.
 	*/
-	static function form_submit($form_id, $data) {
+	static function settings_form_submit($form_id, $data) {
 		variable_set(reg::FORM_ADMIN_FAKE_CC, $data["fake_cc"]);
 		variable_set(reg::FORM_ADMIN_CONDUCT_PATH, $data["conduct_path"]);
 		drupal_set_message("Settings updated");
