@@ -39,6 +39,18 @@ class reg {
 	const FORM_TEXT_SIZE_SMALL = 20;
 
 	/**
+	* Temporarily stores our badge number between form validation 
+	*	and submission.
+	*/
+	static private $badge_num;
+
+	/**
+	* Also store our data for going between validation and 
+	*	submission functions.
+	*/ 
+	static private $data;
+
+	/**
 	* Our constructor.  This should never be called.
 	*/
 	function __construct() {
@@ -239,25 +251,10 @@ class reg {
 	*/
 	static function registration_form_validate(&$form_id, &$data) {
 
-		//print_r($data);
-
 		if ($data["email"] != $data["email2"]) {
 			$error = "Email addresses do not match!";
 			form_set_error("email2", $error);
 		}
-
-		//
-		// Sanity checking on the credit card expiration.
-		//
-		$month = date("n");
-		$year = date("Y");
-
-		if ($data["cc_exp"]["year"] == $year) {
-			if ($data["cc_exp"]["month"] <= $month) {
-				form_set_error("cc_exp][month", "Credit card is expired");
-			}
-		}
-
 
 		//
 		// Sanity checking on our donation amount.
@@ -272,8 +269,259 @@ class reg {
 
 		}
         
-	} // End of admin_form_validate()
+		//
+		// Sanity checking on the credit card expiration.
+		//
+		$month = date("n");
+		$year = date("Y");
 
+		if ($data["cc_exp"]["year"] == $year) {
+			if ($data["cc_exp"]["month"] <= $month) {
+				form_set_error("cc_exp][month", "Credit card is expired");
+			}
+		}
+
+//
+// TODO:
+// We eventually need to ask for a registration level on the reg form.
+//
+$data["reg_level_id"] = 3;
+
+		//
+		// Make the transaction.  If it is successful, then add a new member.
+		//
+		$reg_trans_id = self::charge_cc($data);
+
+		if ($reg_trans_id) {
+			$badge_num = self::add_member($data, $reg_trans_id);
+			//
+			// Store our badge number, since we'll be referencing it again in
+			// the submit funcition.
+			//
+			self::$badge_num = $badge_num;
+
+			//
+			// Heck, store our data too
+			//
+			self::$data = $data;
+		}
+
+	} // End of registration_form_validate()
+
+
+	/**
+	* All the registration form data checks out.  
+	*/
+	static function registration_form_submit(&$form_id, &$data) {
+
+		$message = t("Congratulations!  Your registration was successful, and your badge number is %badge_num%.  ",
+			array("%badge_num%" => self::$badge_num)
+			);
+		drupal_set_message($message);
+
+		$message = t("Your credit card (%cc_name%) was successfully charged for %total_cost%.",
+		array("%cc_name%" => self::$data["cc_name"],
+			"%total_cost%" => "$" . self::$data["total_cost"],
+			));
+		drupal_set_message($message);
+
+		$message = t("You will receive a conformation email sent to %email% shortly.",
+			array("%email%" => self::$data["email"])
+			);
+		drupal_set_message($message);
+
+		//
+		// Send the user back to the front page.
+		//
+		return("");
+
+	} // End of registration_form_submit()
+
+
+	/**
+	* This function actually charges our credit card.
+	*
+	* @return boolean True if the card is charged successfully.  
+	*	False otherwise.
+	*/
+	static function charge_cc(&$data) {
+
+		//
+		// Calculate our costs.
+		//
+		$data["badge_cost"] = self::get_reg_cost($data["reg_level_id"]);
+		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
+
+		if (!self::is_test_mode()) {
+			//
+			// TODO: Code to actually charge the card goes here.
+			// On failure, call form_set_error(), log it, and return false.
+			//
+			// I need to make sure that non-numerics are filtered out here.
+			$error = "CC Charging not implemented yet.";
+			form_set_error("cc_num", $error);
+			self::log($error, "", WATCHDOG_ERROR);
+			return(false);
+
+		} else {
+
+			$message = "We are in testing mode.  Automatically allow this "
+				. "'credit card'";
+			self::log($message);
+
+		}
+
+		$reg_trans_id = self::log_trans($data);
+
+		return($reg_trans_id);
+
+	} // End of charge_cc()
+
+
+	/**
+	* This function logs a successful transaction.
+	*
+	* @TODO Support for different transaction types?
+	*
+	* @return integer the ID of the row that was inserted into the database.
+	*/
+	static function log_trans(&$data) {
+
+		//
+		// Save the successful charge in reg_trans.
+		//
+		$query = "INSERT INTO reg_trans ("
+			. "created, reg_trans_type_id, reg_payment_type_id, "
+			. "first, middle, last, birthdate, address1, address2, "
+			. "city, state, zip, country, "
+			. "reg_cc_type_id, card_num, card_expire, "
+			. "badge_cost, donation, total_cost "
+			. ") VALUES ("
+			. "NOW(), '%s', '%s', "
+			. "'%s', '%s', '%s', '%s', '%s', '%s', "
+			. "'%s', '%s', '%s', '%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', '%s', '%s' "
+			. ")"
+			;
+		$birth = $data["birthday"];
+		$birth_string = $birth["year"] . "-" . $birth["month"] 
+			. "-" . $birth["day"];
+		$exp = $data["cc_exp"];
+		$exp_string = $exp["year"] . "-" . $exp["month"] ."-0";
+		$data["cc_name"] = self::get_cc_name($data["cc_type"], $data["cc_num"]);
+		$query_args = array(
+			1, 1,
+			$data["first"], $data["middle"], $data["last"], $birth_string,
+				$data["address1"], $data["address2"],
+			$data["city"], $data["state"], $data["zip"], $data["country"],
+			$data["cc_type"], $data["cc_name"], $exp_string,
+			$data["badge_cost"], $data["donation"], $data["total_cost"]
+			);
+
+		db_query($query, $query_args);
+
+		$id = self::get_insert_id();
+
+		return($id);
+
+	} // End of log_trans()
+
+
+	/**
+	* Retrieve the most recent insert ID from a database insert.
+	*
+	* @return integer The most recent insert ID.
+	*/
+	static function get_insert_id() {
+
+		$cursor = db_query("SELECT LAST_INSERT_ID() AS id");
+		$row = db_fetch_array($cursor);
+		$retval = $row["id"];
+		return($retval);
+
+	} // End of get_insert_id()
+
+
+	/**
+	* This function actually does the dirty work of adding a new member to
+	* the system.  It is assumed that any credit card charging has been done.
+	*
+	* @param integer $reg_trans_id An option ID of the associated transaction
+	*	stored in the reg_trans table.  This is so that the transaction can
+	*	be updated with the ID from the reg table.
+	*
+	* @return integer The badge number of the member that we just added.
+	*/
+	static function add_member($data, $reg_trans_id = "") {
+
+		$badge_num = self::get_badge_num();
+
+		$query = "INSERT INTO {reg} "
+			. "(created, modified, year, reg_type_id, reg_status_id, "
+				. "badge_num, badge_name, first, middle, last, birthdate, "
+				. "address1, address2, city, state, zip, country, email, "
+				. "phone "
+			. ") "
+			. "VALUES "
+			. "(NOW(), NOW(), '%s', '%s', '%s', '%s', '%s', '%s', '%s', "
+				. "'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', "
+				. "'%s', '%s')"
+			;
+		$birth = $data["birthday"];
+		$date_string = $birth["year"] . "-" . $birth["month"] 
+			. "-" . $birth["day"];
+		$reg_type_id = self::get_reg_type_id($data["reg_level_id"]);
+		$query_args = array(self::YEAR, $reg_type_id, 1, $badge_num, 
+			$data["badge_name"], $data["first"], $data["middle"], 
+			$data["last"], $date_string, $data["address1"], 
+			$data["address2"], $data["city"], $data["state"], $data["zip"],
+			$data["country"], $data["email"], $data["phone"]
+			);
+		db_query($query, $query_args);
+
+		$reg_id = self::get_insert_id();
+
+		$message = "Added registration for badge number '$badge_num'";
+		self::log($message, $reg_id);
+
+		$query = "UPDATE reg_trans "
+			. "SET "
+			. "reg_id='%s' "
+			. "WHERE "
+			. "id='%s'";
+		$query_args = array($reg_id, $reg_trans_id);
+		db_query($query, $query_args);
+
+		return($badge_num);
+
+	} // End of add_member()
+
+
+	/**
+	* This is our registration log function.  It contains a wrapper for
+	* the Drupal watchdog() facility, but also logs entries via our own logging
+	* table.  This way, we can keep track of log entries in the registration 
+	* system for months, or even years if necessary.
+	*/
+	static function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
+
+		global $user, $base_root;
+
+		watchdog("reg", $message, $severity);
+
+		$url = $base_root . request_uri();
+		$query = "INSERT INTO {reg_log} "
+			. "(reg_id, uid, date, url, referrer, remote_addr, message) "
+			. "VALUES "
+			. "('%s', '%s', NOW(), '%s', '%s', '%s', '%s') "
+			;
+		$query_args = array($reg_id, $user->uid, $url, referer_uri(), 
+			$_SERVER["REMOTE_ADDR"], $message
+			);
+		db_query($query, $query_args);
+
+	} // End of log()
 
 
 	/**
@@ -411,6 +659,21 @@ class reg {
 
 
 	/**
+	* Are we running in test mode?  If so, then we're not charging the
+	*	credit card.
+	*
+	* @retval boolean True if we are running in test mode.  False otherwise.
+	*/
+	static function is_test_mode() {
+
+		$retval = variable_get(reg::FORM_ADMIN_FAKE_CC, false);
+
+		return($retval);
+
+	} // End of is_test_mode()
+
+
+	/**
 	* This internal function creates the credit card portion of the 
 	*	registration form.
 	*/
@@ -440,7 +703,7 @@ class reg {
 			"#required" => true,
 			);
 
-		if (variable_get(reg::FORM_ADMIN_FAKE_CC, false)) {
+		if (self::is_test_mode()) {
 			$retval["cc_num"]["#description"] = "Running in test mode.  "
 				. "Just enter any old number.";
 		}
@@ -509,6 +772,72 @@ shirt_size (staff and super sponsors)
 
 
 	/**
+	* This function gets the human-readable name for a specific card.
+	*
+	* @param mixed $cc_type This can be a string such as "Visa", or a value 
+	*	from the reg_cc_type table.
+	*
+	* @param string $cc_num The full credit card number.  This is assumed to 
+	*	consist only of integers.
+	*
+	* @return string A human-readable string, such as "Visa ending in '1234'"
+	*
+	*/
+	static function get_cc_name($cc_type, $cc_num) {
+
+		//
+		// Get the string type for a card if we don't already have it.
+		//
+		$cc_type_int = intval($cc_type);
+		if ($cc_type == (string)$cc_type_int) {
+			$types = self::get_cc_types();
+			$cc_type = $types[$cc_type];
+		}
+
+		$retval = "${cc_type} ending in '" . substr($cc_num, -4) . "'";
+
+		return($retval);
+
+	} // End of get_cc_name()
+
+
+	/**
+	* Determine the cost of a registration based on the reg_level_id.
+	*
+	* @return integer The cost of the registration.
+	*/
+	function get_reg_cost($level_id) {
+
+		$query = "SELECT price FROM reg_level "
+			. "WHERE id='%s'";
+		$query_args = array($level_id);
+		$cursor = db_query($query, $query_args);
+		$row = db_fetch_array($cursor);
+		$retval = $row["price"];
+
+		return($retval);
+
+	} // End of get_reg_cost()
+
+
+	/**
+	* Get the registration type ID, based on the level.
+	*/
+	static function get_reg_type_id($level_id) {
+
+		$query = "SELECT reg_type_id FROM reg_level "
+			. "WHERE id='%s'";
+		$query_args = array($level_id);
+		$cursor = db_query($query, $query_args);
+		$row = db_fetch_array($cursor);
+		$retval = $row["reg_type_id"];
+
+		return($retval);
+
+	} // End of get_reg_type_id()
+
+
+	/**
 	* This function retrieves our different types of membership from
 	* the database.
 	*
@@ -537,7 +866,69 @@ shirt_size (staff and super sponsors)
 
 		return($retval);
 
-	} // End of get_member_types()
+	} // End of get_types()
+
+
+	/**
+	* Retrieve our different transaction types from the database.
+	*
+	* @return array Array where the key is the unique ID and the value is
+	*	the transaction type.
+	*/
+	function get_trans_types() {
+
+		//
+		// Cache our rows between calls
+		//
+		static $retval = array();
+
+		if (!empty($retval)) {
+			return($retval);
+		}
+
+		$query = "SELECT * FROM reg_trans_type ";
+		$cursor = db_query($query);
+
+		while ($row = db_fetch_array($cursor)) {
+			$id = $row["id"];
+			$name = $row["trans_type"];
+			$retval[$id] = $name;
+		}
+
+		return($retval);
+
+	} // End of get_trans_types()
+
+
+	/**
+	* Retrieve our different payment types from the database.
+	*
+	* @return array Array where the key is the unique ID and the value is
+	*	the payment type.
+	*/
+	function get_payment_types() {
+
+		//
+		// Cache our rows between calls
+		//
+		static $retval = array();
+
+		if (!empty($retval)) {
+			return($retval);
+		}
+
+		$query = "SELECT * FROM reg_payment_type ";
+		$cursor = db_query($query);
+
+		while ($row = db_fetch_array($cursor)) {
+			$id = $row["id"];
+			$name = $row["payment_type"];
+			$retval[$id] = $name;
+		}
+
+		return($retval);
+
+	} // End of get_payment_types()
 
 
 	/**

@@ -45,13 +45,10 @@
 /**
 * TODO:
 
-- Admin interface for "Membership levels"
-	- Add new level
+- reg/verify - Let a user verify their reigstration
 
 - Processing on submissions
 	- Come back to this later with membership levels
-
-- Registration form submit function
 
 - Admin
 	- Settings page
@@ -124,15 +121,15 @@ function reg_registration_form() {
 	return(reg::registration_form());
 }
 
-function reg_registration_form_validate($form_id, $data) {
+function reg_registration_form_validate($form_id, &$data) {
 	reg_load_files();
 	reg::registration_form_validate($form_id, $data);
 }
 
-function reg_registration_form_submit($form_id, $data) {
+function reg_registration_form_submit($form_id, &$data) {
 	reg_load_files();
 	//reg_admin::admin_form_submit($form_id, $data);
-//print "TEST SUBMIT";
+	return(reg::registration_form_submit($form_id, $data));
 }
 
 

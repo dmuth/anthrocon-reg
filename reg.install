@@ -131,7 +131,7 @@ function reg_install() {
 		// Our different membership levels, such as member, sponsor, etc.
 		// It is consulted when printing up the main registration form.
 		//
-		$query = "CREATE TABLE reg_levels ("
+		$query = "CREATE TABLE reg_level ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 
 			//
@@ -180,15 +180,15 @@ function reg_install() {
 
 			//
 			// Is this a purchase, refund, upgrade, etc.?
-			// Full list in reg::get_trans_types()
+			// Full list in reg::get_trans_type()
 			//
-			. "trans_type VARCHAR(255), "
+			. "reg_trans_type_id INTEGER NOT NULL, "
 			//
 			// How was the membership paid for?
 			// cc, cash, check, comp, volunteer, board, staff, etc.
-			// Full list in reg::get_trans_type()
+			// Full list in reg::get_payment_type()
 			//
-			. "payment_type VARCHAR(255), "
+			. "reg_payment_type_id INTEGER NOT NULL, "
 
 			//
 			// Basic info on the badge holder
@@ -236,6 +236,48 @@ function reg_install() {
 			. "('Visa'), "
 			. "('American Express'), "
 			. "('Discover') "
+			;
+		db_query($query);
+
+		//
+		// This table holds our different transaction types.
+		//
+		$query = "CREATE TABLE reg_trans_type ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "trans_type VARCHAR(255) "
+			. ")"
+			;
+		db_query($query);
+
+		$query = "INSERT INTO reg_trans_type (trans_type) "
+			. "VALUES "
+			. "('Purchase'), "
+			. "('Refund'), "
+			. "('Upgrade') "
+			;
+		db_query($query);
+
+		//
+		// This table holds our different payment types
+		//
+		$query = "CREATE TABLE reg_payment_type ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "payment_type VARCHAR(255) "
+			. ")"
+			;
+		db_query($query);
+
+		$query = "INSERT INTO reg_payment_type (payment_type) "
+			. "VALUES "
+			. "('Credit Card'), "
+			. "('Cash'), "
+			. "('Check'), "
+			. "('Comp'), "
+			. "('Volunteer'), "
+			. "('Board'), "
+			. "('Staff'), "
+			. "('Guest of Honor'), "
+			. "('Guest') "
 			;
 		db_query($query);
 
@@ -327,10 +369,16 @@ function reg_wipe() {
 	$query = "DROP TABLE IF EXISTS reg_status";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_levels";
+	$query = "DROP TABLE IF EXISTS reg_level";
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS reg_trans";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_trans_type";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_payment_type";
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS reg_cc_type";

@@ -52,9 +52,9 @@ class reg_admin {
 		$order_by = tablesort_sql($header);
 
 		$rows = array();
-		$query = "SELECT {reg_levels}.*, {reg_type}.member_type "
-			. "FROM {reg_levels} "
-			. "JOIN {reg_type} ON {reg_levels}.reg_type_id={reg_type}.id "
+		$query = "SELECT {reg_level}.*, {reg_type}.member_type "
+			. "FROM {reg_level} "
+			. "JOIN {reg_type} ON {reg_level}.reg_type_id={reg_type}.id "
 			. "$order_by";
 		$cursor = db_query($query);
 		while ($row = db_fetch_array($cursor)) {
@@ -100,7 +100,7 @@ class reg_admin {
 			//
 			// Retrieve our existing row of data.
 			//
-			$query = "SELECT * FROM {reg_levels} WHERE id='%d'";
+			$query = "SELECT * FROM {reg_level} WHERE id='%d'";
 			$args = array($id);
 			$cursor = db_query($query, $args);
 			$row = db_fetch_array($cursor);
@@ -262,14 +262,14 @@ class reg_admin {
 		// present.
 		//
 		if (empty($data["id"])) {
-			$query = "INSERT INTO {reg_levels} "
+			$query = "INSERT INTO {reg_level} "
 				. "(name, year, reg_type_id, price, start, end) "
 				. "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')";
 			$args = array($data["name"], $data["year"], $data["reg_type_id"],
 				$data["price"], $start_string, $end_string);
 
 		} else {
-			$query = "UPDATE {reg_levels} "
+			$query = "UPDATE {reg_level} "
 				. "SET "
 				. "name='%s', year='%s', reg_type_id='%s', price='%s', "
 				. "start='%s', end='%s' "
