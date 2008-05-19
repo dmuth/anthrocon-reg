@@ -1,0 +1,49 @@
+
+- Move all theming functions into a separate table
+
+- reg/
+	- Rename reg_trans.card_num to reg_trans.cc_num
+	- Have reg::get_cc_name() call reg::get_cc_last_4()
+	- Save only last 4 digits of CC num to reg_trans.card_num
+	- When a transaction fails, log it to reg_log with reg::get_cc_name()
+
+- reg/verify - Let a user verify their reigstration
+	- Ask for last 4 digits of credit card number and expiration date
+	- Print lines of registrations
+	- Maybe allow for upgrades this way?
+
+- redirect to reg/verify on successful registration
+
+- Admin
+	- View recent registrations
+	- Search for registrations
+		- Separate search page with search form and advanced search form
+	- Other business-type stuff
+		- Edit/update a registration
+		- Manually enter a registration
+		- Resend confirmation email
+			- Send confirmation email to another address
+
+- Put membership levels on registration form
+	- Should I add a text description field to membership levels?
+
+- Class architecture
+	- Function to check for SSL
+	- Function to log an event based on ID from reg table
+	- Function to send confirmation email for a specific registration
+		- Store this confirmation email as a variable?
+	- Functions for generating months and years for dropdowns?
+
+- Authorize.net or something else entirely?
+
+Long Term
+=========
+
+- A staff registration page?
+	- Admin-level checking
+
+- Can we have an upgrade type?
+
+- On-site registration stuff?
+
+
