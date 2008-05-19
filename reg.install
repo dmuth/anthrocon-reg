@@ -210,7 +210,7 @@ function reg_install() {
 			// store any actual card numbers here.
 			//
 			. "reg_cc_type_id INTEGER, "
-			. "card_num VARCHAR(255), "
+			. "cc_num VARCHAR(255), "
 			. "card_expire DATE, "
 			. "badge_cost DECIMAL(10, 2), "
 			. "donation DECIMAL(10, 2), "

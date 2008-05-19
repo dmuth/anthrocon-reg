@@ -394,7 +394,7 @@ $data["reg_level_id"] = 3;
 			. "created, reg_trans_type_id, reg_payment_type_id, "
 			. "first, middle, last, birthdate, address1, address2, "
 			. "city, state, zip, country, "
-			. "reg_cc_type_id, card_num, card_expire, "
+			. "reg_cc_type_id, cc_num, card_expire, "
 			. "badge_cost, donation, total_cost "
 			. ") VALUES ("
 			. "NOW(), '%s', '%s', "
