@@ -1,18 +1,28 @@
 
 - Move all theming functions into a separate table
+- Redo the main registration form with descriptions on the right
 
-- reg/
-	- Rename reg_trans.card_num to reg_trans.cc_num
-	- Have reg::get_cc_name() call reg::get_cc_last_4()
-	- Save only last 4 digits of CC num to reg_trans.card_num
-	- When a transaction fails, log it to reg_log with reg::get_cc_name()
+- admin
+	- View logs
+	- View transactions
+	- View registrations
+		- View logs and transactions at the bottom of each registration
+		- Editing for registration
+		- Note taking via logs?
+		- I may need to split out "registrations" into a separate menu item?
 
 - reg/verify - Let a user verify their reigstration
 	- Ask for last 4 digits of credit card number and expiration date
 	- Print lines of registrations
 	- Maybe allow for upgrades this way?
 
-- redirect to reg/verify on successful registration
+- reg/
+	- Rename reg_trans.card_num to reg_trans.cc_num
+	- Have reg::get_cc_name() call reg::get_cc_last_4()
+	- Save only last 4 digits of CC num to reg_trans.card_num
+	- When a transaction fails, log it to reg_log with reg::get_cc_name()
+	- When a membership is paid for, redirect to reg/verify with status messages
+		and the form pre-filled
 
 - Admin
 	- View recent registrations
