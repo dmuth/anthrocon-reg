@@ -1,7 +1,4 @@
 
-- Move all theming functions into a separate table
-- Redo the main registration form with descriptions on the right
-
 - admin
 	- View logs
 	- View transactions

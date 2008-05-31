@@ -29,6 +29,7 @@
 */
 function reg_load_files() {
 	include_once("reg.class.php");
+	include_once("reg_theme.class.php");
 	include_once("reg_admin.class.php");
 }
 
@@ -169,7 +170,7 @@ return("This is where our stats page would go.");
 */
 function theme_reg_theme($form) {
 	reg_load_files();
-	return(reg::theme($form));
+	return(reg_theme::theme($form));
 }
 
 /*
