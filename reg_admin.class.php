@@ -385,5 +385,126 @@ class reg_admin {
 		drupal_set_message("Settings updated");
 	}
 
+
+	/**
+	* Our log viewer.
+	*/
+	function log() {
+
+		$header = array();
+		$header[] = array("data" => "Date", "field" => "date",
+			"sort" => "desc");
+		$header[] = array("data" => "Message", "field" => "message");
+		$header[] = array("data" => "User", "field" => "name");
+
+		//
+		// By default, we'll be sorting by the reverse date.
+		//
+		$order_by = tablesort_sql($header);
+
+		//
+		// Select log entries with the username included.
+		//
+		$rows = array();
+		$query = "SELECT reg_log.*, "
+			. "users.uid, users.name "
+			. "FROM {reg_log} "
+			. "LEFT JOIN {users} ON reg_log.uid = users.uid "
+			. "$order_by"
+			;
+		$cursor = db_query($query);
+		while ($row = db_fetch_array($cursor)) {
+			$id = $row["id"];
+
+			//
+			// Stick in the username if we have it.
+			//
+			$username = $row["name"];
+			if (!empty($row["name"])) {
+				$uid = $row["uid"];
+				$user_link = l($username, "user/" . $uid);
+
+			} else {
+				$user_link = "Anonymous";
+
+			}
+			
+			$link = "admin/reg/logs/view/" . $id;
+			$rows[] = array(
+				$row["date"],
+				l($row["message"], $link),
+				$user_link,
+				);
+		}
+
+		$retval = theme("table", $header, $rows);
+
+		return($retval);
+
+	} // End of log()
+
+	function log_detail($id) {
+
+		$query = "SELECT reg_log.*, "
+			. "users.uid, users.name "
+			. "FROM {reg_log} "
+			. "LEFT JOIN {users} ON reg_log.uid = users.uid "
+			. "WHERE "
+			. "reg_log.id='%s' ";
+		$query_args = array($id);
+		$cursor = db_query($query, $query_args);
+		$row = db_fetch_array($cursor);
+		$row["url"] = check_url($row["url"]);
+		$row["referrer"] = check_url($row["referrer"]);
+
+		//
+		// Stick in the username if we have it.
+		//
+		$username = $row["name"];
+		if (!empty($row["name"])) {
+			$uid = $row["uid"];
+			$user_link = l($username, "user/" . $uid);
+
+		} else {
+			$user_link = "Anonymous";
+
+		}
+			
+		$rows = array();
+		$rows[] = array(
+			array("data" => "Registration Log ID#", "header" => true),
+			$row["id"]
+			);
+		$rows[] = array(
+			array("data" => "Date", "header" => true),
+			$row["date"]
+			);
+		$rows[] = array(
+			array("data" => "User", "header" => true),
+			$user_link
+			);
+		$rows[] = array(
+			array("data" => "Location", "header" => true),
+			"<a href=\"" . $row["url"] . "\">" . $row["url"] . "</a>",
+			);
+		$rows[] = array(
+			array("data" => "Referrer", "header" => true),
+			"<a href=\"" . $row["referrer"] . "\">" 
+				. $row["referrer"] . "</a>",
+			);
+		$rows[] = array(
+			array("data" => "Message", "header" => true),
+			$row["message"]
+			);
+		$rows[] = array(
+			array("data" => "Hostname", "header" => true),
+			$row["remote_addr"]
+			);
+
+		$retval = theme("table", array(), $rows);
+		return($retval);
+
+	} // End of log_detail()
+
 } // End of reg_admin class
 

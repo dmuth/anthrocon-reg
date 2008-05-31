@@ -217,8 +217,17 @@ class reg {
 		$retval[] = array(
 			"path" => "admin/reg/logs",
 			"title" => t("Logs"),
-			"callback" => "reg_admin_logs",
+			"callback" => "reg_admin_log",
 			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/logs/view",
+			"title" => t("Logs"),
+			"callback" => "reg_admin_log_detail",
+			"type" => MENU_LOCAL_TASK,
+			"callback_arguments" => array(arg(4)),
 			"weight" => 2,
 			);
 
@@ -251,9 +260,15 @@ class reg {
 	*/
 	static function registration_form_validate(&$form_id, &$data) {
 
+		//
+		// Assume everything is okay, unless proven otherwise.
+		//
+		$okay = true;
+
 		if ($data["email"] != $data["email2"]) {
 			$error = "Email addresses do not match!";
 			form_set_error("email2", $error);
+			$okay = false;
 		}
 
 		//
@@ -263,9 +278,11 @@ class reg {
 		if ($data["donation"] != (string)$donation_float) {
 			$error = "Donation '" . $data["donation"] . "' is not a number!";
 			form_set_error("donation", $error);
+			$okay = false;
 
 		} else if ($data["donation"] < 0) {
 			form_set_error("donation", "Donation cannot be a negative amount!");
+			$okay = false;
 
 		}
         
@@ -278,7 +295,16 @@ class reg {
 		if ($data["cc_exp"]["year"] == $year) {
 			if ($data["cc_exp"]["month"] <= $month) {
 				form_set_error("cc_exp][month", "Credit card is expired");
+				$okay = false;
 			}
+		}
+
+		//
+		// If something failed, stop here and do NOT try to charge
+		// the credit card.
+		//
+		if (empty($okay)) {
+			return(null);
 		}
 
 //

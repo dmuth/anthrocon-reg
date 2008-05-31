@@ -153,8 +153,14 @@ return("This is where our interface to add registrations would be.");
 /**
 * Viewing logs.
 */
-function reg_admin_logs() {
-return("This is where our log viewer would go.");
+function reg_admin_log() {
+	reg_load_files();
+	return(reg_admin::log());
+}
+
+function reg_admin_log_detail($id) {
+	reg_load_files();
+	return(reg_admin::log_detail($id));
 }
 
 /**
