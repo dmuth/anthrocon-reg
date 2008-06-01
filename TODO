@@ -1,7 +1,4 @@
 
-- Change date fields and names to "timestamp" of type:
-        timestamp int NOT NULL default '0'
-
 	- View transactions
 	- View registrations
 		- View logs and transactions at the bottom of each registration
@@ -15,6 +12,11 @@
 	- Maybe allow for upgrades this way?
 
 - PAGING!!
+- is date_validate() being used on the reg form for dates?
+- check on registration to make sure membership level is valid
+	- Write a get_levels() function to return current, valid levels?
+		- Possibly sort by cost?
+
 
 - reg/
 	- Rename reg_trans.card_num to reg_trans.cc_num

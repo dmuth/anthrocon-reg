@@ -223,10 +223,26 @@ class reg {
 			);
 
 		$retval[] = array(
+			"path" => "admin/reg/logs/show",
+			"title" => t("Registration Logs"),
+			"callback" => "reg_admin_log",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => 2,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/logs/transactions",
+			"title" => t("Transactions"),
+			"callback" => "reg_admin_trans",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
+
+		$retval[] = array(
 			"path" => "admin/reg/logs/view",
 			"title" => t("Logs"),
 			"callback" => "reg_admin_log_detail",
-			"type" => MENU_LOCAL_TASK,
+			"type" => MENU_CALLBACK,
 			"callback_arguments" => array(arg(4)),
 			"weight" => 2,
 			);
@@ -418,23 +434,21 @@ $data["reg_level_id"] = 3;
 		//
 		$query = "INSERT INTO reg_trans ("
 			. "created, reg_trans_type_id, reg_payment_type_id, "
-			. "first, middle, last, birthdate, address1, address2, "
+			. "first, middle, last, address1, address2, "
 			. "city, state, zip, country, "
 			. "reg_cc_type_id, cc_num, card_expire, "
 			. "badge_cost, donation, total_cost "
 			. ") VALUES ("
-			. "NOW(), '%s', '%s', "
+			. "NOW(), '%s', "
 			. "'%s', '%s', '%s', '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', "
 			. "'%s', '%s', '%s' "
 			. ")"
 			;
-		$birth = $data["birthday"];
-		$birth_string = $birth["year"] . "-" . $birth["month"] 
-			. "-" . $birth["day"];
 		$exp = $data["cc_exp"];
 		$exp_string = $exp["year"] . "-" . $exp["month"] ."-0";
+
 		$data["cc_name"] = self::get_cc_name($data["cc_type"], $data["cc_num"]);
 		$query_args = array(
 			1, 1,
@@ -540,10 +554,10 @@ $data["reg_level_id"] = 3;
 		$query = "INSERT INTO {reg_log} "
 			. "(reg_id, uid, date, url, referrer, remote_addr, message) "
 			. "VALUES "
-			. "('%s', '%s', NOW(), '%s', '%s', '%s', '%s') "
+			. "('%s', '%s', '%s', '%s', '%s', '%s', '%s') "
 			;
-		$query_args = array($reg_id, $user->uid, $url, referer_uri(), 
-			$_SERVER["REMOTE_ADDR"], $message
+		$query_args = array($reg_id, $user->uid, time(), $url, 
+			referer_uri(), $_SERVER["REMOTE_ADDR"], $message
 			);
 		db_query($query, $query_args);
 

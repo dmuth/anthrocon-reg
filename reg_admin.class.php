@@ -388,6 +388,8 @@ class reg_admin {
 
 	/**
 	* Our log viewer.
+	*
+	* @return string HTML code of the log entry.
 	*/
 	function log() {
 
@@ -431,7 +433,7 @@ class reg_admin {
 			
 			$link = "admin/reg/logs/view/" . $id;
 			$rows[] = array(
-				$row["date"],
+				format_date($row["date"], "small"),
 				l($row["message"], $link),
 				$user_link,
 				);
@@ -443,6 +445,14 @@ class reg_admin {
 
 	} // End of log()
 
+
+	/**
+	* Pull up details for a single row.
+	*
+	* @param integer $id The ID from the reg_log table.
+	*
+	* @return string HTML code of the log entry.
+	*/
 	function log_detail($id) {
 
 		$query = "SELECT reg_log.*, "
@@ -477,7 +487,7 @@ class reg_admin {
 			);
 		$rows[] = array(
 			array("data" => "Date", "header" => true),
-			$row["date"]
+			format_date($row["date"], "small"),
 			);
 		$rows[] = array(
 			array("data" => "User", "header" => true),
@@ -505,6 +515,12 @@ class reg_admin {
 		return($retval);
 
 	} // End of log_detail()
+
+
+	function trans() {
+		return("This is where a list of recent transactions would go.");
+	} // End of trans()
+
 
 } // End of reg_admin class
 

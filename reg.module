@@ -163,6 +163,12 @@ function reg_admin_log_detail($id) {
 	return(reg_admin::log_detail($id));
 }
 
+
+function reg_admin_trans() {
+	reg_load_files();
+	return(reg_admin::trans());
+}
+
 /**
 * Viewing registration stats.
 */
