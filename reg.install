@@ -178,11 +178,21 @@ function reg_install() {
 		$query = "CREATE TABLE reg_trans ( "
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			//
-			// Timestampe
+			// Foreign key to the registration table. (optional)
 			//
-			. "created INTEGER NOT NULL DEFAULT '0', "
 			. "reg_id INTEGER NOT NULL, "
 			. "INDEX reg_trans_reg_id(reg_id), "
+
+			//
+			// User ID
+			//
+			. "uid INTEGER, "
+			. "INDEX reg_log_uid(uid), "
+
+			//
+			// Timestamp
+			//
+			. "date INTEGER NOT NULL DEFAULT '0', "
 
 			//
 			// Is this a purchase, refund, upgrade, etc.?

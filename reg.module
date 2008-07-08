@@ -29,8 +29,10 @@
 */
 function reg_load_files() {
 	include_once("reg.class.php");
-	include_once("reg_theme.class.php");
 	include_once("reg_admin.class.php");
+	include_once("reg_log.class.php");
+	include_once("reg_menu.class.php");
+	include_once("reg_theme.class.php");
 }
 
 
@@ -48,7 +50,7 @@ function reg_menu($may_cache) {
 	reg_load_files();
 // TODO: Get rid of this debug stuff
 	//if ($may_cache) {
-		$items = reg::menu();
+		$items = reg_menu::menu();
 	//}
 
 	return($items);
@@ -155,18 +157,22 @@ return("This is where our interface to add registrations would be.");
 */
 function reg_admin_log() {
 	reg_load_files();
-	return(reg_admin::log());
+	return(reg_log::log());
 }
 
 function reg_admin_log_detail($id) {
 	reg_load_files();
-	return(reg_admin::log_detail($id));
+	return(reg_log::log_detail($id));
 }
-
 
 function reg_admin_trans() {
 	reg_load_files();
-	return(reg_admin::trans());
+	return(reg_log::trans());
+}
+
+function reg_admin_trans_detail($id) {
+	reg_load_files();
+	return(reg_log::trans_detail($id));
 }
 
 /**
