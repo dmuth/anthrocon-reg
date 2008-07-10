@@ -36,16 +36,49 @@ class reg_form {
 	*
 	* @return array Associative array of registration form.
 	*/
-	static function reg() {
+	static function reg($id = "") {
 
 		$retval = array();
 
-		$retval["member"] = self::_registration_form();
-		$retval["cc"] = self::_registration_form_cc();
+		if (!empty($id)) {
+			$data = reg_admin::load_reg($id);
+			$retval["reg_id"] = array(
+				"#type" => "hidden",
+				"#value" => $id,
+				);
+
+		}
+
+		$retval["member"] = self::form($id, $data);
+
+		//
+		// Don't display our credit card info when we're editing, as
+		// only admins can edit a registration.
+		//
+		if (!self::in_admin()) {
+			$retval["cc"] = self::form_cc();
+		}
 
 		return($retval);
 
-	} // End of registration_form()
+	} // End of reg()
+
+
+	/**
+	* Are we in the admin section?  If we are, certain checks are not
+	* done and certain fields are not displayed.
+	*
+	* @return boolean True is we are in the admin section, false otherwise.
+	*/
+	function in_admin() {
+
+		if (arg(0) == "admin") {
+			return(true);
+		}
+
+		return(false);
+
+	} // End in_admin()
 
 
 	/**
@@ -54,6 +87,13 @@ class reg_form {
 	* that form processing does not continue.
 	*/
 	static function reg_validate(&$form_id, &$data) {
+
+		//
+		// If we're in the admin, we can skip all of this stuff.
+		//
+		if (self::in_admin()) {
+			return(null);
+		}
 
 		//
 		// Assume everything is okay, unless proven otherwise.
@@ -127,13 +167,6 @@ $data["reg_level_id"] = 3;
 			self::$data = $data;
 		}
 
-// TEST
-print_r($data);exit();
-
-		//
-		// TODO: Set redirection to verify page?
-		// 
-
 	} // End of registration_form_validate()
 
 
@@ -141,6 +174,44 @@ print_r($data);exit();
 	* All the registration form data checks out.  
 	*/
 	static function reg_submit(&$form_id, &$data) {
+
+		if (empty($data["reg_id"])) {
+			self::reg_submit_new($data);
+		} else if (self::in_admin()) {
+			self::reg_submit_update($data);
+			return("admin/reg/members/view/" . $data["reg_id"] . "/edit");
+		}
+
+		//
+		// Send the user back to the front page.
+		//
+		//
+		// TODO: Set redirection to verify page?
+		// 
+		return("");
+
+	} // End of registration_form_submit()
+
+
+	/**
+	* Process an updated registration.
+	* We will update the database and log this.
+	*/
+	static function reg_submit_update(&$data) {
+
+print_r($data);
+//exit();
+
+		$message = t("Registration updated!");
+		drupal_set_message($message);
+
+	} // End of reg_submit_update()
+
+
+	/**
+	* Set up messages for a successful new registration.
+	*/
+	static function reg_submit_new(&$data) {
 
 		$message = t("Congratulations!  Your registration was successful, and your badge number is %badge_num%.  ",
 			array("%badge_num%" => self::$badge_num)
@@ -158,23 +229,27 @@ print_r($data);exit();
 			);
 		drupal_set_message($message);
 
-		//
-		// Send the user back to the front page.
-		//
-		return("");
-
-	} // End of registration_form_submit()
+	} // End of reg_submit_new()
 
 
 	/**
 	* This function function creates the membership section of our 
 	*	registration form.
+	*
+	* @param integer $id reg_id if we are editing a record.
+	*
+	* @param array $data Associative array of membership info.
 	*/
-	static private function _registration_form() {
+	static function form($id = "", $data = "") {
 
+		if (empty($data)) {
+			$data = array();
+		}
+
+print_r($data); // TEST
 		$retval = array(
 			"#type" => "fieldset",
-			"#title" => "Membership Information",
+			"#title" => t("Membership Information"),
 			//
 			// Render elements with our custom theme code
 			//
@@ -184,127 +259,163 @@ print_r($data);exit();
 		$retval["badge_name"] = array(
 			"#title" => "Badge Name",
 			"#type" => "textfield",
-			"#description" => "The name printed on your conbadge.  "
-				. "This may be your real name or a nickname. "
-				. "It may be blank. ",
+			"#description" => t("The name printed on your conbadge.  ")
+				. t("This may be your real name or a nickname. ")
+				. t("It may be blank. "),
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["badge_name"],
 			);
 		$retval["first"] = array(
 			"#type" => "textfield",
-			"#title" => "First Name",
-			"#description" => "Your real first name",
+			"#title" => t("First Name"),
+			"#description" => t("Your real first name"),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["first"],
 			);
 		$retval["middle"] = array(
 			"#type" => "textfield",
-			"#title" => "Middle Name",
-			"#description" => "Your real middle name",
+			"#title" => t("Middle Name"),
+			"#description" => t("Your real middle name"),
 			"#size" => self::FORM_TEXT_SIZE,
+			"#default_value" => $data["middle"],
 			);
 		$retval["last"] = array(
 			"#type" => "textfield",
-			"#title" => "Last Name",
-			"#description" => "Your real last name",
+			"#title" => t("Last Name"),
+			"#description" => t("Your real last name"),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["last"],
 			);
+
+		//
+		// Explode our date into an array for the dropdowns.
+		//
+		$date_array = array();
+		if (!empty($data["birthdate"])) {
+			$date_array = explode("-", $data["birthdate"]);
+			$date_array["year"] = $date_array[0];
+			$date_array["month"] = $date_array[1];
+			$date_array["day"] = $date_array[2];
+		}
+		
 		$retval["birthday"] = array(
 			"#type" => "date",
-			"#title" => "Date of Birth",
-			"#description" => "Your date of birth",
+			"#title" => t("Date of Birth"),
+			"#description" => t("Your date of birth"),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $date_array,
 			);
 		$retval["address1"] = array(
 			"#type" => "textfield",
-			"#title" => "Address Line 1",
-			"#description" => "Your mailing address",
+			"#title" => t("Address Line 1"),
+			"#description" => t("Your mailing address"),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["address1"],
 			);
 		$retval["address2"] = array(
 			"#type" => "textfield",
-			"#title" => "Address Line 2",
-			"#description" => "Additional address information, "
-				. "such as P.O Box number",
+			"#title" => t("Address Line 2"),
+			"#description" => t("Additional address information, "
+				. "such as P.O Box number"),
 			"#size" => self::FORM_TEXT_SIZE,
+			"#default_value" => $data["address2"],
 			);
 		$retval["city"] = array(
 			"#type" => "textfield",
-			"#title" => "City",
-			"#description" => "Your city",
+			"#title" => t("City"),
+			"#description" => t("Your city"),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["city"],
 			);
 		$retval["state"] = array(
 			"#type" => "textfield",
-			"#title" => "State",
-			"#description" => "Your state",
+			"#title" => t("State"),
+			"#description" => t("Your state"),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["state"],
 			);
 		$retval["zip"] = array(
 			"#type" => "textfield",
-			"#title" => "Zip Code",
-			"#description" => "Your Zip/Postal code",
+			"#title" => t("Zip Code"),
+			"#description" => t("Your Zip/Postal code"),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["zip"],
 			);
 		$retval["country"] = array(
 			"#type" => "textfield",
-			"#title" => "Country",
-			"#description" => "Your country",
+			"#title" => t("Country"),
+			"#description" => t("Your country"),
 			"#default_value" => "USA",
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["country"],
 			);
 		$retval["email"] = array(
 			"#type" => "textfield",
-			"#title" => "Your email address",
+			"#title" => t("Your email address"),
 			"#description" => "",
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["email"],
 			);
 		$retval["email2"] = array(
 			"#type" => "textfield",
-			"#title" => "Confirm email address",
-			"#description" => "Please re-type your email address to ensure there "
-				. "were no typos.",
+			"#title" => t("Confirm email address"),
+			"#description" => t("Please re-type your email address to "
+				. "ensure there were no typos."),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["email"],
 			);
 		$retval["phone"] = array(
 			"#type" => "textfield",
-			"#title" => "Your phone number",
-			"#description" => "A phone number where we can reach you.",
+			"#title" => t("Your phone number"),
+			"#description" => t("A phone number where we can reach you."),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["phone"],
 			);
 
 		$path = variable_get(self::FORM_ADMIN_CONDUCT_PATH, "");
-		if (!empty($path)) {
+		if (!empty($path) && empty($id)) {
 			$retval["conduct"] = array(
 				"#type" => "checkbox",
-				"#title" => "I agree with the<br>" 
-					. l("Standards of Conduct", $path),
-				"#description" => "You must agree with the " 
-					. l("Standards of Conduct", $path) 
-					. " in order to purchase a membership.",
+				"#title" => t("I agree with the") . "<br>" 
+					. l(t("Standards of Conduct"), $path),
+				"#description" => t("You must agree with the " 
+					. l(t("Standards of Conduct"), $path))
+					. t(" in order to purchase a membership."),
 				"#required" => true,
 			);
 		}
 
+		//
+		// Only display our registration button early if we are editing
+		//
+		if (!empty($id)) {
+			$retval["submit"] = array(
+				"#type" => "submit",
+				"#value" => t("Save")
+				);
+		}
+
 		return($retval);
 
-	} // End of _registration_form()
+	} // End of form()
 
 
 	/**
 	* This internal function creates the credit card portion of the 
 	*	registration form.
 	*/
-	static private function _registration_form_cc() {
+	static function form_cc() {
 
 		$retval = array(
 			"#type" => "fieldset",

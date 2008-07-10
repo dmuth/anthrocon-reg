@@ -1,16 +1,14 @@
 
 
 	- View registrations
-		- reg_admin
-			::reg_list()
-			::reg_detail()
-			::reg_update() - use for saving new registrations too
-		
-		- Member data in a fieldset
-		- Appropriate log entries in a fieldset
-		- Appropriate transactions in a fieldset
 		- Editing for registration
 		- Note taking via logs?
+		- Search
+		- Adding new registrations
+
+	- User viewing secondary menu:
+		- Add note?
+		- Refund?  Balance adjustment?
 
 	- Search registrations
 		- Redirect back to search page with a query string like in onsitereg

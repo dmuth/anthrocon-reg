@@ -64,9 +64,9 @@ function reg_registration() {
 	return(reg::registration());
 }
 
-function reg_registration_form() {
+function reg_registration_form($id = "") {
 	reg_load_files();
-	return(reg_form::reg());
+	return(reg_form::reg($id));
 }
 
 function reg_registration_form_validate($form_id, &$data) {
@@ -141,12 +141,12 @@ function reg_admin_members() {
 
 function reg_admin_members_view($id) {
 	reg_load_files();
-	return(reg_admin::view($id));
+	return(reg_admin::view_reg($id));
 }
 
 function reg_admin_members_edit($id) {
 	reg_load_files();
-	return(reg_admin::edit($id));
+	return(reg_admin::edit_reg($id));
 }
 
 /**

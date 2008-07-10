@@ -123,7 +123,7 @@ class reg_admin {
 			"#title" => "Level Name",
 			"#description" => "What the user sees.  i.e. Attending, Sponsor, etc.",
 			"#type" => "textfield",
-			"#size" => reg::FORM_TEXT_SIZE,
+			"#size" => reg_form::FORM_TEXT_SIZE,
 			"#required" => true,
 			"#default_value" => $row["name"],
 			);
@@ -133,7 +133,7 @@ class reg_admin {
 			"#description" => "This is so that we can keep *proper* historic "
 				. "data from past years.",
 			"#type" => "textfield",
-			"#size" => reg::FORM_TEXT_SIZE_SMALL,
+			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $row["year"] ? $row["year"] : date("Y"),
 			);
@@ -152,7 +152,7 @@ class reg_admin {
 			"#title" => "Price",
 			"#description" => "The price of this membership",
 			"#type" => "textfield",
-			"#size" => reg::FORM_TEXT_SIZE_SMALL,
+			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $row["price"],
 			);
@@ -318,7 +318,7 @@ class reg_admin {
 		$retval["fake_cc"] = array(
 			"#type" => "checkbox",
 			"#title" => "Credit Card Test Mode?",
-			"#default_value" => variable_get(reg::FORM_ADMIN_FAKE_CC, false),
+			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_CC, false),
 			"#description" => "If set, credit card numbers will "
 				. "not be processed.  Do NOT use in production!",
 			);
@@ -326,12 +326,12 @@ class reg_admin {
 		$retval["conduct_path"] = array(
 			"#type" => "textfield",
 			"#title" => "Standards of Conduct Path",
-			"#default_value" => variable_get(reg::FORM_ADMIN_CONDUCT_PATH, ""),
+			"#default_value" => variable_get(reg_form::FORM_ADMIN_CONDUCT_PATH, ""),
 			"#description" => "If a valid path is entered here, "
 				. "the user will be forced to agree to the "
 				. "Standards of Conduct before registering.  Do NOT use a "
 				. "leading slash.",
-			"#size" => reg::FORM_TEXT_SIZE,
+			"#size" => reg_form::FORM_TEXT_SIZE,
 			);
 
 		$retval["submit"] = array(
@@ -380,8 +380,8 @@ class reg_admin {
 	* form page.
 	*/
 	static function settings_form_submit($form_id, $data) {
-		variable_set(reg::FORM_ADMIN_FAKE_CC, $data["fake_cc"]);
-		variable_set(reg::FORM_ADMIN_CONDUCT_PATH, $data["conduct_path"]);
+		variable_set(reg_form::FORM_ADMIN_FAKE_CC, $data["fake_cc"]);
+		variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, $data["conduct_path"]);
 		drupal_set_message("Settings updated");
 	}
 
@@ -462,17 +462,14 @@ class reg_admin {
 
 
 	/**
-	* Pull up details on a specific record.	
+	* Load a single registration.
 	*
-	* @return string HTML of the member to display.
+	* @param integer $id The registration ID
+	*
+	* @return array Array of Registration info
 	*/
-	static function view ($id) {
+	function load_reg($id) {
 
-		$retval = "";
-
-		//
-		// Retrieve our record.
-		//
 		$query = "SELECT reg.*, "
 			. "reg_type.member_type, "
 			. "reg_status.status, reg_status.detail "
@@ -484,6 +481,22 @@ class reg_admin {
                 
 		$cursor = db_query($query, $id);
 		$row = db_fetch_array($cursor);
+
+		return($row);
+
+	} // End of load_reg()
+
+
+	/**
+	* Pull up details on a specific record.	
+	*
+	* @return string HTML of the member to display.
+	*/
+	static function view_reg($id) {
+
+		$retval = "";
+
+		$row = self::load_reg($id);
 
 		//
 		// Now create our table.
@@ -562,9 +575,27 @@ class reg_admin {
 
 		return($retval);
 
-	} // End of view()
+	} // End of view_reg()
 
-//TEST edit function
+
+	/**
+	* Edit a current registration.
+	*
+	* @param integer $id The reg_id of the record to edit.
+	*/
+	function edit_reg($id) {
+
+		$retval = "";
+
+		//
+		// Load our main registration form.
+		//
+		$retval .= "<h2>Edit Registration</h2>";
+		$retval .= drupal_get_form("reg_registration_form", $id);
+
+		return($retval);
+
+	} // End of edit_reg()
 
 
 	static function update($id = "") {
