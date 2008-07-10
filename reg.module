@@ -30,6 +30,7 @@
 function reg_load_files() {
 	include_once("reg.class.php");
 	include_once("reg_admin.class.php");
+	include_once("reg_form.class.php");
 	include_once("reg_log.class.php");
 	include_once("reg_menu.class.php");
 	include_once("reg_theme.class.php");
@@ -48,10 +49,7 @@ function reg_perm() {
 function reg_menu($may_cache) {
 
 	reg_load_files();
-// TODO: Get rid of this debug stuff
-	//if ($may_cache) {
-		$items = reg_menu::menu();
-	//}
+	$items = reg_menu::menu($may_cache);
 
 	return($items);
 
@@ -68,18 +66,17 @@ function reg_registration() {
 
 function reg_registration_form() {
 	reg_load_files();
-	return(reg::registration_form());
+	return(reg_form::reg());
 }
 
 function reg_registration_form_validate($form_id, &$data) {
 	reg_load_files();
-	reg::registration_form_validate($form_id, $data);
+	reg_form::reg_validate($form_id, $data);
 }
 
 function reg_registration_form_submit($form_id, &$data) {
 	reg_load_files();
-	//reg_admin::admin_form_submit($form_id, $data);
-	return(reg::registration_form_submit($form_id, $data));
+	return(reg_form::reg_submit($form_id, $data));
 }
 
 
@@ -137,19 +134,54 @@ function reg_admin_level_form_submit($form_id, $data) {
 /**
 * Viewing recent registrations.
 */
-function reg_admin_registrations() {
-return("This is where a list of recent registrations would go");
+function reg_admin_members() {
+	reg_load_files();
+	return(reg_admin::recent());
+}
+
+function reg_admin_members_view($id) {
+	reg_load_files();
+	return(reg_admin::view($id));
+}
+
+function reg_admin_members_edit($id) {
+	reg_load_files();
+	return(reg_admin::edit($id));
 }
 
 /**
 * Searching registrations.
 */
-function reg_admin_registrations_search() {
+function reg_admin_members_search() {
 return("This is where our search interface for registrations would be.");
 }
 
-function reg_admin_registrations_add() {
-return("This is where our interface to add registrations would be.");
+/* TEST
+function onsitereg_search() {
+        $retval = drupal_get_form("onsitereg_search_form");
+        $retval .= onsitereg_form::search_results();
+        return($retval);
+}
+
+function onsitereg_search_form() {
+        onsitereg_load_files();
+        return(onsitereg_form::search_form());
+}
+
+function onsitereg_search_form_validate($form_id, $data) {
+        onsitereg_load_files();
+        return(onsitereg_form::search_form_validate($form_id, $data));
+}
+
+function onsitereg_search_form_submit($form_id, $data) {
+        onsitereg_load_files();
+        return(onsitereg_form::search_form_submit($form_id, $data));
+}
+*/
+
+function reg_admin_members_add() {
+	reg_load_files();
+	return(reg_admin::update());
 }
 
 /**

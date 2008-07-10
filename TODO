@@ -1,12 +1,19 @@
 
 
 	- View registrations
-		- reg_admin::reg()
+		- reg_admin
+			::reg_list()
+			::reg_detail()
+			::reg_update() - use for saving new registrations too
+		
 		- Member data in a fieldset
 		- Appropriate log entries in a fieldset
 		- Appropriate transactions in a fieldset
 		- Editing for registration
 		- Note taking via logs?
+
+	- Search registrations
+		- Redirect back to search page with a query string like in onsitereg
 
 	- Rename reg_trans.badge_cost to just cost?
 
@@ -14,6 +21,8 @@
 	- Ask for last 4 digits of credit card number and expiration date
 	- Print lines of registrations
 	- Maybe allow for upgrades this way?
+
+- Some utility to print unused badge numbers
 
 - PAGING!!
 - is date_validate() being used on the reg form for dates?
@@ -55,6 +64,8 @@
 
 Long Term
 =========
+
+- Learn how to do updates through Drupal
 
 - A staff registration page?
 	- Admin-level checking

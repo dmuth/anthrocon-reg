@@ -9,9 +9,12 @@ class reg_log {
 	/**
 	* Our log viewer.
 	*
+	* @param integer $id Optional registration ID to limit results
+	*	to a single membership.
+	*
 	* @return string HTML code of the log entry.
 	*/
-	function log() {
+	function log($id = "") {
 
 		$header = array();
 		$header[] = array("data" => "Date", "field" => "date",
@@ -24,15 +27,21 @@ class reg_log {
 		//
 		$order_by = tablesort_sql($header);
 
+		$where = "";
+		if (!empty($id)) {
+			$where = "WHERE reg_log.reg_id='" . db_escape_string($id) . "' ";
+		}
+
 		//
-		// Select log entries with the username included.
+		// Fetch our log entries and loop through them
 		//
 		$rows = array();
 		$query = "SELECT reg_log.*, "
 			. "users.uid, users.name "
 			. "FROM {reg_log} "
 			. "LEFT JOIN {users} ON reg_log.uid = users.uid "
-			. "$order_by"
+			. $where
+			. $order_by
 			;
 		$cursor = db_query($query);
 		while ($row = db_fetch_array($cursor)) {
@@ -140,9 +149,12 @@ class reg_log {
 	/**
 	* View our transactions.
 	*
+	* @param integer $id Optional registration ID to limit results
+	*	to a single membership.
+	*
 	* @return string HTML code.
 	*/
-	function trans() {
+	function trans($id = "") {
 
 		$retval = "";
 
@@ -161,6 +173,11 @@ class reg_log {
 		//
 		$order_by = tablesort_sql($header);
 
+		$where = "";
+		if (!empty($id)) {
+			$where = "WHERE reg_trans.reg_id='" . db_escape_string($id) . "' ";
+		}
+
 		//
 		// Select log entries with the username included.
 		//
@@ -175,7 +192,8 @@ class reg_log {
 			. "LEFT JOIN {reg_payment_type} "
 				. "ON reg_payment_type_id = reg_payment_type.id "
 			. "LEFT JOIN {users} ON reg_trans.uid = users.uid "
-			. "$order_by"
+			. $where
+			. $order_by
 			;
 		$cursor = db_query($query);
 		while ($row = db_fetch_array($cursor)) {
@@ -239,7 +257,6 @@ class reg_log {
 		$query_args = array($id);
 		$cursor = db_query($query, $query_args);
 		$row = db_fetch_array($cursor);
-print_r($row);
 		$row["url"] = check_url($row["url"]);
 		$row["referrer"] = check_url($row["referrer"]);
 

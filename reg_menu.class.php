@@ -12,16 +12,35 @@ class reg_menu {
 	*
 	* @return array Scalar array of menu data.
 	*/
-	static function menu() {
+	static function menu($may_cache) {
 
 		$retval = array();
+
+		if ($may_cache) {
+			self::get_menu($retval, $may_cache);
+		}
+		
+		//
+		// Used for interacting with registrations
+		//
+		self::get_registrations($retval, $may_cache);
+
+		return($retval);
+
+	} // End of menu()
+
+
+	/**
+	* Our main menu items.
+	*/
+	static function get_menu(&$retval, $may_cache) {
 
 		//
 		// Public link
 		//
 		$retval[] = array(
 			"path" => "reg",
-			"title" => t("Registration"),
+			"title" => reg::YEAR ." " . t("Pre-Registration"),
 			"callback" => "reg_registration",
 			"access" => user_access(reg::PERM_REGISTER),
 			"type" => MENU_NORMAL_ITEM,
@@ -89,40 +108,6 @@ class reg_menu {
 			);
 
 		//
-		// Used for interacting with registrations
-		//
-		$retval[] = array(
-			"path" => "admin/reg/registrations",
-			"title" => t("Registrations"),
-			"callback" => "reg_admin_registrations",
-			"type" => MENU_LOCAL_TASK,
-			"weight" => 1,
-			);
-
-		$retval[] = array(
-			"path" => "admin/reg/registrations/recent",
-			"title" => t("Recent"),
-			"type" => MENU_DEFAULT_LOCAL_TASK,
-			"weight" => -10,
-			);
-
-		$retval[] = array(
-			"path" => "admin/reg/registrations/search",
-			"title" => t("Search"),
-			"callback" => "reg_admin_registrations_search",
-			"type" => MENU_LOCAL_TASK,
-			"weight" => 1,
-			);
-
-		$retval[] = array(
-			"path" => "admin/reg/registrations/add",
-			"title" => t("Add"),
-			"callback" => "reg_admin_registrations_add",
-			"type" => MENU_LOCAL_TASK,
-			"weight" => 2,
-			);
-
-		//
 		// Viewing registration-related logs.
 		//
 		$retval[] = array(
@@ -167,9 +152,74 @@ class reg_menu {
 			"weight" => 2,
 			);
 
-		return($retval);
+	} // End of get_menu()
 
-	} // End of menu()
+
+	/**
+	* Menu items related to recent registrations.
+	*/
+	static function get_registrations(&$retval, $may_cache) {
+
+		$retval[] = array(
+			"path" => "admin/reg/members",
+			"title" => t("Members"),
+			"callback" => "reg_admin_members",
+			"type" => MENU_NORMAL_ITEM,
+			"weight" => 1,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/members/search",
+			"title" => t("Search"),
+			"callback" => "reg_admin_members_search",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
+
+		$retval[] = array(
+			"path" => "admin/reg/members/add",
+			"title" => t("Add"),
+			"callback" => "reg_admin_members_add",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
+
+			$retval[] = array(
+				"path" => "admin/reg/members/view",
+				"title" => t("Recent"),
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => -10,
+				);
+
+		//
+		// If we have a member ID to view, add in some dynamic menu items.
+		//
+		if (arg(4)) {
+
+			if (!$may_cache) {
+
+				$retval[] = array(
+					"path" => "admin/reg/members/view/" . arg(4) . "/view",
+					"title" => t("View"),
+					"callback" => "reg_admin_members_view",
+					"callback arguments" => array(arg(4)),
+					"weight" => -10,
+					"type" => MENU_LOCAL_TASK,
+					);
+
+				$retval[] = array(
+					"path" => "admin/reg/members/view/" . arg(4) . "/edit",
+					"title" => t("Edit"),
+					"callback" => "reg_admin_members_edit",
+					"callback arguments" => array(arg(4)),
+					"type" => MENU_LOCAL_TASK,
+					);
+
+			}
+
+		}
+
+	} // End of get_registrations()
 
 
 } // End of reg_menu class

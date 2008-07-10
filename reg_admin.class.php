@@ -386,5 +386,190 @@ class reg_admin {
 	}
 
 
+	/**
+	* Display the most recent registrations.
+	*
+	* @return string HTML of the list of recent registrations.
+	*/
+	static function recent() {
+
+		$header = array();
+		$header[] = array("data" => "Id #", "field" => "id",
+			"sort" => "desc");
+		$header[] = array("data" => "Badge #", "field" => "badge_num");
+		$header[] = array("data" => "Badge Name", "field" => "badge_name");
+		$header[] = array("data" => "Real Name");
+		$header[] = array("data" => "Member Type", "field" => "member_type");
+		$header[] = array("data" => "Status", "field" => "status");
+
+		//
+		// By default, we'll be sorting by the reverse date.
+		//
+		$order_by = tablesort_sql($header);
+
+		//
+		// Select log entries with the username included.
+		//
+		$rows = array();
+		$query = "SELECT reg.*, "
+			. "reg_type.member_type, "
+			. "reg_status.status "
+			. "FROM {reg} "
+			. "LEFT JOIN {reg_type} ON reg.reg_type_id = reg_type.id "
+			. "LEFT JOIN {reg_status} ON reg.reg_status_id = reg_status.id "
+			. "$order_by"
+			;
+                
+		$cursor = db_query($query);
+                
+		while ($row = db_fetch_array($cursor)) {
+			$id = $row["id"];
+			$badge_num = $row["badge_num"];
+			$badge_name = $row["badge_name"];
+			$real_name = $row["first"] . " " . $row["middle"] . " "
+				. $row["last"];
+
+			$link = "admin/reg/members/view/" . $id . "/view";
+                        
+			//
+			// Stick in the username if we have it.
+			//
+			$username = $row["name"];
+			if (!empty($row["name"])) {
+				$uid = $row["uid"];
+				$user_link = l($username, "user/" . $uid);
+
+			} else {
+				$user_link = "Anonymous";
+
+			}
+
+			$rows[] = array(
+				l($id, $link),
+				l($badge_num, $link),
+				l($badge_name, $link),
+				$real_name,
+				$row["member_type"],
+				$row["status"],
+				);
+                
+		}
+                
+		$retval = theme("table", $header, $rows);
+		return($retval);
+
+	} // End of recent()
+
+
+	/**
+	* Pull up details on a specific record.	
+	*
+	* @return string HTML of the member to display.
+	*/
+	static function view ($id) {
+
+		$retval = "";
+
+		//
+		// Retrieve our record.
+		//
+		$query = "SELECT reg.*, "
+			. "reg_type.member_type, "
+			. "reg_status.status, reg_status.detail "
+			. "FROM {reg} "
+			. "LEFT JOIN {reg_type} ON reg.reg_type_id = reg_type.id "
+			. "LEFT JOIN {reg_status} ON reg.reg_status_id = reg_status.id "
+			. "WHERE reg.id = '%s'"
+			;
+                
+		$cursor = db_query($query, $id);
+		$row = db_fetch_array($cursor);
+
+		//
+		// Now create our table.
+		//
+		$rows = array();
+
+		$rows[] = array(
+			array("data" => "Registration ID #", "header" => true),
+			$row["id"]
+			);
+
+		$rows[] = array(
+			array("data" => "Badge Number", "header" => true),
+			$row["year"] . "-" . sprintf("%04d", $row["badge_num"])
+			);
+
+		$rows[] = array(
+			array("data" => "Badge Name", "header" => true),
+			$row["badge_name"]
+			);
+
+		$rows[] = array(
+			array("data" => "Real Name", "header" => true),
+			$row["first"] . " " . $row["middle"] . " " . $row["last"]
+			);
+
+		$rows[] = array(
+			array("data" => "Birthdate", "header" => true),
+			$row["birthdate"]
+			);
+
+		$rows[] = array(
+			array("data" => "Address", "header" => true, "valign" => "top"),
+			$row["address1"] . " " . $row["address2"] . "<br>\n"
+				. $row["city"] . ", " . $row["state"] . " " . $row["zip"] 
+					. "<br>\n"
+				. $row["country"]
+			);
+
+		$rows[] = array(
+			array("data" => "Email", "header" => false),
+			$row["email"]
+			);
+
+		$rows[] = array(
+			array("data" => "Phone", "header" => true),
+			$row["phone"]
+			);
+
+		$rows[] = array(
+			array("data" => "Shirt Size", "header" => true),
+			$row["shirt_size"]
+			);
+
+		$rows[] = array(
+			array("data" => "Membership Type", "header" => true),
+			$row["member_type"]
+			);
+
+		$rows[] = array(
+			array("data" => "Status", "header" => true),
+			$row["status"] . " (" . $row["detail"] . ")"
+			);
+
+		$retval .= "<h2>Member Info</h2>";
+		$retval .= theme("table", array(), $rows);
+
+		//
+		// Load up log entries and transactions for this user.
+		//
+		$retval .= "<h2>Log Entries</h2>";
+		$retval .= reg_log::log($row["id"]);
+
+		$retval .= "<h2>Transactions</h2>";
+		$retval .= reg_log::trans($row["id"]);
+
+		return($retval);
+
+	} // End of view()
+
+//TEST edit function
+
+
+	static function update($id = "") {
+		return("This is where we would add/edit/update a registration");
+	} // End of update()
+
 } // End of reg_admin class
 
