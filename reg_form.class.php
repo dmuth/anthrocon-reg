@@ -96,29 +96,9 @@ class reg_form {
 			//
 			// Make sure the badge nuber is valid.
 			//
-			if (isset($data["badge_num"])) {
-				$badge_num = intval($data["badge_num"]);
-				if ($data["badge_num"] != (string)$badge_num) {
-					$error = t("Badge number '%num%' is not a number!",
-						array("%num%" => $data["badge_num"])
-						);
-					form_set_error("badge_num", $error);
-				}
-
-				if ($badge_num < 0) {
-					$error = t("Badge number cannot be negative!");
-					form_set_error("badge_num", $error);
-				}
-
-				if (!reg::is_badge_num_available(
-					$data["reg_id"], $data["badge_num"])) {
-					$error = t("Badge number '%num%' is already in use!",
-						array("%num%" => $data["badge_num"])
-						);
-					form_set_error("badge_num", $error);
-				}
-
-			}
+			reg::is_badge_num_valid($data["badge_num"]);
+			reg::is_badge_num_available($data["reg_id"], 
+				$data["badge_num"]);
 
 			if ($data["email"] != $data["email2"]) {
 				$error = "Email addresses do not match!";

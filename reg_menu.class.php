@@ -171,7 +171,7 @@ class reg_menu {
 		$retval[] = array(
 			"path" => "admin/reg/members/search",
 			"title" => t("Search"),
-			"callback" => "reg_admin_members_search",
+			"callback" => "reg_admin_search",
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);

@@ -27,6 +27,12 @@ class reg {
 	const PERM_REGISTER = "register for a membership";
 
 	/**
+	* How many items displayed per pager in a pager?
+	*/
+	const ITEMS_PER_PAGE = 20;
+
+
+	/**
 	* Our constructor.  This should never be called.
 	*/
 	function __construct() {
@@ -73,6 +79,36 @@ class reg {
 
 
 	/**
+	* This function checks to see if a proposed badge number is valid.
+	*/
+	function is_badge_num_valid($badge_num) {
+
+		//
+		// Handle an empty string and a zero.  They are both valid.
+		//
+		if (empty($badge_num)) {
+			return(true);
+		}
+
+		$badge_num_int = intval($badge_num);
+
+		if ($badge_num != (string)$badge_num_int
+			) {
+			$error = t("Badge number '%num%' is not a number!",
+				array("%num%" => $badge_num)
+				);
+			form_set_error("badge_num", $error);
+		}
+
+		if ($badge_num_int < 0) {
+			$error = t("Badge number cannot be negative!");
+			form_set_error("badge_num", $error);
+		}
+
+	} // End of is_badge_num_valid()
+
+
+	/**
 	* Check to see if a certain badge number is available for a certain
 	*	member.
 	*
@@ -90,7 +126,14 @@ class reg {
 	static function is_badge_num_available($reg_id, $badge_num) {
 
 		//
-		// Create a query to check and see if the badge nubmer is in use.
+		// If no badge number was entered, one will be assigned automatically.
+		//
+		if ($badge_num == "") {
+			return(true);
+		}
+
+		//
+		// Create a query to check and see if the badge number is in use.
 		//
 		$year = self::YEAR;
 		$query = "SELECT id "
@@ -105,7 +148,38 @@ class reg {
 		$row = db_fetch_array($cursor);
 
 		if (!empty($row)) {
+			$error = t("Badge number '%num%' is already in use!",
+				array("%num%" => $badge_num)
+				);
+			form_set_error("badge_num", $error);
 			return(false);
+		}
+
+		//
+		// Now, check to see if we have exceeded the highest assigned number.
+		// We don't want this to happen, because said number will eventually
+		// get stomped on sooner or later.
+		//
+		$year = self::YEAR;
+		$query = "SELECT * "
+			. "FROM {reg_badge_num} "
+			. "WHERE "
+			. "year=%s "
+			;
+		$cursor = db_query($query, array($year));
+		$row = db_fetch_array($cursor);
+
+		if ($badge_num > $row["badge_num"]) {
+			$error = t("Badge number '%num%' exceeds highest assigned "
+				. "number of '%assigned%'.  Please pick a lower number "
+				. "or leave blank to automatically assign a number.",
+				array(
+					"%num%" => $badge_num,
+					"%assigned%" => $row["badge_num"],
+				)
+				);
+			form_set_error("bdage_num", $error);
+
 		}
 
 		return(true);
@@ -303,8 +377,10 @@ class reg {
 		//
 		// Assign a badge number if one was not entered.
 		//
-		if (empty($data["badge_num"])) {
+		if ($data["badge_num"] == "") {
 			$data["badge_num"] = self::get_badge_num();
+			$message = t("New badge number generated");
+			drupal_set_message($message);
 		}
 
 		$query = "UPDATE {reg} "

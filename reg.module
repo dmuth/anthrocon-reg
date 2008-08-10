@@ -152,36 +152,36 @@ function reg_admin_members_edit($id) {
 /**
 * Searching registrations.
 */
-function reg_admin_members_search() {
-return("This is where our search interface for registrations would be.");
+function reg_admin_search() {
+	reg_load_files();
+	$retval = reg_admin::search();
+	$retval .= reg_admin::search_results();
+	return($retval);
 }
 
-/* TEST
-function onsitereg_search() {
-        $retval = drupal_get_form("onsitereg_search_form");
-        $retval .= onsitereg_form::search_results();
-        return($retval);
+function reg_admin_search_form() {
+	reg_load_files();
+	return(reg_admin::search_form());
+	return($retval);
 }
 
-function onsitereg_search_form() {
-        onsitereg_load_files();
-        return(onsitereg_form::search_form());
+function reg_admin_search_form_validate($form_id, &$data) {
+	reg_load_files();
+	reg_admin::search_validate($form_id, $data);
 }
 
-function onsitereg_search_form_validate($form_id, $data) {
-        onsitereg_load_files();
-        return(onsitereg_form::search_form_validate($form_id, $data));
+function reg_admin_search_form_submit($form_id, &$data) {
+	reg_load_files();
+	return(reg_admin::search_submit($form_id, $data));
 }
 
-function onsitereg_search_form_submit($form_id, $data) {
-        onsitereg_load_files();
-        return(onsitereg_form::search_form_submit($form_id, $data));
-}
+
+/**
+* Adding a new registration.
 */
-
 function reg_admin_members_add() {
 	reg_load_files();
-	return(reg_admin::update());
+	return(reg_admin::add());
 }
 
 /**

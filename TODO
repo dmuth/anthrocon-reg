@@ -1,20 +1,22 @@
 
 
 	- View registrations
-		- Editing for registration
 		- Note taking via logs?
 		- Search
-		- Adding new registrations
 
-- PAGING!!
 	- User viewing secondary menu:
 		- Add note?
 		- Refund?  Balance adjustment?
 	- User editing:
 		- Button to refund?
 
+- Financials
+	- Add to reg table: badge_balance, donation_balance
+	- Add code that updates the reg_trans table to also update the badge balances
+
 - Rename reg_log to reg_log_view and move log functions from reg into reg_log?
 
+	- Display buttons for refund/balance adjustment?
 
 	- Search registrations
 		- Redirect back to search page with a query string like in onsitereg

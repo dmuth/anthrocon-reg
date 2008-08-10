@@ -43,7 +43,7 @@ class reg_log {
 			. $where
 			. $order_by
 			;
-		$cursor = db_query($query);
+		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null);
 		while ($row = db_fetch_array($cursor)) {
 			$id = $row["id"];
 
@@ -70,6 +70,8 @@ class reg_log {
 		}
 
 		$retval = theme("table", $header, $rows);
+
+		$retval .= theme_pager();
 
 		return($retval);
 
@@ -196,7 +198,7 @@ class reg_log {
 			. $where
 			. $order_by
 			;
-		$cursor = db_query($query);
+		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null);
 		while ($row = db_fetch_array($cursor)) {
 
 			$id = $row["id"];
@@ -228,6 +230,8 @@ class reg_log {
 		}
 
 		$retval = theme("table", $header, $rows);
+
+		$retval .= theme_pager();
 
 		return($retval);
 
