@@ -19,16 +19,10 @@ class reg_form {
 	const FORM_TEXT_SIZE_SMALL = 20;
 
 	/**
-	* Temporarily stores our badge number between form validation 
-	*	and submission.
+	* Temporarily store this value for going between the validation
+	*	and submission functions.
 	*/
-	static private $badge_num;
-
-	/**
-	* Also store our data for going between validation and 
-	*	submission functions.
-	*/ 
-	static private $data;
+	static private $reg_trans_id;
 
 
 	/**
@@ -58,6 +52,12 @@ class reg_form {
 		if (!self::in_admin()) {
 			$retval["cc"] = self::form_cc();
 		}
+
+		$retval["member"]["TEST"] = array(
+			"#type" => "item",
+			"#title" => "NOTE",
+			"#value" => "What do I want down here for payment processing, anyway?"
+			);
 
 		return($retval);
 
@@ -89,9 +89,42 @@ class reg_form {
 	static function reg_validate(&$form_id, &$data) {
 
 		//
-		// If we're in the admin, we can skip all of this stuff.
+		// If we're in the admin, we can skip alot of this stuff.
 		//
 		if (self::in_admin()) {
+
+			//
+			// Make sure the badge nuber is valid.
+			//
+			if (isset($data["badge_num"])) {
+				$badge_num = intval($data["badge_num"]);
+				if ($data["badge_num"] != (string)$badge_num) {
+					$error = t("Badge number '%num%' is not a number!",
+						array("%num%" => $data["badge_num"])
+						);
+					form_set_error("badge_num", $error);
+				}
+
+				if ($badge_num < 0) {
+					$error = t("Badge number cannot be negative!");
+					form_set_error("badge_num", $error);
+				}
+
+				if (!reg::is_badge_num_available(
+					$data["reg_id"], $data["badge_num"])) {
+					$error = t("Badge number '%num%' is already in use!",
+						array("%num%" => $data["badge_num"])
+						);
+					form_set_error("badge_num", $error);
+				}
+
+			}
+
+			if ($data["email"] != $data["email2"]) {
+				$error = "Email addresses do not match!";
+				form_set_error("email2", $error);
+			}
+
 			return(null);
 		}
 
@@ -99,12 +132,6 @@ class reg_form {
 		// Assume everything is okay, unless proven otherwise.
 		//
 		$okay = true;
-
-		if ($data["email"] != $data["email2"]) {
-			$error = "Email addresses do not match!";
-			form_set_error("email2", $error);
-			$okay = false;
-		}
 
 		//
 		// Sanity checking on our donation amount.
@@ -153,19 +180,7 @@ $data["reg_level_id"] = 3;
 		//
 		$reg_trans_id = reg::charge_cc($data);
 
-		if ($reg_trans_id) {
-			$badge_num = reg::add_member($data, $reg_trans_id);
-			//
-			// Store our badge number, since we'll be referencing it again in
-			// the submit funcition.
-			//
-			self::$badge_num = $badge_num;
-
-			//
-			// Heck, store our data too
-			//
-			self::$data = $data;
-		}
+		self::$reg_trans_id = $reg_trans_id;
 
 	} // End of registration_form_validate()
 
@@ -175,11 +190,25 @@ $data["reg_level_id"] = 3;
 	*/
 	static function reg_submit(&$form_id, &$data) {
 
-		if (empty($data["reg_id"])) {
+		if (!self::in_admin()) {
+			//
+			// Front-end submissions are always new.
+			//
 			self::reg_submit_new($data);
-		} else if (self::in_admin()) {
-			self::reg_submit_update($data);
-			return("admin/reg/members/view/" . $data["reg_id"] . "/edit");
+
+		} else {
+			//
+			// Submission from the admin.  Are we updating or creating a 
+			// new member?
+			//
+			if (!empty($data["reg_id"])) {
+				self::reg_submit_update($data);
+				return("admin/reg/members/view/" . $data["reg_id"] . "/edit");
+
+			} else {
+				self::reg_submit_new($data);
+				return("admin/reg/members");
+			}
 		}
 
 		//
@@ -194,42 +223,48 @@ $data["reg_level_id"] = 3;
 
 
 	/**
+	* Set up messages for a successful new registration.
+	*/
+	static function reg_submit_new(&$data) {
+
+		$badge_num = reg::add_member($data, self::$reg_trans_id);
+
+		$message = t("Congratulations!  Your registration was successful, "
+			. "and your badge number is %badge_num%.  ",
+			array("%badge_num%" => $badge_num)
+			);
+		drupal_set_message($message);
+
+		if (!empty($data["cc_name"])) {
+			$message = t("Your credit card (%cc_name%) was successfully "
+				. "charged for %total_cost%.",
+				array("%cc_name%" => $data["cc_name"],
+				"%total_cost%" => "$" . self::$data["total_cost"],
+				));
+			drupal_set_message($message);
+		}
+
+		$message = t("You will receive a conformation email sent "
+			. "to %email% shortly.",
+			array("%email%" => $data["email"])
+			);
+		drupal_set_message($message);
+
+	} // End of reg_submit_new()
+
+
+	/**
 	* Process an updated registration.
 	* We will update the database and log this.
 	*/
 	static function reg_submit_update(&$data) {
 
-print_r($data);
-//exit();
+		$badge_num = reg::update_member($data, $reg_trans_id);
 
 		$message = t("Registration updated!");
 		drupal_set_message($message);
 
 	} // End of reg_submit_update()
-
-
-	/**
-	* Set up messages for a successful new registration.
-	*/
-	static function reg_submit_new(&$data) {
-
-		$message = t("Congratulations!  Your registration was successful, and your badge number is %badge_num%.  ",
-			array("%badge_num%" => self::$badge_num)
-			);
-		drupal_set_message($message);
-
-		$message = t("Your credit card (%cc_name%) was successfully charged for %total_cost%.",
-		array("%cc_name%" => self::$data["cc_name"],
-			"%total_cost%" => "$" . self::$data["total_cost"],
-			));
-		drupal_set_message($message);
-
-		$message = t("You will receive a conformation email sent to %email% shortly.",
-			array("%email%" => self::$data["email"])
-			);
-		drupal_set_message($message);
-
-	} // End of reg_submit_new()
 
 
 	/**
@@ -246,7 +281,6 @@ print_r($data);
 			$data = array();
 		}
 
-print_r($data); // TEST
 		$retval = array(
 			"#type" => "fieldset",
 			"#title" => t("Membership Information"),
@@ -265,6 +299,38 @@ print_r($data); // TEST
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["badge_name"],
 			);
+
+		//
+		// Display additional options for the admin to set.
+		//
+		if (self::in_admin()) {
+			$retval["badge_num"] = array(
+				"#title" => "Badge Number",
+				"#type" => "textfield",
+				"#description" => "This must be UNIQUE.  If unsure, leave blank and "
+					. "one will be assigned.",
+				"#size" => self::FORM_TEXT_SIZE_SMALL,
+				"#default_value" => $data["badge_num"],
+				);
+
+			$retval["reg_type_id"] = array(
+				"#title" => "Badge Type",
+				"#type" => "select",
+				"#default_value" => $data["reg_type_id"],
+				"#options" => reg::get_types(),
+				"#description" => "The registration type."
+				);
+
+			$retval["reg_status_id"] = array(
+				"#title" => "Status",
+				"#type" => "select",
+				"#default_value" => $data["reg_status_id"],
+				"#options" => reg::get_statuses(),
+				"#description" => "The member's status."
+				);
+
+		}
+
 		$retval["first"] = array(
 			"#type" => "textfield",
 			"#title" => t("First Name"),
@@ -383,8 +449,22 @@ print_r($data); // TEST
 			"#default_value" => $data["phone"],
 			);
 
+		$shirt_sizes = reg::get_shirt_sizes();
+		$shirt_sizes[""] = t("Select");
+		ksort($shirt_sizes);
+		$retval["shirt_size_id"] = array(
+			"#type" => "select",
+			"#title" => "Shirt Size",
+			"#description" => t("(For Sponsors and Super Sponsors)"),
+			"#default_value" => $data["shirt_size_id"],
+			"#options" => $shirt_sizes
+			);
+
 		$path = variable_get(self::FORM_ADMIN_CONDUCT_PATH, "");
-		if (!empty($path) && empty($id)) {
+		if (!empty($path) 
+			&& empty($id)
+			&& !self::in_admin()
+			) {
 			$retval["conduct"] = array(
 				"#type" => "checkbox",
 				"#title" => t("I agree with the") . "<br>" 
@@ -398,8 +478,11 @@ print_r($data); // TEST
 
 		//
 		// Only display our registration button early if we are editing
+		// or adding from the admin.
 		//
-		if (!empty($id)) {
+		if (!empty($id)
+			|| self::in_admin()
+			) {
 			$retval["submit"] = array(
 				"#type" => "submit",
 				"#value" => t("Save")

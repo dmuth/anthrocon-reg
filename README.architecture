@@ -1,0 +1,86 @@
+
+Registration system code architecture
+=====================================
+
+This is mostly to keep me sane, and help me find existing functionality 
+when I am trying to write new code.
+
+reg.module:
+	All functions that Drupal knows about are here.  The functions in this
+	file don't do much more than load our class files and call a static 
+	class function.  There is NO business logic found in here.
+
+
+reg class:
+	perm(): Get our permissions for this module
+	get_badge_num(): Get the next available badge number for the current year
+	charge_cc(): Charges a credit card
+	log_trans(): Logs a successful transaction.
+	get_insert_id(): Returns the most recently generated ID from an insert
+	add_member(): Adds a new member to the system, after a succesful charge
+	log(): Writes a log entry
+	is_test_mode(): Are we running the system in test mode?
+	registration(): Main registration page that users get
+	get_cc_name(): Gets a human-readable name for a specific card and number
+	get_reg_cost(): Determine the cost of a specific membership level
+	get_reg_type_id(): Get the registration type, based on a level_id
+	get_types(): Get our different membership types from the database
+	get_trans_types(): Get our different transaction types from the database
+	get_payment_types(): Get our different payment types from the database
+	get_statuses(): Get our different statuses from the database
+	get_cc_types(): Get different credit card types from the database
+	get_cc_exp_months(): Get an array of credit card expiration months
+	get_cc_exp_years(): Get an array of credit card expiration years
+
+reg_admin class:
+	settings(): Get our settings page
+	levels(): Get a list of membership levels
+	levels_edit(): Add/edit a membership level
+	level_form(): Form used by levels_edit()
+	level_form_validate(): Validate a submission of the previous form
+	level_form_submit(): Save the level data
+	settings_form(): Form used by the settings page
+	settings_form_validate(): Validate submission of the settings form
+	settings_form_submit(): Save updated settings
+	recent(): Display the most recent registrations
+	load_reg(): Load a single registration
+	view_reg(): Display a single registration
+	edit_reg(): Edit a registration
+	update(): add/update a registration
+
+
+reg_form class:
+	reg(): Creates data structure for the main registration form
+	in_admin(): Are we in the admin section?  Used for displaying more editing info
+	reg_validate(): Validates submitted registration info
+	reg_submit(): Saves registration info
+	reg_submit_update(): Process an updated registration record
+	reg_submit_new(): Process a new registration
+	form(): Creates the member info section of a form
+	form_cc(): Creates the credit card section of a form
+	
+
+reg_log class: Used for viewing recent log entries and transactions
+	log(): Displays recent log entries
+	log_detail(): Shows detail on a recent log entry
+	trans(): Views recent transactions
+	trans_detail(): Shows detail on a recent transaction
+
+
+reg_menu class:
+	menu(): Implementation of Drupal's hook_menu() function
+	get_menu(): Actually create the menu data structure
+	get_registrations(): Admin menu related to registrations
+
+
+reg_theme class: Theme related code for registration forms.
+	theme(): Creates a form using our own theme
+	theme_textfield(): Render a text field
+	theme_select(): Renders a select box
+	theme_cc_exp(): Renders credit card expiration widgets
+	theme_checkbox(): Renders our own checkbox
+	theme_date(): Render a date field
+	theme_children(): Process children of a particular form element
+	
+
+

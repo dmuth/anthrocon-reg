@@ -73,6 +73,47 @@ class reg {
 
 
 	/**
+	* Check to see if a certain badge number is available for a certain
+	*	member.
+	*
+	* @param integer $reg_id The ID of the registration
+	*
+	* @param integer $badge_num The badge number to check for.
+	*
+	* Note that this only works for the CURRENT year.  We should NOT
+	*	be updating memberships for previous years EVER.
+	*
+	* @return boolean True if this badge number is available for the member.
+	*	False if it is in use elsewhere.
+	* 
+	*/
+	static function is_badge_num_available($reg_id, $badge_num) {
+
+		//
+		// Create a query to check and see if the badge nubmer is in use.
+		//
+		$year = self::YEAR;
+		$query = "SELECT id "
+			. "FROM reg "
+			. "WHERE "
+			. "year='%s%' "
+			. "AND badge_num='%s' "
+			. "AND id!='%s'"
+			;
+		$query_args = array($year, $badge_num, $reg_id);
+		$cursor = db_query($query, $query_args);
+		$row = db_fetch_array($cursor);
+
+		if (!empty($row)) {
+			return(false);
+		}
+
+		return(true);
+
+	} // End of check_badge_num()
+
+
+	/**
 	* This function actually charges our credit card.
 	*
 	* @return boolean True if the card is charged successfully.  
@@ -200,7 +241,7 @@ class reg {
 				. "badge_name, first, middle, last, "
 				. "birthdate, "
 				. "address1, address2, city, state, zip, country, email, "
-				. "phone "
+				. "phone, shirt_size_id "
 			. ") "
 			. "VALUES "
 			. "(UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '%s', '%s', '%s', "
@@ -208,36 +249,98 @@ class reg {
 				. "'%s', '%s', '%s', '%s', "
 				. "'%s', "
 				. "'%s', '%s', '%s', '%s', '%s', '%s', '%s', "
-				. "'%s')"
+				. "'%s', '%s')"
 			;
 		$birth = $data["birthday"];
 		$date_string = $birth["year"] . "-" . $birth["month"] 
 			. "-" . $birth["day"];
-		$reg_type_id = self::get_reg_type_id($data["reg_level_id"]);
-		$query_args = array(self::YEAR, $reg_type_id, 1, $badge_num, 
+		if (empty($data["reg_type_id"])) {
+			$data["reg_type_id"] = self::get_reg_type_id(
+				$data["reg_level_id"]);
+		}
+
+		$query_args = array(self::YEAR, $data["reg_type_id"], 1, $badge_num, 
 			$data["badge_name"], $data["first"], $data["middle"], 
 			$data["last"], $date_string, $data["address1"], 
 			$data["address2"], $data["city"], $data["state"], $data["zip"],
-			$data["country"], $data["email"], $data["phone"]
+			$data["country"], $data["email"], $data["phone"],
+			$data["shirt_size_id"]
 			);
 		db_query($query, $query_args);
 
 		$reg_id = self::get_insert_id();
 
-		$message = "Added registration for badge number '$badge_num'";
+		$message = t("Added registration for badge number '%num%'",
+			array("%num%" => $badge_num)
+			);
 		self::log($message, $reg_id);
 
-		$query = "UPDATE reg_trans "
-			. "SET "
-			. "reg_id='%s' "
-			. "WHERE "
-			. "id='%s'";
-		$query_args = array($reg_id, $reg_trans_id);
-		db_query($query, $query_args);
+		if (!empty($reg_trans_id)) {
+			$query = "UPDATE reg_trans "
+				. "SET "
+				. "reg_id='%s' "
+				. "WHERE "
+				. "id='%s'";
+			$query_args = array($reg_id, $reg_trans_id);
+			db_query($query, $query_args);
+
+		}
 
 		return($badge_num);
 
 	} // End of add_member()
+
+
+	/**
+	* This function updates an existing membership, and is only used by 
+	* an admin.
+	*
+	* 
+	* @return integer The badge number of the member that we just updated.
+	*/
+	static function update_member($data) {
+
+		//
+		// Assign a badge number if one was not entered.
+		//
+		if (empty($data["badge_num"])) {
+			$data["badge_num"] = self::get_badge_num();
+		}
+
+		$query = "UPDATE {reg} "
+			. "SET "
+			. "modified=UNIX_TIMESTAMP(), reg_type_id='%s', reg_status_id='%s', "
+			. "badge_num='%s', badge_name='%s', "
+			. "first='%s', middle='%s', last='%s', birthdate='%s', "
+			. "address1='%s', address2='%s', city='%s', state='%s', "
+			. "zip='%s', country='%s', email='%s', phone='%s', "
+			. "shirt_size_id='%s' "
+			."WHERE id=%d ";
+
+		$birth = $data["birthday"];
+		$date_string = $birth["year"] . "-" . $birth["month"] 
+			. "-" . $birth["day"];
+
+		$query_args = array(
+			$data["reg_type_id"], $data["reg_status_id"],
+			$data["badge_num"], $data["badge_name"],
+			$data["first"], $data["middle"], $data["last"], $date_string,
+			$data["address1"], $data["address2"], $data["city"], 
+				$data["state"],
+			$data["zip"], $data["country"], $data["email"], $data["phone"],
+			$data["shirt_size_id"],
+			$data["reg_id"]
+			);
+		db_query($query, $query_args);
+
+		$message = t("Updated registration for badge number '%num%'",
+				array("%num%" => $data["badge_num"])
+				);
+		self::log($message, $data["reg_id"]);
+
+		return($data["badge_num"]);
+
+	} // End of update_member()
 
 
 	/**
@@ -387,7 +490,7 @@ shirt_size (staff and super sponsors)
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_type ";
+		$query = "SELECT * FROM reg_type ORDER BY weight";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -482,7 +585,7 @@ shirt_size (staff and super sponsors)
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_status ";
+		$query = "SELECT * FROM reg_status ORDER BY weight";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -527,6 +630,43 @@ shirt_size (staff and super sponsors)
 
 	} // End of get_statuses()
 
+
+	/**
+	* This function gets our possible shirt sizes.
+	*
+	* @param boolean $disabled Do we want to include disabled shirt sizes?
+	*
+	* @return array Array where the key is the unique ID and the value is
+	*	the shirt size.
+	*/
+	static function get_shirt_sizes($disabled = false) {
+
+		//
+		// Cache our values between calls
+		//
+		static $retval = array();
+		
+		if (!empty($retval)) {
+			return($retval);
+		}
+
+		$query = "SELECT * FROM reg_shirt_sizes";
+		if (empty($disabled)) {
+			$query .= " WHERE disabled IS NULL";
+		}
+		$cursor = db_query($query);
+
+		while ($row = db_fetch_array($cursor)) {
+			$id = $row["id"];
+			$size = $row["shirt_size"];
+			$retval[$id] = $size;
+		}
+
+		return($retval);
+
+	} // End of get_shirt_sizes()
+
+
 	/**
 	* Return an array of credit card expiration months.
 	*/
@@ -567,6 +707,7 @@ shirt_size (staff and super sponsors)
 
 		return($retval);
 	}
+
 
 } // End of reg class
 

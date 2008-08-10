@@ -64,9 +64,9 @@ function reg_install() {
 			. "email VARCHAR(255), "
 			. "phone VARCHAR(255), "
 			//
-			// The shirt size for staff and super sponsors.
+			// Shrit size for Sponsors and Super Sponsors
 			//
-			. "shirt_size VARCHAR(255) "
+			. "shirt_size_id INTEGER "
 			. ")"
 			;
 		db_query($query);
@@ -82,6 +82,7 @@ function reg_install() {
 		//
 		$query = "CREATE TABLE reg_type ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "weight INTEGER DEFAULT 0, "
 			. "member_type VARCHAR(255) "
 			. ") "
 			;
@@ -110,19 +111,20 @@ function reg_install() {
 		$query = "CREATE TABLE reg_status ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			. "status VARCHAR(255), "
+			. "weight INTEGER DEFAULT 0, "
 			. "detail VARCHAR(255) "
 			. ")"
 			;
 		db_query($query);
 		
-		$query = "INSERT INTO reg_status (status, detail) "
+		$query = "INSERT INTO reg_status (status, weight, detail) "
 			. "VALUES "
-			. "('Complete', 'Badge is paid'), "
-			. "('Defer', 'Badge is deferred until next year'), "
-			. "('Refund', 'Badge was refunded'), "
-			. "('Donate', 'Badge was cancelled, but value was donated "
+			. "('Complete', 0, 'Badge is paid'), "
+			. "('Defer', 0, 'Badge is deferred until next year'), "
+			. "('Refund', 0, 'Badge was refunded'), "
+			. "('Donate', 0, 'Badge was cancelled, but value was donated "
 				. "to the con, not refunded.'), "
-			. "('New', 'Badge has been entered, but not yet paid for') "
+			. "('New', -1, 'Badge has been entered, but not yet paid for') "
 			;
 		db_query($query);
 
@@ -351,6 +353,32 @@ function reg_install() {
 			;
 		db_query($query);
 
+
+		//
+		// All possible shirt sizes
+		//
+		$query = "CREATE TABLE reg_shirt_sizes ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			//
+			// If non-null, this t-shirt size is disabled.
+			//
+			. "disabled CHAR(1) DEFAULT NULL, "
+			. "shirt_size VARCHAR(255) "
+			. ")"
+			;
+		db_query($query);
+
+		$query = "INSERT INTO reg_shirt_sizes (shirt_size) "
+			. "VALUES "
+			. "('Small'), "
+			. "('Medium'), "
+			. "('Large'), "
+			. "('X-Large'), "
+			. "('2X'), "
+			. "('3X'), "
+			;
+		db_query($query);
+
 	} else if ($db == "pgsql") {
 		$error = "We're sorry, but we don't have Postgres support in "
 			. "this module.  ";
@@ -403,6 +431,9 @@ function reg_wipe() {
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS reg_badge_num";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS reg_shirt_sizes";
 	db_query($query);
 
 } // End of reg_wipe()

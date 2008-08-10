@@ -546,9 +546,10 @@ class reg_admin {
 			$row["phone"]
 			);
 
+		$shirt_sizes = reg::get_shirt_sizes();
 		$rows[] = array(
 			array("data" => "Shirt Size", "header" => true),
-			$row["shirt_size"]
+			$shirt_sizes[$row["shirt_size_id"]]
 			);
 
 		$rows[] = array(
@@ -599,7 +600,14 @@ class reg_admin {
 
 
 	static function update($id = "") {
-		return("This is where we would add/edit/update a registration");
+		$retval = "";
+
+		$retval .= "<h2>Manually Add a Registration</h2>";
+// TEST
+		$retval .= drupal_get_form("reg_registration_form");
+
+		return($retval);
+
 	} // End of update()
 
 } // End of reg_admin class

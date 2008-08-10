@@ -61,9 +61,10 @@ class reg_log {
 			}
 			
 			$link = "admin/reg/logs/view/" . $id;
+			$date = format_date($row["date"], "small");
 			$rows[] = array(
-				format_date($row["date"], "small"),
-				l($row["message"], $link),
+				l($date, $link),
+				$row["message"],
 				$user_link,
 				);
 		}
@@ -216,7 +217,7 @@ class reg_log {
 			$link = "admin/reg/transactions/view/" . $id;
 			$date_string = format_date($row["date"], "small");
 			$rows[] = array(
-				$date_string,
+				l($date_string, $link),
 				$row["payment_type"],
 				$row["trans_type"],
 				l("$" . $row["badge_cost"], $link),
