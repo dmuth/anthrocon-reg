@@ -1,4 +1,8 @@
 
+- Track down bug with not forcing the badge number on a manual add.
+	- Maybe put the badge code into the section before calling the new/update code?
+
+- Put reg class files into reg/ directory
 
 	- View registrations
 		- Note taking via logs?
@@ -7,6 +11,7 @@
 	- User viewing secondary menu:
 		- Add note?
 		- Refund?  Balance adjustment?
+
 	- User editing:
 		- Button to refund?
 
@@ -29,6 +34,11 @@
 	- Maybe allow for upgrades this way?
 
 - Some utility to print unused badge numbers
+
+	- Keep in mind that I can create other modules in that directory
+		- Omaga List module?
+		- Onsite reg module?
+		- Dealer reg module?
 
 - is date_validate() being used on the reg form for dates?
 - check on registration to make sure membership level is valid

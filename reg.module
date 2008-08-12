@@ -23,22 +23,21 @@
 
 
 /**
-* Load all required files.
-* Yeah I like to split my stuff up into smaller "bite sized" files, instead of
-* having one large monolithic file.
+* Define our autoloader, and register it.
 */
-function reg_load_files() {
-	include_once("reg.class.php");
-	include_once("reg_admin.class.php");
-	include_once("reg_form.class.php");
-	include_once("reg_log.class.php");
-	include_once("reg_menu.class.php");
-	include_once("reg_theme.class.php");
+function reg_autoload($class) {
+	//print "TEST: $class";
+	$file = "reg/" . $class . ".class.php";
+	include_once($file);
 }
 
+spl_autoload_register("reg_autoload");
 
+
+/**
+* Our list of permissions
+*/
 function reg_perm() {
-	reg_load_files();
 	return(reg::perm());
 }
 
@@ -48,7 +47,6 @@ function reg_perm() {
 */
 function reg_menu($may_cache) {
 
-	reg_load_files();
 	$items = reg_menu::menu($may_cache);
 
 	return($items);
@@ -60,22 +58,18 @@ function reg_menu($may_cache) {
 * Our public registration page.
 */
 function reg_registration() {
-	reg_load_files();
 	return(reg::registration());
 }
 
 function reg_registration_form($id = "") {
-	reg_load_files();
 	return(reg_form::reg($id));
 }
 
 function reg_registration_form_validate($form_id, &$data) {
-	reg_load_files();
 	reg_form::reg_validate($form_id, $data);
 }
 
 function reg_registration_form_submit($form_id, &$data) {
-	reg_load_files();
 	return(reg_form::reg_submit($form_id, $data));
 }
 
@@ -84,22 +78,18 @@ function reg_registration_form_submit($form_id, &$data) {
 * Our settings form.
 */
 function reg_admin_settings() {
-	reg_load_files();
 	return(reg_admin::settings());
 }
 
 function reg_admin_settings_form() {
-	reg_load_files();
 	return(reg_admin::settings_form());
 }
 
 function reg_admin_settings_form_validate($form_id, $data) {
-	reg_load_files();
 	reg_admin::settings_form_validate($form_id, $data);
 }
 
 function reg_admin_settings_form_submit($form_id, $data) {
-	reg_load_files();
 	reg_admin::settings_form_submit($form_id, $data);
 }
 
@@ -107,27 +97,22 @@ function reg_admin_settings_form_submit($form_id, $data) {
 * Membership level editing stuff.
 */
 function reg_admin_levels() {
-	reg_load_files();
 	return(reg_admin::levels());
 }
 
 function reg_admin_levels_edit($id = "") {
-	reg_load_files();
 	return(reg_admin::levels_edit($id));
 }
 
 function reg_admin_level_form($id) {
-	reg_load_files();
 	return(reg_admin::level_form($id));
 }
 
 function reg_admin_level_form_validate($form_id, $data) {
-	reg_load_files();
 	reg_admin::level_form_validate($form_id, $data);
 }
 
 function reg_admin_level_form_submit($form_id, $data) {
-	reg_load_files();
 	reg_admin::level_form_submit($form_id, $data);
 }
 
@@ -135,17 +120,14 @@ function reg_admin_level_form_submit($form_id, $data) {
 * Viewing recent registrations.
 */
 function reg_admin_members() {
-	reg_load_files();
 	return(reg_admin::recent());
 }
 
 function reg_admin_members_view($id) {
-	reg_load_files();
 	return(reg_admin::view_reg($id));
 }
 
 function reg_admin_members_edit($id) {
-	reg_load_files();
 	return(reg_admin::edit_reg($id));
 }
 
@@ -153,26 +135,22 @@ function reg_admin_members_edit($id) {
 * Searching registrations.
 */
 function reg_admin_search() {
-	reg_load_files();
-	$retval = reg_admin::search();
-	$retval .= reg_admin::search_results();
+	$retval = reg_search::search();
+	$retval .= reg_search::search_results();
 	return($retval);
 }
 
 function reg_admin_search_form() {
-	reg_load_files();
-	return(reg_admin::search_form());
+	return(reg_search::search_form());
 	return($retval);
 }
 
 function reg_admin_search_form_validate($form_id, &$data) {
-	reg_load_files();
-	reg_admin::search_validate($form_id, $data);
+	reg_search::search_validate($form_id, $data);
 }
 
 function reg_admin_search_form_submit($form_id, &$data) {
-	reg_load_files();
-	return(reg_admin::search_submit($form_id, $data));
+	return(reg_search::search_submit($form_id, $data));
 }
 
 
@@ -180,7 +158,6 @@ function reg_admin_search_form_submit($form_id, &$data) {
 * Adding a new registration.
 */
 function reg_admin_members_add() {
-	reg_load_files();
 	return(reg_admin::add());
 }
 
@@ -188,22 +165,18 @@ function reg_admin_members_add() {
 * Viewing logs.
 */
 function reg_admin_log() {
-	reg_load_files();
 	return(reg_log::log());
 }
 
 function reg_admin_log_detail($id) {
-	reg_load_files();
 	return(reg_log::log_detail($id));
 }
 
 function reg_admin_trans() {
-	reg_load_files();
 	return(reg_log::trans());
 }
 
 function reg_admin_trans_detail($id) {
-	reg_load_files();
 	return(reg_log::trans_detail($id));
 }
 
@@ -219,7 +192,6 @@ return("This is where our stats page would go.");
 * Our theme function for creating form elements in the reg system.
 */
 function theme_reg_theme($form) {
-	reg_load_files();
 	return(reg_theme::theme($form));
 }
 
