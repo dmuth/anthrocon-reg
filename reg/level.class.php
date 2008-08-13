@@ -114,7 +114,7 @@ class reg_level {
 			"#default_value" => $row["year"] ? $row["year"] : date("Y"),
 			);
 
-		$types = reg::get_types();
+		$types = reg_data::get_types();
 		$retval["reg_type_id"] = array(
 			"#title" => "Membership Type",
 			"#description" => "The type of membership.  The user does NOT see this.",

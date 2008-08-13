@@ -1,22 +1,28 @@
 
-- Refactoring
-	- reg.class.php:
-		- Move get_() functions into reg_data class.
+- Refactor:
+	- Create reg/member.class.php to hold memeber-centric functions
+		- From reg_admin:
+	        static function recent() {
+    	    static function load_reg($id) {
+        	static function view_reg($id) {
+	        static function edit_reg($id) {
+    	    static function add($id = "") {
+		- From reg:
+	        static function add_member($data, $reg_trans_id = "") {
+    	    static function update_member($data) {
 
-- Rename reg_shirt_sizes table to reg_shirt_size
-	- Keep tenses singular, NOT plural
+- Write search screen
+	reg/search.class.php
 
 - Track down bug with not forcing the badge number on a manual add.
 	- Maybe put the badge code into the section before calling the new/update code?
-
-- Generic "isValidNumber()" function?
-	- Check for positive and an integer
-- Generic "isValidMoney()" function?
-	- Check for postive and a floating point number
-
-- Write search screen
+	- Generic "isValidNumber()" function?
+		- Check for positive and an integer
+	- Generic "isValidMoney()" function?
+		- Check for postive and a floating point number
 
 - Add reg_level.description field
+	- Add reg_level.notes for internal notes
 
 	- View registrations
 		- Note taking via logs?

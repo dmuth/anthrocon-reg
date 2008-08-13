@@ -208,7 +208,7 @@ class reg_log {
 		$exp = $data["cc_exp"];
 		$exp_string = $exp["year"] . "-" . $exp["month"] ."-0";
 
-		$data["cc_name"] = reg::get_cc_name($data["cc_type"], $data["cc_num"]);
+		$data["cc_name"] = reg_data::get_cc_name($data["cc_type"], $data["cc_num"]);
 		$query_args = array(
 			$user->uid, 
 			time(), 1, 1,
@@ -221,7 +221,7 @@ class reg_log {
 
 		db_query($query, $query_args);
 
-		$id = reg::get_insert_id();
+		$id = reg_data::get_insert_id();
 
 		return($id);
 

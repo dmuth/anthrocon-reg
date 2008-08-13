@@ -357,7 +357,7 @@ function reg_install() {
 		//
 		// All possible shirt sizes
 		//
-		$query = "CREATE TABLE reg_shirt_sizes ("
+		$query = "CREATE TABLE reg_shirt_size ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			//
 			// If non-null, this t-shirt size is disabled.
@@ -368,7 +368,7 @@ function reg_install() {
 			;
 		db_query($query);
 
-		$query = "INSERT INTO reg_shirt_sizes (shirt_size) "
+		$query = "INSERT INTO reg_shirt_size (shirt_size) "
 			. "VALUES "
 			. "('Small'), "
 			. "('Medium'), "
@@ -433,7 +433,7 @@ function reg_wipe() {
 	$query = "DROP TABLE IF EXISTS reg_badge_num";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_shirt_sizes";
+	$query = "DROP TABLE IF EXISTS reg_shirt_size";
 	db_query($query);
 
 } // End of reg_wipe()

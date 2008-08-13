@@ -64,7 +64,7 @@ class reg_search {
 			"#default_value" => $search_data["address"],
 			);
 
-		$types = reg::get_types();
+		$types = reg_data::get_types();
 		$types[""] = "Select";
 		ksort($types);
 		$search["reg_type_id"] = array(
@@ -75,7 +75,7 @@ class reg_search {
 			"#default_value" => $search_data["reg_type_id"],
 			);
 
-		$statuses = reg::get_statuses();
+		$statuses = reg_data::get_statuses();
 		$statuses[""] = "Select";
 		ksort($statuses);
 		$search["reg_status_id"] = array(

@@ -273,7 +273,7 @@ class reg_admin {
 			$row["phone"]
 			);
 
-		$shirt_sizes = reg::get_shirt_sizes();
+		$shirt_sizes = reg_data::get_shirt_sizes();
 		$rows[] = array(
 			array("data" => "Shirt Size", "header" => true),
 			$shirt_sizes[$row["shirt_size_id"]]

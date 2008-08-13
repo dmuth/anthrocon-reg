@@ -297,7 +297,7 @@ $data["reg_level_id"] = 3;
 				"#title" => "Badge Type",
 				"#type" => "select",
 				"#default_value" => $data["reg_type_id"],
-				"#options" => reg::get_types(),
+				"#options" => reg_data::get_types(),
 				"#description" => "The registration type."
 				);
 
@@ -305,7 +305,7 @@ $data["reg_level_id"] = 3;
 				"#title" => "Status",
 				"#type" => "select",
 				"#default_value" => $data["reg_status_id"],
-				"#options" => reg::get_statuses(),
+				"#options" => reg_data::get_statuses(),
 				"#description" => "The member's status."
 				);
 
@@ -429,7 +429,7 @@ $data["reg_level_id"] = 3;
 			"#default_value" => $data["phone"],
 			);
 
-		$shirt_sizes = reg::get_shirt_sizes();
+		$shirt_sizes = reg_data::get_shirt_sizes();
 		$shirt_sizes[""] = t("Select");
 		ksort($shirt_sizes);
 		$retval["shirt_size_id"] = array(
@@ -492,7 +492,7 @@ $data["reg_level_id"] = 3;
 		$retval["cc_type"] = array(
 			"#title" => "Credit Card Type",
 			"#type" => "select",
-			"#options" => reg::get_cc_types(),
+			"#options" => reg_data::get_cc_types(),
 			"#required" => true,
 			);
 
@@ -520,13 +520,13 @@ $data["reg_level_id"] = 3;
 			"#tree" => "true",
 			);
 		$retval["cc_exp"]["month"] = array(
-			"#options" => reg::get_cc_exp_months(),
+			"#options" => reg_data::get_cc_exp_months(),
 			"#type" => "select",
 			"#default_value" => date("n"),
 			);
 
 		$retval["cc_exp"]["year"] = array(
-			"#options" => reg::get_cc_exp_years(),
+			"#options" => reg_data::get_cc_exp_years(),
 			"#type" => "select",
 			"#default_value" => date("Y"),
 			);
