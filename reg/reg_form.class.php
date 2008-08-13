@@ -70,7 +70,7 @@ class reg_form {
 	*
 	* @return boolean True is we are in the admin section, false otherwise.
 	*/
-	function in_admin() {
+	static function in_admin() {
 
 		if (arg(0) == "admin") {
 			return(true);
