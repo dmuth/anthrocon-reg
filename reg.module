@@ -26,11 +26,11 @@
 * Define our autoloader, and register it.
 */
 function reg_autoload($class) {
-	print "TEST1: $class<br>\n";
+	//print "TEST1: $class<br>\n";
 	$class = str_replace("_", "/", $class);
-	print "TEST2: $class<br>\n";
+	//print "TEST2: $class<br>\n";
 	$file = $class . ".class.php";
-	print "TEST3: $file<br>\n";
+	//print "TEST3: $file<br>\n";
 	include_once($file);
 }
 
