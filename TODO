@@ -1,6 +1,19 @@
 
+- Refactoring
+	- Put reg_admin/level functions into reg_levels
+	- reg.class.php:
+		- Move log() and log_trans() into reg_log class, rename functions already in that class if necessary
+		- Move get_() functions into reg_data class.
+
 - Track down bug with not forcing the badge number on a manual add.
 	- Maybe put the badge code into the section before calling the new/update code?
+
+- Generic "isValidNumber()" function?
+	- Check for positive and an integer
+- Generic "isValidMoney()" function?
+	- Check for postive and a floating point number
+
+- Write search screen
 
 - Put reg class files into reg/ directory
 
@@ -10,10 +23,12 @@
 
 	- User viewing secondary menu:
 		- Add note?
+			- admin/reg/members/view/35/addnote
 		- Refund?  Balance adjustment?
-
-	- User editing:
-		- Button to refund?
+			- admin/reg/members/view/35/addtrans
+				- Amounts (badge, donation)
+			- admin/reg/members/view/35/cancel
+				- Amounts prefilled in (0 for donation)
 
 - Financials
 	- Add to reg table: badge_balance, donation_balance
