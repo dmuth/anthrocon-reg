@@ -7,6 +7,32 @@ class reg_log {
 
 
 	/**
+	* This is our registration log function.  It contains a wrapper for
+	* the Drupal watchdog() facility, but also logs entries via our own logging
+	* table.  This way, we can keep track of log entries in the registration 
+	* system for months, or even years if necessary.
+	*/
+	static function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
+
+		global $user, $base_root;
+
+		watchdog("reg", $message, $severity);
+
+		$url = $base_root . request_uri();
+		$query = "INSERT INTO {reg_log} "
+			. "(reg_id, uid, date, url, referrer, remote_addr, message) "
+			. "VALUES "
+			. "('%s', '%s', '%s', '%s', '%s', '%s', '%s') "
+			;
+		$query_args = array($reg_id, $user->uid, time(), $url, 
+			referer_uri(), $_SERVER["REMOTE_ADDR"], $message
+			);
+		db_query($query, $query_args);
+
+	} // End of log()
+
+
+	/**
 	* Our log viewer.
 	*
 	* @param integer $id Optional registration ID to limit results
@@ -14,7 +40,7 @@ class reg_log {
 	*
 	* @return string HTML code of the log entry.
 	*/
-	function log($id = "") {
+	function log_recent($id = "") {
 
 		$header = array();
 		$header[] = array("data" => "Date", "field" => "date",
@@ -150,6 +176,59 @@ class reg_log {
 
 
 	/**
+	* This function logs a successful transaction.
+	*
+	* @TODO Support for different transaction types?
+	*
+	* @return integer the ID of the row that was inserted into the database.
+	*/
+	static function log_trans(&$data) {
+
+		global $user;
+
+		//
+		// Save the successful charge in reg_trans.
+		//
+		$query = "INSERT INTO reg_trans ("
+			. "uid, "
+			. "date, reg_trans_type_id, reg_payment_type_id, "
+			. "first, middle, last, address1, address2, "
+			. "city, state, zip, country, "
+			. "reg_cc_type_id, cc_num, card_expire, "
+			. "badge_cost, donation, total_cost "
+			. ") VALUES ("
+			. "'%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', '%s', '%s', '%s', '%s', "
+			. "'%s', '%s', '%s', '%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', '%s', '%s' "
+			. ")"
+			;
+		$exp = $data["cc_exp"];
+		$exp_string = $exp["year"] . "-" . $exp["month"] ."-0";
+
+		$data["cc_name"] = reg::get_cc_name($data["cc_type"], $data["cc_num"]);
+		$query_args = array(
+			$user->uid, 
+			time(), 1, 1,
+			$data["first"], $data["middle"], $data["last"], 
+				$data["address1"], $data["address2"],
+			$data["city"], $data["state"], $data["zip"], $data["country"],
+			$data["cc_type"], $data["cc_name"], $exp_string,
+			$data["badge_cost"], $data["donation"], $data["total_cost"]
+			);
+
+		db_query($query, $query_args);
+
+		$id = reg::get_insert_id();
+
+		return($id);
+
+	} // End of log_trans()
+
+
+	/**
 	* View our transactions.
 	*
 	* @param integer $id Optional registration ID to limit results
@@ -157,7 +236,7 @@ class reg_log {
 	*
 	* @return string HTML code.
 	*/
-	function trans($id = "") {
+	function trans_recent($id = "") {
 
 		$retval = "";
 

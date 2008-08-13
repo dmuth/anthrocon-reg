@@ -209,75 +209,22 @@ class reg {
 			// I need to make sure that non-numerics are filtered out here.
 			$error = "CC Charging not implemented yet.";
 			form_set_error("cc_num", $error);
-			self::log($error, "", WATCHDOG_ERROR);
+			reg_log::log($error, "", WATCHDOG_ERROR);
 			return(false);
 
 		} else {
 
 			$message = "We are in testing mode.  Automatically allow this "
 				. "'credit card'";
-			self::log($message);
+			reg_log::log($message);
 
 		}
 
-		$reg_trans_id = self::log_trans($data);
+		$reg_trans_id = reg_log::log_trans($data);
 
 		return($reg_trans_id);
 
 	} // End of charge_cc()
-
-
-	/**
-	* This function logs a successful transaction.
-	*
-	* @TODO Support for different transaction types?
-	*
-	* @return integer the ID of the row that was inserted into the database.
-	*/
-	static function log_trans(&$data) {
-
-		global $user;
-
-		//
-		// Save the successful charge in reg_trans.
-		//
-		$query = "INSERT INTO reg_trans ("
-			. "uid, "
-			. "date, reg_trans_type_id, reg_payment_type_id, "
-			. "first, middle, last, address1, address2, "
-			. "city, state, zip, country, "
-			. "reg_cc_type_id, cc_num, card_expire, "
-			. "badge_cost, donation, total_cost "
-			. ") VALUES ("
-			. "'%s', "
-			. "'%s', '%s', '%s', "
-			. "'%s', '%s', '%s', '%s', '%s', "
-			. "'%s', '%s', '%s', '%s', "
-			. "'%s', '%s', '%s', "
-			. "'%s', '%s', '%s' "
-			. ")"
-			;
-		$exp = $data["cc_exp"];
-		$exp_string = $exp["year"] . "-" . $exp["month"] ."-0";
-
-		$data["cc_name"] = self::get_cc_name($data["cc_type"], $data["cc_num"]);
-		$query_args = array(
-			$user->uid, 
-			time(), 1, 1,
-			$data["first"], $data["middle"], $data["last"], 
-				$data["address1"], $data["address2"],
-			$data["city"], $data["state"], $data["zip"], $data["country"],
-			$data["cc_type"], $data["cc_name"], $exp_string,
-			$data["badge_cost"], $data["donation"], $data["total_cost"]
-			);
-
-		db_query($query, $query_args);
-
-		$id = self::get_insert_id();
-
-		return($id);
-
-	} // End of log_trans()
 
 
 	/**
@@ -347,7 +294,7 @@ class reg {
 		$message = t("Added registration for badge number '%num%'",
 			array("%num%" => $badge_num)
 			);
-		self::log($message, $reg_id);
+		reg_log::log($message, $reg_id);
 
 		if (!empty($reg_trans_id)) {
 			$query = "UPDATE reg_trans "
@@ -412,37 +359,11 @@ class reg {
 		$message = t("Updated registration for badge number '%num%'",
 				array("%num%" => $data["badge_num"])
 				);
-		self::log($message, $data["reg_id"]);
+		reg_log::log($message, $data["reg_id"]);
 
 		return($data["badge_num"]);
 
 	} // End of update_member()
-
-
-	/**
-	* This is our registration log function.  It contains a wrapper for
-	* the Drupal watchdog() facility, but also logs entries via our own logging
-	* table.  This way, we can keep track of log entries in the registration 
-	* system for months, or even years if necessary.
-	*/
-	static function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
-
-		global $user, $base_root;
-
-		watchdog("reg", $message, $severity);
-
-		$url = $base_root . request_uri();
-		$query = "INSERT INTO {reg_log} "
-			. "(reg_id, uid, date, url, referrer, remote_addr, message) "
-			. "VALUES "
-			. "('%s', '%s', '%s', '%s', '%s', '%s', '%s') "
-			;
-		$query_args = array($reg_id, $user->uid, time(), $url, 
-			referer_uri(), $_SERVER["REMOTE_ADDR"], $message
-			);
-		db_query($query, $query_args);
-
-	} // End of log()
 
 
 	/**

@@ -1,0 +1,27 @@
+
+Testing notes
+=============
+
+Major things to test for:
+	- All screens (recent memberships, stats, settings, etc.)
+	- Level editing system
+
+	- Creating new memberships
+		- From the public interface
+		- From the admin interface
+		- From the dealer interface
+
+	- Different ways of creating badge numbers from the admin interface
+		- Automatic assignment
+		- Setting a number to 0
+		- Setting a number to a postitive integer
+		- Setting a number to a postitive integer higher than the max 
+			assigned number
+		- A negative number (should show an error)
+		- A string (should show an error)
+
+		- Try this on both membership creation and membership updates
+
+
+
+

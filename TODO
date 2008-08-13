@@ -1,9 +1,10 @@
 
 - Refactoring
-	- Put reg_admin/level functions into reg_levels
 	- reg.class.php:
-		- Move log() and log_trans() into reg_log class, rename functions already in that class if necessary
 		- Move get_() functions into reg_data class.
+
+- Rename reg_shirt_sizes table to reg_shirt_size
+	- Keep tenses singular, NOT plural
 
 - Track down bug with not forcing the badge number on a manual add.
 	- Maybe put the badge code into the section before calling the new/update code?
@@ -15,7 +16,7 @@
 
 - Write search screen
 
-- Put reg class files into reg/ directory
+- Add reg_level.description field
 
 	- View registrations
 		- Note taking via logs?
