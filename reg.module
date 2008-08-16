@@ -123,15 +123,15 @@ function reg_admin_level_form_submit($form_id, $data) {
 * Viewing recent registrations.
 */
 function reg_admin_members() {
-	return(reg_admin::recent());
+	return(reg_member::recent());
 }
 
 function reg_admin_members_view($id) {
-	return(reg_admin::view_reg($id));
+	return(reg_member::view_reg($id));
 }
 
 function reg_admin_members_edit($id) {
-	return(reg_admin::edit_reg($id));
+	return(reg_member::edit_reg($id));
 }
 
 /**
@@ -161,7 +161,7 @@ function reg_admin_search_form_submit($form_id, &$data) {
 * Adding a new registration.
 */
 function reg_admin_members_add() {
-	return(reg_admin::add());
+	return(reg_member::add_reg());
 }
 
 /**

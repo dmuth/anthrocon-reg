@@ -35,7 +35,7 @@ class reg_form {
 		$retval = array();
 
 		if (!empty($id)) {
-			$data = reg_admin::load_reg($id);
+			$data = reg_member::load_reg($id);
 			$retval["reg_id"] = array(
 				"#type" => "hidden",
 				"#value" => $id,
@@ -207,7 +207,7 @@ $data["reg_level_id"] = 3;
 	*/
 	static function reg_submit_new(&$data) {
 
-		$badge_num = reg::add_member($data, self::$reg_trans_id);
+		$badge_num = reg_member::add_member($data, self::$reg_trans_id);
 
 		$message = t("Congratulations!  Your registration was successful, "
 			. "and your badge number is %badge_num%.  ",
@@ -239,7 +239,7 @@ $data["reg_level_id"] = 3;
 	*/
 	static function reg_submit_update(&$data) {
 
-		$badge_num = reg::update_member($data, $reg_trans_id);
+		$badge_num = reg_member::update_member($data, $reg_trans_id);
 
 		$message = t("Registration updated!");
 		drupal_set_message($message);

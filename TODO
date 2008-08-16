@@ -1,15 +1,7 @@
 
-- Refactor:
-	- Create reg/member.class.php to hold memeber-centric functions
-		- From reg_admin:
-	        static function recent() {
-    	    static function load_reg($id) {
-        	static function view_reg($id) {
-	        static function edit_reg($id) {
-    	    static function add($id = "") {
-		- From reg:
-	        static function add_member($data, $reg_trans_id = "") {
-    	    static function update_member($data) {
+- Create a function to create random member data
+	- Create a setting to allow admins to see a special button to create random data
+		- Random data should be inserted in the validate functio
 
 - Write search screen
 	reg/search.class.php
@@ -26,7 +18,8 @@
 
 	- View registrations
 		- Note taking via logs?
-		- Search
+			- Handle very long fields
+				- I think Drupal has a function for this.  Check watchdog.
 
 	- User viewing secondary menu:
 		- Add note?
@@ -40,15 +33,7 @@
 - Financials
 	- Add to reg table: badge_balance, donation_balance
 	- Add code that updates the reg_trans table to also update the badge balances
-
-- Rename reg_log to reg_log_view and move log functions from reg into reg_log?
-
 	- Display buttons for refund/balance adjustment?
-
-	- Search registrations
-		- Redirect back to search page with a query string like in onsitereg
-
-	- Rename reg_trans.badge_cost to just cost?
 
 - reg/verify - Let a user verify their reigstration
 	- Ask for last 4 digits of credit card number and expiration date
@@ -58,9 +43,10 @@
 - Some utility to print unused badge numbers
 
 	- Keep in mind that I can create other modules in that directory
-		- Omaga List module?
-		- Onsite reg module?
 		- Dealer reg module?
+		- Omaga List module?
+		- Staff reg module
+		- Onsite reg module?
 
 - is date_validate() being used on the reg form for dates?
 - check on registration to make sure membership level is valid
@@ -78,17 +64,8 @@
 		and the form pre-filled
 
 - Admin
-	- View recent registrations
-	- Search for registrations
-		- Separate search page with search form and advanced search form
-	- Other business-type stuff
-		- Edit/update a registration
-		- Manually enter a registration
-		- Resend confirmation email
-			- Send confirmation email to another address
-
-- Put membership levels on registration form
-	- Should I add a text description field to membership levels?
+	- Resend confirmation email
+		- Send confirmation email to another address
 
 - Class architecture
 	- Function to check for SSL
@@ -104,11 +81,9 @@ Long Term
 
 - Learn how to do updates through Drupal
 
-- A staff registration page?
-	- Admin-level checking
-
 - Can we have an upgrade type?
 
-- On-site registration stuff?
-
+- Export data as a spreadsheet
+	- Main membership data
+	- Staff data separately?
 
