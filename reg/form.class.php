@@ -1,8 +1,7 @@
 <?php
 
 /**
-* This class is responsible for holding registration system-related
-* forms.
+* This class holds the main reigstration forms.
 */
 class reg_form {
 
@@ -11,6 +10,7 @@ class reg_form {
 	*/
 	const FORM_ADMIN_FAKE_CC = "reg_fake_cc";
 	const FORM_ADMIN_CONDUCT_PATH = "reg_conduct_path";
+	const FORM_ADMIN_FAKE_DATA = "reg_fake_data";
 
 	/**
 	* Define other constants
@@ -50,7 +50,7 @@ class reg_form {
 		// only admins can edit a registration.
 		//
 		if (!self::in_admin()) {
-			$retval["cc"] = self::form_cc();
+			$retval["cc"] = self::form_cc($data);
 		}
 
 		$retval["member"]["TEST"] = array(
@@ -82,11 +82,59 @@ class reg_form {
 
 
 	/**
+	* Check and see if we are currently in a fake form or not.
+	*
+	* @return boolean True if we are in a fake form.
+	*/
+	static function in_fake_form() {
+
+		//
+		// If fake data isn't set/allowed, then stop right here.
+		//
+		if (!self::is_fake_data()) {
+			return(false);
+		}
+
+		//
+		// If the last "page" in our URL is "fake", return true.
+		//
+		$uri = request_uri();
+		$fields = split("/", $uri);
+		$index = count($fields) - 1;
+
+		if ($fields[$index] != "fake") {
+			return(false);
+		}
+		
+		return(true);
+
+	} // End of in_fake_form()
+
+
+	/**
 	* This function is called to validate the form data.
 	* If there are any issues, form_set_error() should be called so
 	* that form processing does not continue.
 	*/
 	static function reg_validate(&$form_id, &$data) {
+
+		//
+		// If we're allowing fake data and we're not currently in
+		// the fake form, send us there.
+		//
+		if (self::is_fake_data()) {
+			if (!empty($data["fake_data"])) {
+				if (!self::in_fake_form()) {
+					$message = t("Pay no attention to these errors.  "
+						. "Just submit the form again to add this member.");
+					drupal_set_message($message);
+					$uri = request_uri() . "/fake";
+					$uri = ltrim($uri, "/");
+					drupal_goto($uri);
+				}
+			}
+		}
+
 
 		//
 		// If we're in the admin, we can skip alot of this stuff.
@@ -248,6 +296,17 @@ $data["reg_level_id"] = 3;
 
 
 	/**
+	* Are we allowing fake data to be created?
+	*
+	* @return boolean True if yes, false if no.
+	*/
+	static function is_fake_data() {
+		$retval = variable_get(reg_form::FORM_ADMIN_FAKE_DATA, "");
+		return($retval);
+	}
+	
+
+	/**
 	* This function function creates the membership section of our 
 	*	registration form.
 	*
@@ -255,7 +314,7 @@ $data["reg_level_id"] = 3;
 	*
 	* @param array $data Associative array of membership info.
 	*/
-	static function form($id = "", $data = "") {
+	static function form($id = "", &$data) {
 
 		if (empty($data)) {
 			$data = array();
@@ -269,6 +328,33 @@ $data["reg_level_id"] = 3;
 			//
 			"#theme" => "reg_theme"
 			);
+
+		//
+		// If we're allowing fake data, print up the checbox.
+		// The additional conditionals are if we're not already
+		// in the "fake data" form (which generates fake data upon 
+		//	being loaded) and we're not editing a current member.
+		//
+		if (self::is_fake_data()) {
+			if (!self::in_fake_form()) {
+				if (empty($id)) {
+					$retval["fake_data"] = array(
+						"#type" => "checkbox",
+						"#title" => "Fill form with fake data",
+						"#name" => "fake_data",
+						);
+				}
+			}
+		}
+
+		//
+		// If we are in the fake form, generate fake data.
+		//
+		if (self::in_fake_form()
+			&& empty($id)
+			) {
+			reg_fake::get_data($data);
+		}
 
 		$retval["badge_name"] = array(
 			"#title" => "Badge Name",
@@ -453,6 +539,7 @@ $data["reg_level_id"] = 3;
 					. l(t("Standards of Conduct"), $path))
 					. t(" in order to purchase a membership."),
 				"#required" => true,
+				"#default_value" => $data["conduct"],
 			);
 		}
 
@@ -478,7 +565,22 @@ $data["reg_level_id"] = 3;
 	* This internal function creates the credit card portion of the 
 	*	registration form.
 	*/
-	static function form_cc() {
+	static function form_cc($data) {
+
+		//
+		// Set defaults if we don't have any
+		//
+		if (empty($data["donation"])) {
+			$data["donation"] = "0.00";
+		}
+
+		if (empty($data["cc_exp"]["month"])) {
+			$data["cc_exp"]["month"] = date("n");
+		}
+
+		if (empty($data["cc_exp"]["year"])) {
+			$data["cc_exp"]["year"] = date("Y");
+		}
 
 		$retval = array(
 			"#type" => "fieldset",
@@ -494,6 +596,7 @@ $data["reg_level_id"] = 3;
 			"#type" => "select",
 			"#options" => reg_data::get_cc_types(),
 			"#required" => true,
+			"#default_value" => $data["cc_type"],
 			);
 
 		$retval["cc_num"] = array(
@@ -502,6 +605,7 @@ $data["reg_level_id"] = 3;
 			"#type" => "textfield",
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
+			"#default_value" => $data["cc_num"],
 			);
 
 		if (reg::is_test_mode()) {
@@ -522,13 +626,13 @@ $data["reg_level_id"] = 3;
 		$retval["cc_exp"]["month"] = array(
 			"#options" => reg_data::get_cc_exp_months(),
 			"#type" => "select",
-			"#default_value" => date("n"),
+			"#default_value" => $data["cc_exp"]["month"],
 			);
 
 		$retval["cc_exp"]["year"] = array(
 			"#options" => reg_data::get_cc_exp_years(),
 			"#type" => "select",
-			"#default_value" => date("Y"),
+			"#default_value" => $data["cc_exp"]["year"],
 			);
 
 
@@ -536,7 +640,7 @@ $data["reg_level_id"] = 3;
 			"#title" => "Donation (USD)",
 			"#type" => "textfield",
 			"#description" => "Would you like to make an additional donation?",
-			"#default_value" => "0.00",
+			"#default_value" => $data["donation"],
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			);
 

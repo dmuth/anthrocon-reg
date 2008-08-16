@@ -39,14 +39,6 @@ class reg_admin {
 
 		$retval = array();
 
-		$retval["fake_cc"] = array(
-			"#type" => "checkbox",
-			"#title" => "Credit Card Test Mode?",
-			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_CC, false),
-			"#description" => "If set, credit card numbers will "
-				. "not be processed.  Do NOT use in production!",
-			);
-
 		$retval["conduct_path"] = array(
 			"#type" => "textfield",
 			"#title" => "Standards of Conduct Path",
@@ -55,6 +47,33 @@ class reg_admin {
 				. "the user will be forced to agree to the "
 				. "Standards of Conduct before registering.  Do NOT use a "
 				. "leading slash.",
+			"#size" => reg_form::FORM_TEXT_SIZE,
+			);
+
+		$retval["no_production"] = array(
+			"#type" => "fieldset",
+			"#title" => "Things not to set in production",
+			"#tree" => "true",
+			"#collapsible" => true,
+			"#collapsed" => false,
+			);
+
+		$retval["no_production"]["fake_cc"] = array(
+			"#type" => "checkbox",
+			"#title" => "Credit Card Test Mode?",
+			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_CC, false),
+			"#description" => "If set, credit card numbers will "
+				. "not be processed.  Do NOT use in production!",
+			);
+
+		$retval["no_production"]["fake_data"] = array(
+			"#type" => "checkbox",
+			"#title" => "Data entry test mode",
+			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_DATA, ""),
+			"#description" => "Set this to allow fake data to be created on "
+				. "registraiton forms.  This will create an alternate submit "
+				. "button to poulate the form with fake data.  Do NOT use in "
+				. "production!",
 			"#size" => reg_form::FORM_TEXT_SIZE,
 			);
 
@@ -104,9 +123,12 @@ class reg_admin {
 	* form page.
 	*/
 	static function settings_form_submit($form_id, $data) {
-		variable_set(reg_form::FORM_ADMIN_FAKE_CC, $data["fake_cc"]);
+
+		variable_set(reg_form::FORM_ADMIN_FAKE_CC, $data["no_production"]["fake_cc"]);
+		variable_set(reg_form::FORM_ADMIN_FAKE_DATA, $data["no_production"]["fake_data"]);
 		variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, $data["conduct_path"]);
 		drupal_set_message("Settings updated");
+
 	}
 
 

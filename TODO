@@ -1,7 +1,4 @@
 
-- Create a function to create random member data
-	- Create a setting to allow admins to see a special button to create random data
-		- Random data should be inserted in the validate functio
 
 - Write search screen
 	reg/search.class.php
