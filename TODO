@@ -1,13 +1,5 @@
 
 
-- Create fake data for names, badge names, and states
-
-- Track down bug with not forcing the badge number on a manual add.
-	- Generic "isValidNumber()" function?
-		- Check for positive and an integer
-	- Generic "isValidMoney()" function?
-		- Check for postive and a floating point number
-
 - Add reg_level.description field
 	- Add reg_level.notes for internal notes
 

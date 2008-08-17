@@ -58,6 +58,79 @@ class reg {
 
 
 	/**
+	* Check to see if a specific number is valid.
+	*
+	* @param mixed $num The value to check
+	*
+	* @return boolean True if valid.  False if otherwise.
+	*/
+	static function is_valid_number($num) {
+
+		$num_int = intval($num);
+
+		if ($num != (string)$num_int) {
+			return(false);
+		}
+
+		return(true);
+
+	} // End of is_valid_number()
+
+
+	/**
+	* Check to see if this is a valid floating point number.
+	*
+	* @param mixed $num The value to check.
+	*
+	* @return boolean True if valid.  False if otherwise.
+	*/
+	static function is_valid_float($num) {
+
+		$num_float = floatval($num);
+
+		if ($num != (string)$num_float) {
+			return(false);
+		}
+
+		return(true);
+
+	} // End of is_valid_float()
+
+
+	/**
+	* Check to see if a number is negative.
+	*
+	* @param mixed $num The value to check.
+	*
+	* Note: It would be a good idea to call is_valid_number() before this
+	*	function.
+	*
+	* @return boolean.  True if negative. False if otherwise (negative 
+	*	OR not a number).
+	*
+	*/
+	static function is_negative_number($num) {
+
+		//
+		// Definitely not a negative number.
+		//
+		if (!self::is_valid_number($num)) {
+			return(false);
+		}
+
+		if ($num < 0) {
+			return(true);
+		}
+
+		//
+		// This is a postive number.
+		//
+		return(false);
+
+	} // End of is_negative_number()
+
+
+	/**
 	* This function checks to see if a proposed badge number is valid.
 	*/
 	function is_badge_num_valid($badge_num) {
@@ -69,17 +142,15 @@ class reg {
 			return(true);
 		}
 
-		$badge_num_int = intval($badge_num);
-
-		if ($badge_num != (string)$badge_num_int
-			) {
+		if (!self::is_valid_number($badge_num)) {
 			$error = t("Badge number '%num%' is not a number!",
 				array("%num%" => $badge_num)
 				);
 			form_set_error("badge_num", $error);
 		}
 
-		if ($badge_num_int < 0) {
+		//if ($badge_num_int < 0) {
+		if (self::is_negative_number($badge_num)) {
 			$error = t("Badge number cannot be negative!");
 			form_set_error("badge_num", $error);
 		}
@@ -163,7 +234,7 @@ class reg {
 
 		return(true);
 
-	} // End of check_badge_num()
+	} // End of is_badge_num_available()
 
 
 	/**

@@ -163,13 +163,16 @@ class reg_form {
 		//
 		// Sanity checking on our donation amount.
 		//
-		$donation_float = floatval($data["donation"]);
-		if ($data["donation"] != (string)$donation_float) {
+		if (!reg::is_valid_float($data["donation"])
+			&& $data["donation"] != ""
+			) {
 			$error = "Donation '" . $data["donation"] . "' is not a number!";
 			form_set_error("donation", $error);
 			$okay = false;
 
-		} else if ($data["donation"] < 0) {
+		} 
+
+		if (reg::is_negative_number($data["donation"])) {
 			form_set_error("donation", "Donation cannot be a negative amount!");
 			$okay = false;
 
