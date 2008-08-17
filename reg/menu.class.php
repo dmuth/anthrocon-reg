@@ -16,8 +16,6 @@ class reg_menu {
 
 		$retval = array();
 
-// TEST
-$may_cache = 1;
 		if ($may_cache) {
 			self::get_menu($retval, $may_cache);
 		}
