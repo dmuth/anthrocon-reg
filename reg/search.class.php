@@ -158,19 +158,19 @@ class reg_search {
 			$rows[] = reg_member::get_member_table_row($row);
 		}
 
+		if (empty($rows)) {
+			$message = t("No members found.");
+			$rows[] = array(
+				array(
+					"data" => $message,
+					"colspan" => count($header),
+					)
+				);
+		}
+
 		$retval = theme("table", $header, $rows);
 
 		$retval .= theme_pager();
-
-		//$retval = "Search results and SQL code goes here.";
-		/**
-		TODO:
-		- Run query, with pager()
-		- Create table
-			- Borrow code from recent() function?
-		- Make links to the edit page: admin/reg/members/view/reg_id
-		- Later, offer a download link?
-		*/
 
 		return($retval);
 

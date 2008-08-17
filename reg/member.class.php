@@ -39,7 +39,17 @@ class reg_member {
 		while ($row = db_fetch_array($cursor)) {
 			$rows[] = self::get_member_table_row($row);
 		}
-                
+
+		if (empty($rows)) {
+			$message = t("No members found.");
+			$rows[] = array(
+				array(
+					"data" => $message,
+					"colspan" => count($header),
+					)
+				);
+		}
+
 		$retval = theme("table", $header, $rows);
 
 		$retval .= theme_pager();
