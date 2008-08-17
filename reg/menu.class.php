@@ -16,6 +16,8 @@ class reg_menu {
 
 		$retval = array();
 
+// TEST
+$may_cache = 1;
 		if ($may_cache) {
 			self::get_menu($retval, $may_cache);
 		}
@@ -52,18 +54,29 @@ class reg_menu {
 		$retval[] = array(
 			"path" => "admin/reg",
 			"title" => t("Registration Admin"),
-			"callback" => "reg_admin_stats",
+			"callback" => "reg_admin_main",
 			"access" => user_access(reg::PERM_ADMIN),
 			"type" => MENU_NORMAL_ITEM,
 			);
 
 		$retval[] = array(
-			"path" => "admin/reg/stats",
-			"title" => t("Stats"),
-			"callback" => "reg_admin_stats",
+			"path" => "admin/reg/main",
+			"title" => t("Main"),
+			"callback" => "reg_admin_main",
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
+
+/*
+Uncomment this when we actually have stats.
+		$retval[] = array(
+			"path" => "admin/reg/stats",
+			"title" => t("Stats"),
+			"callback" => "reg_admin_stats",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => -10,
+			);
+*/
 
 		$retval[] = array(
 			"path" => "admin/reg/settings",

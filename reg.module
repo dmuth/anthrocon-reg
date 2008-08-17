@@ -183,6 +183,10 @@ function reg_admin_trans_detail($id) {
 	return(reg_log::trans_detail($id));
 }
 
+function reg_admin_main() {
+	return(reg_admin::main());
+}
+
 /**
 * Viewing registration stats.
 */
