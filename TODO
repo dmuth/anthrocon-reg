@@ -1,7 +1,6 @@
 
 
 - Add reg_level.description field
-	- Add reg_level.notes for internal notes
 
 	- View registrations
 		- Note taking via logs?

@@ -165,7 +165,16 @@ function reg_install() {
 			// minute, or second.
 			//
 			. "start DATE, "
-			. "end DATE "
+			. "end DATE, "
+
+			//
+			// Description that is shown to the user
+			//
+			. "description TEXT, "
+			//
+			// Internal notes
+			//
+			. "notes TEXT "
 
 			. ")"
 			;
@@ -375,7 +384,7 @@ function reg_install() {
 			. "('Large'), "
 			. "('X-Large'), "
 			. "('2X'), "
-			. "('3X'), "
+			. "('3X') "
 			;
 		db_query($query);
 

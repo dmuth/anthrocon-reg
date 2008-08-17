@@ -33,12 +33,30 @@ class reg_level {
 			. "JOIN {reg_type} ON {reg_level}.reg_type_id={reg_type}.id "
 			. "$order_by";
 		$cursor = db_query($query);
+
 		while ($row = db_fetch_array($cursor)) {
-			$rows[] = array($row["id"], $row["name"], $row["year"], 
-				array("data" => "$" . $row["price"], "align" => "right"), 
-				$row["member_type"], 
+
+			$link = "admin/reg/levels/edit/" . $row["id"];
+			$rows[] = array(
+				l($row["id"], $link),
+				l($row["name"], $link),
+				l($row["year"], $link),
+				array(
+					"data" => l("$" . $row["price"], $link), 
+					"align" => "right"
+					), 
+				l($row["member_type"], $link), 
 				$row["start"], $row["end"],
-				l("Edit", "admin/reg/levels/edit/" . $row["id"]),
+				);
+		}
+
+		if (empty($rows)) {
+			$message = t("No levels found.");
+			$rows[] = array(
+				array(
+					"data" => $message,
+					"colspan" => count($header),
+					)
 				);
 		}
 
@@ -168,6 +186,24 @@ class reg_level {
 			$retval["end"]["#default_value"] = $end_date;
 		}
 
+
+		$retval["description"] = array(
+			"#title" => "Description",
+			"#description" => t("The description shown to the users."),
+			"#type" => "textarea",
+			"#required" => true,
+			"#default_value" => $row["description"],
+			);
+
+		$retval["notes"] = array(
+			"#title" => "Notes",
+			"#description" => t("Notes about this level that will NOT be shown to "
+				. "the public."),
+			"#type" => "textarea",
+			"#default_value" => $row["notes"],
+			);
+
+
 		$retval["submit"] = array(
 			"#type" => "submit",
 			"#value" => "Save"
@@ -187,12 +223,12 @@ class reg_level {
 		// Make sure our year and price are numbers
 		//
 		$year = intval($data["year"]);
-		if ($data["year"] != (string)$year) {
+		if (!reg::is_valid_number($data["year"])) {
 			form_set_error("year", "Year must be a number!");
 		}
 
 		$price = floatval($data["price"]);
-		if ($data["price"] != (string)$price) {
+		if (!reg::is_valid_number($data["price"])) {
 			form_set_error("price", "Price must be a number!");
 		}
 
@@ -239,20 +275,24 @@ class reg_level {
 		//
 		if (empty($data["id"])) {
 			$query = "INSERT INTO {reg_level} "
-				. "(name, year, reg_type_id, price, start, end) "
-				. "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')";
+				. "(name, year, reg_type_id, price, start, end, "
+					. "description, notes) "
+				. "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
 			$args = array($data["name"], $data["year"], $data["reg_type_id"],
-				$data["price"], $start_string, $end_string);
+				$data["price"], $start_string, $end_string,
+				$data["description"], $data["notes"]);
 
 		} else {
 			$query = "UPDATE {reg_level} "
 				. "SET "
 				. "name='%s', year='%s', reg_type_id='%s', price='%s', "
-				. "start='%s', end='%s' "
+				. "start='%s', end='%s', description='%s', notes='%s' "
 				. "WHERE "
 				. "id='%d'";
 			$args = array($data["name"], $data["year"], $data["reg_type_id"],
-				$data["price"], $start_string, $end_string, $data["id"]);
+				$data["price"], $start_string, $end_string, $data["id"],
+				$data["description"], $data["notes"]
+				);
 
 		}
 		
