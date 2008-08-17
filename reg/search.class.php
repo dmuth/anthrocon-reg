@@ -189,7 +189,9 @@ class reg_search {
 		$where = array();
 		$args = array();
 
-		if (isset($search["badge_num"])) {
+		if (isset($search["badge_num"])
+			&& $search["badge_num"] != ""
+			) {
 			$where[] = "badge_num='%s'";
 			$args[] = $search["badge_num"];
 		}
@@ -254,7 +256,7 @@ class reg_search {
 			. $order_by
 			;
 
-		$retval = pager_query($query, reg::ITEMS_PER_PAGE);
+		$retval = pager_query($query, reg::ITEMS_PER_PAGE, 0, null, $args);
 
 		return($retval);
 
