@@ -23,7 +23,7 @@ function reg_install() {
 		// must have been charged successfully or entered manually by 
 		// an admin.
 		//
-		$query = "CREATE TABLE reg ( "
+		$query = "CREATE TABLE {reg} ( "
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			. "created INTEGER NOT NULL DEFAULT '0', "
 			. "modified INTEGER NOT NULL DEFAULT '0', "
@@ -64,9 +64,17 @@ function reg_install() {
 			. "email VARCHAR(255), "
 			. "phone VARCHAR(255), "
 			//
-			// Shrit size for Sponsors and Super Sponsors
+			// Shirt size for Sponsors and Super Sponsors
 			//
-			. "shirt_size_id INTEGER "
+			. "shirt_size_id INTEGER, "
+			//
+			// The user's balance for badge costs, donations, and total costs.
+			// This is updated anytime there is a transaction logged
+			//  in reg_trans.
+			//
+			. "badge_cost DECIMAL(10, 2) DEFAULT 0.00, "
+			. "donation DECIMAL(10, 2) DEFAULT 0.00, "
+			. "total_cost DECIMAL(10, 2) DEFAULT 0.00 "
 			. ")"
 			;
 		db_query($query);
@@ -80,7 +88,7 @@ function reg_install() {
 		// there enough combinations) to make it necessary for setting up
 		// a many-to-many relationship.
 		//
-		$query = "CREATE TABLE reg_type ("
+		$query = "CREATE TABLE {reg_type} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			. "weight INTEGER DEFAULT 0, "
 			. "member_type VARCHAR(255) "
@@ -88,7 +96,7 @@ function reg_install() {
 			;
 		db_query($query);
 
-		$query = "INSERT INTO reg_type (member_type) "
+		$query = "INSERT INTO {reg_type} (member_type) "
 			. "VALUES "
 			. "('Attending'), "
 			. "('Sponsor'), "
@@ -108,7 +116,7 @@ function reg_install() {
 		//
 		// Our different membership statuses.
 		//
-		$query = "CREATE TABLE reg_status ("
+		$query = "CREATE TABLE {reg_status} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			. "status VARCHAR(255), "
 			. "weight INTEGER DEFAULT 0, "
@@ -117,7 +125,7 @@ function reg_install() {
 			;
 		db_query($query);
 		
-		$query = "INSERT INTO reg_status (status, weight, detail) "
+		$query = "INSERT INTO {reg_status} (status, weight, detail) "
 			. "VALUES "
 			. "('Complete', 0, 'Badge is paid'), "
 			. "('Defer', 0, 'Badge is deferred until next year'), "
@@ -133,7 +141,7 @@ function reg_install() {
 		// Our different membership levels, such as member, sponsor, etc.
 		// It is consulted when printing up the main registration form.
 		//
-		$query = "CREATE TABLE reg_level ("
+		$query = "CREATE TABLE {reg_level} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 
 			//
@@ -186,7 +194,7 @@ function reg_install() {
 		// not go in here, since the registration would not have gone 
 		// through.  However, there will still be a record in reg_log.
 		//
-		$query = "CREATE TABLE reg_trans ( "
+		$query = "CREATE TABLE {reg_trans} ( "
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			//
 			// Foreign key to the registration table. (optional)
@@ -238,9 +246,17 @@ function reg_install() {
 			. "reg_cc_type_id INTEGER, "
 			. "cc_num VARCHAR(255), "
 			. "card_expire DATE, "
-			. "badge_cost DECIMAL(10, 2), "
-			. "donation DECIMAL(10, 2), "
-			. "total_cost DECIMAL(10, 2) "
+			//
+			// badge_cost is the money that their paid (or were refunded)
+			// for their membership.
+			// donation is any additional amount that was donated.
+			// total_cost is the total of the previous two fields.
+			// Anytime these are updated, the code should be update the same
+			// named fields in the reg table to reflect the new balance.
+			//
+			. "badge_cost DECIMAL(10, 2) DEFAULT 0.00, "
+			. "donation DECIMAL(10, 2) DEFAULT 0.00, "
+			. "total_cost DECIMAL(10, 2) DEFAULT 0.00 "
 
 			. ")"
 			;
@@ -249,14 +265,14 @@ function reg_install() {
 		//
 		// This table holds the different credit card types
 		//
-		$query = "CREATE TABLE reg_cc_type ("
+		$query = "CREATE TABLE {reg_cc_type} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			. "cc_type VARCHAR(255) "
 			. ")"
 			;
 		db_query($query);
 
-		$query = "INSERT INTO reg_cc_type (cc_type) "
+		$query = "INSERT INTO {reg_cc_type} (cc_type) "
 			. "VALUES "
 			. "('MasterCard'), "
 			. "('Visa'), "
@@ -268,14 +284,14 @@ function reg_install() {
 		//
 		// This table holds our different transaction types.
 		//
-		$query = "CREATE TABLE reg_trans_type ("
+		$query = "CREATE TABLE {reg_trans_type} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			. "trans_type VARCHAR(255) "
 			. ")"
 			;
 		db_query($query);
 
-		$query = "INSERT INTO reg_trans_type (trans_type) "
+		$query = "INSERT INTO {reg_trans_type} (trans_type) "
 			. "VALUES "
 			. "('Purchase'), "
 			. "('Refund'), "
@@ -286,14 +302,14 @@ function reg_install() {
 		//
 		// This table holds our different payment types
 		//
-		$query = "CREATE TABLE reg_payment_type ("
+		$query = "CREATE TABLE {reg_payment_type} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			. "payment_type VARCHAR(255) "
 			. ")"
 			;
 		db_query($query);
 
-		$query = "INSERT INTO reg_payment_type (payment_type) "
+		$query = "INSERT INTO {reg_payment_type} (payment_type) "
 			. "VALUES "
 			. "('Credit Card'), "
 			. "('Cash'), "
@@ -312,7 +328,7 @@ function reg_install() {
 		// All registrations, unsuccessful charges, records of manual 
 		// registrations, manual resending of emails, etc. is all kept here.
 		//
-		$query = "CREATE TABLE reg_log ( "
+		$query = "CREATE TABLE {reg_log} ( "
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			//
 			// Foreign key to the registration table. (optional)
@@ -346,7 +362,7 @@ function reg_install() {
 		// Create our table that holds years and the most recent badge 
 		// number.  This table will be accessed by reg::get_badge_num().
 		//
-		$query = "CREATE TABLE reg_badge_num ("
+		$query = "CREATE TABLE {reg_badge_num} ("
 			. "year INTEGER PRIMARY KEY, "
 			. "badge_num INTEGER NOT NULL "
 			. ")";
@@ -357,7 +373,7 @@ function reg_install() {
 		//
 		$year = reg::YEAR;
 		$badge_num = reg::START_BADGE_NUM;
-		$query = "INSERT INTO reg_badge_num "
+		$query = "INSERT INTO {reg_badge_num} "
 			. "VALUES ($year, $badge_num) "
 			;
 		db_query($query);
@@ -366,7 +382,7 @@ function reg_install() {
 		//
 		// All possible shirt sizes
 		//
-		$query = "CREATE TABLE reg_shirt_size ("
+		$query = "CREATE TABLE {reg_shirt_size} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			//
 			// If non-null, this t-shirt size is disabled.
@@ -377,7 +393,7 @@ function reg_install() {
 			;
 		db_query($query);
 
-		$query = "INSERT INTO reg_shirt_size (shirt_size) "
+		$query = "INSERT INTO {reg_shirt_size} (shirt_size) "
 			. "VALUES "
 			. "('Small'), "
 			. "('Medium'), "
@@ -412,37 +428,37 @@ function reg_uninstall() {
 */
 function reg_wipe() {
 
-	$query = "DROP TABLE IF EXISTS reg";
+	$query = "DROP TABLE IF EXISTS {reg}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_type";
+	$query = "DROP TABLE IF EXISTS {reg_type}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_status";
+	$query = "DROP TABLE IF EXISTS {reg_status}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_level";
+	$query = "DROP TABLE IF EXISTS {reg_level}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_trans";
+	$query = "DROP TABLE IF EXISTS {reg_trans}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_trans_type";
+	$query = "DROP TABLE IF EXISTS {reg_trans_type}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_payment_type";
+	$query = "DROP TABLE IF EXISTS {reg_payment_type}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_cc_type";
+	$query = "DROP TABLE IF EXISTS {reg_cc_type}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_log";
+	$query = "DROP TABLE IF EXISTS {reg_log}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_badge_num";
+	$query = "DROP TABLE IF EXISTS {reg_badge_num}";
 	db_query($query);
 
-	$query = "DROP TABLE IF EXISTS reg_shirt_size";
+	$query = "DROP TABLE IF EXISTS {reg_shirt_size}";
 	db_query($query);
 
 } // End of reg_wipe()

@@ -223,6 +223,7 @@ function theme_reg_theme($form) {
 	return(reg_theme::theme($form));
 }
 
+
 /*
 include("reg.install");
 reg_wipe();

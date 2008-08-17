@@ -2,21 +2,28 @@
 
 - User viewing secondary menu:
 	- Refund?
-		- admin/reg/members/view/35/addtrans
-			- Amounts (badge, donation)
-	- Balance adjustment?
 		- admin/reg/members/view/35/cancel
+			- Amounts (badge, donation)
+			- reg_status_cancel table that points to reg_status?
+	- Balance adjustment?
+		- admin/reg/members/view/35/addtrans
 			- Amounts prefilled in (0 for donation)
 
-- Financials
-	- Add to reg table: badge_balance, donation_balance
-	- Add code that updates the reg_trans table to also update the badge balances
-	- Display buttons for refund/balance adjustment?
+- Call Kage in the evening about about:
+	- When are emails sent?
+		- Registration?
+		- Manual registration?
+		- Staff registration?
+		- Anytime else?
+	- Authorize.net?
+	- Let him know about webserver migration in the middle of the week
 
 - reg/verify - Let a user verify their reigstration
 	- Ask for last 4 digits of credit card number and expiration date
 	- Print lines of registrations
 	- Maybe allow for upgrades this way?
+
+- Random Javascript for field focusing
 
 - Some utility to print unused badge numbers
 
@@ -52,7 +59,8 @@
 		- Store this confirmation email as a variable?
 	- Functions for generating months and years for dropdowns?
 
-- Authorize.net or something else entirely?
+- Credit cards
+	- Authorize.net or something else entirely?
 
 Long Term
 =========
@@ -60,6 +68,7 @@ Long Term
 - Learn how to do updates through Drupal
 
 - Can we have an upgrade type?
+	- Upgrade table that has a membership type, upgrade options, price, description, etc.
 
 - Export data as a spreadsheet
 	- Main membership data

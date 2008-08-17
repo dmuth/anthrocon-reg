@@ -210,6 +210,7 @@ $data["reg_level_id"] = 3;
 		//
 		$reg_trans_id = reg::charge_cc($data);
 
+
 		self::$reg_trans_id = $reg_trans_id;
 
 	} // End of registration_form_validate()

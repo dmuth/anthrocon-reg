@@ -210,6 +210,21 @@ class reg_member {
 			$row["status"] . " (" . $row["detail"] . ")"
 			);
 
+		$rows[] = array(
+			array("data" => "Badge Cost Balance", "header" => true),
+			"$" . $row["badge_cost"],
+			);
+
+		$rows[] = array(
+			array("data" => "Donation Balance", "header" => true),
+			"$" . $row["donation"],
+			);
+
+		$rows[] = array(
+			array("data" => "Total Balance", "header" => true),
+			"$" . $row["total_cost"],
+			);
+
 		$retval .= "<h2>Member Info</h2>";
 		$retval .= theme("table", array(), $rows);
 
@@ -317,7 +332,7 @@ class reg_member {
 		reg_log::log($message, $reg_id);
 
 		if (!empty($reg_trans_id)) {
-			$query = "UPDATE reg_trans "
+			$query = "UPDATE {reg_trans} "
 				. "SET "
 				. "reg_id='%s' "
 				. "WHERE "
@@ -326,6 +341,31 @@ class reg_member {
 			db_query($query, $query_args);
 
 		}
+
+		//
+		// Load that row from the transactions table to get the amounts of
+		// money that were involved, then update the balances foro the main
+		// registration record.
+		//
+		$query = "SELECT * "
+			. "FROM {reg_trans} "
+			. "WHERE "
+			. "id='%s' ";
+		$query_args = array($reg_trans_id);
+		$cursor = db_query($query, $query_args);
+		$trans_data = db_fetch_array($cursor);
+
+		$query = "UPDATE {reg} "
+			. "SET "
+			. "badge_cost = badge_cost + '%s', "
+			. "donation = donation + '%s', "
+			. "total_cost = total_cost + '%s' "
+			. "WHERE "
+			. "id='%s' "
+			;
+		$query_args = array($trans_data["badge_cost"], $trans_data["donation"], 
+			$trans_data["total_cost"], $reg_id);
+		db_query($query, $query_args);
 
 		return($badge_num);
 
