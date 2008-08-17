@@ -82,6 +82,23 @@ class reg_form {
 
 
 	/**
+	* Return the current Drupal path.
+	*/
+	static function get_path() {
+
+		//
+		// Remove the leading base path.
+		//
+		$retval = request_uri();
+		$base_path = base_path();
+		$retval = ereg_replace("^" . $base_path, "", $retval);
+
+		return($retval);
+
+	} // End of get_path()
+
+
+	/**
 	* Check and see if we are currently in a fake form or not.
 	*
 	* @return boolean True if we are in a fake form.
@@ -98,7 +115,7 @@ class reg_form {
 		//
 		// If the last "page" in our URL is "fake", return true.
 		//
-		$uri = request_uri();
+		$uri = self::get_path();
 		$fields = split("/", $uri);
 		$index = count($fields) - 1;
 
@@ -117,24 +134,6 @@ class reg_form {
 	* that form processing does not continue.
 	*/
 	static function reg_validate(&$form_id, &$data) {
-
-		//
-		// If we're allowing fake data and we're not currently in
-		// the fake form, send us there.
-		//
-		if (self::is_fake_data()) {
-			if (!empty($data["fake_data"])) {
-				if (!self::in_fake_form()) {
-					$message = t("Pay no attention to these errors.  "
-						. "Just submit the form again to add this member.");
-					drupal_set_message($message);
-					$uri = request_uri() . "/fake";
-					$uri = ltrim($uri, "/");
-					drupal_goto($uri);
-				}
-			}
-		}
-
 
 		//
 		// If we're in the admin, we can skip alot of this stuff.
@@ -337,12 +336,16 @@ $data["reg_level_id"] = 3;
 		//
 		if (self::is_fake_data()) {
 			if (!self::in_fake_form()) {
+
 				if (empty($id)) {
+					$url = self::get_path() . "/fake";
+					$title = t("Fill form with fake data");
+					$value = l($title, $url);
+
 					$retval["fake_data"] = array(
-						"#type" => "checkbox",
-						"#title" => "Fill form with fake data",
-						"#name" => "fake_data",
+						"#value" => $value,
 						);
+
 				}
 			}
 		}

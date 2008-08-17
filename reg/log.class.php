@@ -54,8 +54,10 @@ class reg_log {
 		$order_by = tablesort_sql($header);
 
 		$where = "";
+		$where_args = array();
 		if (!empty($id)) {
-			$where = "WHERE reg_log.reg_id='" . db_escape_string($id) . "' ";
+			$where = "WHERE reg_log.reg_id='%s' ";
+			$where_args[] = $id;
 		}
 
 		//
@@ -69,7 +71,8 @@ class reg_log {
 			. $where
 			. $order_by
 			;
-		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null);
+		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null, 
+			$where_args);
 		while ($row = db_fetch_array($cursor)) {
 			$id = $row["id"];
 
@@ -256,8 +259,10 @@ class reg_log {
 		$order_by = tablesort_sql($header);
 
 		$where = "";
+		$where_args = array();
 		if (!empty($id)) {
-			$where = "WHERE reg_trans.reg_id='" . db_escape_string($id) . "' ";
+			$where = "WHERE reg_trans.reg_id='%s' ";
+			$where_args[] = $id;
 		}
 
 		//
@@ -277,7 +282,8 @@ class reg_log {
 			. $where
 			. $order_by
 			;
-		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null);
+		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null, 
+			$where_args);
 		while ($row = db_fetch_array($cursor)) {
 
 			$id = $row["id"];

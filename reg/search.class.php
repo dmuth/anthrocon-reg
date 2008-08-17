@@ -112,32 +112,6 @@ class reg_search {
 
 
 	/**
-	* 
-	*/
-	static function search_results() {
-
-		$retval = "";
-
-		$search = self::search_get_args();
-                
-		if (empty($search)) {
-			return(null);
-		}
-
-		$retval = "Search results and SQL code goes here.";
-		/**
-		TODO:
-		- Search criteria based on each search element.
-		- Create table
-		- Make links to the edit page: admin/reg/members/view/reg_id
-		*/
-
-		return($retval);
-
-	} // End of search_results()
-
-
-	/**
 	* Make sure we have valid search criteria.
 	*/
 	static function search_validate($form_id, &$data) {
@@ -159,6 +133,132 @@ class reg_search {
 		drupal_goto($url);
 
 	} // End of search_submit()
+
+
+	/**
+	* Run our search and return search results.
+	*/
+	static function results() {
+
+		$retval = "";
+
+		$search = self::search_get_args();
+                
+		if (empty($search)) {
+			return(null);
+		}
+
+		$header = reg_member::get_member_table_header();
+
+		$order_by = tablesort_sql($header);
+
+		$cursor = self::get_cursor($search, $order_by);
+
+		while ($row = db_fetch_array($cursor)) {
+			$rows[] = reg_member::get_member_table_row($row);
+		}
+
+		$retval = theme("table", $header, $rows);
+
+		$retval .= theme_pager();
+
+		//$retval = "Search results and SQL code goes here.";
+		/**
+		TODO:
+		- Run query, with pager()
+		- Create table
+			- Borrow code from recent() function?
+		- Make links to the edit page: admin/reg/members/view/reg_id
+		- Later, offer a download link?
+		*/
+
+		return($retval);
+
+	} // End of search_results()
+
+
+	/**
+	* Return a SQL statement for searching the database.
+	*
+	* @param array $search Array of search criteria.
+	*
+	* @param string $order_by How are we ordering the results?
+	*/
+	static function get_cursor(&$search, $order_by) {
+
+		$where = array();
+		$args = array();
+
+		if (isset($search["badge_num"])) {
+			$where[] = "badge_num='%s'";
+			$args[] = $search["badge_num"];
+		}
+
+		if (!empty($search["name"])) {
+			$where[] = "("
+				. "badge_name LIKE '%%%s%%' "
+				. "OR first LIKE '%%%s%%' "
+				. "OR middle LIKE '%%%s%%' "
+				. "OR last LIKE '%%%s%%' "
+				. ")"
+				;
+			$args[] = $search["name"];
+			$args[] = $search["name"];
+			$args[] = $search["name"];
+			$args[] = $search["name"];
+		}
+
+		if (!empty($search["address"])) {
+			$where[] = "("
+				. "address1 LIKE '%%%s%%' "
+				. "OR address2 LIKE '%%%s%%' "
+				. "OR city LIKE '%%%s%%' "
+				. "OR state LIKE '%%%s%%' "
+				. "OR zip LIKE '%%%s%%' "
+				. "OR country LIKE '%%%s%%' "
+				. ")";
+
+			$args[] = $search["address"];
+			$args[] = $search["address"];
+			$args[] = $search["address"];
+			$args[] = $search["address"];
+			$args[] = $search["address"];
+			$args[] = $search["address"];
+		}
+
+		if (!empty($search["reg_type_id"])) {
+			$where[] = "reg_type_id='%s'";
+			$args[] = $search["reg_type_id"];
+		}
+
+		if (!empty($search["reg_status_id"])) {
+			$where[] = "reg_status_id='%s'";
+			$args[] = $search["reg_status_id"];
+		}
+
+		$where_string = "";
+		if (!empty($where)) {
+			$where_string = join(" AND ", $where);
+			$where_string = "WHERE $where_string";
+		}
+
+		$query = "SELECT "
+			. "reg.*, "
+			. "reg_type.member_type, "
+			. "reg_status.status "
+			. "FROM "
+			. "{reg} "
+			. "LEFT JOIN {reg_type} ON reg.reg_type_id = reg_type.id "
+			. "LEFT JOIN {reg_status} ON reg.reg_status_id = reg_status.id "
+			. $where_string . " "
+			. $order_by
+			;
+
+		$retval = pager_query($query, reg::ITEMS_PER_PAGE);
+
+		return($retval);
+
+	} // End of get_cursor()
 
 
 } // End of class reg_search

@@ -14,14 +14,7 @@ class reg_member {
 	*/
 	static function recent() {
 
-		$header = array();
-		$header[] = array("data" => "Id #", "field" => "id",
-			"sort" => "desc");
-		$header[] = array("data" => "Badge #", "field" => "badge_num");
-		$header[] = array("data" => "Badge Name", "field" => "badge_name");
-		$header[] = array("data" => "Real Name");
-		$header[] = array("data" => "Member Type", "field" => "member_type");
-		$header[] = array("data" => "Status", "field" => "status");
+		$header = self::get_member_table_header();
 
 		//
 		// By default, we'll be sorting by the reverse date.
@@ -44,36 +37,7 @@ class reg_member {
 		$cursor = pager_query($query, reg::ITEMS_PER_PAGE);
                 
 		while ($row = db_fetch_array($cursor)) {
-			$id = $row["id"];
-			$badge_num = $row["badge_num"];
-			$badge_name = $row["badge_name"];
-			$real_name = $row["first"] . " " . $row["middle"] . " "
-				. $row["last"];
-
-			$link = "admin/reg/members/view/" . $id . "/view";
-                        
-			//
-			// Stick in the username if we have it.
-			//
-			$username = $row["name"];
-			if (!empty($row["name"])) {
-				$uid = $row["uid"];
-				$user_link = l($username, "user/" . $uid);
-
-			} else {
-				$user_link = "Anonymous";
-
-			}
-
-			$rows[] = array(
-				l($id, $link),
-				l($badge_num, $link),
-				l($badge_name, $link),
-				$real_name,
-				$row["member_type"],
-				$row["status"],
-				);
-                
+			$rows[] = self::get_member_table_row($row);
 		}
                 
 		$retval = theme("table", $header, $rows);
@@ -83,6 +47,56 @@ class reg_member {
 		return($retval);
 
 	} // End of recent()
+
+
+	/**
+	* Return the table header for a member.
+	*/
+	static function get_member_table_header() {
+
+		$header = array();
+		$header[] = array("data" => "Id #", "field" => "id",
+			"sort" => "desc");
+		$header[] = array("data" => "Badge #", "field" => "badge_num");
+		$header[] = array("data" => "Badge Name", "field" => "badge_name");
+		$header[] = array("data" => "Real Name");
+		$header[] = array("data" => "Member Type", "field" => "member_type");
+		$header[] = array("data" => "Status", "field" => "status");
+
+		return($header);
+
+	} // End of get_member_table_header()
+
+
+	/**
+	* Turn a member record into a row for the table.
+	*
+	* @param array $row Associative array of a single member
+	*
+	* @return array A row to be displayed in a table.
+	*/
+	static function get_member_table_row(&$row) {
+
+		$id = $row["id"];
+		$badge_num = $row["badge_num"];
+		$badge_name = $row["badge_name"];
+		$real_name = $row["first"] . " " . $row["middle"] . " "
+			. $row["last"];
+
+		$link = "admin/reg/members/view/" . $id . "/view";
+                        
+		$retval = array(
+			l($id, $link),
+			l($badge_num, $link),
+			l($badge_name, $link),
+			$real_name,
+			$row["member_type"],
+			$row["status"],
+			);
+
+		return($retval);
+
+	} // End of get_member_table_row()
 
 
 	/**

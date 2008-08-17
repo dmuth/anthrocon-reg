@@ -139,7 +139,7 @@ function reg_admin_members_edit($id) {
 */
 function reg_admin_search() {
 	$retval = reg_search::search();
-	$retval .= reg_search::search_results();
+	$retval .= reg_search::results();
 	return($retval);
 }
 

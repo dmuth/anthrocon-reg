@@ -1,10 +1,8 @@
 
 
-- Write search screen
-	reg/search.class.php
+- Replace instances of db_escape_string()!  It is Postgres-specific!
 
 - Track down bug with not forcing the badge number on a manual add.
-	- Maybe put the badge code into the section before calling the new/update code?
 	- Generic "isValidNumber()" function?
 		- Check for positive and an integer
 	- Generic "isValidMoney()" function?
