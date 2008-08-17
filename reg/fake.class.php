@@ -18,10 +18,10 @@ class reg_fake {
 	*/
 	static function get_data(&$data) {
 
-		$data["badge_name"] = self::get_string();
-		$data["first"] = self::get_string();
-		$data["middle"] = self::get_string();
-		$data["last"] = self::get_string();
+		$data["badge_name"] = self::get_badge_name();
+		$data["first"] = self::get_first_name();
+		$data["middle"] = self::get_first_name();
+		$data["last"] = self::get_last_name();
 		$data["address1"] = self::get_string();
 		$data["address2"] = self::get_string();
 		$data["city"] = self::get_string();
@@ -90,6 +90,66 @@ class reg_fake {
 		return($retval);
 
 	} // End of get_cc_num()
+
+
+	/**
+	* Return a random array element.
+	*/
+	protected static function get_random_from_set($items) {
+
+		$len = count($items) - 1;
+		$index = mt_rand(0, $len);
+		$retval = $items[$index];
+
+		return($retval);
+
+	} // End of get_random_from_set()
+
+
+	/**
+	* Create a fake badge name.
+	*/
+	protected static function get_badge_name() {
+
+		$names = array("Fluffy", "Wolfy", "Skunky", "Lion", "Leopard",
+			"Chewtoy", "Catnip", "Mouse", "Paws");
+
+		$retval = self::get_random_from_set($names) 
+			. self::get_number(0, 99);
+
+		return($retval);
+
+	} // End of get_badge_name()
+
+
+	/**
+	* Create a fake first name.
+	*/
+	protected static function get_first_name() {
+
+		$names = array("Sam", "Doug", "Dave", "John", "Mark", "Dan", "Phil", 
+			"Joe");
+
+		$retval = self::get_random_from_set($names);
+
+		return($retval);
+		
+	} // End of get_first_name()
+
+
+	/**
+	* Create a fake last name.
+	*/
+	protected static function get_last_name() {
+
+		$names = array("Conway", "Muth", "Smith", "Johnson", "Phillips", 
+			"Stevensen");
+
+		$retval = self::get_random_from_set($names);
+
+		return($retval);
+
+	} // End of get_last_name()
 
 
 } // End of reg_fake class
