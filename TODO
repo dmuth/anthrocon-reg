@@ -1,20 +1,12 @@
 
 
-- Add reg_level.description field
-
-	- View registrations
-		- Note taking via logs?
-			- Handle very long fields
-				- I think Drupal has a function for this.  Check watchdog.
-
-	- User viewing secondary menu:
-		- Add note?
-			- admin/reg/members/view/35/addnote
-		- Refund?  Balance adjustment?
-			- admin/reg/members/view/35/addtrans
-				- Amounts (badge, donation)
-			- admin/reg/members/view/35/cancel
-				- Amounts prefilled in (0 for donation)
+- User viewing secondary menu:
+	- Refund?
+		- admin/reg/members/view/35/addtrans
+			- Amounts (badge, donation)
+	- Balance adjustment?
+		- admin/reg/members/view/35/cancel
+			- Amounts prefilled in (0 for donation)
 
 - Financials
 	- Add to reg table: badge_balance, donation_balance

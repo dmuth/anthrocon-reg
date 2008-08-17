@@ -11,6 +11,13 @@ class reg_log {
 	* the Drupal watchdog() facility, but also logs entries via our own logging
 	* table.  This way, we can keep track of log entries in the registration 
 	* system for months, or even years if necessary.
+	*
+	* @param string $message The log message
+	*
+	* @param integer $reg_id An optional value for the registered user's ID.
+	*
+	* @param mixed $severity The severity of the message.  See Drupal's 
+	*	watchdog() function docs for more details on this.
 	*/
 	static function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
 
@@ -89,11 +96,18 @@ class reg_log {
 
 			}
 			
+			$max_len = 60;
+
 			$link = "admin/reg/logs/view/" . $id;
 			$date = format_date($row["date"], "small");
+			$message = truncate_utf8($row["message"], $max_len);
+			if (strlen($row["message"]) > $max_len) {
+				$message .= "...";
+			}
+
 			$rows[] = array(
 				l($date, $link),
-				$row["message"],
+				l($message, $link),
 				$user_link,
 				);
 		}
@@ -117,9 +131,12 @@ class reg_log {
 	function log_detail($id) {
 
 		$query = "SELECT reg_log.*, "
+			. "reg.badge_num, reg.badge_name, "
+			. "reg.first, reg.middle, reg.last, "
 			. "users.uid, users.name "
 			. "FROM {reg_log} "
 			. "LEFT JOIN {users} ON reg_log.uid = users.uid "
+			. "LEFT JOIN {reg} ON reg_log.reg_id = reg.id "
 			. "WHERE "
 			. "reg_log.id='%s' ";
 		$query_args = array($id);
@@ -141,6 +158,11 @@ class reg_log {
 
 		}
 			
+		if (!empty($row["reg_id"])) {
+			$member_link = "admin/reg/members/view/" 
+				. $row["reg_id"] . "/view";
+		}
+
 		$rows = array();
 		$rows[] = array(
 			array("data" => "Registration Log ID#", "header" => true),
@@ -150,10 +172,30 @@ class reg_log {
 			array("data" => "Date", "header" => true),
 			format_date($row["date"], "small"),
 			);
-		$rows[] = array(
-			array("data" => "User", "header" => true),
-			$user_link
-			);
+
+		if (!empty($row["badge_num"])) {
+			$rows[] = array(
+				array("data" => "Badge Number", "header" => true),
+				l($row["badge_num"], $member_link)
+				);
+		}
+
+		if (!empty($row["badge_name"])) {
+			$rows[] = array(
+				array("data" => "Badge Name", "header" => true),
+				l($row["badge_name"], $member_link)
+				);
+		}
+
+		if (!empty($row["first"])) {
+			$name = $row["first"] . " " 
+				. $row["middle"] . " " . $row["last"];
+			$rows[] = array(
+				array("data" => "Real Name", "header" => true),
+				l($name, $member_link)
+				);
+		}
+
 		$rows[] = array(
 			array("data" => "Location", "header" => true),
 			"<a href=\"" . $row["url"] . "\">" . $row["url"] . "</a>",
@@ -162,6 +204,10 @@ class reg_log {
 			array("data" => "Referrer", "header" => true),
 			"<a href=\"" . $row["referrer"] . "\">" 
 				. $row["referrer"] . "</a>",
+			);
+		$rows[] = array(
+			array("data" => "User", "header" => true),
+			$user_link
 			);
 		$rows[] = array(
 			array("data" => "Message", "header" => true),

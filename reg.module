@@ -134,6 +134,27 @@ function reg_admin_members_edit($id) {
 	return(reg_member::edit_reg($id));
 }
 
+function reg_admin_members_add_note($id) {
+	return(reg_member::add_note($id));
+}
+
+/**
+* Our "Add a note" form.
+*/
+function reg_admin_members_add_note_form($id) {
+	return(reg_member::add_note_form($id));
+}
+
+function reg_admin_members_add_note_form_validate($form_id, &$data) {
+	return(reg_member::add_note_form_validate($form_id, $data));
+}
+
+function reg_admin_members_add_note_form_submit($form_id, &$data) {
+	return(reg_member::add_note_form_submit($form_id, $data));
+}
+
+
+
 /**
 * Searching registrations.
 */

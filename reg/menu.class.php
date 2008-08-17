@@ -16,6 +16,8 @@ class reg_menu {
 
 		$retval = array();
 
+		// Debugging.  Note that this will break viewing of individual members.
+		//$may_cache = 1; 
 		if ($may_cache) {
 			self::get_menu($retval, $may_cache);
 		}
@@ -224,6 +226,15 @@ Uncomment this when we actually have stats.
 					"callback" => "reg_admin_members_edit",
 					"callback arguments" => array(arg(4)),
 					"type" => MENU_LOCAL_TASK,
+					);
+
+				$retval[] = array(
+					"path" => "admin/reg/members/view/" . arg(4) . "/add_note",
+					"title" => t("Add Note"),
+					"callback" => "reg_admin_members_add_note",
+					"callback arguments" => array(arg(4)),
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 1,
 					);
 
 			}

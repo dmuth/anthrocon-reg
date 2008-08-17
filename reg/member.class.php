@@ -386,5 +386,102 @@ class reg_member {
 	} // End of update_member()
 
 
+	/**
+	* Add a note to an existing member.
+	*/
+	static function add_note($id) {
+
+		$retval = "";
+
+		$retval .= "<h2>Add Member Note</h2>";
+		$retval .= drupal_get_form("reg_admin_members_add_note_form", $id);
+
+		return($retval);
+
+	} // End of add_note()
+
+
+	static function add_note_form($id) {
+
+		$retval = array();
+		$data = reg_member::load_reg($id);
+
+		$retval["reg_id"] = array(
+			"#type" => "hidden",
+			"#value" => $id,
+			);
+
+		$retval["badge_name"] = array(
+			"#title" => "Badge Name",
+			"#type" => "textfield",
+			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["badge_name"],
+			"#disabled" => true,
+			);
+
+		$retval["badge_num"] = array(
+			"#title" => "Badge Number",
+			"#type" => "textfield",
+			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["badge_num"],
+			"#disabled" => true,
+			);
+
+		$name = $data["first"]
+			. " " . $data["middle"]
+			. " " . $data["last"]
+			;
+
+		$retval["real_name"] = array(
+			"#title" => "Name",
+			"#type" => "textfield",
+			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $name,
+			"#disabled" => true,
+			);
+
+		$retval["notes"] = array(
+			"#title" => "Notes",
+			"#description" => t("Enter as much as you like about this user. ")
+				. t("They will NOT see your comments."),
+			"#type" => "textarea",
+			"#required" => true,
+			);
+
+		$retval["submit"] = array(
+			"#type" => "submit",
+			"#value" => t("Save Note")
+			);
+
+		return($retval);
+
+	} // End of add_note_form()
+
+
+	static function add_note_form_validate($form_id, &$data) {
+	} // End of add_note_form_validate()
+
+
+	/**
+	* Save the new note.
+	*/ 
+	static function add_note_form_submit($form_id, &$data) {
+
+		$reg_id = $data["reg_id"];
+		$message = $data["notes"];
+
+		reg_log::log($message, $reg_id);
+
+		drupal_set_message(t("Log entry saved for this member."));
+
+		//
+		// Redirect the user back to the viewing page.
+		//
+		$uri = "admin/reg/members/view/" . $reg_id . "/view";
+		return($uri);
+
+	} // End of add_note_form_submit()
+
+
 } // End of reg_member class
 
