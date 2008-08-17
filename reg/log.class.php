@@ -238,15 +238,15 @@ class reg_log {
 		//
 		// Save the successful charge in reg_trans.
 		//
-		$query = "INSERT INTO reg_trans ("
-			. "uid, "
+		$query = "INSERT INTO {reg_trans} ("
+			. "uid, reg_id, "
 			. "date, reg_trans_type_id, reg_payment_type_id, "
 			. "first, middle, last, address1, address2, "
 			. "city, state, zip, country, "
 			. "reg_cc_type_id, cc_num, card_expire, "
 			. "badge_cost, donation, total_cost "
 			. ") VALUES ("
-			. "'%s', "
+			. "'%s', '%s', "
 			. "'%s', '%s', '%s', "
 			. "'%s', '%s', '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', '%s', "
@@ -257,9 +257,25 @@ class reg_log {
 		$exp = $data["cc_exp"];
 		$exp_string = $exp["year"] . "-" . $exp["month"] ."-0";
 
-		$data["cc_name"] = reg_data::get_cc_name($data["cc_type"], $data["cc_num"]);
+		//
+		// Make sure we have actual numbers here, just in case.
+		//
+		if (empty($data["badge_cost"])) {
+			$data["badge_cost"] = 0;
+		}
+
+		if (empty($data["donation"])) {
+			$data["donation"] = 0;
+		}
+
+		if (!empty($data["cc_num"])) {
+			$data["cc_name"] = reg_data::get_cc_name($data["cc_type"], 
+				$data["cc_num"]);
+		}
+		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
+
 		$query_args = array(
-			$user->uid, 
+			$user->uid, $data["reg_id"], 
 			time(), 1, 1,
 			$data["first"], $data["middle"], $data["last"], 
 				$data["address1"], $data["address2"],
@@ -269,6 +285,24 @@ class reg_log {
 			);
 
 		db_query($query, $query_args);
+
+		//
+		// Update our main registration record, if one is present.
+		//
+		if (!empty($data["reg_id"])) {
+			$query = "UPDATE {reg} "
+				. "SET "
+				. "badge_cost = badge_cost + '%s', "
+				. "donation = donation + '%s', "
+				. "total_cost = total_cost + '%s' "
+				. "WHERE "
+				. "id='%s' ";
+			$query_args = array($data["badge_cost"], $data["donation"],
+				$data["total_cost"], $data["reg_id"]);
+			db_query($query, $query_args);
+
+		}
+
 
 		$id = reg_data::get_insert_id();
 
@@ -379,10 +413,12 @@ class reg_log {
 	function trans_detail($id) {
 
 		$query = "SELECT reg_trans.*, "
+			. "reg.badge_num, reg.badge_name, "
 			. "reg_payment_type.payment_type, "
 			. "reg_trans_type.trans_type, "
 			. "users.uid, users.name "
 			. "FROM {reg_trans} "
+			. "LEFT JOIN {reg} ON reg_trans.reg_id = reg.id "
 			. "LEFT JOIN {reg_trans_type} "
 				. "ON reg_trans_type_id = reg_trans_type.id "
 			. "LEFT JOIN {reg_payment_type} "
@@ -418,35 +454,72 @@ class reg_log {
 			array("data" => "Date", "header" => true),
 			format_date($row["date"], "small"),
 			);
+
+		if (!empty($row["badge_num"])) {
+			$rows[] = array(
+				array("data" => "Badge Number", "header" => true),
+				l($row["badge_num"], $member_link)
+				);
+		}
+
+		if (!empty($row["badge_name"])) {
+			$rows[] = array(
+				array("data" => "Badge Name", "header" => true),
+				l($row["badge_name"], $member_link)
+				);
+		}
+
+		if (!empty($row["first"])) {
+			$name = $row["first"] . " " 
+				. $row["middle"] . " " . $row["last"];
+			$rows[] = array(
+				array("data" => "Real Name", "header" => true),
+				l($name, $member_link)
+				);
+		}
+
 		$rows[] = array(
 			array("data" => "User", "header" => true),
 			$user_link
 			);
 
-		$name = $row["first"] . " " . $row["middle"] . " " . $row["last"];
-		$rows[] = array(
-			array("data" => "Name", "header" => true),
-			$name
-			);
-		$address = $row["address1"] . "<br>\n"
-			. $row["address2"] . "<br>\n"
-			. $row["city"] . ", " . $row["state"] . " " . $row["zip"] 
-				. "<br>\n"
-			. $row["country"]
-			;
-		$rows[] = array(
-			array("data" => "Address", "header" => true, "valign" => "top"),
-			$address
-			);
+		if (!empty($row["first"])) {
+			$name = $row["first"] . " " . $row["middle"] 
+				. " " . $row["last"];
+			$rows[] = array(
+				array("data" => "Name", "header" => true),
+				$name
+				);
+		}
 
-		$rows[] = array(
-			array("data" => "Payment Type", "header" => true),
-			$row["payment_type"]
-			);
-		$rows[] = array(
-			array("data" => "Credit Card", "header" => true),
-			$row["cc_num"]
-			);
+		if (!empty($row["address1"])) {
+			$address = $row["address1"] . "<br>\n"
+				. $row["address2"] . "<br>\n"
+				. $row["city"] . ", " . $row["state"] . " " . $row["zip"] 
+				. "<br>\n"
+				. $row["country"]
+				;
+			$rows[] = array(
+				array("data" => "Address", "header" => true, "valign" => "top"),
+				$address
+				);
+
+		}
+
+		if (!empty($row["payment_type"])) {
+			$rows[] = array(
+				array("data" => "Payment Type", "header" => true),
+				$row["payment_type"]
+				);
+		}
+
+		if (!empty($row["cc_num"])) {
+			$rows[] = array(
+				array("data" => "Credit Card", "header" => true),
+				$row["cc_num"]
+				);
+		}
+
 		$rows[] = array(
 			array("data" => "Transaction Type", "header" => true),
 			$row["trans_type"]

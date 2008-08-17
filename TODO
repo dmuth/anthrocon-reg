@@ -1,10 +1,6 @@
 
 
 - User viewing secondary menu:
-	- Refund?
-		- admin/reg/members/view/35/cancel
-			- Amounts (badge, donation)
-			- reg_status_cancel table that points to reg_status?
 	- Balance adjustment?
 		- admin/reg/members/view/35/addtrans
 			- Amounts prefilled in (0 for donation)
@@ -17,6 +13,16 @@
 		- Anytime else?
 	- Authorize.net?
 	- Let him know about webserver migration in the middle of the week
+
+- Post pics:
+	- Search page and results
+	- Cancel a membership
+	- Balance Adjustment
+	- Member page
+	- Fake data page
+
+- Manually adding registrations
+	- Dropdown to list payment methods
 
 - reg/verify - Let a user verify their reigstration
 	- Ask for last 4 digits of credit card number and expiration date

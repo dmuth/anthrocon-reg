@@ -295,6 +295,7 @@ function reg_install() {
 			. "VALUES "
 			. "('Purchase'), "
 			. "('Refund'), "
+			. "('Balance Adjustment'), "
 			. "('Upgrade') "
 			;
 		db_query($query);

@@ -218,6 +218,7 @@ Uncomment this when we actually have stats.
 					"callback arguments" => array(arg(4)),
 					"weight" => -10,
 					"type" => MENU_LOCAL_TASK,
+					"weight" => 0,
 					);
 
 				$retval[] = array(
@@ -226,6 +227,7 @@ Uncomment this when we actually have stats.
 					"callback" => "reg_admin_members_edit",
 					"callback arguments" => array(arg(4)),
 					"type" => MENU_LOCAL_TASK,
+					"weight" => 1,
 					);
 
 				$retval[] = array(
@@ -234,7 +236,25 @@ Uncomment this when we actually have stats.
 					"callback" => "reg_admin_members_add_note",
 					"callback arguments" => array(arg(4)),
 					"type" => MENU_LOCAL_TASK,
-					"weight" => 1,
+					"weight" => 2,
+					);
+
+				$retval[] = array(
+					"path" => "admin/reg/members/view/" . arg(4) . "/cancel",
+					"title" => t("Cancel Membership"),
+					"callback" => "reg_admin_members_cancel",
+					"callback arguments" => array(arg(4)),
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 2,
+					);
+
+				$retval[] = array(
+					"path" => "admin/reg/members/view/" . arg(4) . "/adjust",
+					"title" => t("Balance Adjustment"),
+					"callback" => "reg_admin_members_adjust",
+					"callback arguments" => array(arg(4)),
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 2,
 					);
 
 			}
