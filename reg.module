@@ -175,6 +175,26 @@ function reg_admin_members_cancel_form_submit($form_id, $data) {
 
 
 /**
+* Balance adjustments
+*/
+function reg_admin_members_adjust($id) {
+	return(reg_member::adjust($id));
+}
+
+function reg_admin_members_adjust_form($id) {
+	return(reg_member::adjust_form($id));
+}
+
+function reg_admin_members_adjust_form_validate($form_id, $data) {
+	return(reg_member::adjust_form_validate($form_id, $data));
+}
+
+function reg_admin_members_adjust_form_submit($form_id, $data) {
+	return(reg_member::adjust_form_submit($form_id, $data));
+}
+
+
+/**
 * Searching registrations.
 */
 function reg_admin_search() {

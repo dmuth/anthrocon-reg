@@ -305,7 +305,8 @@ function reg_install() {
 		//
 		$query = "CREATE TABLE {reg_payment_type} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "payment_type VARCHAR(255) "
+			. "payment_type VARCHAR(255), "
+			. "weight INTEGER DEFAULT 0 "
 			. ")"
 			;
 		db_query($query);
@@ -320,7 +321,8 @@ function reg_install() {
 			. "('Board'), "
 			. "('Staff'), "
 			. "('Guest of Honor'), "
-			. "('Guest') "
+			. "('Guest'), "
+			. "('Misc/Other') "
 			;
 		db_query($query);
 

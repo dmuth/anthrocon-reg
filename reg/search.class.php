@@ -130,7 +130,7 @@ class reg_search {
 		$get_data = rawurlencode($get_data);
 
 		$url = "admin/reg/members/search/" . $get_data;
-		drupal_goto($url);
+		reg::goto_url($url);
 
 	} // End of search_submit()
 

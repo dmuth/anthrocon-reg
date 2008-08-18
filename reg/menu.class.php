@@ -254,7 +254,7 @@ Uncomment this when we actually have stats.
 					"callback" => "reg_admin_members_adjust",
 					"callback arguments" => array(arg(4)),
 					"type" => MENU_LOCAL_TASK,
-					"weight" => 2,
+					"weight" => 3,
 					);
 
 			}

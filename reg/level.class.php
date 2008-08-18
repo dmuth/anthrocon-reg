@@ -317,7 +317,8 @@ class reg_level {
 
 		drupal_set_message($message);
 
-		drupal_goto("admin/reg/levels");
+		$uri = "admin/reg/levels";
+		reg::goto_url($uri);
 
 	} // End of level_form_submit()
 

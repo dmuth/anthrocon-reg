@@ -1,18 +1,6 @@
 
 
-- User viewing secondary menu:
-	- Balance adjustment?
-		- admin/reg/members/view/35/addtrans
-			- Amounts prefilled in (0 for donation)
-
-- Call Kage in the evening about about:
-	- When are emails sent?
-		- Registration?
-		- Manual registration?
-		- Staff registration?
-		- Anytime else?
-	- Authorize.net?
-	- Let him know about webserver migration in the middle of the week
+- Refactor cancellation and adjustment form into reg/admin/cancel.class.php
 
 - Post pics:
 	- Search page and results
@@ -20,6 +8,15 @@
 	- Balance Adjustment
 	- Member page
 	- Fake data page
+
+- Email sending
+	- Registration?
+	- Manual registration?
+	- Staff registration?
+		- "basically, when a badge number is assigned"
+
+	- Authorize.net?
+	- Let him know about webserver migration in the middle of the week
 
 - Manually adding registrations
 	- Dropdown to list payment methods

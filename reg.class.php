@@ -314,5 +314,34 @@ shirt_size (staff and super sponsors)
 	} // End of registration()
 
 
+	/**
+	* Wrapper for drupal_goto().
+	*
+	* Normally in Drupal 5 when a "submit" function is fired for a form,
+	*	the optional return value can be a URI to redirect the user to.
+	*	Unfortunately, the drupal_goto() function makes use of the $base_url
+	*	variable, which does not include the current SSL setting.
+	*	So an HTTPS conneciton will be redirected to an HTTP connection.
+	*	That is bad.
+	*
+	* This function gets around that by creating a full URL based on the
+	*	URI that is passed in, and preserving HTTPS URLs, *then* redirecting
+	*	the user with drupal_goto().
+	*
+	* @param string $uri The URL we want to send the user to.
+	*/
+	static function goto_url($uri) {
+
+		$url = url($uri, null, null, true);
+
+		if ($_SERVER["SERVER_PORT"] == 443) {
+			$url = str_replace("http://", "https://", $url);
+		}
+
+		drupal_goto($url);
+
+	} // End of goto_url()
+
+
 } // End of reg class
 

@@ -248,7 +248,8 @@ $data["reg_level_id"] = 3;
 		//
 		// TODO: Set redirection to verify page?
 		// 
-		return("");
+		$uri = "";
+		reg::goto_url($uri);
 
 	} // End of registration_form_submit()
 

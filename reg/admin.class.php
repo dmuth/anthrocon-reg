@@ -129,6 +129,9 @@ class reg_admin {
 		variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, $data["conduct_path"]);
 		drupal_set_message("Settings updated");
 
+		$uri = "admin/reg/settings";
+		reg::goto_url($uri);
+
 	}
 
 

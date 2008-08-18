@@ -276,7 +276,7 @@ class reg_log {
 
 		$query_args = array(
 			$user->uid, $data["reg_id"], 
-			time(), 1, 1,
+			time(), $data["reg_trans_type_id"], $data["reg_payment_type_id"],
 			$data["first"], $data["middle"], $data["last"], 
 				$data["address1"], $data["address2"],
 			$data["city"], $data["state"], $data["zip"], $data["country"],
