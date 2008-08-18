@@ -1,7 +1,4 @@
 
-
-- Refactor cancellation and adjustment form into reg/admin/cancel.class.php
-
 - Post pics:
 	- Search page and results
 	- Cancel a membership
@@ -20,6 +17,9 @@
 
 - Manually adding registrations
 	- Dropdown to list payment methods
+		- Payment Type
+		- Amount, Donation
+	- Saving should log a transaction
 
 - reg/verify - Let a user verify their reigstration
 	- Ask for last 4 digits of credit card number and expiration date

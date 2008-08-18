@@ -385,8 +385,8 @@ class reg_log {
 			$date_string = format_date($row["date"], "small");
 			$rows[] = array(
 				l($date_string, $link),
-				$row["payment_type"],
-				$row["trans_type"],
+				l($row["payment_type"], $link),
+				l($row["trans_type"], $link),
 				l("$" . $row["badge_cost"], $link),
 				l("$" . $row["donation"], $link),
 				l("$" . $row["total_cost"], $link),
@@ -444,7 +444,12 @@ class reg_log {
 			$user_link = "Anonymous";
 
 		}
-			
+
+		if (!empty($row["reg_id"])) {
+			$member_link = "admin/reg/members/view/" 
+				. $row["reg_id"] . "/view";
+		}
+
 		$rows = array();
 		$rows[] = array(
 			array("data" => "Transaction Log ID#", "header" => true),
