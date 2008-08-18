@@ -221,6 +221,11 @@ $data["reg_level_id"] = 3;
 	*/
 	static function reg_submit(&$form_id, &$data) {
 
+		//
+		// The URI to send ourselves to
+		//
+		$uri = "";
+
 		if (!self::in_admin()) {
 			//
 			// Front-end submissions are always new.
@@ -234,11 +239,11 @@ $data["reg_level_id"] = 3;
 			//
 			if (!empty($data["reg_id"])) {
 				self::reg_submit_update($data);
-				return("admin/reg/members/view/" . $data["reg_id"] . "/edit");
+				$uri = "admin/reg/members/view/" . $data["reg_id"] . "/edit";
 
 			} else {
 				self::reg_submit_new($data);
-				return("admin/reg/members");
+				$uri = "admin/reg/members";
 			}
 		}
 
@@ -248,7 +253,6 @@ $data["reg_level_id"] = 3;
 		//
 		// TODO: Set redirection to verify page?
 		// 
-		$uri = "";
 		reg::goto_url($uri);
 
 	} // End of registration_form_submit()

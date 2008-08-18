@@ -27,6 +27,7 @@
 	- Maybe allow for upgrades this way?
 
 - Random Javascript for field focusing
+	- I should create a Javascript file for front end stuff and admin stuff
 
 - Some utility to print unused badge numbers
 
@@ -57,10 +58,8 @@
 
 - Class architecture
 	- Function to check for SSL
-	- Function to log an event based on ID from reg table
 	- Function to send confirmation email for a specific registration
 		- Store this confirmation email as a variable?
-	- Functions for generating months and years for dropdowns?
 
 - Credit cards
 	- Authorize.net or something else entirely?

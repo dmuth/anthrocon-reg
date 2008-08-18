@@ -274,7 +274,7 @@ class reg_member {
 
 		return($retval);
 
-	} // End of update()
+	} // End of add_reg()
 
 
 	/**
