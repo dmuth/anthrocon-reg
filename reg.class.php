@@ -315,6 +315,38 @@ shirt_size (staff and super sponsors)
 
 
 	/**
+	* Are we currently in SSL?
+	*
+	* @return boolean True if we are.  False otherwise.
+	*/
+	static function is_ssl() {
+		if ($_SERVER["SERVER_PORT"] == 443
+			|| $_SERVER["SERVER_PORT"] == 8443
+			) {
+			return(true);
+		}
+
+		return(false);
+
+	} // End of is_ssl()
+
+
+	/**
+	*
+	*/
+// TEST
+	static function force_ssl() {
+
+		if (!self::is_ssl()) {
+			$uri = request_uri();
+			$_SERVER["SERVER_PORT"]= 443;
+			self::goto_url($uri);
+		}
+
+	} // End of force_ssl()
+
+
+	/**
 	* Wrapper for drupal_goto().
 	*
 	* Normally in Drupal 5 when a "submit" function is fired for a form,
@@ -332,9 +364,28 @@ shirt_size (staff and super sponsors)
 	*/
 	static function goto_url($uri) {
 
+		//
+		// It seems that the url() function preprends a slash to the URL,
+		// and since request_uri(), also does that in force_ssl(), we can
+		// get redirected to URLs like http://www.anthrocon.org//reg.
+		// Believe it or not, that's perfectly okay.  What is NOT okay is
+		// passing such a URL into this function later, as it completely
+		// breaks drupal_goto().  So we get rid of any instances of "//"
+		// here.
+		//
+		// I don't do this in the final URL, since I would have to do pattern
+		// matching, something I'm trying to avoid to possibly high numbers 
+		// of redirects to SSL.
+		//
+		$uri = str_replace("//", "/", $uri);
+
 		$url = url($uri, null, null, true);
 
-		if ($_SERVER["SERVER_PORT"] == 443) {
+		//
+		// If we are currently in SSL mode, change the target URL 
+		// to also be in SSL.
+		//
+		if (self::is_ssl()) {
 			$url = str_replace("http://", "https://", $url);
 		}
 

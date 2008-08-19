@@ -61,6 +61,7 @@ function reg_menu($may_cache) {
 * Our public registration page.
 */
 function reg_registration() {
+	reg::force_ssl();
 	return(reg::registration());
 }
 
@@ -81,6 +82,7 @@ function reg_registration_form_submit($form_id, &$data) {
 * Our settings form.
 */
 function reg_admin_settings() {
+	reg::force_ssl();
 	return(reg_admin::settings());
 }
 
@@ -100,10 +102,12 @@ function reg_admin_settings_form_submit($form_id, $data) {
 * Membership level editing stuff.
 */
 function reg_admin_levels() {
+	reg::force_ssl();
 	return(reg_level::levels());
 }
 
 function reg_admin_levels_edit($id = "") {
+	reg::force_ssl();
 	return(reg_level::levels_edit($id));
 }
 
@@ -123,6 +127,7 @@ function reg_admin_level_form_submit($form_id, $data) {
 * Viewing recent registrations.
 */
 function reg_admin_members() {
+	reg::force_ssl();
 	return(reg_member::recent());
 }
 
@@ -138,6 +143,7 @@ function reg_admin_members_edit($id) {
 * Our "Add a note" form.
 */
 function reg_admin_members_add_note($id) {
+	reg::force_ssl();
 	return(reg_member::add_note($id));
 }
 
@@ -158,6 +164,7 @@ function reg_admin_members_add_note_form_submit($form_id, &$data) {
 * Cancellation form for admins.
 */
 function reg_admin_members_cancel($id) {
+	reg::force_ssl();
 	return(reg_admin_cancel::cancel($id));
 }
 
@@ -178,6 +185,7 @@ function reg_admin_members_cancel_form_submit($form_id, $data) {
 * Balance adjustments
 */
 function reg_admin_members_adjust($id) {
+	reg::force_ssl();
 	return(reg_admin_adjust::adjust($id));
 }
 
@@ -198,6 +206,7 @@ function reg_admin_members_adjust_form_submit($form_id, $data) {
 * Searching registrations.
 */
 function reg_admin_search() {
+	reg::force_ssl();
 	$retval = reg_search::search();
 	$retval .= reg_search::results();
 	return($retval);
@@ -221,6 +230,7 @@ function reg_admin_search_form_submit($form_id, &$data) {
 * Adding a new registration.
 */
 function reg_admin_members_add() {
+	reg::force_ssl();
 	return(reg_member::add_reg());
 }
 
@@ -228,6 +238,7 @@ function reg_admin_members_add() {
 * Viewing logs.
 */
 function reg_admin_log() {
+	reg::force_ssl();
 	return(reg_log::log_recent());
 }
 
@@ -244,6 +255,7 @@ function reg_admin_trans_detail($id) {
 }
 
 function reg_admin_main() {
+	reg::force_ssl();
 	return(reg_admin::main());
 }
 
@@ -251,6 +263,7 @@ function reg_admin_main() {
 * Viewing registration stats.
 */
 function reg_admin_stats() {
+	reg::force_ssl();
 return("This is where our stats page would go.");
 }
 

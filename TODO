@@ -1,4 +1,14 @@
 
+- reg/verify - Let a user verify their reigstration
+	- Have reg::get_cc_name() call reg::get_cc_last_4()
+	- Save only last 4 digits of CC num to reg_trans.card_num
+	- Ask for last name, last 4 digits of credit card number and expiration date
+	- Print lines of registrations
+
+- Ask NFSN for rsync.net
+
+- Remove "donate" status.
+
 - Email sending
 	- Registration?
 	- Manual registration?
@@ -14,12 +24,8 @@
 		- Amount, Donation
 	- Saving should log a transaction
 
-- reg/verify - Let a user verify their reigstration
-	- Ask for last 4 digits of credit card number and expiration date
-	- Print lines of registrations
-	- Maybe allow for upgrades this way?
-
 - Random Javascript for field focusing
+	- Compute total on registration form
 	- I should create a Javascript file for front end stuff and admin stuff
 
 - Some utility to print unused badge numbers
@@ -39,8 +45,6 @@
 - reg/
 	- On successful registration, stash stuff to display in $_SESSION
 		and go to a pre-filled verify page?
-	- Have reg::get_cc_name() call reg::get_cc_last_4()
-	- Save only last 4 digits of CC num to reg_trans.card_num
 	- When a transaction fails, log it to reg_log with reg::get_cc_name()
 	- When a membership is paid for, redirect to reg/verify with status messages
 		and the form pre-filled
