@@ -7,22 +7,27 @@
 
 - Ask NFSN for rsync.net
 
+- Talk to comodo about free SSL cert
+
 - Remove "donate" status.
-
-- Email sending
-	- Registration?
-	- Manual registration?
-	- Staff registration?
-		- "basically, when a badge number is assigned"
-
-	- Authorize.net?
-	- Let him know about webserver migration in the middle of the week
 
 - Manually adding registrations
 	- Dropdown to list payment methods
 		- Payment Type
 		- Amount, Donation
 	- Saving should log a transaction
+
+- Email sending
+	- "Settings" menu item on left
+		- default tab should be "Main Settings"
+		- Separate tab for "Emails"
+			- Sub tab for each email:
+				- Email to member when signed up
+				- Email to member when added
+			- "Send email" button for each Complete member
+				- Will print a form with the email to be sent
+
+	- "basically, when a badge number is assigned"
 
 - Random Javascript for field focusing
 	- Compute total on registration form
