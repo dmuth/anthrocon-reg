@@ -33,7 +33,7 @@ class reg_fake {
 		$data["phone"] = self::get_string();
 		$data["shirt_size_id"] = self::get_number(1, 5);
 		$data["conduct"] = 1;
-		$data["cc_type"] = self::get_number(1, 4);
+		$data["cc_type_id"] = self::get_number(1, 4);
 		$data["cc_num"] = self::get_cc_num();
 		$data["cc_exp"]["month"] = self::get_number(1, 12);
 		$data["cc_exp"]["year"] = date("Y") + self::get_number(1, 5);

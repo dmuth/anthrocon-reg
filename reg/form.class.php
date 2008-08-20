@@ -206,6 +206,21 @@ class reg_form {
 $data["reg_level_id"] = 3;
 
 		//
+		// If we have no payment type (such as coming through the public
+		// interface), set it to credit card.
+		//
+		if (empty($data["reg_payment_type_id"])) {
+			$data["reg_payment_type_id"] = 1;
+		}
+
+		//
+		// If we have not transaction type, set it to "purchase".
+		//
+		if (empty($data["reg_trans_type_id"])) {
+			$data["reg_trans_type_id"] = 1;
+		}
+
+		//
 		// Make the transaction.  If it is successful, then add a new member.
 		//
 		$reg_trans_id = reg::charge_cc($data);
@@ -603,12 +618,12 @@ $data["reg_level_id"] = 3;
 			"#theme" => "reg_theme"
 			);
 
-		$retval["cc_type"] = array(
+		$retval["cc_type_id"] = array(
 			"#title" => "Credit Card Type",
 			"#type" => "select",
 			"#options" => reg_data::get_cc_types(),
 			"#required" => true,
-			"#default_value" => $data["cc_type"],
+			"#default_value" => $data["cc_type_id"],
 			);
 
 		$retval["cc_num"] = array(

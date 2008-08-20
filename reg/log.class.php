@@ -274,9 +274,9 @@ class reg_log {
 		}
 
 		if (!empty($data["cc_num"])) {
-			$data["cc_name"] = reg_data::get_cc_name($data["cc_type"], 
-				$data["cc_num"]);
+			$data["cc_num"] = reg_data::get_cc_last_4($data["cc_num"]);
 		}
+
 		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
 
 		$query_args = array(
@@ -285,7 +285,7 @@ class reg_log {
 			$data["first"], $data["middle"], $data["last"], 
 				$data["address1"], $data["address2"],
 			$data["city"], $data["state"], $data["zip"], $data["country"],
-			$data["cc_type"], $data["cc_name"], $exp_string,
+			$data["cc_type_id"], $data["cc_num"], $exp_string,
 			$data["badge_cost"], $data["donation"], $data["total_cost"]
 			);
 

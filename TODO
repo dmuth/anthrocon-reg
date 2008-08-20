@@ -1,7 +1,5 @@
 
 - reg/verify - Let a user verify their reigstration
-	- Have reg::get_cc_name() call reg::get_cc_last_4()
-	- Save only last 4 digits of CC num to reg_trans.card_num
 	- Ask for last name, last 4 digits of credit card number and expiration date
 	- Print lines of registrations
 

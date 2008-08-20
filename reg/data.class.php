@@ -67,11 +67,30 @@ class reg_data {
 			$cc_type = $types[$cc_type];
 		}
 
-		$retval = "${cc_type} ending in '" . substr($cc_num, -4) . "'";
+		$retval = "${cc_type} ending in '" 
+			. self::get_cc_last_4($cc_num) . "'";
 
 		return($retval);
 
 	} // End of get_cc_name()
+
+
+	/**
+	* Get the last 4 digits of a credit card number.
+	*
+	* We do NOT want to store the entire crediit card number in our system.
+	* That way, it limits exposure in case of a security comprismise and 
+	* it lowers my blood pressure. :-)
+	*
+	* @return string The last 4 digits from our credit card number.
+	*/
+	static function get_cc_last_4($cc_num) {
+
+		$retval = substr($cc_num, -4);
+
+		return($retval);
+
+	} // End of get_last_4()
 
 
 	/**
