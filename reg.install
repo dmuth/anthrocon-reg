@@ -209,6 +209,11 @@ function reg_install() {
 			. "INDEX reg_log_uid(uid), "
 
 			//
+			// Foreign key to the reg_trans_gateway_id table
+			//
+			. "reg_trans_gateway_id INTEGER, "
+
+			//
 			// Timestamp
 			//
 			. "date INTEGER NOT NULL DEFAULT '0', "
@@ -261,6 +266,21 @@ function reg_install() {
 			. ")"
 			;
 		db_query($query);
+
+
+		$query = "CREATE TABLE {reg_trans_gateway} ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			. "gateway VARCHAR(255) "
+			. ")"
+			;
+		db_query($query);
+
+		$query = "INSERT INTO {reg_trans_gateway} (gateway) "
+			. "VALUES "
+			. "('Authorize.net')"
+			;
+		db_query($query);
+
 
 		//
 		// This table holds the different credit card types
@@ -444,6 +464,9 @@ function reg_wipe() {
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS {reg_trans}";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS {reg_trans_gateway}";
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS {reg_trans_type}";

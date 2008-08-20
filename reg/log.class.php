@@ -241,6 +241,7 @@ class reg_log {
 		$query = "INSERT INTO {reg_trans} ("
 			. "uid, reg_id, "
 			. "date, reg_trans_type_id, reg_payment_type_id, "
+			. "reg_trans_gateway_id, "
 			. "first, middle, last, address1, address2, "
 			. "city, state, zip, country, "
 			. "reg_cc_type_id, cc_num, card_expire, "
@@ -248,6 +249,10 @@ class reg_log {
 			. ") VALUES ("
 			. "'%s', '%s', "
 			. "'%s', '%s', '%s', "
+			//
+			// Default to authorize.net for now. :-P
+			//
+			. "1, "
 			. "'%s', '%s', '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', "
