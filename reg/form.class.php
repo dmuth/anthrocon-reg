@@ -136,6 +136,21 @@ class reg_form {
 	static function reg_validate(&$form_id, &$data) {
 
 		//
+		// If we have no payment type (such as coming through the public
+		// interface), set it to credit card.
+		//
+		if (empty($data["reg_payment_type_id"])) {
+			$data["reg_payment_type_id"] = 1;
+		}
+
+		//
+		// If we have not transaction type, set it to "purchase".
+		//
+		if (empty($data["reg_trans_type_id"])) {
+			$data["reg_trans_type_id"] = 1;
+		}
+
+		//
 		// If we're in the admin, we can skip alot of this stuff.
 		//
 		if (self::in_admin()) {
@@ -204,21 +219,6 @@ class reg_form {
 // We eventually need to ask for a registration level on the reg form.
 //
 $data["reg_level_id"] = 3;
-
-		//
-		// If we have no payment type (such as coming through the public
-		// interface), set it to credit card.
-		//
-		if (empty($data["reg_payment_type_id"])) {
-			$data["reg_payment_type_id"] = 1;
-		}
-
-		//
-		// If we have not transaction type, set it to "purchase".
-		//
-		if (empty($data["reg_trans_type_id"])) {
-			$data["reg_trans_type_id"] = 1;
-		}
 
 		//
 		// Make the transaction.  If it is successful, then add a new member.
