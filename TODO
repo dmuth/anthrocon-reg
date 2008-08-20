@@ -15,13 +15,29 @@
 		- Amount, Donation
 	- Saving should log a transaction
 
+- https://dev.localdomain//reg
+	- Breaks browers when trying to do a form submit
+		- Do better cleaning of the URL
+
+- Credit card gets charged twice with a captcha.  Oops.
+	- Write my own little captcha in reg_captcha?
+	- Can I use the existing captcha module for this? :-)
+	- Can I use this on the verify page?
+
 - Email sending
 	- "Settings" menu item on left
 		- default tab should be "Main Settings"
+		- Separate tab for messages
+			- Registration header
+			- Registration closed
+			- Registration verify header
 		- Separate tab for "Emails"
 			- Sub tab for each email:
 				- Email to member when signed up
 				- Email to member when added
+			- Tokens
+				- Name of the site
+				- URL of the site (base_url?)
 			- "Send email" button for each Complete member
 				- Will print a form with the email to be sent
 
@@ -46,6 +62,7 @@
 
 
 - reg/
+	- Display current levels on registration, configurable message otherwise
 	- On successful registration, stash stuff to display in $_SESSION
 		and go to a pre-filled verify page?
 	- When a transaction fails, log it to reg_log with reg::get_cc_name()

@@ -65,6 +65,30 @@ function reg_registration() {
 	return(reg::registration());
 }
 
+/**
+* Our public verification page.
+*/
+function reg_verify() {
+	reg::force_ssl();
+	$retval = reg_verify::verify();
+	$retval .= reg_verify::results();
+	return($retval);
+} 
+
+function reg_verify_form() {
+	return(reg_verify::verify_form());
+	return($retval);
+}
+
+function reg_verify_form_validate($form_id, &$data) {
+	reg_verify::verify_validate($form_id, $data);
+}
+
+function reg_verify_form_submit($form_id, &$data) {
+	return(reg_verify::verify_submit($form_id, $data));
+}
+
+
 function reg_registration_form($id = "") {
 	return(reg_form::reg($id));
 }

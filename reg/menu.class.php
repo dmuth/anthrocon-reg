@@ -49,6 +49,17 @@ class reg_menu {
 			);
 
 		//
+		// Verify a registraiton
+		//
+		$retval[] = array(
+			"path" => "reg/verify",
+			"title" => t("Verify an existing registration"),
+			"callback" => "reg_verify",
+			"access" => user_access(reg::PERM_REGISTER),
+			"type" => MENU_NORMAL_ITEM,
+			);
+
+		//
 		// Admin section
 		//
 		$retval[] = array(
