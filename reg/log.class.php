@@ -421,6 +421,7 @@ class reg_log {
 			. "reg.badge_num, reg.badge_name, "
 			. "reg_payment_type.payment_type, "
 			. "reg_trans_type.trans_type, "
+			. "reg_cc_type.cc_type, "
 			. "users.uid, users.name "
 			. "FROM {reg_trans} "
 			. "LEFT JOIN {reg} ON reg_trans.reg_id = reg.id "
@@ -428,6 +429,8 @@ class reg_log {
 				. "ON reg_trans_type_id = reg_trans_type.id "
 			. "LEFT JOIN {reg_payment_type} "
 				. "ON reg_payment_type_id = reg_payment_type.id "
+			. "LEFT JOIN {reg_cc_type} "
+				. "ON reg_cc_type_id = reg_cc_type.id "
 			. "LEFT JOIN {users} ON reg_trans.uid = users.uid "
 			. "WHERE "
 			. "reg_trans.id='%s' ";
@@ -524,9 +527,15 @@ class reg_log {
 		}
 
 		if (!empty($row["cc_num"])) {
+			$cc = t("%type% ending '%num%'",
+				array(
+					"%type%" => $row["cc_type"],
+					"%num%" => $row["cc_num"],
+				)
+				);
 			$rows[] = array(
 				array("data" => "Credit Card", "header" => true),
-				$row["cc_num"]
+				$cc
 				);
 		}
 
