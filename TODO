@@ -1,13 +1,11 @@
 
+
 - reg/verify - Let a user verify their reigstration
 	- Ask for last name, last 4 digits of credit card number and expiration date
 	- Print lines of registrations
 
-- Ask NFSN for rsync.net
-
 - Talk to comodo about free SSL cert
-
-- Remove "donate" status.
+	http://www.instantssl.com/ssl-certificate-products/free-ssl-certificate.html
 
 - Manually adding registrations
 	- Dropdown to list payment methods

@@ -130,8 +130,6 @@ function reg_install() {
 			. "('Complete', 0, 'Badge is paid'), "
 			. "('Defer', 0, 'Badge is deferred until next year'), "
 			. "('Refund', 0, 'Badge was refunded'), "
-			. "('Donate', 0, 'Badge was cancelled, but value was donated "
-				. "to the con, not refunded.'), "
 			. "('New', -1, 'Badge has been entered, but not yet paid for') "
 			;
 		db_query($query);
@@ -296,7 +294,7 @@ function reg_install() {
 			. "VALUES "
 			. "('MasterCard'), "
 			. "('Visa'), "
-			. "('American Express'), "
+			//. "('American Express'), "
 			. "('Discover') "
 			;
 		db_query($query);
