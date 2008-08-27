@@ -260,7 +260,12 @@ class reg_log {
 			. ")"
 			;
 		$exp = $data["cc_exp"];
-		$exp_string = $exp["year"] . "-" . $exp["month"] ."-0";
+		//
+		// Set each expire string to the first of the month, otherwise 
+		// strttime() and friends will "correct" the date to be in the 
+		// previous month!
+		//
+		$exp_string = $exp["year"] . "-" . $exp["month"] ."-01";
 
 		//
 		// Make sure we have actual numbers here, just in case.
