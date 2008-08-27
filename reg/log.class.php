@@ -527,11 +527,15 @@ class reg_log {
 		}
 
 		if (!empty($row["cc_num"])) {
-			$cc = t("%type% ending '%num%'",
+
+			$cc_exp = strftime("%B, %Y", strtotime($row["card_expire"]));
+
+			$cc = t("%type% ending '%num%'. Expires: %date%",
 				array(
 					"%type%" => $row["cc_type"],
 					"%num%" => $row["cc_num"],
-				)
+					"%date%" => $cc_exp,
+					)
 				);
 			$rows[] = array(
 				array("data" => "Credit Card", "header" => true),
