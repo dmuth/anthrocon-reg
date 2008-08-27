@@ -46,7 +46,7 @@ function reg_install() {
 			// Badge number and name.  The badge name can be blank.
 			//
 			. "badge_num INTEGER NOT NULL, "
-			. "UNIQUE INDEX reg_year_badge_num(year, badge_num), "
+			. "INDEX reg_year_badge_num(year, badge_num), "
 			. "badge_name VARCHAR(255), "
 			//
 			// Basic info on the badge holder
