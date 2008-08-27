@@ -294,11 +294,16 @@ class reg_member {
 		// public interface, automatically generate a badge number.
 		// Otherwise, we'll accept the admin-specified one.
 		//
-		if (empty($data["badge_num"])
+		if (
+			(	empty($data["badge_num"])
+				&& $data["badge_num"] != "0"
+			)
 			|| !reg_form::in_admin()) {
 			$badge_num = reg_data::get_badge_num();
+
 		} else {
 			$badge_num = $data["badge_num"];
+
 		}
 
 		$query = "INSERT INTO {reg} "
