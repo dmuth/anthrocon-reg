@@ -20,6 +20,18 @@ class reg_menu {
 		//$may_cache = 1; 
 		if ($may_cache) {
 			self::get_menu($retval, $may_cache);
+		} else {
+			//
+			// Code that is in this block will be executed on every
+			// page load.
+			//
+
+			//
+			// Load our Javascript
+			//
+			$path = drupal_get_path("module", "reg");
+			drupal_add_js($path . "/reg.js", "module");
+
 		}
 		
 		//

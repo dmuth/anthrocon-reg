@@ -1,15 +1,20 @@
 
 
-- reg/verify - Let a user verify their reigstration
-	- Ask for last name, last 4 digits of credit card number and expiration date
-	- Print lines of registrations
+- Issue with multiple (year, reg_num) rows where reg_num == null
+	- Could I include id in the index?
+		- Do some EXPLAINs to see if this is feasable
 
-- Talk to comodo about free SSL cert
-	http://www.instantssl.com/ssl-certificate-products/free-ssl-certificate.html
+- Main reg page
+	- Look into logging all errors like in reg_verify::handle_error()?
+
+- CSS
+	- Text alignment issue with text on the left of a dropdown field being "raised"
+		- Example: "Badge Name" field
 
 - Manually adding registrations
 	- Dropdown to list payment methods
 		- Payment Type
+		- Last 4 digits of credit card number
 		- Amount, Donation
 	- Saving should log a transaction
 
@@ -21,6 +26,8 @@
 	- Write my own little captcha in reg_captcha?
 	- Can I use the existing captcha module for this? :-)
 	- Can I use this on the verify page?
+
+- Move admin classes into reg/admin/ directory
 
 - Email sending
 	- "Settings" menu item on left
@@ -41,9 +48,8 @@
 
 	- "basically, when a badge number is assigned"
 
-- Random Javascript for field focusing
+- Random Javascript
 	- Compute total on registration form
-	- I should create a Javascript file for front end stuff and admin stuff
 
 - Some utility to print unused badge numbers
 

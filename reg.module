@@ -71,7 +71,6 @@ function reg_registration() {
 function reg_verify() {
 	reg::force_ssl();
 	$retval = reg_verify::verify();
-	$retval .= reg_verify::results();
 	return($retval);
 } 
 

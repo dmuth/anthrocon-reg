@@ -33,6 +33,15 @@ class reg {
 
 
 	/**
+	* The name of the variable that holds the "contact" email address for
+	* the reg system.  This may change in the future, once I create a setup
+	* screen where the Registration Director can enter a custom email 
+	* address. :-)
+	*/
+	const VAR_EMAIL = "site_mail";
+
+
+	/**
 	* Our constructor.  This should never be called.
 	*/
 	function __construct() {
