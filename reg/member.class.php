@@ -289,7 +289,17 @@ class reg_member {
 	*/
 	static function add_member($data, $reg_trans_id = "") {
 
-		$badge_num = reg_data::get_badge_num();
+		//
+		// If there is no badge number specififed OR we are in the
+		// public interface, automatically generate a badge number.
+		// Otherwise, we'll accept the admin-specified one.
+		//
+		if (empty($data["badge_num"])
+			|| !reg_form::in_admin()) {
+			$badge_num = reg_data::get_badge_num();
+		} else {
+			$badge_num = $data["badge_num"];
+		}
 
 		$query = "INSERT INTO {reg} "
 			. "(created, modified, year, reg_type_id, reg_status_id, "
