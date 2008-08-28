@@ -27,7 +27,6 @@ tr.odd .reg-form-item, tr.even .reg-form-item {
 
 td .reg-name {
 	width: 200px;
-	vertical-align: top;
 }
 
 td .reg-value {
