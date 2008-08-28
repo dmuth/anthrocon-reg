@@ -49,15 +49,9 @@ class reg_form {
 		// Don't display our credit card info when we're editing, as
 		// only admins can edit a registration.
 		//
-		if (!self::in_admin()) {
+		if (empty($id)) {
 			$retval["cc"] = self::form_cc($data);
 		}
-
-		$retval["member"]["TEST"] = array(
-			"#type" => "item",
-			"#title" => "NOTE",
-			"#value" => "What do I want down here for payment processing, anyway?"
-			);
 
 		return($retval);
 
@@ -168,6 +162,12 @@ class reg_form {
 			reg::is_badge_num_available($data["reg_id"], 
 				$data["badge_num"]);
 
+			//
+			// Charge this early since we're baiing out.
+			//
+			$reg_trans_id = reg::charge_cc($data, true);
+			self::$reg_trans_id = $reg_trans_id;
+
 			return(null);
 		}
 
@@ -232,8 +232,6 @@ $data["reg_level_id"] = 3;
 		// Make the transaction.  If it is successful, then add a new member.
 		//
 		$reg_trans_id = reg::charge_cc($data);
-
-
 		self::$reg_trans_id = $reg_trans_id;
 
 	} // End of registration_form_validate()
@@ -294,11 +292,17 @@ $data["reg_level_id"] = 3;
 			);
 		drupal_set_message($message);
 
-		if (!empty($data["cc_name"])) {
+
+		if (!empty($data["cc_type_id"])
+			&& !self::in_admin()
+			) {
+			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"], 
+				$data["cc_num"]);
+
 			$message = t("Your credit card (%cc_name%) was successfully "
 				. "charged for %total_cost%.",
 				array("%cc_name%" => $data["cc_name"],
-				"%total_cost%" => "$" . self::$data["total_cost"],
+				"%total_cost%" => "$" . $data["total_cost"],
 				));
 			drupal_set_message($message);
 		}
@@ -392,7 +396,7 @@ $data["reg_level_id"] = 3;
 		}
 
 		$retval["badge_name"] = array(
-			"#title" => "Badge Name",
+			"#title" => t("Badge Name"),
 			"#type" => "textfield",
 			"#description" => t("The name printed on your conbadge.  ")
 				. t("This may be your real name or a nickname. ")
@@ -406,28 +410,28 @@ $data["reg_level_id"] = 3;
 		//
 		if (self::in_admin()) {
 			$retval["badge_num"] = array(
-				"#title" => "Badge Number",
+				"#title" => t("Badge Number"),
 				"#type" => "textfield",
-				"#description" => "This must be UNIQUE.  If unsure, leave blank and "
-					. "one will be assigned.",
+				"#description" => t("This must be UNIQUE.  If unsure, leave blank and "
+					. "one will be assigned."),
 				"#size" => self::FORM_TEXT_SIZE_SMALL,
 				"#default_value" => $data["badge_num"],
 				);
 
 			$retval["reg_type_id"] = array(
-				"#title" => "Badge Type",
+				"#title" => t("Badge Type"),
 				"#type" => "select",
 				"#default_value" => $data["reg_type_id"],
 				"#options" => reg_data::get_types(),
-				"#description" => "The registration type."
+				"#description" => t("The registration type.")
 				);
 
 			$retval["reg_status_id"] = array(
-				"#title" => "Status",
+				"#title" => t("Status"),
 				"#type" => "select",
 				"#default_value" => $data["reg_status_id"],
 				"#options" => reg_data::get_statuses(),
-				"#description" => "The member's status."
+				"#description" => t("The member's status.")
 				);
 
 		}
@@ -583,7 +587,6 @@ $data["reg_level_id"] = 3;
 		// or adding from the admin.
 		//
 		if (!empty($id)
-			|| self::in_admin()
 			) {
 			$retval["submit"] = array(
 				"#type" => "submit",
@@ -626,8 +629,25 @@ $data["reg_level_id"] = 3;
 			"#theme" => "reg_theme"
 			);
 
+		if (self::in_admin()) {
+
+			$types = reg_data::get_payment_types();
+			$types[""] = t("Select");
+
+			$retval["reg_payment_type_id"] = array(
+				"#title" => t("Payment Type"),
+				"#type" => "select",
+				"#options" => $types,
+				"#description" => t("How did the member pay for their "
+					. "registration?"),
+				"#required" => true,
+				"#default_value" => $data["reg_payment_type_id"],
+				);
+
+		}
+
 		$retval["cc_type_id"] = array(
-			"#title" => "Credit Card Type",
+			"#title" => t("Credit Card Type"),
 			"#type" => "select",
 			"#options" => reg_data::get_cc_types(),
 			"#required" => true,
@@ -635,8 +655,8 @@ $data["reg_level_id"] = 3;
 			);
 
 		$retval["cc_num"] = array(
-			"#title" => "Credit Card Number",
-			"#description" => "Your Credit Card Number",
+			"#title" => t("Credit Card Number"),
+			"#description" => t("Your Credit Card Number"),
 			"#type" => "textfield",
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
@@ -644,12 +664,18 @@ $data["reg_level_id"] = 3;
 			);
 
 		if (reg::is_test_mode()) {
-			$retval["cc_num"]["#description"] = "Running in test mode.  "
-				. "Just enter any old number.";
+			$retval["cc_num"]["#description"] = t("Running in test mode.  "
+				. "Just enter any old number.");
+		}
+
+		if (self::in_admin()) {
+			$retval["cc_num"]["#description"] = t("Just the last 4 digits "
+				. "are necessary.  This card will NOT be charged, since we "
+				. "are in the admin.");
 		}
 
 		$retval["cc_exp"] = array(
-			"#title" => "Credit Card Expiration",
+			"#title" => t("Credit Card Expiration"),
 			//
 			// This is set so that when the child elements are processed,
 			// they know they have a parent, and hence get stored
@@ -670,11 +696,25 @@ $data["reg_level_id"] = 3;
 			"#default_value" => $data["cc_exp"]["year"],
 			);
 
+		if (self::in_admin()) {
+			$retval["badge_cost"] = array(
+				"#title" => t("Badge Cost"),
+				"#type" => "textfield",
+				"#description" => t("How much did the member pay for this "
+					. "membership?<br>"
+					. "If they are staff, Guest, etc. this number should "
+					. "normally be ZERO."),
+				"#required" => true,
+				"#size" => self::FORM_TEXT_SIZE_SMALL,
+				"#default_value" => $data["badge_cost"],
+				);
+		}
 
 		$retval["donation"] = array(
-			"#title" => "Donation (USD)",
+			"#title" => t("Donation (USD)"),
 			"#type" => "textfield",
-			"#description" => "Would you like to make an additional donation?",
+			"#description" => t("Would you like to make an additional "
+				. "donation?"),
 			"#default_value" => $data["donation"],
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			);

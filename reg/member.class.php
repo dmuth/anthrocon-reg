@@ -99,7 +99,7 @@ class reg_member {
 			l($id, $link),
 			l($badge_num, $link),
 			l($badge_name, $link),
-			$real_name,
+			l($real_name, $link),
 			$row["member_type"],
 			$row["status"],
 			);
@@ -287,7 +287,7 @@ class reg_member {
 	*
 	* @return integer The badge number of the member that we just added.
 	*/
-	static function add_member($data, $reg_trans_id = "") {
+	static function add_member(&$data, $reg_trans_id = "") {
 
 		//
 		// If there is no badge number specififed OR we are in the
@@ -381,6 +381,12 @@ class reg_member {
 		$query_args = array($trans_data["badge_cost"], $trans_data["donation"], 
 			$trans_data["total_cost"], $reg_id);
 		db_query($query, $query_args);
+
+		//
+		// Save our cost into the data array so the caller can make
+		// use of it.
+		//
+		$data["total_cost"] = $trans_data["total_cost"];
 
 		return($badge_num);
 

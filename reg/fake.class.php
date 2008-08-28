@@ -40,6 +40,11 @@ class reg_fake {
 		$data["donation"] = self::get_number(0, 250)
 			. "." . sprintf("%02d", self::get_number(0, 99))
 			;
+		$data["badge_cost"] = self::get_number(0, 250)
+			. "." . sprintf("%02d", self::get_number(0, 99))
+			;
+		$data["reg_payment_type_id"] = self::get_number(1, 10);
+		$data["reg_type_id"] = self::get_number(1, 12);
 
 	} // End of fake_data()
 

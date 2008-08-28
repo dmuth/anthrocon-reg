@@ -249,32 +249,53 @@ class reg {
 	/**
 	* This function actually charges our credit card.
 	*
+	* @param boolean $log_only Only log the transaction, do NOT charge 
+	* the card.  This is used for when an admin enters a registration 
+	* manually.
+	* 
 	* @return boolean True if the card is charged successfully.  
 	*	False otherwise.
 	*/
-	static function charge_cc(&$data) {
+	static function charge_cc(&$data, $log_only = false) {
 
 		//
-		// Calculate our costs.
+		// Only calculate our badge cost if it wasn't already specified by 
+		// a manual entry.
 		//
-		$data["badge_cost"] = reg_data::get_reg_cost($data["reg_level_id"]);
+		if (empty($data["badge_cost"])) {
+			$data["badge_cost"] = reg_data::get_reg_cost($data["reg_level_id"]);
+		}
+
+		//
+		// This is redundant to the total_cost code in log_trans(), but is
+		// necessary since we need to figure out how much we'll charge the 
+		// credit card before we charge the credit card.  It's an annoying
+		// chicken and egg problem, I know.
+		//
 		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
 
-		if (!self::is_test_mode()) {
-			//
-			// TODO: Code to actually charge the card goes here.
-			// On failure, call form_set_error(), log it, and return false.
-			//
-			// I need to make sure that non-numerics are filtered out here.
-			$error = "CC Charging not implemented yet.";
-			form_set_error("cc_num", $error);
-			reg_log::log($error, "", WATCHDOG_ERROR);
-			return(false);
+		if (!$log_only) {
+			if (!self::is_test_mode()) {
+				//
+				// TODO: Code to actually charge the card goes here.
+				// On failure, call form_set_error(), log it, and return false.
+				//
+				// I need to make sure that non-numerics are filtered out here.
+				$error = t("CC Charging not implemented yet.");
+				form_set_error("cc_num", $error);
+				reg_log::log($error, "", WATCHDOG_ERROR);
+				return(false);
 
+			} else {
+	
+				$message = t("We are in testing mode.  Automatically allow this "
+					. "'credit card'");
+				reg_log::log($message);
+
+			}
+	
 		} else {
-
-			$message = "We are in testing mode.  Automatically allow this "
-				. "'credit card'";
+			$message = t("Logging a manually made transaction/comp/etc..");
 			reg_log::log($message);
 
 		}

@@ -1,11 +1,4 @@
 
-- Manually adding registrations
-	- Dropdown to list payment methods
-		- Payment Type
-		- Last 4 digits of credit card number
-		- Amount, Donation
-	- Saving should log a transaction
-
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?
 	- Can I use the existing captcha module for this? :-)
@@ -60,7 +53,6 @@
 		- Send confirmation email to another address
 
 - Class architecture
-	- Function to check for SSL
 	- Function to send confirmation email for a specific registration
 		- Store this confirmation email as a variable?
 
