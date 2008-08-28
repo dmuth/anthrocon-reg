@@ -1,4 +1,5 @@
 
+- Move admin classes into reg/admin/ directory
 
 - Manually adding registrations
 	- Dropdown to list payment methods
@@ -11,8 +12,6 @@
 	- Write my own little captcha in reg_captcha?
 	- Can I use the existing captcha module for this? :-)
 	- Can I use this on the verify page?
-
-- Move admin classes into reg/admin/ directory
 
 - Email sending
 	- "Settings" menu item on left

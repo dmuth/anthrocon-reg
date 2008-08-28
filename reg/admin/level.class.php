@@ -3,7 +3,7 @@
 /**
 * This class holds functions that relate to registration levels.
 */
-class reg_level {
+class reg_admin_level {
 
 	/**
 	* List membership levels.
@@ -222,14 +222,30 @@ class reg_level {
 		//
 		// Make sure our year and price are numbers
 		//
-		$year = intval($data["year"]);
 		if (!reg::is_valid_number($data["year"])) {
-			form_set_error("year", "Year must be a number!");
+			$error = t("Year must be a number!");
+			form_set_error("year", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
 		}
 
-		$price = floatval($data["price"]);
-		if (!reg::is_valid_number($data["price"])) {
-			form_set_error("price", "Price must be a number!");
+		if (!reg::is_valid_float($data["price"])) {
+			$error = t("Price must be a number!");
+			form_set_error("price", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
+		}
+
+		if ($data["price"] == 0) {
+			$error = t("Price cannot be 0!");
+			form_set_error("price", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
+		}
+
+		if (reg::is_negative_number($data["price"])) {
+			$error = t("Price '%price%' cannot be a negative amount!",
+				array("%price%" => $data["price"])
+				);
+			form_set_error("price", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
 		}
 
 		//
@@ -246,8 +262,9 @@ class reg_level {
 		$end_date = strtotime($end_string);
 
 		if ($start_date > $end_date) {
-			$error = "Start date is after end date!";
+			$error = t("Start date is after end date!");
 			form_set_error("start][day", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
 		}
 
 	} // End of level_form_validate()

@@ -4,6 +4,7 @@ $(document).ready(function() {
 
 	$("#edit-badge-name").focus();
 	$("#edit-search-last").focus();
+	$("#edit-name").focus();
 
 	//
 	// Having to defer execution of the focus event like this is
