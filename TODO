@@ -1,12 +1,5 @@
 
 
-- Issue with multiple (year, reg_num) rows where reg_num == null
-	- Could I include id in the index?
-		- Do some EXPLAINs to see if this is feasable
-
-- Main reg page
-	- Look into logging all errors like in reg_verify::handle_error()?
-
 - CSS
 	- Text alignment issue with text on the left of a dropdown field being "raised"
 		- Example: "Badge Name" field

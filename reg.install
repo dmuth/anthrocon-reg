@@ -372,6 +372,10 @@ function reg_install() {
 			. "referrer VARCHAR(255), "
 			. "remote_addr VARCHAR(32), "
 			//
+			// Severity.  Same as in the watchdog table.
+			//
+			. "severity TINYINT(3) UNSIGNED, "
+			//
 			// The message
 			//
 			. "message TEXT "

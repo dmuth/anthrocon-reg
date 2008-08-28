@@ -32,6 +32,12 @@ class reg_menu {
 			$path = drupal_get_path("module", "reg");
 			drupal_add_js($path . "/reg.js", "module");
 
+			//
+			// Include our CSS
+			//
+			$path = drupal_get_path("module", "reg") . "/reg.css";
+			drupal_add_css($path, "module", "all", false);
+
 		}
 		
 		//

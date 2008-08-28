@@ -279,7 +279,7 @@ class reg_verify {
 				"%cc_exp%" => $search["cc_exp"]["year"] . "-" 
 					. $search["cc_exp"]["month"],
 			));
-		reg_log::log($message);
+		reg_log::log($message, "", WATCHDOG_WARNING);
 
 		return($rows);
 

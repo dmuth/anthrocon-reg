@@ -27,12 +27,15 @@ class reg_log {
 
 		$url = $base_root . request_uri();
 		$query = "INSERT INTO {reg_log} "
-			. "(reg_id, uid, date, url, referrer, remote_addr, message) "
+			. "(reg_id, uid, date, url, referrer, remote_addr, message, "
+				. "severity) "
 			. "VALUES "
-			. "('%s', '%s', '%s', '%s', '%s', '%s', '%s') "
+			. "('%s', '%s', '%s', '%s', '%s', '%s', '%s', "
+				. "'%s') "
 			;
 		$query_args = array($reg_id, $user->uid, time(), $url, 
-			referer_uri(), $_SERVER["REMOTE_ADDR"], $message
+			referer_uri(), $_SERVER["REMOTE_ADDR"], $message,
+			$severity,
 			);
 		db_query($query, $query_args);
 
@@ -40,7 +43,7 @@ class reg_log {
 
 
 	/**
-	* Our log viewer.
+	* Our log viewer.  Lists the most recent log entries.
 	*
 	* @param integer $id Optional registration ID to limit results
 	*	to a single membership.
@@ -49,9 +52,20 @@ class reg_log {
 	*/
 	function log_recent($id = "") {
 
+		//
+		// The icons and classes variables are sraight from the
+		// watchdog_overview() function.
+		//
+		$icons = array(WATCHDOG_NOTICE  => '',
+			WATCHDOG_WARNING => theme('image', 
+				'misc/watchdog-warning.png', t('warning'), t('warning')),
+			WATCHDOG_ERROR   => theme('image', 
+				'misc/watchdog-error.png', t('error'), t('error'))
+			);
+
 		$header = array();
-		$header[] = array("data" => "Date", "field" => "date",
-			"sort" => "desc");
+		$header[] = " ";
+		$header[] = array("data" => "Date", "field" => "date");
 		$header[] = array("data" => "Message", "field" => "message");
 		$header[] = array("data" => "User", "field" => "name");
 
@@ -59,6 +73,9 @@ class reg_log {
 		// By default, we'll be sorting by the reverse date.
 		//
 		$order_by = tablesort_sql($header);
+		if (empty($order_by)) {
+			$order_by = "ORDER BY id DESC";
+		}
 
 		$where = "";
 		$where_args = array();
@@ -105,10 +122,29 @@ class reg_log {
 				$message .= "...";
 			}
 
+			$severity = $row["severity"];
+			$icon = $icons[$severity];
+
+			//
+			// Set our display class for any warnings or errors.
+			//
+			$class = "";
+			if ($severity == WATCHDOG_WARNING) {
+				$class = "reg-warning";
+
+			} else if ($severity == WATCHDOG_ERROR) {
+				$class = "reg-error";
+
+			}
+
 			$rows[] = array(
-				l($date, $link),
-				l($message, $link),
-				$user_link,
+				"data" => array(
+					$icon,
+					l($date, $link),
+					l($message, $link),
+					$user_link,
+					),
+				"class" => $class,
 				);
 		}
 

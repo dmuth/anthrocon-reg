@@ -39,3 +39,12 @@ td .reg-value {
   font-weight: bold;
 }
 
+.reg-warning td {
+	background-color: #ffffcc;
+}
+
+.reg-error td {
+	background-color: #ffcccc;
+}
+
+

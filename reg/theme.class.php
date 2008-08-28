@@ -13,12 +13,6 @@ class reg_theme {
 
 		$retval = "";
 
-		//
-		// Include our CSS
-		//
-		$path = drupal_get_path("module", "reg") . "/reg.css";
-		drupal_add_css($path, "module", "all", false);
-
 		$retval .= "<table >";
 
 		$retval .= self::theme_children($form);

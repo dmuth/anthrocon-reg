@@ -150,6 +150,12 @@ class reg_form {
 			$data["reg_trans_type_id"] = 1;
 		}
 
+		if ($data["email"] != $data["email2"]) {
+			$error = t("Email addresses do not match!");
+			form_set_error("email2", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
+		}
+
 		//
 		// If we're in the admin, we can skip alot of this stuff.
 		//
@@ -161,11 +167,6 @@ class reg_form {
 			reg::is_badge_num_valid($data["badge_num"]);
 			reg::is_badge_num_available($data["reg_id"], 
 				$data["badge_num"]);
-
-			if ($data["email"] != $data["email2"]) {
-				$error = "Email addresses do not match!";
-				form_set_error("email2", $error);
-			}
 
 			return(null);
 		}
@@ -181,16 +182,21 @@ class reg_form {
 		if (!reg::is_valid_float($data["donation"])
 			&& $data["donation"] != ""
 			) {
-			$error = "Donation '" . $data["donation"] . "' is not a number!";
+			$error = t("Donation '%donation%' is not a number!",
+				array("%donation%" => $data["donation"])
+				);
 			form_set_error("donation", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
 			$okay = false;
-
 		} 
 
 		if (reg::is_negative_number($data["donation"])) {
-			form_set_error("donation", "Donation cannot be a negative amount!");
+			$error = t("Donation '%donation%' cannot be a negative amount!",
+				array("%donation%" => $data["donation"])
+				);
+			form_set_error("donation", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
 			$okay = false;
-
 		}
         
 		//
@@ -201,7 +207,9 @@ class reg_form {
 
 		if ($data["cc_exp"]["year"] == $year) {
 			if ($data["cc_exp"]["month"] <= $month) {
-				form_set_error("cc_exp][month", "Credit card is expired");
+				$error = t("Credit card is expired");
+				form_set_error("cc_exp][month", $error);
+				reg_log::log($error, "", WATCHDOG_WARNING);
 				$okay = false;
 			}
 		}
