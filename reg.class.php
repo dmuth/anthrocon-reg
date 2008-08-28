@@ -373,6 +373,11 @@ shirt_size (staff and super sponsors)
 	*/
 	static function goto_url($uri) {
 
+		$url = url($uri, null, null, true);
+
+		//
+		// If we are currently in SSL mode, change the target URL 
+		// to also be in SSL.
 		//
 		// It seems that the url() function preprends a slash to the URL,
 		// and since request_uri(), also does that in force_ssl(), we can
@@ -382,20 +387,12 @@ shirt_size (staff and super sponsors)
 		// breaks drupal_goto().  So we get rid of any instances of "//"
 		// here.
 		//
-		// I don't do this in the final URL, since I would have to do pattern
-		// matching, something I'm trying to avoid to possibly high numbers 
-		// of redirects to SSL.
-		//
-		$uri = str_replace("//", "/", $uri);
-
-		$url = url($uri, null, null, true);
-
-		//
-		// If we are currently in SSL mode, change the target URL 
-		// to also be in SSL.
-		//
 		if (self::is_ssl()) {
-			$url = str_replace("http://", "https://", $url);
+			$url = eregi_replace("//", "/", $url);
+			//
+			// Oh yeah, switch to secure mode too. :-)
+			//
+			$url = str_replace("http:/", "https://", $url);
 		}
 
 		drupal_goto($url);

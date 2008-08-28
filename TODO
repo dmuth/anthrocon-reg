@@ -1,19 +1,11 @@
 
 
-- CSS
-	- Text alignment issue with text on the left of a dropdown field being "raised"
-		- Example: "Badge Name" field
-
 - Manually adding registrations
 	- Dropdown to list payment methods
 		- Payment Type
 		- Last 4 digits of credit card number
 		- Amount, Donation
 	- Saving should log a transaction
-
-- https://dev.localdomain//reg
-	- Breaks browers when trying to do a form submit
-		- Do better cleaning of the URL
 
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?
