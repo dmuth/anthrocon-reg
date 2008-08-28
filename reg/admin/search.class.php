@@ -3,7 +3,7 @@
 /**
 * This class holds functions related to our search functionality.
 */
-class reg_search {
+class reg_admin_search {
 
 
 	/**

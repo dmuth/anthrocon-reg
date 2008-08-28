@@ -230,22 +230,22 @@ function reg_admin_members_adjust_form_submit($form_id, $data) {
 */
 function reg_admin_search() {
 	reg::force_ssl();
-	$retval = reg_search::search();
-	$retval .= reg_search::results();
+	$retval = reg_admin_search::search();
+	$retval .= reg_admin_search::results();
 	return($retval);
 }
 
 function reg_admin_search_form() {
-	return(reg_search::search_form());
+	return(reg_admin_search::search_form());
 	return($retval);
 }
 
 function reg_admin_search_form_validate($form_id, &$data) {
-	reg_search::search_validate($form_id, $data);
+	reg_admin_search::search_validate($form_id, $data);
 }
 
 function reg_admin_search_form_submit($form_id, &$data) {
-	return(reg_search::search_submit($form_id, $data));
+	return(reg_admin_search::search_submit($form_id, $data));
 }
 
 
