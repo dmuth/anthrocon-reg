@@ -1,6 +1,4 @@
 
-- Move admin classes into reg/admin/ directory
-
 - Manually adding registrations
 	- Dropdown to list payment methods
 		- Payment Type

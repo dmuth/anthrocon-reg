@@ -262,19 +262,19 @@ function reg_admin_members_add() {
 */
 function reg_admin_log() {
 	reg::force_ssl();
-	return(reg_log::log_recent());
+	return(reg_admin_log::log_recent());
 }
 
 function reg_admin_log_detail($id) {
-	return(reg_log::log_detail($id));
+	return(reg_admin_log::log_detail($id));
 }
 
 function reg_admin_trans() {
-	return(reg_log::trans_recent());
+	return(reg_admin_log::trans_recent());
 }
 
 function reg_admin_trans_detail($id) {
-	return(reg_log::trans_detail($id));
+	return(reg_admin_log::trans_detail($id));
 }
 
 function reg_admin_main() {

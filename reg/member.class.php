@@ -232,10 +232,10 @@ class reg_member {
 		// Load up log entries and transactions for this user.
 		//
 		$retval .= "<h2>Log Entries</h2>";
-		$retval .= reg_log::log_recent($row["id"]);
+		$retval .= reg_admin_log::log_recent($row["id"]);
 
 		$retval .= "<h2>Transactions</h2>";
-		$retval .= reg_log::trans_recent($row["id"]);
+		$retval .= reg_admin_log::trans_recent($row["id"]);
 
 		return($retval);
 
