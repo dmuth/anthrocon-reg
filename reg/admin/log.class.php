@@ -569,7 +569,9 @@ class reg_admin_log {
 				);
 		}
 
-		if (!empty($row["cc_num"])) {
+		if (!empty($row["cc_num"])
+			&& $row["payment_type"] == "Credit Card"
+			) {
 
 			$cc_exp = strftime("%B, %Y", strtotime($row["card_expire"]));
 
