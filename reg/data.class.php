@@ -93,12 +93,22 @@ class reg_data {
 	} // End of get_last_4()
 
 
+// TEST
+	static function get_valid_levels() {
+
+		$retval = array();
+
+		return($retval);
+
+	} // end of get_valid_levels()
+
+
 	/**
 	* Determine the cost of a registration based on the reg_level_id.
 	*
 	* @return integer The cost of the registration.
 	*/
-	function get_reg_cost($level_id) {
+	static function get_reg_cost($level_id) {
 
 		$query = "SELECT price FROM reg_level "
 			. "WHERE id='%s'";
@@ -167,7 +177,7 @@ class reg_data {
 	* @return array Array where the key is the unique ID and the value is
 	*	the transaction type.
 	*/
-	function get_trans_types() {
+	static function get_trans_types() {
 
 		//
 		// Cache our rows between calls
@@ -198,7 +208,7 @@ class reg_data {
 	* @return array Array where the key is the unique ID and the value is
 	*	the payment type.
 	*/
-	function get_payment_types() {
+	static function get_payment_types() {
 
 		//
 		// Cache our rows between calls
@@ -364,6 +374,27 @@ class reg_data {
 
 		return($retval);
 	}
+
+
+	/**
+	* This function will calculate a UNIX timestamp based on the year, 
+	*	month, and day.  Note that the timestamp will be adjusted for
+	*	the local timezone. 
+	*
+	* For example, passing in a date of 12-30-2008, while this code is
+	*	being run during EDT (GMT -0400), will result in a timestamp which
+	*	evaluates to 30 Dec 2008 00:00:00 -0400.
+	*/
+	static function get_time_t($year, $month, $day) {
+
+		$retval = gmmktime(0, 0, 0, $month, $day, $year);
+
+		$offset = date("Z") * -1;
+		$retval += $offset;
+
+		return($retval);
+
+	} // End of get_time_t()
 
 
 } // End of reg_data class

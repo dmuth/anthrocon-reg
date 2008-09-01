@@ -305,6 +305,8 @@ reg_wipe();
 reg_install();
 */
 
+//print "TEST"; print_r(reg_data::get_valid_levels());
+
 //include_once("reg.class.php");
 //echo "TEST";
 //echo "badge NUM: " . reg::get_badge_num() . "<br>\n";

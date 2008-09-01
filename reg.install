@@ -166,12 +166,9 @@ function reg_install() {
 
 			//
 			// How long the membership type is available.
-			// We set this as a date instead of a timestamp because we
-			// are only paying attention to the date, not the hour,
-			// minute, or second.
 			//
-			. "start DATE, "
-			. "end DATE, "
+			. "start INT(11), "
+			. "end INT(11), "
 
 			//
 			// Description that is shown to the user

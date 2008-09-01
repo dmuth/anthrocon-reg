@@ -34,6 +34,8 @@ class reg_admin_level {
 			. "$order_by";
 		$cursor = db_query($query);
 
+		$date_format = "r";
+
 		while ($row = db_fetch_array($cursor)) {
 
 			$link = "admin/reg/levels/edit/" . $row["id"];
@@ -46,7 +48,8 @@ class reg_admin_level {
 					"align" => "right"
 					), 
 				l($row["member_type"], $link), 
-				$row["start"], $row["end"],
+				format_date($row["start"], "custom", $date_format),
+				format_date($row["end"], "custom", $date_format),
 				);
 		}
 
@@ -161,9 +164,9 @@ class reg_admin_level {
 		if (!empty($id)) {
 			$start = explode("-", $row["start"]);
 			$start_date = array(
-				"year" => (int)$start[0], 
-				"month" => (int)$start[1], 
-				"day" => (int)$start[2]
+				"year" => format_date($row["start"], "custom", "Y"),
+				"month" => format_date($row["start"], "custom", "n"),
+				"day" => format_date($row["start"], "custom", "j"),
 				);
 			$retval["start"]["#default_value"] = $start_date;
 		}
@@ -179,9 +182,9 @@ class reg_admin_level {
 		if (!empty($id)) {
 			$end = explode("-", $row["end"]);
 			$end_date = array(
-				"year" => (int)$end[0], 
-				"month" => (int)$end[1], 
-				"day" => (int)$end[2]
+				"year" => format_date($row["end"], "custom", "Y"),
+				"month" => format_date($row["end"], "custom", "n"),
+				"day" => format_date($row["end"], "custom", "j"),
 				);
 			$retval["end"]["#default_value"] = $end_date;
 		}
@@ -252,22 +255,27 @@ class reg_admin_level {
 		// Check our data order
 		//
 		$start = $data["start"];
-		$start_string = $start["year"] . "-" . $start["month"] 
-			.  "-" . $start["day"];
-		$start_date = strtotime($start_string);
+		$start_time = reg_data::get_time_t($start["year"], $start["month"], 
+			$start["day"]);
 
 		$end = $data["end"];
-		$end_string = $end["year"] . "-" . $end["month"] 
-			.  "-" . $end["day"];
-		$end_date = strtotime($end_string);
+		$end_time = reg_data::get_time_t($end["year"], $end["month"], 
+			$end["day"]);
 
-		if ($start_date > $end_date) {
+		//
+		// The last day of this membership level will stop just past 
+		// 11:59:59 PM on that day.
+		//
+		$end_time += 86399;
+
+		if ($start_time > $end_time) {
 			$error = t("Start date is after end date!");
 			form_set_error("start][day", $error);
 			reg_log::log($error, "", WATCHDOG_WARNING);
 		}
 
 	} // End of level_form_validate()
+
 
 
 	/**
@@ -279,12 +287,19 @@ class reg_admin_level {
 		// Turn the data arrays into strings
 		//
 		$start = $data["start"];
-		$start_string = $start["year"] . "-" . $start["month"] 
-			.  "-" . $start["day"];
+		$start_time = reg_data::get_time_t($start["year"], $start["month"], 
+			$start["day"]);
 
 		$end = $data["end"];
-		$end_string = $end["year"] . "-" . $end["month"] 
-			.  "-" . $end["day"];
+		$end_time = reg_data::get_time_t($end["year"], $end["month"], 
+			$end["day"]);
+
+		//
+		// The last day of this membership level will stop just past 
+		// 11:59:59 PM on that day.
+		//
+		$end_time += 86399;
+
 
 		//
 		// Create an insert or an update, depending on if we have an ID
@@ -292,11 +307,13 @@ class reg_admin_level {
 		//
 		if (empty($data["id"])) {
 			$query = "INSERT INTO {reg_level} "
-				. "(name, year, reg_type_id, price, start, end, "
+				. "(name, year, reg_type_id, "
+				. "price, start, end, "
 					. "description, notes) "
 				. "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
-			$args = array($data["name"], $data["year"], $data["reg_type_id"],
-				$data["price"], $start_string, $end_string,
+			$args = array(
+				$data["name"], $data["year"], $data["reg_type_id"],
+				$data["price"], $start_time, $end_time,
 				$data["description"], $data["notes"]);
 
 		} else {
@@ -307,8 +324,9 @@ class reg_admin_level {
 				. "WHERE "
 				. "id='%d'";
 			$args = array($data["name"], $data["year"], $data["reg_type_id"],
-				$data["price"], $start_string, $end_string, $data["id"],
-				$data["description"], $data["notes"]
+				$data["price"], 
+				$start_time, $end_time, $data["description"], $data["notes"],
+				$data["id"],
 				);
 
 		}

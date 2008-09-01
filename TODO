@@ -1,4 +1,16 @@
 
+- turn cc exp date into INT(11)
+
+- check on registration to make sure membership level is valid
+	- Write a get_levels() function to return current, valid levels?
+		- Possibly sort by cost?
+- is date_validate() being used on the reg form for dates?
+	- PHP's checkdate() function
+
+- /reg/success
+	- Displays success data from $_SESSION
+		- If not found, redirects to /reg/verify
+
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?
 	- Can I use the existing captcha module for this? :-)
@@ -33,11 +45,6 @@
 	- Omaga List module?
 	- Staff reg module
 	- Onsite reg module?
-
-- is date_validate() being used on the reg form for dates?
-- check on registration to make sure membership level is valid
-	- Write a get_levels() function to return current, valid levels?
-		- Possibly sort by cost?
 
 
 - reg/
