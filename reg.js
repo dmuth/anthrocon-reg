@@ -25,7 +25,89 @@ $(document).ready(function() {
 
 	setTimeout(target, 100);
 
+
+	//
+	// Update our total on initial loading of the page
+	//
+	var cost = reg_get_current_level_cost();
+	update_total(cost);
+
+	//
+	// Register handlers for when the registration level or donation 
+	// is changed.
+	//
+	$(".reg-level").change(function() {
+		reg_level_change(this);
+		});
+
+	$("#edit-donation").change(function() {
+		var cost = reg_get_current_level_cost();
+		update_total(cost);
+
+		});
+
+	//
+	// Apply our style (shading and a different cursor) when a membership 
+	// level is hovered over.
+	//
+	$(".reg-level").mouseover(function() {
+		$(this).addClass("reg-hover");
+		});
+
+	$(".reg-level").mouseout(function() {
+		$(this).removeClass("reg-hover");
+		});
+
 });
+
+
+/**
+* This trigger is fired whenever the registration level is changed.
+* It gets the current cost and updates the total.
+*/
+function reg_level_change(obj) {
+
+	var reg_level_id = $(obj).find("input").val();
+	var cost = reg_get_current_level_cost(reg_level_id);
+	update_total(cost);
+
+} // End of reg_level_change()
+
+
+/**
+* This function is used to get the cost for a specific level id.
+*/
+function reg_get_current_level_cost() {
+
+	var reg_level_id = $(".reg-level-radio:checked").val();
+	var id = "reg-level-id-" + reg_level_id;
+	var cost = $("#" + id).text();
+
+	return(cost);
+
+} // End of reg_get_current_level_cost()
+
+
+/**
+* Update the total cost with the new value.
+*/
+function update_total(cost) {
+
+	$("#edit-badge-cost").val(cost);
+	var donation = $("#edit-donation").val();
+
+	//
+	// Since we can get an insane number of decimal places due to the way
+	// floats are stored, we'll round to the nearest 100th.
+	//
+	var total = parseFloat(cost) + parseFloat(donation);
+	total *= 100;
+	Math.round(total);
+	total /= 100;
+	
+	$("#edit-total").val(total);
+
+} // End of update_total()
 
 
 /**

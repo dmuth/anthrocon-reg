@@ -148,23 +148,64 @@ class reg_theme {
 
 
 	/**
-	* Render a set of radio buttons.
+	* Render a set of radio buttons for our registration levels.
 	*
 	* @param array $item Associative array of the item to render.
 	*
 	* @return string HTML code for the form element.
+	*
+	* @todo This code is specific to membership levels.  In the future,
+	*	I should really rename this function to something like theme_levels()
+	*	and have it only called for the reg_level_id field...
 	*/
 	static function theme_radios(&$item) {
 
 		$retval = "";
+
+		//
+		// Get a list of our current membership levels for later use.
+		//
+		$levels = reg_data::get_valid_levels();
 
 		$class = 'form-radios';
 		if (isset($item['#attributes']['class'])) {
 			$class .= ' '. $item['#attributes']['class'];
 		}
 
+		//
+		// Do a pre-liminary loop through our values, and set a flag
+		// if we find any default values from a past form submission.
+		//
+		$value_found = false;
 		foreach ($item["#options"] as $key => $value) {
+			if (!empty($item["#value"])) {
+				$value_found = true;
+			}
+		}
+
+		foreach ($item["#options"] as $key => $value) {
+
+			//
+			// If we did not find any radio buttons that were set, then set
+			// the first one in the list.
+			//
+			if (empty($value_found)) {
+				$item["#value"] = $key;
+				$value_found = true;
+			}
+
 			$retval .= self::radio($item, $item["#value"], $key, $value);
+
+			$price = $levels[$key]["price"];
+
+			//
+			// Create a span tag that contains the price for this level, for
+			// later use by jQuery.
+			//
+			$retval .= "<span id=\"reg-level-id-$key\" "
+				. "style=\"display: none; \" "
+				. ">$price</span>\n";
+
 		}
 
 		return($retval);
@@ -173,7 +214,7 @@ class reg_theme {
 
 
 	/**
-	* This function creates a single radio button.
+	* This function creates a single radio button for a reg_level.
 	*
 	* @param array $item The daa structure for this specific item.
 	*
@@ -190,14 +231,18 @@ class reg_theme {
 	*/
 	static function radio($item, $default_value, $key, $value) {
 
-		$retval ='<input type="radio" ';
-		$retval .= 'name="' . $item['#name'] .'" ';
-		$retval .= 'value="'. $key .'" ';
-		$retval .= (check_plain($default_value) == $key) ? ' checked="checked" ' : ' ';
-		$retval .= " />";
+		$checked = (check_plain($default_value) == $key) ? ' checked="checked" ' : ' ';
+
+		$retval ='<input type="radio" '
+			. 'name="' . $item['#name'] .'" '
+			. 'value="'. $key .'" '
+			. "class=\"reg-level-radio\" "
+			. $checked
+			. " />"
+			;
 
 		if (!is_null($item['#title'])) {
-			$retval = "<label class=\"option\">" . $retval . " " . $value 
+			$retval = "<label class=\"option reg-level\">" . $retval . " " . $value 
 				. "</label><br><br>\n";
 		}
 

@@ -46,4 +46,7 @@ td .reg-value {
 	background-color: #ffcccc;
 }
 
-
+.reg-hover {
+	background-color: #eeeeee;
+	cursor: pointer;
+}

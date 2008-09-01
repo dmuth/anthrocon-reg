@@ -50,7 +50,7 @@ class reg_form {
 		// only admins can edit a registration.
 		//
 		if (empty($id)) {
-			$retval["cc"] = self::form_cc($data);
+			$retval["cc"] = self::form_cc($id, $data);
 		}
 
 		return($retval);
@@ -217,10 +217,13 @@ class reg_form {
 		//
 		// Make sure our registration level is valid
 		//
+		if (empty($data["reg_level_id"])) {
+			$error = t("Membership type is required.");
+			form_set_error("reg_level_id", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
+		}
+
 		$levels = reg_data::get_valid_levels();
-//
-// TODO: Javascript through sepearate form elements.
-//
 		if (empty($levels[$data["reg_level_id"]])) {
 			$error = t("Registration level ID '%level%' is invalid.",
 				array("%level%" => $data["reg_level_id"])
@@ -564,29 +567,29 @@ class reg_form {
 			"#default_value" => $data["phone"],
 			);
 
+		if (!self::in_admin()) {
 
-		$levels = reg_data::get_valid_levels();
-		$level_options = array();
-		foreach ($levels as $key => $value) {
-			$name = $value["name"];
-			$price = $value["price"];
-			$desc = $value["description"];
-			$string = "$name <b>(\$$price USD)</b><br>\n"
-				. "$desc"
-				;
-			$level_options[$key] = $string;
+			$levels = reg_data::get_valid_levels();
+			$level_options = array();
+			foreach ($levels as $key => $value) {
+				$name = $value["name"];
+				$price = $value["price"];
+				$desc = $value["description"];
+				$string = "$name <b>(\$$price USD)</b><br>\n"
+					. "$desc"
+					;
+				$level_options[$key] = $string;
+			}
+
+			$retval["reg_level_id"] = array(
+				"#type" => "radios",
+				"#title" => t("Membership Type"),
+				"#description" => t("Which membership type would you like?"),
+				"#options" => $level_options,
+				"#default_value" => $data["reg_level_id"],
+				);
+
 		}
-
-
-		$retval["reg_level_id"] = array(
-			"#type" => "radios",
-			"#title" => t("Membership Type"),
-			"#description" => t("Which membership type would you like?"),
-			"#required" => true,
-			"#options" => $level_options,
-			"#default_value" => $data["reg_level_id"],
-			);
-
 
 		$shirt_sizes = reg_data::get_shirt_sizes();
 		$shirt_sizes[""] = t("Select");
@@ -594,7 +597,7 @@ class reg_form {
 		$retval["shirt_size_id"] = array(
 			"#type" => "select",
 			"#title" => t("Shirt Size"),
-			"#description" => t("(For Sponsors and Super Sponsors)"),
+			"#description" => t("(For Sponsors and Super Sponsors only.)"),
 			"#default_value" => $data["shirt_size_id"],
 			"#options" => $shirt_sizes
 			);
@@ -637,7 +640,7 @@ class reg_form {
 	* This internal function creates the credit card portion of the 
 	*	registration form.
 	*/
-	static function form_cc($data) {
+	static function form_cc($id, $data) {
 
 		//
 		// Set defaults if we don't have any
@@ -742,6 +745,20 @@ class reg_form {
 				"#size" => self::FORM_TEXT_SIZE_SMALL,
 				"#default_value" => $data["badge_cost"],
 				);
+
+		} else {
+			//
+			// This field and the total field are disabled, since we don't 
+			// want the user editing them.
+			// 
+			$retval["badge_cost"] = array(
+				"#title" => t("Membership Cost (USD)"),
+				"#type" => "textfield",
+				"#description" => t("The cost for your membership."),
+				"#size" => self::FORM_TEXT_SIZE_SMALL,
+				"#disabled" => true,
+				);
+
 		}
 
 		$retval["donation"] = array(
@@ -751,6 +768,17 @@ class reg_form {
 				. "donation?"),
 			"#default_value" => $data["donation"],
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			);
+
+		$retval["total"] = array(
+			"#title" => t("Total (USD)"),
+			"#type" => "textfield",
+			"#description" => t("The total cost of your membership, plus "
+				. "any donation.<br>\n")
+				. t("<b>This will be billed to your credit card when you click the button below!</b>")
+				,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#disabled" => true,
 			);
 
 		$retval["submit"] = array(
