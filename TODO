@@ -1,6 +1,4 @@
 
-- turn cc exp date into INT(11)
-
 - check on registration to make sure membership level is valid
 	- Write a get_levels() function to return current, valid levels?
 		- Possibly sort by cost?

@@ -17,7 +17,7 @@ class reg_data {
 	static function get_badge_num() {
 
 		$year = reg::YEAR;
-		$query = "UPDATE reg_badge_num "
+		$query = "UPDATE {reg_badge_num} "
 			. "SET badge_num = @val := badge_num+1 "
 			. "WHERE year=%s ";
 		db_query($query, array($year));
@@ -93,10 +93,29 @@ class reg_data {
 	} // End of get_last_4()
 
 
-// TEST
+	/**
+	* Return a list of currently valid registration levels.
+	*
+	* @return array The key is the membersip ID and the value is
+	*	an associative array of member data.
+	*/
 	static function get_valid_levels() {
 
 		$retval = array();
+
+		$timestamp = gmmktime();
+		$query = "SELECT * FROM {reg_level} "
+			. "WHERE "
+			. "start <= '%s' AND end >= '%s' "
+			. "ORDER BY price "
+			;
+		$query_args = array($timestamp, $timestamp);
+		$cursor = db_query($query, $query_args);
+
+		while ($row = db_fetch_array($cursor)) {
+			$id = $row["id"];
+			$retval[$id] = $row;
+		}
 
 		return($retval);
 
@@ -110,7 +129,7 @@ class reg_data {
 	*/
 	static function get_reg_cost($level_id) {
 
-		$query = "SELECT price FROM reg_level "
+		$query = "SELECT price FROM {reg_level} "
 			. "WHERE id='%s'";
 		$query_args = array($level_id);
 		$cursor = db_query($query, $query_args);
@@ -127,7 +146,7 @@ class reg_data {
 	*/
 	static function get_reg_type_id($level_id) {
 
-		$query = "SELECT reg_type_id FROM reg_level "
+		$query = "SELECT reg_type_id FROM {reg_level} "
 			. "WHERE id='%s'";
 		$query_args = array($level_id);
 		$cursor = db_query($query, $query_args);
@@ -157,7 +176,7 @@ class reg_data {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_type ORDER BY weight";
+		$query = "SELECT * FROM {reg_type} ORDER BY weight";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -188,7 +207,7 @@ class reg_data {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_trans_type ";
+		$query = "SELECT * FROM {reg_trans_type} ";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -219,7 +238,7 @@ class reg_data {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_payment_type ";
+		$query = "SELECT * FROM {reg_payment_type} ";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -252,7 +271,7 @@ class reg_data {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_status ORDER BY weight";
+		$query = "SELECT * FROM {reg_status} ORDER BY weight";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -284,7 +303,7 @@ class reg_data {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_cc_type";
+		$query = "SELECT * FROM {reg_cc_type}";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -317,7 +336,7 @@ class reg_data {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM reg_shirt_size";
+		$query = "SELECT * FROM {reg_shirt_size}";
 		if (empty($disabled)) {
 			$query .= " WHERE disabled IS NULL";
 		}
