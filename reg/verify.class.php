@@ -182,7 +182,8 @@ class reg_verify {
 		$rows = array();
 		while ($row = db_fetch_array($cursor)) {
 			$rows[] = array(
-				array("data" => $row["badge_num"],
+				array("data" => $row["year"] . "-" . 
+					reg_data::format_badge_num($row["badge_num"]),
 					//"align" => "right"
 					),
 				array("data" => $row["badge_name"]),
@@ -233,11 +234,14 @@ class reg_verify {
 			. "WHERE "
 			. "reg.last='%s' "
 			. "AND reg_trans.cc_num LIKE '%%%s' "
-			. "AND reg_trans.card_expire LIKE '%s-%s-%%'"
+			. "AND reg_trans.card_expire = '%s'"
 			;
 
+		$cc_exp_time = reg_data::get_time_t($search["cc_exp"]["year"], 
+			$search["cc_exp"]["month"], 1);
+
 		$args = array($search["last"], $search["cc_num"], 
-			$search["cc_exp"]["year"], $search["cc_exp"]["month"]);
+			$cc_exp_time);
 
 		$retval = db_query($query, $args);
 

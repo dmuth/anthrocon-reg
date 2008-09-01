@@ -169,7 +169,7 @@ class reg_admin_log {
 	function log_detail($id) {
 
 		$query = "SELECT reg_log.*, "
-			. "reg.badge_num, reg.badge_name, "
+			. "reg.badge_num, reg.year, reg.badge_name, "
 			. "reg.first, reg.middle, reg.last, "
 			. "users.uid, users.name "
 			. "FROM {reg_log} "
@@ -214,7 +214,9 @@ class reg_admin_log {
 		if (!empty($row["badge_num"])) {
 			$rows[] = array(
 				array("data" => "Badge Number", "header" => true),
-				l($row["badge_num"], $member_link)
+				l($row["year"] . "-" 
+					. reg_data::format_badge_num($row["badge_num"]
+					), $member_link)
 				);
 		}
 
@@ -461,7 +463,7 @@ class reg_admin_log {
 	function trans_detail($id) {
 
 		$query = "SELECT reg_trans.*, "
-			. "reg.badge_num, reg.badge_name, "
+			. "reg.badge_num, reg.year, reg.badge_name, "
 			. "reg_payment_type.payment_type, "
 			. "reg_trans_type.trans_type, "
 			. "reg_cc_type.cc_type, "
@@ -514,7 +516,9 @@ class reg_admin_log {
 		if (!empty($row["badge_num"])) {
 			$rows[] = array(
 				array("data" => "Badge Number", "header" => true),
-				l($row["badge_num"], $member_link)
+				l($row["year"] . "-" 
+					. reg_data::format_badge_num($row["badge_num"]
+					), $member_link)
 				);
 		}
 
@@ -573,7 +577,7 @@ class reg_admin_log {
 			&& $row["payment_type"] == "Credit Card"
 			) {
 
-			$cc_exp = strftime("%B, %Y", strtotime($row["card_expire"]));
+			$cc_exp = format_date($row["card_expire"], "custom", "M, Y");
 
 			$cc = t("%type% ending '%num%'. Expires: %date%",
 				array(

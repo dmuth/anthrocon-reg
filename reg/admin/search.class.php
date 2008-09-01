@@ -44,6 +44,8 @@ class reg_admin_search {
 		$search["badge_num"] = array(
 			"#title" => "Badge Number",
 			"#type" => "textfield",
+			"#description" => t("Just the core badge number.  ")
+				. t("Do NOT include the year."),
 			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $search_data["badge_num"],
 			);

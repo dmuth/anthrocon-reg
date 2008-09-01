@@ -83,7 +83,7 @@ class reg_log {
 		// strttime() and friends will "correct" the date to be in the 
 		// previous month!
 		//
-		$exp_string = $exp["year"] . "-" . $exp["month"] ."-01";
+		$exp_string = reg_data::get_time_t($exp["year"], $exp["month"], 1);
 
 		//
 		// Make sure we have actual numbers here, just in case.

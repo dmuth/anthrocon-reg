@@ -167,8 +167,8 @@ function reg_install() {
 			//
 			// How long the membership type is available.
 			//
-			. "start INT(11), "
-			. "end INT(11), "
+			. "start INTEGER NOT NULL DEFAULT '0', "
+			. "end INTEGER NOT NULL DEFAULT '0', "
 
 			//
 			// Description that is shown to the user
@@ -245,7 +245,13 @@ function reg_install() {
 			//
 			. "reg_cc_type_id INTEGER, "
 			. "cc_num VARCHAR(255), "
-			. "card_expire DATE, "
+
+			//
+			// Timestamp for when the card expires.
+			// This will equate to the first day of the month.
+			//
+			. "card_expire INTEGER NOT NULL DEFAULT '0', "
+
 			//
 			// badge_cost is the money that their paid (or were refunded)
 			// for their membership.

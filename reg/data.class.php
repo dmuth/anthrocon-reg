@@ -397,5 +397,16 @@ class reg_data {
 	} // End of get_time_t()
 
 
+	/**
+	* Format a badge number so that it is filled with leading zeros.
+	*/
+	static function format_badge_num($badge_num) {
+
+		$retval = sprintf("%04d", $badge_num);
+		return($retval);
+
+	} // End of format_badge_num()
+
+
 } // End of reg_data class
 

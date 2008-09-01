@@ -97,7 +97,8 @@ class reg_member {
                         
 		$retval = array(
 			l($id, $link),
-			l($badge_num, $link),
+			l($row["year"] . "-" . reg_data::format_badge_num($badge_num), 
+				$link),
 			l($badge_name, $link),
 			l($real_name, $link),
 			$row["member_type"],
@@ -158,7 +159,7 @@ class reg_member {
 
 		$rows[] = array(
 			array("data" => "Badge Number", "header" => true),
-			$row["year"] . "-" . sprintf("%04d", $row["badge_num"])
+			$row["year"] . "-" . reg_data::format_badge_num($row["badge_num"])
 			);
 
 		$rows[] = array(
