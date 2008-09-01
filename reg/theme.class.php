@@ -31,7 +31,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	function theme_textfield(&$item) {
+	static function theme_textfield(&$item) {
 		$class = array('form-text');
 		_form_set_class($item, $class);
 		$retval = '<input type="text" maxlength="' 
@@ -53,7 +53,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	function theme_select(&$item) {
+	static function theme_select(&$item) {
 
 		$class = array('form-select');
 		_form_set_class($item, $class);
@@ -79,7 +79,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form elements
 	*/
-	function theme_cc_exp(&$item) {
+	static function theme_cc_exp(&$item) {
 
 		$retval = "";
 		foreach (element_children($item) as $key => $value) {
@@ -101,7 +101,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	function theme_checkbox(&$item) {
+	static function theme_checkbox(&$item) {
 
 		$class = array('form-checkbox');
 		_form_set_class($item, $class);
@@ -132,7 +132,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	function theme_date(&$item) {
+	static function theme_date(&$item) {
 
 		$retval = self::theme_select($item["year"])
 			. " "
@@ -148,6 +148,65 @@ class reg_theme {
 
 
 	/**
+	* Render a set of radio buttons.
+	*
+	* @param array $item Associative array of the item to render.
+	*
+	* @return string HTML code for the form element.
+	*/
+	static function theme_radios(&$item) {
+
+		$retval = "";
+
+		$class = 'form-radios';
+		if (isset($item['#attributes']['class'])) {
+			$class .= ' '. $item['#attributes']['class'];
+		}
+
+		foreach ($item["#options"] as $key => $value) {
+			$retval .= self::radio($item, $item["#value"], $key, $value);
+		}
+
+		return($retval);
+
+	} // End of theme_radios()
+
+
+	/**
+	* This function creates a single radio button.
+	*
+	* @param array $item The daa structure for this specific item.
+	*
+	* @param string $default_value The value of the radio button that was
+	*	previously selected.
+	*
+	* @param integer $key The key for the radio button.  This corresponds to
+	*	a reg_level_id value.
+	*
+	* @param string $value The string displayed with the radio button.  This
+	*	corresponds to the description for a membership level.
+	*
+	* @return string HTML code for the form element.
+	*/
+	static function radio($item, $default_value, $key, $value) {
+
+		$retval ='<input type="radio" ';
+		$retval .= 'name="' . $item['#name'] .'" ';
+		$retval .= 'value="'. $key .'" ';
+		$retval .= (check_plain($default_value) == $key) ? ' checked="checked" ' : ' ';
+		$retval .= " />";
+
+		if (!is_null($item['#title'])) {
+			$retval = "<label class=\"option\">" . $retval . " " . $value 
+				. "</label><br><br>\n";
+		}
+
+		return($retval);
+
+	} // End of radio()
+
+
+	/**
 	* Process the childen of a particular form element.
 	*
 	* @param array $form Associatiave array of one or more form elements
@@ -157,28 +216,36 @@ class reg_theme {
 	* @return string HTML code for the form, along with table row and column
 	*	code.
 	*/
-	function theme_children(&$form) {
+	static function theme_children(&$form) {
 
 		foreach (element_children($form) as $key => $value) {
 
 			$item = $form[$value];
+			$type = $item["#type"];
 	
 			$required = !empty($item['#required']) ? 
 				'<span class="reg-form-required" title="' 
 				. t('This field is required.') . '"> *</span>' : '';
 
+			$valign = "";
+			if ($type == "radios") {
+				$valign = "valign=\"top\" ";
+			}
+
 			$retval .= "<tr>"
-				. "<td align=\"right\" class=\"reg-name\">";
+				. "<td $valign align=\"right\" class=\"reg-name\">";
 
 			//
 			// If we don't know how to render this item, let Drupal render it.
 			//
-			if ($item["#type"] != "textfield"
-				&& $item["#type"] != "select"
-				&& $item["#type"] != "checkbox"
-				&& $item["#type"] != "date"
-				&& $item["#type"] != "cc_exp"
+			if ($type != "textfield"
+				&& $type != "select"
+				&& $type != "checkbox"
+				&& $type != "date"
+				&& $type != "radios"
+				&& $type != "cc_exp"
 				) {
+				//print $type; // Debugging
 				$retval .= drupal_render($item);
 
 			} else {
@@ -189,36 +256,23 @@ class reg_theme {
 				$retval .= "</td>\n";
 
 				//
+				// Radio buttons get a colspan of 2, since they're for our 
+				// membership types.
+				//
+				$colspan = "";
+				if ($type == "radios") {
+					$colspan = "colspan=\"2\"";
+				}
+
+				//
 				// This form generation code was ripped from theme_textfield().
 				// If you need more functionality for generating text fields, 
 				// you'll have to rip it from there. :-P
 				//
-				$retval .= "<td class=\"reg-value\">";
+				$retval .= "<td class=\"reg-value\" $colspan>";
 				$retval .= '<div class="reg-form-item">' . "\n";
 
-				if ($item["#type"] == "textfield") {
-					$retval .= self::theme_textfield($item);
-
-				} else if ($item["#type"] == "select") {
-					$retval .= self::theme_select($item);
-
-				} else if ($item["#type"] == "checkbox") {
-					$retval .= self::theme_checkbox($item);
-
-				} else if ($item["#type"] == "date") {
-					$retval .= self::theme_date($item);
-
-				} else if ($item["#type"] == "cc_exp") {
-					$retval .= self::theme_cc_exp($item);
-
-				} else {
-					//
-					// This only gets executed if I screwed up the outer
-					// if statement. :-P
-					//
-					$retval .= "No code for item type: " . $item["#type"];
-
-				}
+				$retval .= self::render_item($item);
 
 				$retval .= $required;
 
@@ -227,16 +281,9 @@ class reg_theme {
 				//
 				// Ripped from theme_form_element
 				//
-				if (!empty($item['#description'])) {
-					$retval .= "<td>"
-						. "<div class=\"reg-form-item\">"
-						. "<div class=\"description\">"
-						. $item["#description"] 
-						. "</div>"
-						. "</div>"
-						. "</td>\n"
-						;
-				} 
+				if ($type != "radios") {
+					$retval .= self::get_description($item);
+				}
 
 			} 
 
@@ -247,6 +294,70 @@ class reg_theme {
 		return($retval);
 
 	} // End of theme_children()
+
+
+	/**
+	* Render a specific item.
+	*
+	* @param array $item The data structure for this item.
+	*
+	*/
+	static function render_item($item) {
+		
+		$retval = "";
+
+		$type = $item["#type"];
+
+		if ($type == "textfield") {
+			$retval .= self::theme_textfield($item);
+
+		} else if ($type == "select") {
+			$retval .= self::theme_select($item);
+
+		} else if ($type == "checkbox") {
+			$retval .= self::theme_checkbox($item);
+
+		} else if ($type == "date") {
+			$retval .= self::theme_date($item);
+
+		} else if ($type == "radios") {
+			$retval .= self::theme_radios($item);
+
+		} else if ($type == "cc_exp") {
+			$retval .= self::theme_cc_exp($item);
+
+		} else {
+			//
+			// This only gets executed if I screwed up the outer
+			// if statement. :-P
+			//
+			$retval .= "No code for item type: " . $type;
+
+		}
+
+		return($retval);
+
+	} // End of render_item()
+
+
+	static function get_description(&$item) {
+
+		$retval = "";
+
+		if (!empty($item['#description'])) {
+			$retval .= "<td>"
+				. "<div class=\"reg-form-item\">"
+				. "<div class=\"description\">"
+				. $item["#description"] 
+				. "</div>"
+				. "</div>"
+				. "</td>\n"
+				;
+		} 
+
+		return($retval);
+
+	} // End of get_description()
 
 
 } // End of reg_theme class

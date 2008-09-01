@@ -1,7 +1,4 @@
 
-- check on registration to make sure membership level is valid
-	- Write a get_levels() function to return current, valid levels?
-		- Possibly sort by cost?
 - is date_validate() being used on the reg form for dates?
 	- PHP's checkdate() function
 

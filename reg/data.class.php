@@ -101,7 +101,11 @@ class reg_data {
 	*/
 	static function get_valid_levels() {
 
-		$retval = array();
+		static $retval = array();
+
+		if (!empty($retval)) {
+			return($retval);
+		}
 
 		$timestamp = gmmktime();
 		$query = "SELECT * FROM {reg_level} "
@@ -119,7 +123,7 @@ class reg_data {
 
 		return($retval);
 
-	} // end of get_valid_levels()
+	} // End of get_valid_levels()
 
 
 	/**

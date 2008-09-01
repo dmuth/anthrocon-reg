@@ -58,14 +58,6 @@ function reg_menu($may_cache) {
 
 
 /**
-* Our public registration page.
-*/
-function reg_registration() {
-	reg::force_ssl();
-	return(reg::registration());
-}
-
-/**
 * Our public verification page.
 */
 function reg_verify() {
@@ -87,6 +79,14 @@ function reg_verify_form_submit($form_id, &$data) {
 	return(reg_verify::verify_submit($form_id, $data));
 }
 
+
+/**
+* Our public registration page.
+*/
+function reg_registration() {
+	reg::force_ssl();
+	return(reg::registration());
+}
 
 function reg_registration_form($id = "") {
 	return(reg_form::reg($id));

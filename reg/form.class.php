@@ -215,18 +215,28 @@ class reg_form {
 		}
 
 		//
+		// Make sure our registration level is valid
+		//
+		$levels = reg_data::get_valid_levels();
+//
+// TODO: Javascript through sepearate form elements.
+//
+		if (empty($levels[$data["reg_level_id"]])) {
+			$error = t("Registration level ID '%level%' is invalid.",
+				array("%level%" => $data["reg_level_id"])
+				);
+			form_set_error("reg_level_id", $error);
+			reg_log::log($error, "", WATCHDOG_ERROR);
+			$okay = false;
+		}
+
+		//
 		// If something failed, stop here and do NOT try to charge
 		// the credit card.
 		//
 		if (empty($okay)) {
 			return(null);
 		}
-
-//
-// TODO:
-// We eventually need to ask for a registration level on the reg form.
-//
-$data["reg_level_id"] = 3;
 
 		//
 		// Make the transaction.  If it is successful, then add a new member.
@@ -554,12 +564,36 @@ $data["reg_level_id"] = 3;
 			"#default_value" => $data["phone"],
 			);
 
+
+		$levels = reg_data::get_valid_levels();
+		$level_options = array();
+		foreach ($levels as $key => $value) {
+			$name = $value["name"];
+			$price = $value["price"];
+			$desc = $value["description"];
+			$string = "$name <b>(\$$price USD)</b><br>\n"
+				. "$desc"
+				;
+			$level_options[$key] = $string;
+		}
+
+
+		$retval["reg_level_id"] = array(
+			"#type" => "radios",
+			"#title" => t("Membership Type"),
+			"#description" => t("Which membership type would you like?"),
+			"#required" => true,
+			"#options" => $level_options,
+			"#default_value" => $data["reg_level_id"],
+			);
+
+
 		$shirt_sizes = reg_data::get_shirt_sizes();
 		$shirt_sizes[""] = t("Select");
 		ksort($shirt_sizes);
 		$retval["shirt_size_id"] = array(
 			"#type" => "select",
-			"#title" => "Shirt Size",
+			"#title" => t("Shirt Size"),
 			"#description" => t("(For Sponsors and Super Sponsors)"),
 			"#default_value" => $data["shirt_size_id"],
 			"#options" => $shirt_sizes

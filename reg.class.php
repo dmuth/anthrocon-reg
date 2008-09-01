@@ -328,17 +328,24 @@ class reg {
 	static function registration() {
 
 		$retval = "";
+
+		//
+		// Get our current membership levels and make sure that we
+		//
+		$levels = reg_data::get_valid_levels();
+
+		if (empty($levels)) {
+			$email = variable_get(reg::VAR_EMAIL, "");
+			$retval = "No memberships currently available for purchase. "
+				. "Please email $email with any questions. "
+				. "TODO: Make this user-configurable in the admin.";
+			reg_log::log($retval, "", WATCHDOG_WARNING);
+			return($retval);
+
+		}
+
 		$retval .= drupal_get_form("reg_registration_form");
 
-/**
-* Fields:
-// Javascript to change the price that's displayed for the card?
-shirt_size (staff and super sponsors)
-	- Could I do this in Javascript through a handler of some sort?
-
-// TODO:
-// Eventually add a confirmation page with the amount to be charged to the credit card?
-*/
 		return($retval);
 
 	} // End of registration()
@@ -362,9 +369,8 @@ shirt_size (staff and super sponsors)
 
 
 	/**
-	*
+	* Force the current page to be reloaded securely.
 	*/
-// TEST
 	static function force_ssl() {
 
 		if (!self::is_ssl()) {

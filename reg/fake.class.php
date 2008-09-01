@@ -46,6 +46,22 @@ class reg_fake {
 		$data["reg_payment_type_id"] = self::get_number(1, 10);
 		$data["reg_type_id"] = self::get_number(1, 12);
 
+		//
+		// What we're going to do here is get a list of valid levels,
+		// then get a random value somewhere between zero and the number
+		// of levels.
+		//
+		// From there, we'll get a list of all keys from that aray in a
+		// separate array with sequential keys, index that array based on 
+		// the random value, and have the final reg_level_id to set in 
+		// the form.
+		//
+		$levels = reg_data::get_valid_levels();
+		$index = self::get_number(0, (count($levels) - 1));
+		$level_keys = array_keys($levels);
+		$level_index = $level_keys[$index];
+		$data["reg_level_id"] = $level_index;
+
 	} // End of fake_data()
 
 
