@@ -117,7 +117,7 @@ class reg_admin_log {
 			
 			$max_len = 60;
 
-			$link = "admin/reg/logs/view/" . $id;
+			$link = "admin/reg/logs/view/" . $id . "/view";
 			$date = format_date($row["date"], "small");
 			$message = truncate_utf8($row["message"], $max_len);
 			if (strlen($row["message"]) > $max_len) {
@@ -431,7 +431,7 @@ class reg_admin_log {
 
 			}
 			
-			$link = "admin/reg/transactions/view/" . $id;
+			$link = "admin/reg/logs/transactions/" . $id . "/view";
 			$date_string = format_date($row["date"], "small");
 			$rows[] = array(
 				l($date_string, $link),

@@ -38,7 +38,7 @@ class reg_admin_level {
 
 		while ($row = db_fetch_array($cursor)) {
 
-			$link = "admin/reg/levels/edit/" . $row["id"];
+			$link = "admin/reg/levels/list/" . $row["id"] . "/edit";
 			$rows[] = array(
 				l($row["id"], $link),
 				l($row["name"], $link),
