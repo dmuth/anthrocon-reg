@@ -11,16 +11,6 @@
 *
 */
 
-/**
-* Done:
-- Database schema
-	- http://api.drupal.org/api/group/database/5
-	- db_query(), db_fetch_array()
-	- db_lock_table(), db_unlock_tables()
-	- db_query_range(), pager_query(), tablesort_sql()
-
-*/
-
 
 /**
 * Define our autoloader, and register it.
@@ -308,6 +298,7 @@ reg_install();
 // TEST
 //print "<pre>"; print_r(reg_data::get_valid_levels()); print "</pre>";
 
+//print "TEST: " . reg::is_admin();
 //include_once("reg.class.php");
 //echo "TEST";
 //echo "badge NUM: " . reg::get_badge_num() . "<br>\n";

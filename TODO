@@ -4,7 +4,7 @@
 
 - reg form
 	- Add edit links for each of the membership types
-		- Write reg::is_admin()
+		- Use reg::is_admin()
 	- On success, if further questions, email the address
 		- Link to FAQ?
 			- Make in settings?

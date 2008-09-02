@@ -428,5 +428,14 @@ class reg {
 	} // End of goto_url()
 
 
+	/**
+	* Return true if the user is currently an admin for the registration
+	* system.  False otherwise.
+	*/
+	function is_admin() {
+		return(user_access(reg::PERM_ADMIN));
+	}
+
+
 } // End of reg class
 
