@@ -200,6 +200,22 @@ class reg_form {
 		}
 
 		//
+		// Don't allow the default birthdate of today.
+		//
+		$birth = $data["birthdate"];
+		if ($birth["year"] == date("Y")
+			&& $birth["month"] == date("n")
+			&& $birth["day"] == date("j")
+			) {
+			$error = t("Date of birth is set to today. ")
+				. t("Did you forget to enter it?")
+				;
+			form_set_error("birthdate][year", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
+			$okay = false;
+		}
+
+		//
 		// If we're in the admin, we can skip alot of this stuff.
 		//
 		if (self::in_admin()) {
@@ -516,13 +532,16 @@ class reg_form {
 		//
 		$date_array = array();
 		if (!empty($data["birthdate"])) {
-			$date_array = explode("-", $data["birthdate"]);
-			$date_array["year"] = $date_array[0];
-			$date_array["month"] = $date_array[1];
-			$date_array["day"] = $date_array[2];
+
+			$date_array = array(
+				"year" => format_date($data["birthdate"], "custom", "Y"),
+				"month" => format_date($data["birthdate"], "custom", "n"),
+				"day" => format_date($data["birthdate"], "custom", "j"),
+				);
+
 		}
 		
-		$retval["birthday"] = array(
+		$retval["birthdate"] = array(
 			"#type" => "date",
 			"#title" => t("Date of Birth"),
 			"#description" => t("Your date of birth"),

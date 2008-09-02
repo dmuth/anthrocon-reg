@@ -174,7 +174,7 @@ class reg_member {
 
 		$rows[] = array(
 			array("data" => "Birthdate", "header" => true),
-			$row["birthdate"]
+			format_date($row["birthdate"], "custom", "F d, Y")
 			);
 
 		$rows[] = array(
@@ -323,9 +323,11 @@ class reg_member {
 				. "'%s', '%s', '%s', '%s', '%s', '%s', '%s', "
 				. "'%s', '%s')"
 			;
-		$birth = $data["birthday"];
-		$date_string = $birth["year"] . "-" . $birth["month"] 
-			. "-" . $birth["day"];
+
+		$birth = $data["birthdate"];
+		$date_string = reg_data::get_time_t($birth["year"], $birth["month"], 
+			$birth["day"]);
+
 		if (empty($data["reg_type_id"])) {
 			$data["reg_type_id"] = reg_data::get_reg_type_id(
 				$data["reg_level_id"]);
@@ -422,9 +424,9 @@ class reg_member {
 			. "shirt_size_id='%s' "
 			."WHERE id=%d ";
 
-		$birth = $data["birthday"];
-		$date_string = $birth["year"] . "-" . $birth["month"] 
-			. "-" . $birth["day"];
+		$birth = $data["birthdate"];
+		$date_string = reg_data::get_time_t($birth["year"], $birth["month"], 
+			$birth["day"]);
 
 		$query_args = array(
 			$data["reg_type_id"], $data["reg_status_id"],

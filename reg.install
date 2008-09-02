@@ -54,7 +54,11 @@ function reg_install() {
 			. "first VARCHAR(255), "
 			. "middle VARCHAR(255), "
 			. "last VARCHAR(255), "
-			. "birthdate DATE, "
+			//
+			// Timestamp for the member's birthday
+			//
+			. "birthdate INTEGER NOT NULL DEFAULT '0', "
+
 			. "address1 VARCHAR(255), "
 			. "address2 VARCHAR(255), "
 			. "city VARCHAR(255), "

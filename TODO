@@ -3,9 +3,8 @@
 	- PHP's checkdate() function
 
 - reg form
-	- Check the birthdate field, if set to today, throw an error
 	- Add edit links for each of the membership types
-		- Wrote reg::is_admin()
+		- Write reg::is_admin()
 	- On success, if further questions, email the address
 		- Link to FAQ?
 			- Make in settings?
