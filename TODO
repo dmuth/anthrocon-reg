@@ -2,6 +2,16 @@
 - is date_validate() being used on the reg form for dates?
 	- PHP's checkdate() function
 
+- reg form
+	- Check the birthdate field, if set to today, throw an error
+	- Add edit links for each of the membership types
+		- Wrote reg::is_admin()
+	- On success, if further questions, email the address
+		- Link to FAQ?
+			- Make in settings?
+	- Maybe change membership cost and total cost on public form to NOT be form fields
+	- Fake data should include birthdate
+
 - /reg/success
 	- Displays success data from $_SESSION
 		- If not found, redirects to /reg/verify

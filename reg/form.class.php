@@ -133,12 +133,14 @@ class reg_form {
 		// If we have no payment type (such as coming through the public
 		// interface), set it to credit card.
 		//
-		if (empty($data["reg_payment_type_id"])) {
+		if (empty($data["reg_payment_type_id"])
+			&& !self::in_admin()
+			) {
 			$data["reg_payment_type_id"] = 1;
 		}
 
 		//
-		// If we have not transaction type, set it to "purchase".
+		// If we have no transaction type, set it to "purchase".
 		//
 		if (empty($data["reg_trans_type_id"])) {
 			$data["reg_trans_type_id"] = 1;
@@ -148,6 +150,53 @@ class reg_form {
 			$error = t("Email addresses do not match!");
 			form_set_error("email2", $error);
 			reg_log::log($error, "", WATCHDOG_WARNING);
+		}
+
+		//
+		// If the payment type is a credit card, make sure that we have
+		// card information.
+		//
+		$payment_type = reg_data::get_payment_type(
+			$data["reg_payment_type_id"]);
+
+		//
+		// If the we are paying with the credit card, make sure that
+		// that the card type and number have been entered.
+		// The reason for this extra check is that when manually adding
+		// a registration, these fields are not flagged as required since
+		// it could be a non-paying membership, such as staff or 
+		// a Guest of Honor.
+		//
+		if ($payment_type == "Credit Card") {
+
+			if (empty($data["cc_type_id"])) {
+				$error = t("No credit card type selected.");
+				form_set_error("cc_type_id", $error);
+				reg_log::log($error, "", WATCHDOG_WARNING);
+			}
+
+			if (empty($data["cc_num"])) {
+				$error = t("No credit card number entered.");
+				form_set_error("cc_num", $error);
+				reg_log::log($error, "", WATCHDOG_WARNING);
+			}
+
+		}
+		
+
+		//
+		// Sanity checking on the credit card expiration.
+		//
+		$month = date("n");
+		$year = date("Y");
+
+		if ($data["cc_exp"]["year"] == $year) {
+			if ($data["cc_exp"]["month"] <= $month) {
+				$error = t("Credit card is expired");
+				form_set_error("cc_exp][month", $error);
+				reg_log::log($error, "", WATCHDOG_WARNING);
+				$okay = false;
+			}
 		}
 
 		//
@@ -200,21 +249,6 @@ class reg_form {
 		}
         
 		//
-		// Sanity checking on the credit card expiration.
-		//
-		$month = date("n");
-		$year = date("Y");
-
-		if ($data["cc_exp"]["year"] == $year) {
-			if ($data["cc_exp"]["month"] <= $month) {
-				$error = t("Credit card is expired");
-				form_set_error("cc_exp][month", $error);
-				reg_log::log($error, "", WATCHDOG_WARNING);
-				$okay = false;
-			}
-		}
-
-		//
 		// Make sure our registration level is valid
 		//
 		if (empty($data["reg_level_id"])) {
@@ -245,6 +279,11 @@ class reg_form {
 		// Make the transaction.  If it is successful, then add a new member.
 		//
 		$reg_trans_id = reg::charge_cc($data);
+
+		//
+		// TODO: Add things to do if the charging fails!
+		//
+
 		self::$reg_trans_id = $reg_trans_id;
 
 	} // End of registration_form_validate()
@@ -412,8 +451,7 @@ class reg_form {
 			"#title" => t("Badge Name"),
 			"#type" => "textfield",
 			"#description" => t("The name printed on your conbadge.  ")
-				. t("This may be your real name or a nickname. ")
-				. t("It may be blank. "),
+				. t("This may be your real name, a nickname, or blank."),
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["badge_name"],
 			);
@@ -519,7 +557,7 @@ class reg_form {
 		$retval["state"] = array(
 			"#type" => "textfield",
 			"#title" => t("State"),
-			"#description" => t("Your state"),
+			"#description" => t("Your state/province."),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
 			"#default_value" => $data["state"],
@@ -532,6 +570,10 @@ class reg_form {
 			"#required" => true,
 			"#default_value" => $data["zip"],
 			);
+
+		if (empty($data["country"])) {
+			$data["country"] = "USA";
+		}
 		$retval["country"] = array(
 			"#type" => "textfield",
 			"#title" => t("Country"),
@@ -561,7 +603,7 @@ class reg_form {
 		$retval["phone"] = array(
 			"#type" => "textfield",
 			"#title" => t("Your phone number"),
-			"#description" => t("A phone number where we can reach you."),
+			"#description" => t("A phone number where you can be reached."),
 			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
 			"#default_value" => $data["phone"],
@@ -687,7 +729,6 @@ class reg_form {
 			"#title" => t("Credit Card Type"),
 			"#type" => "select",
 			"#options" => reg_data::get_cc_types(),
-			"#required" => true,
 			"#default_value" => $data["cc_type_id"],
 			);
 
@@ -696,9 +737,9 @@ class reg_form {
 			"#description" => t("Your Credit Card Number"),
 			"#type" => "textfield",
 			"#size" => self::FORM_TEXT_SIZE,
-			"#required" => true,
 			"#default_value" => $data["cc_num"],
 			);
+
 
 		if (reg::is_test_mode()) {
 			$retval["cc_num"]["#description"] = t("Running in test mode.  "
@@ -709,6 +750,14 @@ class reg_form {
 			$retval["cc_num"]["#description"] = t("Just the last 4 digits "
 				. "are necessary.  This card will NOT be charged, since we "
 				. "are in the admin.");
+		} else {
+			//
+			// If this is the public facing form, we only accept credit card
+			// payments, so require the values to be present.
+			//
+			$retval["cc_type_id"]["#required"] = true;
+			$retval["cc_num"]["#required"] = true;
+
 		}
 
 		$retval["cc_exp"] = array(
@@ -734,13 +783,18 @@ class reg_form {
 			);
 
 		if (self::in_admin()) {
+
+			if (empty($data["badge_cost"])) {
+				$data["badge_cost"] = "0.00";
+			}
+
 			$retval["badge_cost"] = array(
-				"#title" => t("Badge Cost"),
+				"#title" => t("Badge Cost (USD)"),
 				"#type" => "textfield",
 				"#description" => t("How much did the member pay for this "
 					. "membership?<br>"
-					. "If they are staff, Guest, etc. this number should "
-					. "normally be ZERO."),
+					. "If they are Staff, Guest, etc. this number should "
+					. "normally be <b>0.00</b>."),
 				"#required" => true,
 				"#size" => self::FORM_TEXT_SIZE_SMALL,
 				"#default_value" => $data["badge_cost"],

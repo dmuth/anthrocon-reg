@@ -295,7 +295,8 @@ class reg {
 			}
 	
 		} else {
-			$message = t("Logging a manually made transaction/comp/etc..");
+			$message = t("Logging a manually made transaction/comp/etc. ")
+				. t("No card charging took place just now.");
 			reg_log::log($message);
 
 		}

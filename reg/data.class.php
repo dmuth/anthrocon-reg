@@ -226,6 +226,27 @@ class reg_data {
 
 
 	/**
+	* Retrieve data on a payment type based on an ID.
+	*/
+	static function get_payment_type($id) {
+
+		$query = "SELECT "
+			. "payment_type "
+			. "FROM {reg_payment_type} "
+			. "WHERE "
+			. "id='%s' "
+			;
+		$query_args = array($id);
+		$cursor = db_query($query, $query_args);
+
+		$row = db_fetch_array($cursor);
+
+		return($row["payment_type"]);
+
+	} // End of get_payment_type()
+
+
+	/**
 	* Retrieve our different payment types from the database.
 	*
 	* @return array Array where the key is the unique ID and the value is

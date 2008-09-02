@@ -43,7 +43,11 @@ $(document).ready(function() {
 	$("#edit-donation").change(function() {
 		var cost = reg_get_current_level_cost();
 		update_total(cost);
+		});
 
+	$("#edit-badge-cost").change(function() {
+		var cost = reg_get_current_level_cost();
+		update_total(cost);
 		});
 
 	//
@@ -80,8 +84,15 @@ function reg_level_change(obj) {
 function reg_get_current_level_cost() {
 
 	var reg_level_id = $(".reg-level-radio:checked").val();
-	var id = "reg-level-id-" + reg_level_id;
-	var cost = $("#" + id).text();
+
+	if (reg_level_id) {
+		var id = "reg-level-id-" + reg_level_id;
+		var cost = $("#" + id).text();
+
+	} else {
+		var cost =$("#edit-badge-cost").val(cost);
+
+	}
 
 	return(cost);
 
@@ -93,8 +104,19 @@ function reg_get_current_level_cost() {
 */
 function update_total(cost) {
 
+	//
+	// If cost wasn't specified, set it to 0.
+	//
+	if (!cost) {
+		cost = 0.00;
+	}
+
 	$("#edit-badge-cost").val(cost);
 	var donation = $("#edit-donation").val();
+
+	if (!donation) {
+		donation = 0.00;
+	}
 
 	//
 	// Since we can get an insane number of decimal places due to the way
@@ -104,7 +126,7 @@ function update_total(cost) {
 	total *= 100;
 	Math.round(total);
 	total /= 100;
-	
+
 	$("#edit-total").val(total);
 
 } // End of update_total()
