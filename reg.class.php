@@ -31,6 +31,12 @@ class reg {
 	*/
 	const ITEMS_PER_PAGE = 20;
 
+	/**
+	* The maximum number we'll allow for donations from users.  
+	*	This is to limit damages in the case that we get hit with a 
+	*	fraudulent charge.
+	*/
+	const DONATION_MAX = 200;
 
 	/**
 	* The name of the variable that holds the "contact" email address for

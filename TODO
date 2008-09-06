@@ -2,11 +2,6 @@
 TODO
 ====
 
-- write and enforce a maximum donation/adjustment amount
-	- to prevent fraud
-	- reg_data::check_amount()
-		- Return $200 or whatever the max is
-
 - is date_validate() being used on the reg form for dates?
 	- PHP's checkdate() function
 
