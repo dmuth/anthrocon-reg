@@ -130,6 +130,11 @@ class reg_form {
 	static function reg_validate(&$form_id, &$data) {
 
 		//
+		// Assume everything is okay, unless proven otherwise.
+		//
+		$okay = true;
+
+		//
 		// If we have no payment type (such as coming through the public
 		// interface), set it to credit card.
 		//
@@ -236,10 +241,6 @@ class reg_form {
 			return(null);
 		}
 
-		//
-		// Assume everything is okay, unless proven otherwise.
-		//
-		$okay = true;
 
 		//
 		// Sanity checking on our donation amount.
@@ -253,17 +254,28 @@ class reg_form {
 			form_set_error("donation", $error);
 			reg_log::log($error, "", WATCHDOG_WARNING);
 			$okay = false;
-		} 
 
-		if (reg::is_negative_number($data["donation"])) {
+		} else if (reg::is_negative_number($data["donation"])) {
 			$error = t("Donation '%donation%' cannot be a negative amount!",
 				array("%donation%" => $data["donation"])
 				);
 			form_set_error("donation", $error);
 			reg_log::log($error, "", WATCHDOG_WARNING);
 			$okay = false;
-		}
-        
+
+		} else if ($data["donation"] > reg::DONATION_MAX) {
+			$error = t("Donations over %max% may not be made online.  "
+				. "If you wish to donate a larger amount, please "
+				. "contact us directly.",
+				array(
+					"%max%" => "$" . reg::DONATION_MAX
+					)
+				);
+			form_set_error("donation", $error);
+			$okay = false;
+        }
+
+
 		//
 		// Make sure our registration level is valid
 		//
