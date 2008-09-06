@@ -272,6 +272,7 @@ class reg_form {
 					)
 				);
 			form_set_error("donation", $error);
+			reg_log::log($error, "", WATCHDOG_WARNING);
 			$okay = false;
         }
 
