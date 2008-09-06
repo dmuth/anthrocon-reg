@@ -35,7 +35,7 @@ class reg_form {
 		$retval = array();
 
 		if (!empty($id)) {
-			$data = reg_member::load_reg($id);
+			$data = reg_admin_member::load_reg($id);
 			$retval["reg_id"] = array(
 				"#type" => "hidden",
 				"#value" => $id,
@@ -390,7 +390,7 @@ class reg_form {
 	*/
 	static function reg_submit_update(&$data) {
 
-		$badge_num = reg_member::update_member($data, $reg_trans_id);
+		$badge_num = reg_admin_member::update_member($data, $reg_trans_id);
 
 		$message = t("Registration updated!");
 		drupal_set_message($message);
@@ -632,11 +632,25 @@ class reg_form {
 
 			$levels = reg_data::get_valid_levels();
 			$level_options = array();
+
+			$dest = drupal_get_destination();
+
 			foreach ($levels as $key => $value) {
+				$id = $value["id"];
 				$name = $value["name"];
 				$price = $value["price"];
 				$desc = $value["description"];
-				$string = "$name <b>(\$$price USD)</b><br>\n"
+				$string = "$name <b>(\$$price USD)</b>";
+
+				//
+				// If we an admin, give a link to edit the description.
+				//
+				if (reg::is_admin()) {
+					$url = "admin/reg/levels/list/" . $id . "/edit";
+					$string .= " " . l(t("[Edit]"), $url, "", $dest);
+				}
+
+				$string .= "<br>\n"
 					. "$desc"
 					;
 				$level_options[$key] = $string;
@@ -826,7 +840,8 @@ class reg_form {
 			// 
 			$retval["badge_cost"] = array(
 				"#title" => t("Membership Cost (USD)"),
-				"#type" => "textfield",
+				"#type" => "item",
+				"#value" => "<span id=\"reg-membership-cost\"></span>",
 				"#description" => t("The cost for your membership."),
 				"#size" => self::FORM_TEXT_SIZE_SMALL,
 				"#disabled" => true,
@@ -845,7 +860,8 @@ class reg_form {
 
 		$retval["total"] = array(
 			"#title" => t("Total (USD)"),
-			"#type" => "textfield",
+			"#type" => "item",
+			"#value" => "<span id=\"reg-total\"></span>",
 			"#description" => t("The total cost of your membership, plus "
 				. "any donation.<br>\n")
 				. t("<b>This will be billed to your credit card when you click the button below!</b>")

@@ -47,6 +47,24 @@ class reg_theme {
 
 
 	/**
+	* Render a text field
+	*
+	* @param array $item Associative array of the item to render
+	*
+	* @return string HTML code for the form element.
+	*/
+	static function theme_item(&$item) {
+		$class = array('form-text');
+		_form_set_class($item, $class);
+
+		$retval = $item["#value"];
+
+		return($retval);
+
+	} // End of theme_item()
+
+
+	/**
 	* Render a select element
 	*
 	* @param array $item Associative array of the item to render
@@ -289,8 +307,10 @@ class reg_theme {
 				&& $type != "date"
 				&& $type != "radios"
 				&& $type != "cc_exp"
+				&& $type != "item"
 				) {
 				//print $type; // Debugging
+				//print "<pre>"; print_r($item); print "</pre>"; // Debugging
 				$retval .= drupal_render($item);
 
 			} else {
@@ -370,6 +390,9 @@ class reg_theme {
 
 		} else if ($type == "cc_exp") {
 			$retval .= self::theme_cc_exp($item);
+
+		} else if ($type == "item") {
+			$retval .= self::theme_item($item);
 
 		} else {
 			//

@@ -18,6 +18,9 @@ class reg_log {
 	*
 	* @param mixed $severity The severity of the message.  See Drupal's 
 	*	watchdog() function docs for more details on this.
+	*
+	* @return integer The ID of the row that was inserted into the database.
+	*
 	*/
 	static function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
 
@@ -39,6 +42,10 @@ class reg_log {
 			);
 		db_query($query, $query_args);
 
+		$id = reg_data::get_insert_id();
+
+		return($id);
+
 	} // End of log()
 
 
@@ -53,30 +60,6 @@ class reg_log {
 
 		global $user;
 
-		//
-		// Save the successful charge in reg_trans.
-		//
-		$query = "INSERT INTO {reg_trans} ("
-			. "uid, reg_id, "
-			. "date, reg_trans_type_id, reg_payment_type_id, "
-			. "reg_trans_gateway_id, "
-			. "first, middle, last, address1, address2, "
-			. "city, state, zip, country, "
-			. "reg_cc_type_id, cc_num, card_expire, "
-			. "badge_cost, donation, total_cost "
-			. ") VALUES ("
-			. "'%s', '%s', "
-			. "'%s', '%s', '%s', "
-			//
-			// Default to authorize.net for now. :-P
-			//
-			. "1, "
-			. "'%s', '%s', '%s', '%s', '%s', "
-			. "'%s', '%s', '%s', '%s', "
-			. "'%s', '%s', '%s', "
-			. "'%s', '%s', '%s' "
-			. ")"
-			;
 		$exp = $data["cc_exp"];
 		//
 		// Set each expire string to the first of the month, otherwise 
@@ -105,15 +88,41 @@ class reg_log {
 		}
 
 		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
+		//
+		// Save the successful charge in reg_trans.
+		//
+		$query = "INSERT INTO {reg_trans} ("
+			. "uid, reg_id, "
+			. "date, reg_trans_type_id, reg_payment_type_id, "
+			. "reg_trans_gateway_id, "
+			. "first, middle, last, address1, address2, "
+			. "city, state, zip, country, "
+			. "reg_cc_type_id, cc_num, card_expire, "
+			. "badge_cost, donation, total_cost, "
+			. "reg_log_id, gateway_auth_code, gateway_avs, gateway_cvv "
+			. ") VALUES ("
+			. "'%s', '%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', "
+			. "'%s', '%s', '%s', '%s', '%s', "
+			. "'%s', '%s', '%s', '%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', '%s', '%s', '%s' "
+			. ")"
+			;
 
 		$query_args = array(
 			$user->uid, $data["reg_id"], 
 			time(), $data["reg_trans_type_id"], $data["reg_payment_type_id"],
+			$data["reg_trans_gateway_id"],
 			$data["first"], $data["middle"], $data["last"], 
 				$data["address1"], $data["address2"],
 			$data["city"], $data["state"], $data["zip"], $data["country"],
 			$data["cc_type_id"], $data["cc_num"], $exp_string,
-			$data["badge_cost"], $data["donation"], $data["total_cost"]
+			$data["badge_cost"], $data["donation"], $data["total_cost"],
+			$data["reg_log_id"], $data["gateway_auth_code"], 
+				$data["gateway_avs"], $data["gateway_cvv"],
 			);
 
 		db_query($query, $query_args);

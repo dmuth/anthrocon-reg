@@ -1,18 +1,27 @@
 
+TODO
+====
+
+- write and enforce a maximum donation/adjustment amount
+	- to prevent fraud
+	- reg_data::check_amount()
+		- Return $200 or whatever the max is
+
 - is date_validate() being used on the reg form for dates?
 	- PHP's checkdate() function
 
+- reg_messages table
+	- id, key, value fields
+	- When updated, save the old version in the log
+	- Form for edting
+	- settings/messages
+
 - reg form
-	- Add edit links for each of the membership types
-		- Use reg::is_admin()
 	- On success, if further questions, email the address
-		- Link to FAQ?
-			- Make in settings?
 	- Maybe change membership cost and total cost on public form to NOT be form fields
-	- Fake data should include birthdate
 
 - /reg/success
-	- Displays success data from $_SESSION
+	- Displays success data from $_SESSION["reg"]
 		- If not found, redirects to /reg/verify
 
 - Credit card gets charged twice with a captcha.  Oops.
@@ -39,8 +48,8 @@
 
 	- "basically, when a badge number is assigned"
 
-- Random Javascript
-	- Compute total on registration form
+- authorize.net module, "reg_authorize.net"
+	- Settings page for API keys
 
 - Some utility to print unused badge numbers
 
@@ -52,7 +61,6 @@
 
 
 - reg/
-	- Display current levels on registration, configurable message otherwise
 	- On successful registration, stash stuff to display in $_SESSION
 		and go to a pre-filled verify page?
 	- When a transaction fails, log it to reg_log with reg::get_cc_name()
@@ -66,9 +74,6 @@
 - Class architecture
 	- Function to send confirmation email for a specific registration
 		- Store this confirmation email as a variable?
-
-- Credit cards
-	- Authorize.net or something else entirely?
 
 Long Term
 =========

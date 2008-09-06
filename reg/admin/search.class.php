@@ -150,14 +150,14 @@ class reg_admin_search {
 			return(null);
 		}
 
-		$header = reg_member::get_member_table_header();
+		$header = reg_admin_member::get_member_table_header();
 
 		$order_by = tablesort_sql($header);
 
 		$cursor = self::get_cursor($search, $order_by);
 
 		while ($row = db_fetch_array($cursor)) {
-			$rows[] = reg_member::get_member_table_row($row);
+			$rows[] = reg_admin_member::get_member_table_row($row);
 		}
 
 		if (empty($rows)) {

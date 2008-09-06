@@ -21,7 +21,7 @@ class reg_admin_cancel {
 	static function form($id) {
 
 		$retval = array();
-		$data = reg_member::load_reg($id);
+		$data = reg_admin_member::load_reg($id);
 
 		if ($data["badge_cost"] == 0) {
 			$message = t("Notice: This user's badge cost is currently ZERO. ")

@@ -22,15 +22,34 @@ class reg_fake {
 		$data["first"] = self::get_first_name();
 		$data["middle"] = self::get_first_name();
 		$data["last"] = self::get_last_name();
-		$data["address1"] = self::get_string();
+
+		//
+		// Get a random number of days, figure out the seconds, and 
+		// subtract them from the current time.
+		//
+		$num_days = self::get_number(45, 20000);
+		$num_seconds = $num_days * 86400;
+		$data["birthdate"] =time() - $num_seconds;
+
+		$data["address1"] = self::get_number(1, 1000) . " " 
+			. self::get_string();
 		$data["address2"] = self::get_string();
-		$data["city"] = self::get_string();
+		$data["city"] = self::get_string() . " " . self::get_string();
 		$data["state"] = self::get_string();
-		$data["zip"] = self::get_string();
+		$data["zip"] = self::get_number(10000, 99999) . "-" 
+			. sprintf("%04d", self::get_number(0, 9999));
 		$data["country"] = self::get_string();
-		$data["email"] = self::get_string();
+		$data["email"] = self::get_string() . "@" . self::get_string()
+			. "." . self::get_string(3)
+			;
 		$data["email2"] = $data["email"];
-		$data["phone"] = self::get_string();
+		$data["phone"] = 
+			self::get_number(0, 999)
+			. "-"
+			. self::get_number(0, 99999)
+			. "-"
+			. sprintf("%04d", self::get_number(1, 9999))
+			;
 		$data["shirt_size_id"] = self::get_number(1, 5);
 		$data["conduct"] = 1;
 		$data["cc_type_id"] = self::get_number(1, 4);
@@ -68,11 +87,9 @@ class reg_fake {
 	/**
 	* Generate a random string.
 	*/
-	protected static function get_string() {
+	public static function get_string($max = 8) {
 
 		$retval = "";
-
-		$max = 8;
 
 		for ($i=0; $i<$max; $i++) {
 			$retval .= chr(mt_rand(65, 122));
@@ -86,7 +103,7 @@ class reg_fake {
 	/**
 	* Generate a random number.
 	*/
-	protected static function get_number($min = 0, $max = 100) {
+	public static function get_number($min = 0, $max = 100) {
 
 		$retval = mt_rand($min, $max);
 
@@ -98,7 +115,7 @@ class reg_fake {
 	/**
 	* Generate a random credit card number.
 	*/
-	protected static function get_cc_num() {
+	public static function get_cc_num() {
 
 		$retval = "";
 		$retval .=
@@ -116,7 +133,7 @@ class reg_fake {
 	/**
 	* Return a random array element.
 	*/
-	protected static function get_random_from_set($items) {
+	public static function get_random_from_set($items) {
 
 		$len = count($items) - 1;
 		$index = mt_rand(0, $len);
@@ -130,7 +147,7 @@ class reg_fake {
 	/**
 	* Create a fake badge name.
 	*/
-	protected static function get_badge_name() {
+	public static function get_badge_name() {
 
 		$names = array("Fluffy", "Wolfy", "Skunky", "Lion", "Leopard",
 			"Chewtoy", "Catnip", "Mouse", "Paws");
@@ -146,7 +163,7 @@ class reg_fake {
 	/**
 	* Create a fake first name.
 	*/
-	protected static function get_first_name() {
+	public static function get_first_name() {
 
 		$names = array("Sam", "Doug", "Dave", "John", "Mark", "Dan", "Phil", 
 			"Joe");
@@ -161,7 +178,7 @@ class reg_fake {
 	/**
 	* Create a fake last name.
 	*/
-	protected static function get_last_name() {
+	public static function get_last_name() {
 
 		$names = array("Conway", "Muth", "Smith", "Johnson", "Phillips", 
 			"Stevensen");
@@ -172,6 +189,26 @@ class reg_fake {
 
 	} // End of get_last_name()
 
+
+	/**
+	* This function selects a random item from a list and returns it.
+	*
+	* @param array $list An array of items to select from.  It does NOT
+	*	need to be a scalar array.
+	*
+	* @return mixed A random item from the list.
+	*/
+	public function get_item($list) {
+
+		$index = self::get_number(0, (count($list) - 1));
+		$list_keys = array_keys($list);
+		$list_index = $list_keys[$index];
+
+		$retval = $list[$list_index];
+
+		return($retval);
+
+	} // End of get_item()
 
 } // End of reg_fake class
 

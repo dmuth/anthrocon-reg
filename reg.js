@@ -111,7 +111,8 @@ function update_total(cost) {
 		cost = 0.00;
 	}
 
-	$("#edit-badge-cost").val(cost);
+	$("#reg-membership-cost").text(cost);
+
 	var donation = $("#edit-donation").val();
 
 	if (!donation) {
@@ -124,10 +125,10 @@ function update_total(cost) {
 	//
 	var total = parseFloat(cost) + parseFloat(donation);
 	total *= 100;
-	Math.round(total);
+	total = Math.round(total);
 	total /= 100;
 
-	$("#edit-total").val(total);
+	$("#reg-total").text(String(total));
 
 } // End of update_total()
 

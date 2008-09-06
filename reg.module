@@ -141,15 +141,15 @@ function reg_admin_level_form_submit($form_id, $data) {
 */
 function reg_admin_members() {
 	reg::force_ssl();
-	return(reg_member::recent());
+	return(reg_admin_member::recent());
 }
 
 function reg_admin_members_view($id) {
-	return(reg_member::view_reg($id));
+	return(reg_admin_member::view_reg($id));
 }
 
 function reg_admin_members_edit($id) {
-	return(reg_member::edit_reg($id));
+	return(reg_admin_member::edit_reg($id));
 }
 
 /**
@@ -157,19 +157,19 @@ function reg_admin_members_edit($id) {
 */
 function reg_admin_members_add_note($id) {
 	reg::force_ssl();
-	return(reg_member::add_note($id));
+	return(reg_admin_member::add_note($id));
 }
 
 function reg_admin_members_add_note_form($id) {
-	return(reg_member::add_note_form($id));
+	return(reg_admin_member::add_note_form($id));
 }
 
 function reg_admin_members_add_note_form_validate($form_id, &$data) {
-	return(reg_member::add_note_form_validate($form_id, $data));
+	return(reg_admin_member::add_note_form_validate($form_id, $data));
 }
 
 function reg_admin_members_add_note_form_submit($form_id, &$data) {
-	return(reg_member::add_note_form_submit($form_id, $data));
+	return(reg_admin_member::add_note_form_submit($form_id, $data));
 }
 
 
@@ -244,7 +244,7 @@ function reg_admin_search_form_submit($form_id, &$data) {
 */
 function reg_admin_members_add() {
 	reg::force_ssl();
-	return(reg_member::add_reg());
+	return(reg_admin_member::add_reg());
 }
 
 /**

@@ -467,6 +467,7 @@ class reg_admin_log {
 			. "reg_payment_type.payment_type, "
 			. "reg_trans_type.trans_type, "
 			. "reg_cc_type.cc_type, "
+			. "reg_trans_gateway.*, "
 			. "users.uid, users.name "
 			. "FROM {reg_trans} "
 			. "LEFT JOIN {reg} ON reg_trans.reg_id = reg.id "
@@ -476,6 +477,8 @@ class reg_admin_log {
 				. "ON reg_payment_type_id = reg_payment_type.id "
 			. "LEFT JOIN {reg_cc_type} "
 				. "ON reg_cc_type_id = reg_cc_type.id "
+			. "LEFT JOIN {reg_trans_gateway} "
+				. "ON reg_trans_gateway_id = reg_trans_gateway.id "
 			. "LEFT JOIN {users} ON reg_trans.uid = users.uid "
 			. "WHERE "
 			. "reg_trans.id='%s' ";
@@ -573,6 +576,34 @@ class reg_admin_log {
 				);
 		}
 
+		if (!empty($row["reg_trans_gateway_id"])) {
+			$rows[] = array(
+				array("data" => "Payment Gateway", "header" => true),
+				$row["gateway"]
+				);
+		}
+
+		if (!empty($row["gateway_auth_code"])) {
+			$rows[] = array(
+				array("data" => "Gateway Auth Code", "header" => true),
+				$row["gateway_auth_code"]
+				);
+		}
+		
+		if (!empty($row["gateway_avs"])) {
+			$rows[] = array(
+				array("data" => "Gateway AVS Response", "header" => true),
+				$row["gateway_avs"]
+				);
+		}
+		
+		if (!empty($row["gateway_cvv"])) {
+			$rows[] = array(
+				array("data" => "Gateway CVV Response", "header" => true),
+				$row["gateway_cvv"]
+				);
+		}
+
 		if (!empty($row["cc_num"])
 			&& $row["payment_type"] == "Credit Card"
 			) {
@@ -610,6 +641,15 @@ class reg_admin_log {
 			);
 
 		$retval = theme("table", array(), $rows);
+
+		//
+		// If we have a log entry, display it
+		//
+		if (!empty($row["reg_log_id"])) {
+			$retval .= "<h2>Attached Log Entry</h2>";
+			$retval .= reg_admin_log::log_detail($row["reg_log_id"]);
+		}
+
 		return($retval);
 
 	} // End of trans_detail()

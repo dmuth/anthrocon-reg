@@ -202,6 +202,11 @@ function reg_install() {
 			. "INDEX reg_trans_reg_id(reg_id), "
 
 			//
+			// Timestamp
+			//
+			. "date INTEGER NOT NULL DEFAULT '0', "
+
+			//
 			// User ID
 			//
 			. "uid INTEGER, "
@@ -213,9 +218,23 @@ function reg_install() {
 			. "reg_trans_gateway_id INTEGER, "
 
 			//
-			// Timestamp
+			// Auth code or other unique value that references a successful
+			// transaction from our gateway.
 			//
-			. "date INTEGER NOT NULL DEFAULT '0', "
+			. "gateway_auth_code VARCHAR(255), "
+
+			//
+			// What the gateway had to say about the AVS data and CVV codes.
+			// (i.e., the gateway responses)
+			//
+			. "gateway_avs CHAR(1), "
+			. "gateway_cvv CHAR(1), "
+
+			//
+			// Foreign key to the log table.  This is when linking to log 
+			// entries which may contain more information.
+			//
+			. "reg_log_id INTEGER, "
 
 			//
 			// Is this a purchase, refund, upgrade, etc.?
@@ -275,14 +294,21 @@ function reg_install() {
 
 		$query = "CREATE TABLE {reg_trans_gateway} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "gateway VARCHAR(255) "
+			. "gateway VARCHAR(255), "
+			//
+			// URL for the front page of the gateway.  This is just so we
+			// can display something for the user to click on.
+			// If we need a URL code charging credit cards, that should just
+			// go in the code for that gateway.
+			//
+			. "url VARCHAR(255) "
 			. ")"
 			;
 		db_query($query);
 
-		$query = "INSERT INTO {reg_trans_gateway} (gateway) "
+		$query = "INSERT INTO {reg_trans_gateway} (gateway, url) "
 			. "VALUES "
-			. "('Authorize.net')"
+			. "('Authorize.net', 'http://www.authorize.net/')"
 			;
 		db_query($query);
 

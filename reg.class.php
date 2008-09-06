@@ -275,6 +275,12 @@ class reg {
 		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
 
 		if (!$log_only) {
+
+			//
+			// We're always using authorize.net for now.
+			//
+			$data["reg_trans_gateway_id"] = 1;
+
 			if (!self::is_test_mode()) {
 				//
 				// TODO: Code to actually charge the card goes here.
@@ -290,14 +296,25 @@ class reg {
 	
 				$message = t("We are in testing mode.  Automatically allow this "
 					. "'credit card'");
-				reg_log::log($message);
+				$data["reg_log_id"] = reg_log::log($message);
+
+				//
+				// Generate random gateway data.
+				//
+				$data["gateway_auth_code"] = reg_fake::get_string(6);
+
+				$avs_codes = array("Y", "N", "D", "X", "Z");
+				$data["gateway_avs"] = reg_fake::get_item($avs_codes);
+
+				$cvv_codes = array("Y", "N", "X", "F");
+				$data["gateway_cvv"] = reg_fake::get_item($cvv_codes);
 
 			}
 	
 		} else {
 			$message = t("Logging a manually made transaction/comp/etc. ")
 				. t("No card charging took place just now.");
-			reg_log::log($message);
+			$data["reg_log_id"] = reg_log::log($message);
 
 		}
 
