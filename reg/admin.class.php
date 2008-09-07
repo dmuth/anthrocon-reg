@@ -116,6 +116,32 @@ class reg_admin {
 
 
 	/**
+	* A wrapper for setting variables.  It will log the activity.
+	*/
+	static protected function variable_set($key, $value) {
+
+		$old_value = variable_get($key, "");
+
+		if ($value != $old_value) {
+			$message = t("Variable '%key%' set to new value: '%value%'. "
+				. " (Old value: '%old_value%')",
+				array(
+					"%key%" => $key,
+					"%value%" => $value,
+					"%old_value%" => $old_value,
+					)
+				);
+
+			reg_log::log($message);
+
+		}
+
+		variable_set($key, $value);
+
+	} // End of variable_set()
+
+
+	/**
 	* This function is called after our form has been successfully validated.
 	*
 	* It should make any necessary changes to the database.  At the 
@@ -124,9 +150,13 @@ class reg_admin {
 	*/
 	static function settings_form_submit($form_id, $data) {
 
-		variable_set(reg_form::FORM_ADMIN_FAKE_CC, $data["no_production"]["fake_cc"]);
-		variable_set(reg_form::FORM_ADMIN_FAKE_DATA, $data["no_production"]["fake_data"]);
-		variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, $data["conduct_path"]);
+		self::variable_set(reg_form::FORM_ADMIN_FAKE_CC, 
+			$data["no_production"]["fake_cc"]);
+		self::variable_set(reg_form::FORM_ADMIN_FAKE_DATA, 
+			$data["no_production"]["fake_data"]);
+		self::variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, 
+			$data["conduct_path"]);
+
 		drupal_set_message("Settings updated");
 
 		$uri = "admin/reg/settings";

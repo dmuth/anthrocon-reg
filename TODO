@@ -10,6 +10,8 @@ TODO
 	- When updated, save the old version in the log
 	- Form for edting
 	- settings/messages
+	- store reg_messages in sample_data
+	- store reg_emails in sample_data
 
 - reg form
 	- On success, if further questions, email the address
