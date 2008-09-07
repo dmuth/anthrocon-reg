@@ -13,10 +13,6 @@ TODO
 	- store reg_messages in sample_data
 	- store reg_emails in sample_data
 
-- reg form
-	- On success, if further questions, email the address
-	- Maybe change membership cost and total cost on public form to NOT be form fields
-
 - /reg/success
 	- Displays success data from $_SESSION["reg"]
 		- If not found, redirects to /reg/verify

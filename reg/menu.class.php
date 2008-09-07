@@ -107,14 +107,6 @@ Uncomment this when we actually have stats.
 			);
 */
 
-			$retval[] = array(
-				"path" => "admin/reg/settings",
-				"title" => t("Settings"),
-				"callback" => "reg_admin_settings",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 4,
-				);
-
 			//
 			// Our membership levels
 			//
@@ -139,6 +131,46 @@ Uncomment this when we actually have stats.
 				"title" => t("Add"),
 				"callback" => "reg_admin_levels_edit",
 				"type" => MENU_LOCAL_TASK,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings",
+				"title" => t("Settings"),
+				"callback" => "reg_admin_settings",
+				"type" => MENU_NORMAL_ITEM,
+				"weight" => 5,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/main",
+				"title" => t("Settings"),
+				"callback" => "reg_admin_settings",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => 0,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/messages",
+				"title" => t("Messages"),
+				"callback" => "reg_admin_settings_messages",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 1,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/emails",
+				"title" => t("Emails"),
+				"callback" => "reg_admin_settings_emails",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 2,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/gateways/authorize.net",
+				"title" => t("Authorize.net"),
+				"callback" => "reg_admin_settings_authorize_net",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 3,
 				);
 
 		}

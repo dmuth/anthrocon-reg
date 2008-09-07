@@ -96,20 +96,41 @@ function reg_registration_form_submit($form_id, &$data) {
 */
 function reg_admin_settings() {
 	reg::force_ssl();
-	return(reg_admin::settings());
+	return(reg_admin_settings::settings());
 }
 
 function reg_admin_settings_form() {
-	return(reg_admin::settings_form());
+	return(reg_admin_settings::settings_form());
 }
 
 function reg_admin_settings_form_validate($form_id, $data) {
-	reg_admin::settings_form_validate($form_id, $data);
+	reg_admin_settings::settings_form_validate($form_id, $data);
 }
 
 function reg_admin_settings_form_submit($form_id, $data) {
-	reg_admin::settings_form_submit($form_id, $data);
+	reg_admin_settings::settings_form_submit($form_id, $data);
 }
+
+
+/**
+* Placeholders for additional settings items.
+*/
+function reg_admin_settings_messages() {
+	reg::force_ssl();
+	return("Placeholder until I write something in the reg_admin_settings_messages class.");
+}
+
+function reg_admin_settings_emails() {
+	reg::force_ssl();
+	return("Placeholder until I write something in the reg_admin_settings_emails class.");
+}
+
+function reg_admin_settings_authorize_net() {
+	reg::force_ssl();
+	return("Placeholder until I write something in the reg_authorize_net_settings class. (Note the new module)");
+}
+
+
 
 /**
 * Membership level editing stuff.
