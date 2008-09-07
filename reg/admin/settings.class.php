@@ -6,11 +6,10 @@
 class reg_admin_settings {
 
 	/**
-	* Our main admin page.
+	* Our main settings page.
 	*/
 	static function settings() {
 
-		$retval = "";
 		$retval = drupal_get_form("reg_admin_settings_form");
 
 		return($retval);
