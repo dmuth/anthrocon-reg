@@ -16,11 +16,11 @@
 * Define our autoloader, and register it.
 */
 function reg_autoload($class) {
-	//print "TEST1: $class<br>\n";
+	//print "$class<br>\n"; // Debugging
 	$class = str_replace("_", "/", $class);
-	//print "TEST2: $class<br>\n";
+	//print "$class<br>\n"; // Debugging
 	$file = $class . ".class.php";
-	//print "TEST3: $file<br>\n";
+	//print "$file<br>\n"; // Debugging
 	include_once($file);
 }
 
@@ -117,9 +117,28 @@ function reg_admin_settings_form_submit($form_id, $data) {
 */
 function reg_admin_settings_messages() {
 	reg::force_ssl();
-	return("Placeholder until I write something in the reg_admin_settings_messages class.");
+	return(reg_admin_settings_message::messages());
 }
 
+function reg_admin_settings_messages_edit($id = "") {
+	reg::force_ssl();
+	return(reg_admin_settings_message::edit($id));
+}
+
+function reg_admin_settings_message_form($id) {
+	return(reg_admin_settings_message::form($id));
+}
+
+function reg_admin_settings_message_form_validate($form_id, $data) {
+	return(reg_admin_settings_message::form_validate($form_id, $data));
+}
+
+function reg_admin_settings_message_form_submit($form_id, $data) {
+	return(reg_admin_settings_message::form_submit($form_id, $data));
+}
+
+
+// TEST
 function reg_admin_settings_emails() {
 	reg::force_ssl();
 	return("Placeholder until I write something in the reg_admin_settings_emails class.");

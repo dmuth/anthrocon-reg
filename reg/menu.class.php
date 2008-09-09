@@ -183,11 +183,23 @@ Uncomment this when we actually have stats.
 				// Used for editing a membership level.
 				//
 				$retval[] = array(
-				"path" => "admin/reg/levels/list/" . arg(4) . "/edit",
+					"path" => "admin/reg/levels/list/" . arg(4) . "/edit",
 					"title" => t("Edit"),
 					"callback" => "reg_admin_levels_edit",
 					"callback arguments" => array(arg(4)),
 					"weight" => -10,
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 0,
+					);
+
+				//
+				// Used for editing a message
+				//
+				$retval[] = array(
+					"path" => "admin/reg/settings/messages/" . arg(4) . "/edit",
+					"title" => t("Edit"),
+					"callback" => "reg_admin_settings_messages_edit",
+					"callback arguments" => array(arg(4)),
 					"type" => MENU_LOCAL_TASK,
 					"weight" => 0,
 					);

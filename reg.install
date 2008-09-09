@@ -477,15 +477,23 @@ function reg_install() {
 			//
 			. "name VARCHAR(255), "
 			. "UNIQUE INDEX reg_message_name(name), "
-			. "value TEXT "
+			. "value TEXT, "
+			//
+			// Internal notes
+			//
+			. "notes TEXT "
 			. ")"
 			;
 		db_query($query);
 
-		$query = "INSERT INTO {reg_message} (name, value) "
+		$query = "INSERT INTO {reg_message} (name, value, notes) "
 			. "VALUES "
-			. "('no-levels', 'Placeholder message for no membership levels available.'), "
-			. "('header', 'Placeholder for text that goes at the top of the Registration page.')"
+			. "('no-levels', "
+				. "'Placeholder message for no membership levels available.', "
+				. "'Test note.'), "
+			. "('header', "
+				. "'Placeholder for text that goes at the top of the Registration page.', "
+				. "'Test note 2.')"
 			;
 		db_query($query);
 
@@ -504,14 +512,21 @@ function reg_install() {
 			//
 			. "name VARCHAR(255), "
 			. "UNIQUE INDEX reg_email_name(name), "
-			. "value TEXT "
+			. "value TEXT, "
+			//
+			// Internal notes
+			//
+			. "notes TEXT "
 			. ")"
 			;
 		db_query($query);
 
-		$query = "INSERT INTO {reg_email} (name, value) "
+		$query = "INSERT INTO {reg_email} (name, value, notes) "
 			. "VALUES "
-			. "('receipt', 'Placeholder for an emailed receipt.') "
+			. "('receipt', 'Placeholder for an emailed receipt.', 'Test note.'), "
+			. "('added', "
+				. "'Placeholder for a notification to a manually added member..', "
+				. "'Test note.') "
 			;
 		db_query($query);
 

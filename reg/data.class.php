@@ -452,5 +452,44 @@ class reg_data {
 	} // End of format_badge_num()
 
 
+	/**
+	* Get changed fields from old data to new data, and create a string
+	* that details what was changed.  This way, we can have detailed
+	* change auditing.
+	*
+	* @param array $data The new set of data.
+	*
+	* @param array $old_data The old set of data
+	*
+	* @return mixed If no changed were found, null is returned.  Otherwise
+	*	a string detailing the changes is returned.
+	*/
+	static function get_changed_data(&$data, &$old_data) {
+
+		$retval = "";
+
+		foreach ($old_data as $key => $value) {
+
+			if ($value != $data[$key]) {
+				$retval .= t("Key '!key' set to '!new_value' "
+					. "(old value: '!old_value').\n",
+					array(
+						"!key" => $key,
+						"!new_value" => $data[$key],
+						"!old_value" => $value,
+						)
+					);
+			}
+		}
+
+		if (!empty($retval)) {
+			$retval = "(Fields changed:\n$retval)\n";
+		}
+
+		return($retval);
+
+	} // End of get_changed_data()
+
+
 } // End of reg_data class
 

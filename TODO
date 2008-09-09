@@ -1,4 +1,5 @@
 
+
 TODO
 ====
 
@@ -6,12 +7,29 @@ TODO
 	- PHP's checkdate() function
 
 - reg_messages table
-	- id, key, value fields
-	- When updated, save the old version in the log
-	- Form for edting
-	- settings/messages
+
+	- Wrap emails into messages?
+		- Pros: Only a few rows in each table.
+		- Cons, some messages are emailed, others would not be.
+	- Wrapper in reg_message for displaying on the public pages
+		- Log if we don't find the message
+		- Link for editing on the public pages
+
+	- settings/emails
+	- Wrapper in reg_email for displaying on the public pages
+		- Log if we don't find the message
+		- Link for editing on the public pages
 	- store reg_messages in sample_data
 	- store reg_emails in sample_data
+
+- Auditing
+	- When a level is changed, display the changed/old data
+	- When a membership is changed, display the changed/old data
+	- reg_data::get_changed_data()
+
+- Misc
+	- Looking at http://api.drupal.org/api/function/t/5, I need to go back
+		and change all t() calls that use %strings into !strings.
 
 - /reg/success
 	- Displays success data from $_SESSION["reg"]
@@ -43,6 +61,10 @@ TODO
 
 - authorize.net module, "reg_authorize.net"
 	- Settings page for API keys
+
+- Documentation
+	- User notes (levels, etc.)
+	- Developer notes (messages, emails, levels, logging, transactions, etc.)
 
 - Some utility to print unused badge numbers
 
