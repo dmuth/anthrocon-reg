@@ -54,7 +54,6 @@ class reg_menu {
 	*/
 	static function get_menu(&$retval, $may_cache) {
 
-		if ($may_cache) {
 			//
 			// Public link
 			//
@@ -65,6 +64,8 @@ class reg_menu {
 				"access" => user_access(reg::PERM_REGISTER),
 				"type" => MENU_NORMAL_ITEM,
 				);
+
+		if ($may_cache) {
 
 			//
 			// Verify a registraiton
@@ -155,14 +156,6 @@ Uncomment this when we actually have stats.
 				"callback" => "reg_admin_settings_messages",
 				"type" => MENU_LOCAL_TASK,
 				"weight" => 1,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/settings/emails",
-				"title" => t("Emails"),
-				"callback" => "reg_admin_settings_emails",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 2,
 				);
 
 			$retval[] = array(

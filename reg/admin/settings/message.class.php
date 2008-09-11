@@ -98,11 +98,37 @@ class reg_admin_settings_message {
 
 		$retval["value"] = array(
 			"#title" => "Message",
-			"#description" => t("The message that will be shown to the user."),
+			"#description" => t("The message that will be shown/emailed "
+				. "to the user.  Note that different messages may do "
+				. "variable substitutions with different !-style "
+				. "variables."),
 			"#type" => "textarea",
+			"#rows" => 20,
 			"#required" => true,
 			"#default_value" => $row["value"],
 			);
+
+		//
+		// Retrieve tokens for this message and add in them and their
+		// descriptions.
+		//
+		$tokens = reg_message::get_tokens($row["name"]);
+		$token_string = "";
+		foreach ($tokens as $key => $value) {
+			$token_string .= t("<b>!key</b> - !value<br>\n", 
+				array(
+				"!key" => $key,
+				"!value" => $value,
+				));
+
+		}
+
+		if (!empty($token_string)) {
+			$retval["value"]["#description"] .= "<p/>\n"
+				. t("Available tokens:<p/>\n")
+				. $token_string
+				;
+		}
 
 		$retval["notes"] = array(
 			"#title" => "Notes",

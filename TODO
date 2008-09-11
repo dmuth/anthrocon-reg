@@ -7,25 +7,13 @@ TODO
 	- PHP's checkdate() function
 
 - reg_messages table
-
-	- Wrap emails into messages?
-		- Pros: Only a few rows in each table.
-		- Cons, some messages are emailed, others would not be.
-	- Wrapper in reg_message for displaying on the public pages
-		- Log if we don't find the message
-		- Link for editing on the public pages
-
-	- settings/emails
-	- Wrapper in reg_email for displaying on the public pages
-		- Log if we don't find the message
-		- Link for editing on the public pages
-	- store reg_messages in sample_data
-	- store reg_emails in sample_data
+	- Put call to reg_message::load_display() in reg::registration().
 
 - Auditing
 	- When a level is changed, display the changed/old data
 	- When a membership is changed, display the changed/old data
 	- reg_data::get_changed_data()
+		- Add in the string "audit" somewhere.
 
 - Misc
 	- Looking at http://api.drupal.org/api/function/t/5, I need to go back
@@ -41,26 +29,15 @@ TODO
 	- Can I use this on the verify page?
 
 - Email sending
-	- "Settings" menu item on left
-		- default tab should be "Main Settings"
-		- Separate tab for messages
-			- Registration header
-			- Registration closed
-			- Registration verify header
-		- Separate tab for "Emails"
-			- Sub tab for each email:
-				- Email to member when signed up
-				- Email to member when added
-			- Tokens
-				- Name of the site
-				- URL of the site (base_url?)
-			- "Send email" button for each Complete member
-				- Will print a form with the email to be sent
+	- "Send email" button for each Complete member
+		- Will print a form with the email to be sent
 
 	- "basically, when a badge number is assigned"
 
 - authorize.net module, "reg_authorize.net"
 	- Settings page for API keys
+	- Don't charge Amex cards
+		- Check the first digit (4, 5, or 6(?) for Discover)
 
 - Documentation
 	- User notes (levels, etc.)

@@ -35,6 +35,16 @@ function reg_perm() {
 }
 
 
+function reg_init() {
+}
+
+
+function reg_exit() {
+	reg::hook_exit();
+}
+
+
+
 /**
 * Create our menu items.
 */
@@ -113,7 +123,7 @@ function reg_admin_settings_form_submit($form_id, $data) {
 
 
 /**
-* Placeholders for additional settings items.
+* Messages admin.
 */
 function reg_admin_settings_messages() {
 	reg::force_ssl();
@@ -137,18 +147,10 @@ function reg_admin_settings_message_form_submit($form_id, $data) {
 	return(reg_admin_settings_message::form_submit($form_id, $data));
 }
 
-
-// TEST
-function reg_admin_settings_emails() {
-	reg::force_ssl();
-	return("Placeholder until I write something in the reg_admin_settings_emails class.");
-}
-
 function reg_admin_settings_authorize_net() {
 	reg::force_ssl();
 	return("Placeholder until I write something in the reg_authorize_net_settings class. (Note the new module)");
 }
-
 
 
 /**
@@ -329,21 +331,9 @@ function theme_reg_theme($form) {
 }
 
 
-/*
+/* Developers only!  Uncomment this to clear out the databsae.
 include("reg.install");
 reg_wipe();
 reg_install();
 */
-
-// TEST
-//print "<pre>"; print_r(reg_data::get_valid_levels()); print "</pre>";
-
-//print "TEST: " . reg::is_admin();
-//include_once("reg.class.php");
-//echo "TEST";
-//echo "badge NUM: " . reg::get_badge_num() . "<br>\n";
-//print "TEST2: " . print_r(reg::get_types(), true) . "<br>\n";
-//print "TEST3: " . print_r(reg::get_statuses(), true) . "<br>\n";
-//print "TEST4: " . print_r(reg::get_cc_types(), true) . "<br>\n";
-
 

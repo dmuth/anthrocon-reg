@@ -36,7 +36,7 @@ class reg {
 	*	This is to limit damages in the case that we get hit with a 
 	*	fraudulent charge.
 	*/
-	const DONATION_MAX = 200;
+	const DONATION_MAX = 0100;
 
 	/**
 	* The name of the variable that holds the "contact" email address for
@@ -359,11 +359,15 @@ class reg {
 		$levels = reg_data::get_valid_levels();
 
 		if (empty($levels)) {
-			$email = variable_get(reg::VAR_EMAIL, "");
-			$retval = "No memberships currently available for purchase. "
-				. "Please email $email with any questions. "
-				. "TODO: Make this user-configurable in the admin.";
-			reg_log::log($retval, "", WATCHDOG_WARNING);
+			$data = array(
+				"!email" => variable_get(reg::VAR_EMAIL, ""),
+				);
+			$retval = reg_message::load_display("no-levels-available", $data);
+
+			$message = t("A user tried to visit the public registration page, "
+				. "but there were no membership levels available.");
+			reg_log::log($message, "", WATCHDOG_WARNING);
+
 			return($retval);
 
 		}
@@ -458,6 +462,29 @@ class reg {
 	function is_admin() {
 		return(user_access(reg::PERM_ADMIN));
 	}
+
+
+	/**
+	* Our exit hook.  Note that we cannot print anything out from here.
+	* If we absolutely need to send a message back to the user, it can
+	* be done with drupal_set_message() or similar.
+	*/
+	function hook_exit() {
+
+		//
+		// If we are in any of the public pages AND an anonymous user, 
+		// clear out the cache for this page.  
+		//
+		if ($_GET["q"] == "reg"
+			|| $_GET["q"] == "reg/verify"
+			) {
+			if ($GLOBALS["user"]->uid == 0) {
+				$url = $GLOBALS["base_root"] . base_path() . $_GET['q'];
+				cache_clear_all($url, "cache_page");
+			}
+		}
+
+	} // End of exit()
 
 
 } // End of reg class

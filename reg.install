@@ -466,10 +466,6 @@ function reg_install() {
 		// This table holds separate messages which we will display to the 
 		// user at various points in our registration system.
 		// 
-		// Note that all of these messages are static.  There is no 
-		//	processing done on these messages before they are displayed to 
-		//	the user.
-		//
 		$query = "CREATE TABLE {reg_message} ("
 			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
 			//
@@ -488,45 +484,23 @@ function reg_install() {
 
 		$query = "INSERT INTO {reg_message} (name, value, notes) "
 			. "VALUES "
-			. "('no-levels', "
+			. "('no-levels-available', "
 				. "'Placeholder message for no membership levels available.', "
 				. "'Test note.'), "
 			. "('header', "
 				. "'Placeholder for text that goes at the top of the Registration page.', "
-				. "'Test note 2.')"
-			;
-		db_query($query);
-
-		//
-		// This table is similar to the messages table, but it holds all
-		// of the email templates for emails which will be sent out to
-		// members.
-		//
-		// Note that these values ARE templates, and they will be processed
-		// by the registration system before the emails are actually sent out.
-		//
-		$query = "CREATE TABLE {reg_email} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			//
-			// A unique "short name" used for identifying our separate mesages.
-			//
-			. "name VARCHAR(255), "
-			. "UNIQUE INDEX reg_email_name(name), "
-			. "value TEXT, "
-			//
-			// Internal notes
-			//
-			. "notes TEXT "
-			. ")"
-			;
-		db_query($query);
-
-		$query = "INSERT INTO {reg_email} (name, value, notes) "
-			. "VALUES "
-			. "('receipt', 'Placeholder for an emailed receipt.', 'Test note.'), "
-			. "('added', "
-				. "'Placeholder for a notification to a manually added member..', "
-				. "'Test note.') "
+				. "'Test note 2.'), "
+			. "('verify', "
+				. "'Placeholder for text that goes at the top of the Verify your registration page.', "
+				. "'Test note 3.'), "
+			. "('email-receipt', "
+				. "'Placeholder for an emailed receipt.', "
+				. "'This goes out when a user purchases a mebership on the "
+					. "website.'), "
+			. "('email-receipt-no-cc', "
+				. "'Placeholder for an emailed receipt with no credit card.', "
+				. "'This would go out if a user has their receipt re-sent to "
+					. "them, or if we manually re-send the receipt.') "
 			;
 		db_query($query);
 
@@ -591,9 +565,6 @@ function reg_wipe() {
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS {reg_message}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_email}";
 	db_query($query);
 
 } // End of reg_wipe()
