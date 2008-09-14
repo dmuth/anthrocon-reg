@@ -54,7 +54,7 @@ class reg_member {
 			;
 
 		$birth = $data["birthdate"];
-		$date_string = reg_data::get_time_t($birth["year"], $birth["month"], 
+		$date_string = reg_data::get_date($birth["year"], $birth["month"], 
 			$birth["day"]);
 
 		if (empty($data["reg_type_id"])) {

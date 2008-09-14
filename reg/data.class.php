@@ -442,6 +442,52 @@ class reg_data {
 
 
 	/**
+	* Turn a year, month, and date into a date that MySQL can understand
+	* for a field of type DATE.
+	*/
+	static function get_date($year, $month, $day) {
+		$retval = $year . "-" . sprintf("%02d", $month)
+			. "-" . sprintf("%02d", $day);
+		return($retval);
+	} // End of get_date()
+
+
+	/**
+	* Turn a date string from MySQL (YYYY-MM-DD) into something a little
+	* more readable.
+	* Note that http://us2.php.net/mktime swears that versions of PHP
+	* after 5.1.0 can handle dates before the UNIX epoch. (1 Jan 1970)
+	*/
+	static function get_date_string($date) {
+
+		$time = strtotime($date);
+		$retval = date("F jS, Y", $time);
+
+		return($retval);
+
+	} // End of get_date_stirng()
+
+
+	/**
+	* Turn a date string from MySQL into an array that can be used
+	* in the editing form.
+	*/
+	static function get_date_array($date) {
+
+		$retval = array();
+
+		$results = explode("-", $date);
+
+		$retval["year"] = $results[0];
+		$retval["month"] = sprintf("%d", $results[1]);
+		$retval["day"] = sprintf("%d", $results[2]);
+
+		return($retval);
+
+	} // End of get_date_array();
+
+
+	/**
 	* Format a badge number so that it is filled with leading zeros.
 	*/
 	static function format_badge_num($badge_num) {

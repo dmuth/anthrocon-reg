@@ -235,8 +235,11 @@ class reg_form {
 			//
 			// Charge this early since we're baiing out.
 			//
-			$reg_trans_id = reg::charge_cc($data, true);
-			self::$reg_trans_id = $reg_trans_id;
+			// I'm commenting this out for now... it seemed like a good
+			// idea back when I first built this, but now it seems
+			// unnecessary...
+			//$reg_trans_id = reg::charge_cc($data, true);
+			//self::$reg_trans_id = $reg_trans_id;
 
 			return(null);
 		}
@@ -540,13 +543,7 @@ class reg_form {
 		//
 		$date_array = array();
 		if (!empty($data["birthdate"])) {
-
-			$date_array = array(
-				"year" => format_date($data["birthdate"], "custom", "Y"),
-				"month" => format_date($data["birthdate"], "custom", "n"),
-				"day" => format_date($data["birthdate"], "custom", "j"),
-				);
-
+			$date_array = reg_data::get_date_array($data["birthdate"]);
 		}
 		
 		$retval["birthdate"] = array(

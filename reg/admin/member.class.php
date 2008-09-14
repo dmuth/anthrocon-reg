@@ -174,7 +174,7 @@ class reg_admin_member {
 
 		$rows[] = array(
 			array("data" => "Birthdate", "header" => true),
-			format_date($row["birthdate"], "custom", "F d, Y")
+			reg_data::get_date_string($row["birthdate"])
 			);
 
 		$rows[] = array(
@@ -295,24 +295,48 @@ class reg_admin_member {
 			drupal_set_message($message);
 		}
 
+		//
+		// Load our old data and unset certain values which are never updated
+		// when a member is updated.
+		//
+		$query = "SELECT * FROM {reg} "
+			. "WHERE id='%s'";
+		$query_args = array($data["reg_id"]);
+		$cursor = db_query($query, $query_args);
+		$old_data = db_fetch_array($cursor);
+		unset($old_data["id"]);
+		unset($old_data["created"]);
+		unset($old_data["modified"]);
+		unset($old_data["year"]);
+		unset($old_data["badge_cost"]);
+		unset($old_data["donation"]);
+		unset($old_data["total_cost"]);
+		//
+		// Also, put our birthdate in the same key as the new data uses.
+		//
+		$old_data["birthdate_string"] = $old_data["birthdate"];
+		unset($old_data["birthdate"]);
+
 		$query = "UPDATE {reg} "
 			. "SET "
 			. "modified=UNIX_TIMESTAMP(), reg_type_id='%s', reg_status_id='%s', "
 			. "badge_num='%s', badge_name='%s', "
-			. "first='%s', middle='%s', last='%s', birthdate='%s', "
+			. "first='%s', middle='%s', last='%s', "
+				. "birthdate='%s', "
 			. "address1='%s', address2='%s', city='%s', state='%s', "
 			. "zip='%s', country='%s', email='%s', phone='%s', "
 			. "shirt_size_id='%s' "
 			."WHERE id=%d ";
 
 		$birth = $data["birthdate"];
-		$date_string = reg_data::get_time_t($birth["year"], $birth["month"], 
-			$birth["day"]);
+		$data["birthdate_string"] = reg_data::get_date($birth["year"], 
+			$birth["month"], $birth["day"]);
 
 		$query_args = array(
 			$data["reg_type_id"], $data["reg_status_id"],
 			$data["badge_num"], $data["badge_name"],
-			$data["first"], $data["middle"], $data["last"], $date_string,
+			$data["first"], $data["middle"], $data["last"], 
+				$data["birthdate_string"],
 			$data["address1"], $data["address2"], $data["city"], 
 				$data["state"],
 			$data["zip"], $data["country"], $data["email"], $data["phone"],
@@ -321,9 +345,22 @@ class reg_admin_member {
 			);
 		db_query($query, $query_args);
 
-		$message = t("Updated registration for badge number '%num%'",
-				array("%num%" => $data["badge_num"])
+		$message = t("Updated registration for badge number '!num'",
+				array("!num" => $data["badge_num"])
 				);
+
+
+// TEST
+		//
+		// Create an audit log entry and write it out.
+		//
+		if (!empty($old_data)) {
+			//$message_log = $message . " " . reg_data::get_changed_data(
+			$message .= " " . reg_data::get_changed_data(
+				$data, $old_data);
+			//reg_log::log($message_log);
+		}
+
 		reg_log::log($message, $data["reg_id"]);
 
 		return($data["badge_num"]);

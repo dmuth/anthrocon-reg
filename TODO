@@ -7,16 +7,8 @@ Done
 TODO
 ====
 
-- When a membership is changed, display the changed/old data
-
-- Looking at http://api.drupal.org/api/function/t/5, I need to go back
-	and change all t() calls that use %strings into !strings.
-	- grep -E "%.*=>" *
-
-- Credit card gets charged twice with a captcha.  Oops.
-	- Write my own little captcha in reg_captcha?
-	- Can I use the existing captcha module for this? :-)
-	- Can I use this on the verify page?
+- http://dev.mysql.com/doc/refman/5.0/en/innodb-foreign-key-constraints.html
+	- Set up some foreign key constraints
 
 - Email sending
 	- Create reg_email class
@@ -25,6 +17,15 @@ TODO
 		- Will print a form with the email to be sent
 
 	- "basically, when a badge number is assigned"
+
+- Credit card gets charged twice with a captcha.  Oops.
+	- Write my own little captcha in reg_captcha?
+	- Can I use the existing captcha module for this? :-)
+	- Can I use this on the verify page?
+
+- Looking at http://api.drupal.org/api/function/t/5, I need to go back
+	and change all t() calls that use %strings into !strings.
+	- grep -E "%.*=>" *
 
 - authorize.net module, "reg_authorize.net"
 	- Settings page for API keys

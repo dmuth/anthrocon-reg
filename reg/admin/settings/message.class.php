@@ -12,6 +12,10 @@ class reg_admin_settings_message {
 	*/
 	static function messages() {
 
+		$retval = t("Messages which will be displayed to users.  "
+			. "Some will be displayed through the web interface, "
+			. "others will be emailed.<p/>\n");
+
 		$header = array();
 		$header[] = array("data" => "ID #", "field" => "id",);
 		$header[] = array("data" => "Name", "field" => "name",);
@@ -46,7 +50,7 @@ class reg_admin_settings_message {
 				);
 		}
 
-		$retval = theme("table", $header, $rows);
+		$retval .= theme("table", $header, $rows);
 		return($retval);
 
 	} // End of messages()

@@ -375,7 +375,6 @@ class reg_admin_level {
 			reg_log::log($message_log);
 		}
 
-
 		$uri = "admin/reg/levels";
 		reg::goto_url($uri);
 

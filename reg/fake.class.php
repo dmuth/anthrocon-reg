@@ -24,12 +24,12 @@ class reg_fake {
 		$data["last"] = self::get_last_name();
 
 		//
-		// Get a random number of days, figure out the seconds, and 
-		// subtract them from the current time.
+		// Yes, I know this might give us an invalid date like February 31st.
 		//
-		$num_days = self::get_number(45, 20000);
-		$num_seconds = $num_days * 86400;
-		$data["birthdate"] =time() - $num_seconds;
+		$data["birthdate"] = self::get_number(1900, 2005)
+			. "-" . self::get_number(1, 12)
+			. "-" . self::get_number(1, 31)
+			;
 
 		$data["address1"] = self::get_number(1, 1000) . " " 
 			. self::get_string();

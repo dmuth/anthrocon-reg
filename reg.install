@@ -55,9 +55,13 @@ function reg_install() {
 			. "middle VARCHAR(255), "
 			. "last VARCHAR(255), "
 			//
-			// Timestamp for the member's birthday
+			// Timestamp for the member's birthday.
+			// Note that this is NOT a time_t, because negative
+			// time_ts (dates before 1970) can be a real problem.
+			// We only need resolution to the nearest day anyway,
+			// so timezones are not an issue.
 			//
-			. "birthdate INTEGER NOT NULL DEFAULT '0', "
+			. "birthdate DATE NOT NULL, "
 
 			. "address1 VARCHAR(255), "
 			. "address2 VARCHAR(255), "
