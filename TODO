@@ -10,10 +10,10 @@ TODO
 	- Put call to reg_message::load_display() in reg::registration().
 
 - Auditing
-	- When a level is changed, display the changed/old data
-	- When a membership is changed, display the changed/old data
 	- reg_data::get_changed_data()
 		- Add in the string "audit" somewhere.
+	- When a level is changed, display the changed/old data
+	- When a membership is changed, display the changed/old data
 
 - Misc
 	- Looking at http://api.drupal.org/api/function/t/5, I need to go back

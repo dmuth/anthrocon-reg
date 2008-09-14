@@ -169,6 +169,7 @@ class reg_admin_log {
 	function log_detail($id) {
 
 		$query = "SELECT reg_log.*, "
+			. "reg_log.id AS reg_log_id, "
 			. "reg.badge_num, reg.year, reg.badge_name, "
 			. "reg.first, reg.middle, reg.last, "
 			. "users.uid, users.name "
@@ -204,7 +205,7 @@ class reg_admin_log {
 		$rows = array();
 		$rows[] = array(
 			array("data" => "Registration Log ID#", "header" => true),
-			$row["id"]
+			$row["reg_log_id"]
 			);
 		$rows[] = array(
 			array("data" => "Date", "header" => true),
@@ -463,6 +464,7 @@ class reg_admin_log {
 	function trans_detail($id) {
 
 		$query = "SELECT reg_trans.*, "
+			. "reg_trans.id AS reg_trans_id, "
 			. "reg.badge_num, reg.year, reg.badge_name, "
 			. "reg_payment_type.payment_type, "
 			. "reg_trans_type.trans_type, "
@@ -509,7 +511,7 @@ class reg_admin_log {
 		$rows = array();
 		$rows[] = array(
 			array("data" => "Transaction Log ID#", "header" => true),
-			$row["id"]
+			$row["reg_trans_id"]
 			);
 		$rows[] = array(
 			array("data" => "Date", "header" => true),
@@ -583,6 +585,13 @@ class reg_admin_log {
 				);
 		}
 
+		if (!empty($row["gateway_transaction_id"])) {
+			$rows[] = array(
+				array("data" => "Gateway Transaction ID", "header" => true),
+				$row["gateway_transaction_id"]
+				);
+		}
+		
 		if (!empty($row["gateway_auth_code"])) {
 			$rows[] = array(
 				array("data" => "Gateway Auth Code", "header" => true),
@@ -601,6 +610,13 @@ class reg_admin_log {
 			$rows[] = array(
 				array("data" => "Gateway CVV Response", "header" => true),
 				$row["gateway_cvv"]
+				);
+		}
+
+		if (!empty($row["invoice_number"])) {
+			$rows[] = array(
+				array("data" => "Custom invoice number", "header" => true),
+				$row["invoice_number"]
 				);
 		}
 

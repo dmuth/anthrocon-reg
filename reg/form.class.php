@@ -804,6 +804,16 @@ class reg_form {
 			$retval["cc_type_id"]["#required"] = true;
 			$retval["cc_num"]["#required"] = true;
 
+			$retval["cvv"] = array(
+				"#title" => t("Security Code"),
+				"#description" => t("The 3 digit code located on the back of "
+					. "your credit card."),
+				"#type" => "textfield",
+				"#size" => 4,
+				"#required" => true,
+				"#default_value" => $data["cvv"],
+				);
+
 		}
 
 		$retval["cc_exp"] = array(

@@ -99,7 +99,8 @@ class reg_log {
 			. "city, state, zip, country, "
 			. "reg_cc_type_id, cc_num, card_expire, "
 			. "badge_cost, donation, total_cost, "
-			. "reg_log_id, gateway_auth_code, gateway_avs, gateway_cvv "
+			. "reg_log_id, gateway_auth_code, gateway_avs, gateway_cvv, "
+			. "gateway_transaction_id, invoice_number "
 			. ") VALUES ("
 			. "'%s', '%s', "
 			. "'%s', '%s', '%s', "
@@ -108,7 +109,8 @@ class reg_log {
 			. "'%s', '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', "
 			. "'%s', '%s', '%s', "
-			. "'%s', '%s', '%s', '%s' "
+			. "'%s', '%s', '%s', '%s', "
+			. "'%s', '%s' "
 			. ")"
 			;
 
@@ -123,6 +125,7 @@ class reg_log {
 			$data["badge_cost"], $data["donation"], $data["total_cost"],
 			$data["reg_log_id"], $data["gateway_auth_code"], 
 				$data["gateway_avs"], $data["gateway_cvv"],
+			$data["gateway_transaction_id"], $data["invoice_number"],
 			);
 
 		db_query($query, $query_args);

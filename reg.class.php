@@ -36,7 +36,7 @@ class reg {
 	*	This is to limit damages in the case that we get hit with a 
 	*	fraudulent charge.
 	*/
-	const DONATION_MAX = 0100;
+	const DONATION_MAX = 1000;
 
 	/**
 	* The name of the variable that holds the "contact" email address for
@@ -308,6 +308,19 @@ class reg {
 				// Generate random gateway data.
 				//
 				$data["gateway_auth_code"] = reg_fake::get_string(6);
+				$data["gateway_transaction_id"] = reg_fake::get_number(
+					0, (pow(10, 9)));
+
+				//
+				// Create a fairly random invoice number with our timestamp
+				// and a random number applied to it.
+				//
+				// This doesn't have to be 100% unique, since the main purpose
+				// of this is to keep authorize.net from thinking two separate
+				// memberships purchased with the same card is a "duplicate".
+				//
+				$data["invoice_number"] = time() . "-" 
+					. mt_rand(100000, 999999);
 
 				$avs_codes = array("Y", "N", "D", "X", "Z");
 				$data["gateway_avs"] = reg_fake::get_item($avs_codes);

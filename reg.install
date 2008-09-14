@@ -224,6 +224,23 @@ function reg_install() {
 			. "gateway_auth_code VARCHAR(255), "
 
 			//
+			// The unique transaction ID that the gateway returns
+			//
+			."gateway_transaction_id VARCHAR(255), "
+
+			//
+			// The unique invoice number that we make up to send to the 
+			// gateway.  This may be optional with some gateways, but with
+			// authorize.net, we do this to keep from having multiple
+			// memberships being bought with the same card treated as 
+			// duplicate transactions.
+			//
+			// This number is entirely internal and we probably don't want
+			// to show this to any customers.
+			//
+			."invoice_number VARCHAR(255), "
+
+			//
 			// What the gateway had to say about the AVS data and CVV codes.
 			// (i.e., the gateway responses)
 			//
@@ -500,8 +517,15 @@ function reg_install() {
 			. "('email-receipt-no-cc', "
 				. "'Placeholder for an emailed receipt with no credit card.', "
 				. "'This would go out if a user has their receipt re-sent to "
-					. "them, or if we manually re-send the receipt.') "
+					. "them, or if we manually re-send the receipt.'), "
+			. "('cc-declined', "
+				. "'Placeholder for a declined card.', "
+				. "'Display when a member''s credit card is declined.'), "
+			. "('cc-error', "
+				. "'Placeholder for a carc charging error.', "
+				. "'Display when authorize.net freaks out or similar.') "
 			;
+
 		db_query($query);
 
 	} else if ($db == "pgsql") {

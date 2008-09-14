@@ -54,6 +54,7 @@ class reg_fake {
 		$data["conduct"] = 1;
 		$data["cc_type_id"] = self::get_number(1, 4);
 		$data["cc_num"] = self::get_cc_num();
+		$data["cvv"] = self::get_number(100, 999);
 		$data["cc_exp"]["month"] = self::get_number(1, 12);
 		$data["cc_exp"]["year"] = date("Y") + self::get_number(1, 5);
 		$data["donation"] = self::get_number(0, 250)
