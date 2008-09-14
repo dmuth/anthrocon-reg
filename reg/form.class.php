@@ -378,6 +378,17 @@ class reg_form {
 
 		$saved_data["member_email"] = $data["email"];
 
+		if (self::in_admin()) {
+			$message = t("Member added successfully with badge number "
+				. "'!badge_num'!",
+				array(
+					"!badge_num" => $badge_num,
+					)
+				);
+			drupal_set_message($message);
+			
+		}
+
 	} // End of reg_submit_new()
 
 

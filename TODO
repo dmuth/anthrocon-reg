@@ -3,24 +3,15 @@
 Done
 ====
 
-- Wrote reg::get_base()
-
-- /reg/success
-	- Displays success data from $_SESSION["reg"]
-		- If not found, redirects to /reg/verify
-
 
 TODO
 ====
 
-- Save sample messages with mysqldump
-
 - When a membership is changed, display the changed/old data
 
-
-- Misc
-	- Looking at http://api.drupal.org/api/function/t/5, I need to go back
-		and change all t() calls that use %strings into !strings.
+- Looking at http://api.drupal.org/api/function/t/5, I need to go back
+	and change all t() calls that use %strings into !strings.
+	- grep -E "%.*=>" *
 
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?
@@ -28,6 +19,8 @@ TODO
 	- Can I use this on the verify page?
 
 - Email sending
+	- Create reg_email class
+		- email($email_address, $subject, $message_name, $data)
 	- "Send email" button for each Complete member
 		- Will print a form with the email to be sent
 

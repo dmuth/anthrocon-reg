@@ -13,10 +13,11 @@ class reg_verify {
 
 		$email = variable_get(reg::VAR_EMAIL, "");
 
-		$message = t(reg_message::load_display("verify"),
+		$message = t(reg_message::load_display("verify",
 			array(
 				"!email" => $email,
 				)
+			)
 			);
 		$retval .= nl2br($message);
 		$retval .= drupal_get_form("reg_verify_form");

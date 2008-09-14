@@ -73,8 +73,8 @@ class reg_member {
 
 		$reg_id = reg_data::get_insert_id();
 
-		$message = t("Added registration for badge number '%num%'",
-			array("%num%" => $badge_num)
+		$message = t("Added registration for badge number '!num'",
+			array("!num" => $badge_num)
 			);
 		reg_log::log($message, $reg_id);
 
