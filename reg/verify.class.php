@@ -12,12 +12,13 @@ class reg_verify {
 	static function verify() {
 
 		$email = variable_get(reg::VAR_EMAIL, "");
-		$retval .= t("Please fill out all of the fields below to verify your "
-			. "memberships.  If you experience problems, feel free to "
-			. "contact us at '%email%'.<p/>", 
-			array("%email%" => $email)
-			);
 
+		$message = t(reg_message::load_display("verify"),
+			array(
+				"!email" => $email,
+				)
+			);
+		$retval .= nl2br($message);
 		$retval .= drupal_get_form("reg_verify_form");
 		$retval .= self::results();
 

@@ -664,7 +664,7 @@ class reg_form {
 				}
 
 				$string .= "<br>\n"
-					. "$desc"
+					. nl2br($desc)
 					;
 				$level_options[$key] = $string;
 			}
@@ -711,8 +711,7 @@ class reg_form {
 		// Only display our registration button early if we are editing
 		// or adding from the admin.
 		//
-		if (!empty($id)
-			) {
+		if (self::in_admin()) {
 			$retval["submit"] = array(
 				"#type" => "submit",
 				"#value" => t("Save")

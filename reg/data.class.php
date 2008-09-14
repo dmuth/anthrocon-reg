@@ -471,19 +471,32 @@ class reg_data {
 		foreach ($old_data as $key => $value) {
 
 			if ($value != $data[$key]) {
+
+				$new_value = $data[$key];
+				$old_value = $value;
+
+				//
+				// If this value is a time_t, turn it into a 
+				// human-readable value.
+				//
+				if ($key == "start" || $key == "end") {
+					$old_value = format_date($old_value, "custom", "r");
+					$new_value = format_date($new_value, "custom", "r");
+				}
+
 				$retval .= t("Key '!key' set to '!new_value' "
 					. "(old value: '!old_value').\n",
 					array(
 						"!key" => $key,
-						"!new_value" => $data[$key],
-						"!old_value" => $value,
+						"!new_value" => $new_value,
+						"!old_value" => $old_value,
 						)
 					);
 			}
 		}
 
 		if (!empty($retval)) {
-			$retval = "(Fields changed:\n$retval)\n";
+			$retval = "(Audit Log: Fields changed:\n$retval)\n";
 		}
 
 		return($retval);

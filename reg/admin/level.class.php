@@ -81,6 +81,21 @@ class reg_admin_level {
 
 
 	/**
+	* Load a specific level by ID, and return the resulting row as an array.
+	*/
+	static function load($id) {
+
+		$query = "SELECT * FROM {reg_level} WHERE id='%d'";
+		$args = array($id);
+		$cursor = db_query($query, $args);
+		$row = db_fetch_array($cursor);
+
+		return($row);
+
+	} // End of load()
+
+
+	/**
 	* Create our level for adding/editing a form.
 	*/
 	static function level_form($id) {
@@ -94,13 +109,7 @@ class reg_admin_level {
 		} else {
 			$title = "Edit Membership Level ID '$id'";
 
-			//
-			// Retrieve our existing row of data.
-			//
-			$query = "SELECT * FROM {reg_level} WHERE id='%d'";
-			$args = array($id);
-			$cursor = db_query($query, $args);
-			$row = db_fetch_array($cursor);
+			$row = self::load($id);
 
 			$retval["id"] = array(
 				"#title" => "id",
@@ -156,7 +165,7 @@ class reg_admin_level {
 
 		$retval["start"] = array(
 			"#title" => "Starting Date",
-			"#description" => "The membership will be available to the public "
+			"#description" => "The level will be available to the public "
 				. "on or after this date.",
 			"#type" => "date",
 			"#required" => true,
@@ -174,7 +183,7 @@ class reg_admin_level {
 
 		$retval["end"] = array(
 			"#title" => "End Date",
-			"#description" => "After 11:59 PM on this date, this membership "
+			"#description" => "After 11:59 PM on this date, this level "
 				. "will no logner be available to the public.",
 			"#type" => "date",
 			"#required" => true,
@@ -287,18 +296,18 @@ class reg_admin_level {
 		// Turn the data arrays into strings
 		//
 		$start = $data["start"];
-		$start_time = reg_data::get_time_t($start["year"], $start["month"], 
-			$start["day"]);
+		$data["start"] = reg_data::get_time_t($start["year"], 
+			$start["month"], $start["day"]);
 
 		$end = $data["end"];
-		$end_time = reg_data::get_time_t($end["year"], $end["month"], 
+		$data["end"] = reg_data::get_time_t($end["year"], $end["month"], 
 			$end["day"]);
 
 		//
 		// The last day of this membership level will stop just past 
 		// 11:59:59 PM on that day.
 		//
-		$end_time += 86399;
+		$data["end"] += 86399;
 
 
 		//
@@ -313,10 +322,15 @@ class reg_admin_level {
 				. "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')";
 			$args = array(
 				$data["name"], $data["year"], $data["reg_type_id"],
-				$data["price"], $start_time, $end_time,
+				$data["price"], $data["start"], $data["end"],
 				$data["description"], $data["notes"]);
 
 		} else {
+			//
+			// Load our old data for later use.
+			//
+			$old_data = self::load($data["id"]);
+
 			$query = "UPDATE {reg_level} "
 				. "SET "
 				. "name='%s', year='%s', reg_type_id='%s', price='%s', "
@@ -325,7 +339,8 @@ class reg_admin_level {
 				. "id='%d'";
 			$args = array($data["name"], $data["year"], $data["reg_type_id"],
 				$data["price"], 
-				$start_time, $end_time, $data["description"], $data["notes"],
+				$data["start"], $data["end"], $data["description"], 
+					$data["notes"],
 				$data["id"],
 				);
 
@@ -347,10 +362,19 @@ class reg_admin_level {
 		} else {
 			$id = $data["id"];
 			$message = "Membership Level ID '${id}' updated!";
-
 		}
 
 		drupal_set_message($message);
+
+		//
+		// Create an audit log entry and write it out.
+		//
+		if (!empty($old_data)) {
+			$message_log = $message . " " . reg_data::get_changed_data(
+				$data, $old_data);
+			reg_log::log($message_log);
+		}
+
 
 		$uri = "admin/reg/levels";
 		reg::goto_url($uri);

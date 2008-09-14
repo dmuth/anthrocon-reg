@@ -385,6 +385,11 @@ class reg {
 
 		}
 
+		//
+		// Load our custom message, if we have done.
+		//
+		$retval = reg_message::load_display("header");
+
 		$retval .= drupal_get_form("reg_registration_form");
 
 		return($retval);

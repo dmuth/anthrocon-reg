@@ -1,10 +1,7 @@
 
 
-TODO
+Done
 ====
-
-- is date_validate() being used on the reg form for dates?
-	- PHP's checkdate() function
 
 - reg_messages table
 	- Put call to reg_message::load_display() in reg::registration().
@@ -13,15 +10,22 @@ TODO
 	- reg_data::get_changed_data()
 		- Add in the string "audit" somewhere.
 	- When a level is changed, display the changed/old data
-	- When a membership is changed, display the changed/old data
 
-- Misc
-	- Looking at http://api.drupal.org/api/function/t/5, I need to go back
-		and change all t() calls that use %strings into !strings.
+- Text at top of verify page
+
+
+TODO
+====
 
 - /reg/success
 	- Displays success data from $_SESSION["reg"]
 		- If not found, redirects to /reg/verify
+
+- When a membership is changed, display the changed/old data
+
+- Misc
+	- Looking at http://api.drupal.org/api/function/t/5, I need to go back
+		and change all t() calls that use %strings into !strings.
 
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?

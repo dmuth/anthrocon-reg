@@ -15,6 +15,9 @@ class reg_message {
 		"no-levels-available" => array(
 			"!email" => "Our contact email.",
 			),
+		"verify" => array(
+			"!email" => "Our contact email.",
+			),
 		"email-receipt" => array(
 			"!email" => "Our contact email.",
 			"!name" => "The member's full name.",
@@ -97,6 +100,10 @@ class reg_message {
 
 		$retval = t($retval, $data);
 
+		//
+		// No need to mess with input filters here, since the data is
+		// coming from an admin.
+		//
 		$retval = nl2br($retval);
 
 		return($retval);
