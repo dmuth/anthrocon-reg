@@ -234,13 +234,11 @@ class reg_form {
 				$data["badge_num"]);
 
 			//
-			// Charge this early since we're baiing out.
+			// Log the transaction.  Note that wer are NOT charging
+			// the card here.
 			//
-			// I'm commenting this out for now... it seemed like a good
-			// idea back when I first built this, but now it seems
-			// unnecessary...
-			//$reg_trans_id = reg::charge_cc($data, true);
-			//self::$reg_trans_id = $reg_trans_id;
+			$reg_trans_id = reg_log::log_trans($data);
+			self::$reg_trans_id = $reg_trans_id;
 
 			return(null);
 		}

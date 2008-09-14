@@ -3,19 +3,10 @@
 Done
 ====
 
-- Email sending
-	- Create reg_email class
-		- email($email_address, $subject, $message_name, $data)
-	- "Send email" button for each Complete member
-		- Will print a form with the email to be sent
-- Add config to suppress email
-
-
 TODO
 ====
 
-- Update ledger from reg_form even when manually adding.
-	Note the payment type in the legder.
+- Add link in verify page to resend email.
 
 - Remove variable_get() to email addresses
 
