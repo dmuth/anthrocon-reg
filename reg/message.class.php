@@ -56,9 +56,13 @@ class reg_message {
 	*	this is exactly the same type of array which can be passed into the
 	*	t() function.
 	*
+	* @param boolean $edit_link If set to false, the edit link will not be 
+	*	displayed, even for an admin.  This should be set when sending out 
+	*	emails.
+	* 
 	* @return string Just the message to display.
 	*/
-	static function load_display($name, $data = array()) {
+	static function load_display($name, $data = array(), $edit_link = true) {
 
 		$retval = "";
 
@@ -69,22 +73,21 @@ class reg_message {
 		//
 		// If the user is an admin, give them an edit link.
 		//
-		if (reg::is_admin()) {
+		if (reg::is_admin() && $edit_link) {
 			$url = "admin/reg/settings/messages/" . $message["id"] . "/edit";
 			$retval .= " " . l(t("[Edit this blurb]"), $url, "", 
 				drupal_get_destination());
 		}
 
 		//
-		// If we have our email address, munge it to keep spambots from 
-		// grabbing it.
+		// Grab our email address and munge it.
 		//
-		if (!empty($data["!email"])) {
-			$tmp = $data["!email"];
-			$tmp = str_replace("@", " AT ", $tmp);
-			$tmp = str_replace(".", " DOT ", $tmp);
-			$data["!munged_email"] = $tmp;
-		}
+		$data["!email"] = variable_get(reg::VAR_EMAIL, "");
+		$tmp = $data["!email"];
+		$tmp = str_replace("@", " AT ", $tmp);
+		$tmp = str_replace(".", " DOT ", $tmp);
+		$data["!munged_email"] = $tmp;
+
 		$retval = t($retval, $data);
 
 		//

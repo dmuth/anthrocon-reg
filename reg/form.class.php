@@ -11,6 +11,7 @@ class reg_form {
 	const FORM_ADMIN_FAKE_CC = "reg_fake_cc";
 	const FORM_ADMIN_CONDUCT_PATH = "reg_conduct_path";
 	const FORM_ADMIN_FAKE_DATA = "reg_fake_data";
+	const FORM_ADMIN_FAKE_EMAIL = "reg_fake_email";
 
 	/**
 	* Define other constants
@@ -360,14 +361,20 @@ class reg_form {
 
 
 	/**
-	* Set up messages for a successful new registration.
+	* Add a new member and set messages in our session data for the
+	* success page.
+	* Also send an email out to the member.
 	*/
 	static function reg_submit_new(&$data) {
 
-		$badge_num = reg_member::add_member($data, self::$reg_trans_id);
+		$data["badge_num"] = reg_member::add_member($data, 
+			self::$reg_trans_id);
 
+		//
+		// Store messages for the success page.
+		//
 		$saved_data = &$_SESSION["reg"]["success"];
-		$saved_data["badge_num"] = $badge_num;
+		$saved_data["badge_num"] = $data["badge_num"];
 
 		if (!empty($data["cc_type_id"])
 			&& !self::in_admin()
@@ -385,7 +392,7 @@ class reg_form {
 			$message = t("Member added successfully with badge number "
 				. "'!badge_num'!",
 				array(
-					"!badge_num" => $badge_num,
+					"!badge_num" => $data["badge_num"],
 					)
 				);
 			drupal_set_message($message);

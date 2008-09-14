@@ -550,5 +550,14 @@ class reg_data {
 	} // End of get_changed_data()
 
 
+	/**
+	* Return the URL of our verification page.
+	*/
+	static function get_verify_url() {
+		$retval = reg::get_base() . "reg/verify";
+		return($retval);
+	} // End of get_verify_url()
+
+
 } // End of reg_data class
 

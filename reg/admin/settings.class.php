@@ -28,18 +28,18 @@ class reg_admin_settings {
 
 		$retval["conduct_path"] = array(
 			"#type" => "textfield",
-			"#title" => "Standards of Conduct Path",
+			"#title" => t("Standards of Conduct Path"),
 			"#default_value" => variable_get(reg_form::FORM_ADMIN_CONDUCT_PATH, ""),
-			"#description" => "If a valid path is entered here, "
+			"#description" => t("If a valid path is entered here, "
 				. "the user will be forced to agree to the "
 				. "Standards of Conduct before registering.  Do NOT use a "
-				. "leading slash.",
+				. "leading slash."),
 			"#size" => reg_form::FORM_TEXT_SIZE,
 			);
 
 		$retval["no_production"] = array(
 			"#type" => "fieldset",
-			"#title" => "Things not to set in production",
+			"#title" => t("Things not to set in production"),
 			"#tree" => "true",
 			"#collapsible" => true,
 			"#collapsed" => false,
@@ -47,21 +47,28 @@ class reg_admin_settings {
 
 		$retval["no_production"]["fake_cc"] = array(
 			"#type" => "checkbox",
-			"#title" => "Credit Card Test Mode?",
+			"#title" => t("Credit Card Test Mode?"),
 			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_CC, false),
-			"#description" => "If set, credit card numbers will "
-				. "not be processed.  Do NOT use in production!",
+			"#description" => t("If set, credit card numbers will "
+				. "not be processed.  Do NOT use in production!"),
 			);
 
 		$retval["no_production"]["fake_data"] = array(
 			"#type" => "checkbox",
-			"#title" => "Data entry test mode",
+			"#title" => t("Data entry test mode"),
 			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_DATA, ""),
-			"#description" => "Set this to allow fake data to be created on "
+			"#description" => t("Set this to allow fake data to be created on "
 				. "registraiton forms.  This will create an alternate submit "
 				. "button to poulate the form with fake data.  Do NOT use in "
-				. "production!",
-			"#size" => reg_form::FORM_TEXT_SIZE,
+				. "production!"),
+			);
+
+		$retval["no_production"]["fake_email"] = array(
+			"#type" => "checkbox",
+			"#title" => t("Fake sending of emails?"),
+			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_EMAIL, ""),
+			"#description" => t("If set, emails will NOT be sent.  This is a "
+				. "really good idea when testing."),
 			);
 
 		$retval["submit"] = array(
@@ -86,18 +93,25 @@ class reg_admin_settings {
 		// a valid node.
 		//
 		if (!empty($data["conduct_path"])) {
-			if (!drupal_lookup_path("source", $data["conduct_path"])) {
+
+			if ($data["conduct_path"][0] == "/") {
+				$error = t("You used a leading slash in %path even after I "
+					. "told you not to!",
+					array(
+						"%path" => $data["conduct_path"],
+					));
+				form_set_error("conduct_path", $error);
+
+			} else if (!drupal_lookup_path("source", $data["conduct_path"])) {
 				$results = explode("/", $data["conduct_path"]);
 				$nid = $results[1];
 				if (empty($nid) || !node_load($nid)) {
 					form_set_error("conduct_path", 
-						"Invalid path entered for Standards of Conduct");
+						t("Invalid path entered for Standards of Conduct"));
 				}
 			}
-		}
 
-		//form_set_error("fake_cc", "test2");
-		//print_r($data);
+		}
 
 	} // End of form_validate()
 
@@ -115,6 +129,8 @@ class reg_admin_settings {
 			$data["no_production"]["fake_cc"]);
 		reg_admin::variable_set(reg_form::FORM_ADMIN_FAKE_DATA, 
 			$data["no_production"]["fake_data"]);
+		reg_admin::variable_set(reg_form::FORM_ADMIN_FAKE_EMAIL, 
+			$data["no_production"]["fake_email"]);
 		reg_admin::variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, 
 			$data["conduct_path"]);
 

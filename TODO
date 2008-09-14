@@ -3,20 +3,21 @@
 Done
 ====
 
-
-TODO
-====
-
-- http://dev.mysql.com/doc/refman/5.0/en/innodb-foreign-key-constraints.html
-	- Set up some foreign key constraints
-
 - Email sending
 	- Create reg_email class
 		- email($email_address, $subject, $message_name, $data)
 	- "Send email" button for each Complete member
 		- Will print a form with the email to be sent
+- Add config to suppress email
 
-	- "basically, when a badge number is assigned"
+
+TODO
+====
+
+- Update ledger from reg_form even when manually adding.
+	Note the payment type in the legder.
+
+- Remove variable_get() to email addresses
 
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?

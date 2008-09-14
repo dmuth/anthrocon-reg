@@ -29,10 +29,7 @@ class reg_member {
 				&& $data["badge_num"] != "0"
 			)
 			|| !reg_form::in_admin()) {
-			$badge_num = reg_data::get_badge_num();
-
-		} else {
-			$badge_num = $data["badge_num"];
+			$data["badge_num"] = reg_data::get_badge_num();
 
 		}
 
@@ -62,7 +59,7 @@ class reg_member {
 				$data["reg_level_id"]);
 		}
 
-		$query_args = array(reg::YEAR, $data["reg_type_id"], 1, $badge_num, 
+		$query_args = array(reg::YEAR, $data["reg_type_id"], 1, $data["badge_num"], 
 			$data["badge_name"], $data["first"], $data["middle"], 
 			$data["last"], $date_string, $data["address1"], 
 			$data["address2"], $data["city"], $data["state"], $data["zip"],
@@ -71,20 +68,23 @@ class reg_member {
 			);
 		db_query($query, $query_args);
 
-		$reg_id = reg_data::get_insert_id();
+		$data["id"] = reg_data::get_insert_id();
 
 		$message = t("Added registration for badge number '!num'",
-			array("!num" => $badge_num)
+			array("!num" => $data["badge_num"])
 			);
-		reg_log::log($message, $reg_id);
+		reg_log::log($message, $data["id"]);
 
+		//
+		// Make a note in the just-written transaction what the member's ID is.
+		//
 		if (!empty($reg_trans_id)) {
 			$query = "UPDATE {reg_trans} "
 				. "SET "
 				. "reg_id='%s' "
 				. "WHERE "
 				. "id='%s'";
-			$query_args = array($reg_id, $reg_trans_id);
+			$query_args = array($data["id"], $reg_trans_id);
 			db_query($query, $query_args);
 
 		}
@@ -111,7 +111,7 @@ class reg_member {
 			. "id='%s' "
 			;
 		$query_args = array($trans_data["badge_cost"], $trans_data["donation"], 
-			$trans_data["total_cost"], $reg_id);
+			$trans_data["total_cost"], $data["id"]);
 		db_query($query, $query_args);
 
 		//
@@ -120,9 +120,78 @@ class reg_member {
 		//
 		$data["total_cost"] = $trans_data["total_cost"];
 
-		return($badge_num);
+		self::email_receipt($data);
+
+		return($data["badge_num"]);
 
 	} // End of add_member()
+
+
+	/**
+	* Email out our registration receipt.
+	*/
+	static function email_receipt(&$data) {
+
+		$url = reg_data::get_verify_url();
+
+        //
+		// If we have credit card data, get a nice string.
+		//
+		if (!empty($data["cc_type_id"])
+			&& !reg_form::in_admin()
+			) {
+			$message_name = "email-receipt";
+			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"],
+			$data["cc_num"]);
+
+		} else {
+			$message_name = "email-receipt-no-cc";
+
+		}
+
+		$email_data = array(
+			"!name" => $data["first"] . " " . $data["middle"] . " "
+				. $data["last"],
+			"!badge_num" => $data["badge_num"],
+			"!cc_name" => $data["cc_name"],
+			"!total_cost" => $data["total_cost"],
+			"!verify_url" => l($url, $url),
+			);
+
+		$message = new reg_message();
+		$email = new reg_email($message);
+		$email_sent = $email->email($data["email"], t("Your Receipt"), 
+			$message_name, $email_data);
+
+		//
+		// Log the message that was sent.
+		//
+		if ($email_sent) {
+			$message = t("Email receipt sent to '!email'.\n"
+				. "Message: !message",
+				array(
+					"!email" => $data["email"],
+					"!message" => $email_sent,
+				));
+				reg_log::log($message, $data["id"]);
+        
+			$fake_email = variable_get(reg_form::FORM_ADMIN_FAKE_EMAIL, "");
+			if ($fake_email) {
+				$message = t("Just kidding!  We are currently set to fake "
+					. "sending email messages.");
+				reg_log::log($message, $data["id"]);
+			}
+
+		} else {
+			$message = t("An error occured when attempting to send an email "
+				. "to '!email'.",
+				array(
+					"!email" => $data["email"],
+				));
+			reg_log::log($message, $data["id"], WATCHDOG_ERROR);
+		}
+
+	} // End of send_email()
 
 
 } // End of reg_member class

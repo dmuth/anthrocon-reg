@@ -38,7 +38,7 @@ class reg_success {
 	*/
 	static function success_page(&$data) {
 
-		$url = reg::get_base() . "reg/verify";
+		$url = reg_data::get_verify_url();
 		$email = variable_get(reg::VAR_EMAIL, "");
 
 		$retval = "<p/>\n";

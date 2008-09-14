@@ -350,15 +350,12 @@ class reg_admin_member {
 				);
 
 
-// TEST
 		//
 		// Create an audit log entry and write it out.
 		//
 		if (!empty($old_data)) {
-			//$message_log = $message . " " . reg_data::get_changed_data(
 			$message .= " " . reg_data::get_changed_data(
 				$data, $old_data);
-			//reg_log::log($message_log);
 		}
 
 		reg_log::log($message, $data["reg_id"]);
