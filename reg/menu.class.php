@@ -79,6 +79,17 @@ class reg_menu {
 				);
 
 			//
+			// Success page
+			//
+			$retval[] = array(
+				"path" => "reg/success",
+				"title" => t("Registration Successful!"),
+				"callback" => "reg_success",
+				"access" => user_access(reg::PERM_REGISTER),
+				"type" => MENU_CALLBACK,
+				);
+
+			//
 			// Admin section
 			//
 			$retval[] = array(

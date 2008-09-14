@@ -81,6 +81,15 @@ function reg_verify_form_submit($form_id, &$data) {
 
 
 /**
+* Our "success" page.
+*/
+function reg_success() {
+	$retval = reg_success::success();
+	return($retval);
+}
+
+
+/**
 * Our public registration page.
 */
 function reg_registration() {

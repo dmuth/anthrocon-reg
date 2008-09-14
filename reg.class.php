@@ -505,5 +505,21 @@ class reg {
 	} // End of exit()
 
 
+	/**
+	* This function gets the base path to Drupal installation.
+	*
+	* @return string a URL in the format of http://host/drupal,
+	*	where host is the hostname and drupal is the path to the Drupal
+	*	installation (which may be /).
+	*/
+	function get_base() {
+
+		$retval = $GLOBALS["base_root"] . base_path();
+
+		return($retval);
+
+	} // End of get_base()
+
+
 } // End of reg class
 

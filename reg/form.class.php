@@ -334,6 +334,8 @@ class reg_form {
 			//
 			self::reg_submit_new($data);
 
+			$uri = "reg/success";
+
 		} else {
 			//
 			// Submission from the admin.  Are we updating or creating a 
@@ -349,12 +351,6 @@ class reg_form {
 			}
 		}
 
-		//
-		// Send the user back to the front page.
-		//
-		//
-		// TODO: Set redirection to verify page?
-		// 
 		reg::goto_url($uri);
 
 	} // End of registration_form_submit()
@@ -367,12 +363,8 @@ class reg_form {
 
 		$badge_num = reg_member::add_member($data, self::$reg_trans_id);
 
-		$message = t("Congratulations!  Your registration was successful, "
-			. "and your badge number is %badge_num%.  ",
-			array("%badge_num%" => $badge_num)
-			);
-		drupal_set_message($message);
-
+		$saved_data = &$_SESSION["reg"]["success"];
+		$saved_data["badge_num"] = $badge_num;
 
 		if (!empty($data["cc_type_id"])
 			&& !self::in_admin()
@@ -380,19 +372,11 @@ class reg_form {
 			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"], 
 				$data["cc_num"]);
 
-			$message = t("Your credit card (%cc_name%) was successfully "
-				. "charged for %total_cost%.",
-				array("%cc_name%" => $data["cc_name"],
-				"%total_cost%" => "$" . $data["total_cost"],
-				));
-			drupal_set_message($message);
+			$saved_data["cc_name"] = $data["cc_name"];
+			$saved_data["total_cost"] = $data["total_cost"];
 		}
 
-		$message = t("You will receive a conformation email sent "
-			. "to %email% shortly.",
-			array("%email%" => $data["email"])
-			);
-		drupal_set_message($message);
+		$saved_data["member_email"] = $data["email"];
 
 	} // End of reg_submit_new()
 

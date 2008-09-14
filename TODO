@@ -3,25 +3,20 @@
 Done
 ====
 
-- reg_messages table
-	- Put call to reg_message::load_display() in reg::registration().
-
-- Auditing
-	- reg_data::get_changed_data()
-		- Add in the string "audit" somewhere.
-	- When a level is changed, display the changed/old data
-
-- Text at top of verify page
-
-
-TODO
-====
+- Wrote reg::get_base()
 
 - /reg/success
 	- Displays success data from $_SESSION["reg"]
 		- If not found, redirects to /reg/verify
 
+
+TODO
+====
+
+- Save sample messages with mysqldump
+
 - When a membership is changed, display the changed/old data
+
 
 - Misc
 	- Looking at http://api.drupal.org/api/function/t/5, I need to go back

@@ -9,7 +9,7 @@ class reg_message {
 	/**
 	* @var An associative array of tokens for each of the messages.
 	*	Strangely enough, trying to use t() on the value causes a syntax 
-	(	error in PHP.  I guess executing code there is a no-no. :-)
+	*	error in PHP.  I guess executing code there is a no-no. :-)
 	*/
 	protected static $tokens = array(
 		"no-levels-available" => array(
@@ -17,6 +17,14 @@ class reg_message {
 			),
 		"verify" => array(
 			"!email" => "Our contact email.",
+			),
+		"success" => array(
+			"!email" => "Our contact email.",
+			"!member_email" => "The member's email address.",
+			"!verify_url" => "The verify page URL.",
+			"!badge_num" => "The assigned badge number.",
+			"!cc_name" => "The credit card name.",
+			"!total_cost" => "The total cost of the membership.",
 			),
 		"email-receipt" => array(
 			"!email" => "Our contact email.",
