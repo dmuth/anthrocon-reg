@@ -657,7 +657,8 @@ class reg_form {
 				//
 				if (reg::is_admin()) {
 					$url = "admin/reg/levels/list/" . $id . "/edit";
-					$string .= " " . l(t("[Edit]"), $url, "", $dest);
+					$string .= " " . l(t("[Edit this blurb]"), $url, "", 
+						$dest);
 				}
 
 				$string .= "<br>\n"
