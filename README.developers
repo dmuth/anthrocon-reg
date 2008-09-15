@@ -21,4 +21,7 @@ Notes For Developers
 
 - Try to keep names in the database singular, not plural.
 
+- To build a distribution tarball:
+	tar cfvz anthrocon-reg.tgz reg/* --exclude "RCS"  --exclude ".svn"
+
 
