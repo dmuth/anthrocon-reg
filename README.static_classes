@@ -1,0 +1,24 @@
+
+"Why are there so many static classes?"
+=======================================
+
+Good question.  When I first started this project, I began with static 
+classes so as to mimic how Drupal works -- Drupal is entirely procedural
+and only uses function calls thoughout.  The reason I did not do /that/, 
+however was because I felt I needed some logical separation of all of the 
+functions that I was going to write, in order to stay sane. :-)
+
+Building everything as a static class also sped up my early development, 
+especially at parts when I was still wrapping my way around how Drupal did 
+things.  Moving things around between classes was much easier when I didn't
+have to worry about dependency issues.
+
+Of course, the downside is that things start to become muddied and confusing
+after you hit about 5,000 lines of code or so...
+
+I am slowly rewriting parts of the system to not be static, and paying close
+attention to how the dependencies shape up.  Eventually I'll build a factory
+class so that I can have centralized object creation, along with some unit
+tests for the lower-level classes...
+
+
