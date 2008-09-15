@@ -11,8 +11,16 @@ class reg_email {
 	*/
 	protected $message;
 
-	function __construct($message) {
+
+	/**
+	* @var An instance of the reg_log class.
+	*/
+	protected $log;
+
+
+	function __construct($message, $log) {
 		$this->message = &$message;
+		$this->log = &$log;
 	}
 
 
@@ -28,10 +36,12 @@ class reg_email {
 	* @param array $data Associative array of data that will replace tokens
 	*	in the message.
 	*
+	* @param integer $reg_id The ID from the reg table.
+	*
 	* @return mixed The sent email message is returned on success.
 	*	If there is an error sending the message, false is returned.
 	*/
-	public function email($address, $subject, $message_name, &$data) {
+	public function email($address, $subject, $message_name, $reg_id, &$data) {
 
 		$retval = $this->message->load_display($message_name, $data, false);
 
@@ -45,15 +55,42 @@ class reg_email {
 
 		//
 		// Make sure we're not faking email.
+		// If we are, don't really send the email, and write a special
+		// log message informing the admin.
 		//
 		$fake_email = variable_get(reg_form::FORM_ADMIN_FAKE_EMAIL, "");
 
+		$result = true;
 		if (!$fake_email) {
 			$result = mail($address, $subject, $retval, $headers);
+		}
 
-			if (empty($result)) {
-				$retval = false;
-			}
+		//
+		// If there was an error sending the email, be sure to log it.
+		//
+		if (empty($result)) {
+			$message = t("An error occured when attempting to send an "
+				. "email to '!email'.",
+				array(
+					"!email" => $address,
+				));
+			$this->log->log($message, $reg_id, WATCHDOG_ERROR);
+
+			return(false);
+		} 
+
+		$message = t("Email receipt sent to '!email'.\n"
+			. "Message: !message",
+			array(
+				"!email" => $address,
+				"!message" => $retval,
+			));
+		$this->log->log($message, $reg_id);
+
+		if ($fake_email) {
+			$message = t("Just kidding!  We are currently set to fake "
+				. "sending email messages.");
+			$this->log->log($message, $reg_id);
 
 		}
 

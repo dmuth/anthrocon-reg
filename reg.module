@@ -60,9 +60,9 @@ function reg_menu($may_cache) {
 /**
 * Our public verification page.
 */
-function reg_verify() {
+function reg_verify($id_email = "") {
 	reg::force_ssl();
-	$retval = reg_verify::verify();
+	$retval = reg_verify::verify($id_email);
 	return($retval);
 } 
 

@@ -88,6 +88,12 @@ class reg_message {
 		$tmp = str_replace(".", " DOT ", $tmp);
 		$data["!munged_email"] = $tmp;
 
+		//
+		// Grab our verify URL, too.
+		//
+        $url = reg_data::get_verify_url();
+		$data["!verify_url"] = l($url, $url);
+
 		$retval = t($retval, $data);
 
 		//

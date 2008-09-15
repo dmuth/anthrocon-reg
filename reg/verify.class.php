@@ -8,8 +8,10 @@ class reg_verify {
 	/**
 	* Our registration verification page.
 	* Print up the search form, followed up any results.
+	*
+	* @param integer $id_email
 	*/
-	static function verify() {
+	static function verify($id_email) {
 
 		$email = variable_get(reg::VAR_EMAIL, "");
 
@@ -21,7 +23,7 @@ class reg_verify {
 			);
 		$retval .= nl2br($message);
 		$retval .= drupal_get_form("reg_verify_form");
-		$retval .= self::results();
+		$retval .= self::results($id_email);
 
 		return($retval);
 
@@ -159,7 +161,7 @@ class reg_verify {
 	*
 	* If no results are found, an error is thrown.
 	*/
-	static function results() {
+	static function results($id_email) {
 
 		$retval = "";
 
@@ -179,10 +181,26 @@ class reg_verify {
 			array("data" => t("Badge Name")),
 			array("data" => t("Membership Type")),
 			array("data" => t("Status")),
+			array("data" => t("")),
 			);
 
 		$rows = array();
+		$send_email_id = "";
 		while ($row = db_fetch_array($cursor)) {
+
+			$reg_id = $row["reg_id"];
+			$url = "reg/verify/resend/$reg_id";
+
+			//
+			// If this matches our registration ID that the receipt is to
+			// be resent to, do so.
+			//
+			if ($reg_id == $id_email) {
+				$send_email_id = $reg_id;
+			}
+
+			$resend = l("Resend Receipt Email", $url);
+
 			$rows[] = array(
 				array("data" => $row["year"] . "-" . 
 					reg_data::format_badge_num($row["badge_num"]),
@@ -191,7 +209,29 @@ class reg_verify {
 				array("data" => $row["badge_name"]),
 				array("data" => $row["member_type"]),
 				array("data" => $row["status"]),
+				array("data" => $resend),
 				);
+		}
+
+		//
+		// If we have an ID to send email to, do so.
+		//
+		if (!empty($send_email_id)) {
+			self::send_email($send_email_id);	
+
+		} else if (!empty($id_email)) {
+			//
+			// We couldn't find a registration for the requested ID.
+			//
+			$message = t("Unable to find valid registration information "
+				. "for registration ID %id with the current credit card "
+				. "information.",
+				array(
+					"%id" => $id_email,
+				));
+			form_set_error("", $message);
+			reg_log::log($message, "", WATCHDOG_WARNING);
+
 		}
 
 		if (empty($rows)) {
@@ -205,6 +245,40 @@ class reg_verify {
 		return($retval);
 
 	} // End of results()
+
+
+	/**
+	* Send the reciept email to a specific registration ID.
+	*/
+	static function send_email($id) {
+
+		$data = reg_admin_member::load_reg($id);
+		$url = reg_data::get_verify_url();
+
+		$message_name = "email-receipt-no-cc";
+		$email_data = array(
+			"!name" => $data["first"] . " " . $data["middle"] . " "
+				. $data["last"],
+			"!badge_num" => $data["badge_num"],
+			"!cc_name" => $data["cc_name"],
+			"!total_cost" => $data["total_cost"],
+			"!verify_url" => l($url, $url),
+			);
+
+		$message = new reg_message();
+		$log = new reg_log();
+		$email = new reg_email($message, $log);
+		$email_sent = $email->email($data["email"], t("Your Receipt"), 
+			$message_name, $data["id"], $email_data);
+
+		$message = t("Your receipt has been re-sent to %email.",
+			array(
+				"%email" => $data["email"],
+			));
+		drupal_set_message($message);
+		reg_log::log($message, $id);
+
+	} // End of send_email()
 
 
 	/**

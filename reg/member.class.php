@@ -132,8 +132,6 @@ class reg_member {
 	*/
 	static function email_receipt(&$data) {
 
-		$url = reg_data::get_verify_url();
-
         //
 		// If we have credit card data, get a nice string.
 		//
@@ -155,41 +153,13 @@ class reg_member {
 			"!badge_num" => $data["badge_num"],
 			"!cc_name" => $data["cc_name"],
 			"!total_cost" => $data["total_cost"],
-			"!verify_url" => l($url, $url),
 			);
 
 		$message = new reg_message();
-		$email = new reg_email($message);
+		$log = new reg_log();
+		$email = new reg_email($message, $log);
 		$email_sent = $email->email($data["email"], t("Your Receipt"), 
-			$message_name, $email_data);
-
-		//
-		// Log the message that was sent.
-		//
-		if ($email_sent) {
-			$message = t("Email receipt sent to '!email'.\n"
-				. "Message: !message",
-				array(
-					"!email" => $data["email"],
-					"!message" => $email_sent,
-				));
-				reg_log::log($message, $data["id"]);
-        
-			$fake_email = variable_get(reg_form::FORM_ADMIN_FAKE_EMAIL, "");
-			if ($fake_email) {
-				$message = t("Just kidding!  We are currently set to fake "
-					. "sending email messages.");
-				reg_log::log($message, $data["id"]);
-			}
-
-		} else {
-			$message = t("An error occured when attempting to send an email "
-				. "to '!email'.",
-				array(
-					"!email" => $data["email"],
-				));
-			reg_log::log($message, $data["id"], WATCHDOG_ERROR);
-		}
+			$message_name, $data["id"], $email_data);
 
 	} // End of send_email()
 

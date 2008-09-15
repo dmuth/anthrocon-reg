@@ -54,6 +54,8 @@ class reg_menu {
 	*/
 	static function get_menu(&$retval, $may_cache) {
 
+		if ($may_cache) {
+
 			//
 			// Public link
 			//
@@ -61,19 +63,6 @@ class reg_menu {
 				"path" => "reg",
 				"title" => reg::YEAR ." " . t("Pre-Registration"),
 				"callback" => "reg_registration",
-				"access" => user_access(reg::PERM_REGISTER),
-				"type" => MENU_NORMAL_ITEM,
-				);
-
-		if ($may_cache) {
-
-			//
-			// Verify a registraiton
-			//
-			$retval[] = array(
-				"path" => "reg/verify",
-				"title" => t("Verify an existing registration"),
-				"callback" => "reg_verify",
 				"access" => user_access(reg::PERM_REGISTER),
 				"type" => MENU_NORMAL_ITEM,
 				);
@@ -176,6 +165,27 @@ Uncomment this when we actually have stats.
 				"type" => MENU_LOCAL_TASK,
 				"weight" => 3,
 				);
+
+		} else {
+			//
+			// Menu items that aren't cached.
+			//
+
+			//
+			// Verify a registraiton
+			//
+			$retval[] = array(
+				"path" => "reg/verify",
+				"title" => t("Verify an existing registration"),
+				"callback" => "reg_verify",
+				//
+				// Optional argument to resend a receipt.
+				//
+				"callback arguments" => array(arg(3)),
+				"access" => user_access(reg::PERM_REGISTER),
+				"type" => MENU_NORMAL_ITEM,
+				);
+
 
 		}
 

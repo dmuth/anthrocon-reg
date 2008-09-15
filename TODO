@@ -6,8 +6,6 @@ Done
 TODO
 ====
 
-- Add link in verify page to resend email.
-
 - Remove variable_get() to email addresses
 
 - Credit card gets charged twice with a captcha.  Oops.
