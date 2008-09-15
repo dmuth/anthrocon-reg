@@ -3,11 +3,8 @@ name = Registration
 description = "This module does pre-registration of attendees."
 package = Anthrocon
 
-#
-# We'll put in dependencies later
-#
-#dependencies = module1 module2 module3
+dependencies = authorize_net
 
-version = 0.1-pre
+version = 1.0
 
 

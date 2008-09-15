@@ -158,14 +158,6 @@ Uncomment this when we actually have stats.
 				"weight" => 1,
 				);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/gateways/authorize.net",
-				"title" => t("Authorize.net"),
-				"callback" => "reg_admin_settings_authorize_net",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 3,
-				);
-
 		} else {
 			//
 			// Menu items that aren't cached.

@@ -5,10 +5,6 @@
 * This code is copyright 2008 by Douglas Muth.  Permission is granted
 *	to redistribute under the Gnu Public License.
 *
-* Additional module building info:
-*	http://drupal.org/node/82920
-*	http://api.drupal.org/
-*
 */
 
 
@@ -49,11 +45,8 @@ function reg_exit() {
 * Create our menu items.
 */
 function reg_menu($may_cache) {
-
 	$items = reg_menu::menu($may_cache);
-
 	return($items);
-
 } // End of reg_menu()
 
 
@@ -155,12 +148,6 @@ function reg_admin_settings_message_form_validate($form_id, $data) {
 function reg_admin_settings_message_form_submit($form_id, $data) {
 	return(reg_admin_settings_message::form_submit($form_id, $data));
 }
-
-function reg_admin_settings_authorize_net() {
-	reg::force_ssl();
-	return("Placeholder until I write something in the reg_authorize_net_settings class. (Note the new module)");
-}
-
 
 /**
 * Membership level editing stuff.

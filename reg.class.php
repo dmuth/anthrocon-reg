@@ -47,13 +47,7 @@ class reg {
 	const VAR_EMAIL = "site_mail";
 
 
-	/**
-	* Our constructor.  This should never be called.
-	*/
 	function __construct() {
-		$error = "You tried to instantiate this class even after I told "
-			. "you not to!";
-		throw new Exception($error);
 	}
 
 

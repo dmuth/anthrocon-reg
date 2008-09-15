@@ -7,24 +7,35 @@ TODO
 ====
 
 - Remove variable_get() to email addresses
+	- Write reg_data::get_contact_email()
+
+- Write a build script
+	- build.sh
+		- cd ..; tar
 
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?
 	- Can I use the existing captcha module for this? :-)
 	- Can I use this on the verify page?
 
-- Looking at http://api.drupal.org/api/function/t/5, I need to go back
-	and change all t() calls that use %strings into !strings.
-	- grep -E "%.*=>" *
-
 - authorize.net module, "reg_authorize.net"
-	- Settings page for API keys
+	- Settings page
+		- API keys
+		- test mode checkbox
+	- Test out ways of talking to authorize.net
+		- install curl
+			- openssl in phpinfo()
+			- I may have to compile this in my local copy of PHP
 	- Don't charge Amex cards
 		- Check the first digit (4, 5, or 6(?) for Discover)
 
-- Documentation
-	- User notes (levels, etc.)
-	- Developer notes (messages, emails, levels, logging, transactions, etc.)
+- Messages system
+	- Add a "subject" field to reg_message
+	- Add a reg_message::get_subject($name) function
+
+- Looking at http://api.drupal.org/api/function/t/5, I need to go back
+	and change all t() calls that use %strings into !strings.
+	- grep -E "%.*=>" *
 
 - Some utility to print unused badge numbers
 
@@ -34,17 +45,8 @@ TODO
 	- Staff reg module
 	- Onsite reg module?
 
-
-- reg/
-	- On successful registration, stash stuff to display in $_SESSION
-		and go to a pre-filled verify page?
-	- When a transaction fails, log it to reg_log with reg::get_cc_name()
-	- When a membership is paid for, redirect to reg/verify with status messages
-		and the form pre-filled
-
 - Admin
 	- Resend confirmation email
-		- Send confirmation email to another address
 
 - Class architecture
 	- Function to send confirmation email for a specific registration
