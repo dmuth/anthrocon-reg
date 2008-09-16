@@ -237,8 +237,14 @@ class reg_form {
 			// Log the transaction.  Note that wer are NOT charging
 			// the card here.
 			//
-			$reg_trans_id = reg_log::log_trans($data);
-			self::$reg_trans_id = $reg_trans_id;
+			// Also, if there is a registration ID, that means we're
+			// editing a registration, and should not log anything for 
+			// that.
+			//
+			if (empty($data["reg_id"])) {
+				$reg_trans_id = reg_log::log_trans($data);
+				self::$reg_trans_id = $reg_trans_id;
+			}
 
 			return(null);
 		}
