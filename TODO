@@ -3,26 +3,19 @@
 Done
 ====
 
+
 TODO
 ====
-
-- Bugs:
-	- Selecting non-CC in "add" tab still checks the expiration date
-	- When manually adding a user and NOT in fake mode, AND if the payment
-		type is NOT credit card, the expiration date keeps getting reset to Sep, 2009
-	- Assume card expires at the end of the month.  Cards that expire this month 
-		should still be charged.
-		- Log date of expired card. (show in error message)
 
 - Add a subject field to messages
 	- Test updates
 
-- Remove variable_get() to email addresses
-	- Write reg_data::get_contact_email()
-
 - Write a build script
 	- build.sh
 		- cd ..; tar
+
+- Remove variable_get() to email addresses
+	- Write reg_data::get_contact_email()
 
 - Credit card gets charged twice with a captcha.  Oops.
 	- Write my own little captcha in reg_captcha?

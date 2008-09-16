@@ -187,23 +187,32 @@ class reg_form {
 				reg_log::log($error, "", WATCHDOG_WARNING);
 			}
 
+			//
+			// Make sure the card isn't expired.
+			//
+			$month = date("n");
+			$year = date("Y");
+
+			$data_year = $data["cc_exp"]["year"];
+			$data_month = $data["cc_exp"]["month"];
+
+			if ($data_year < $year) {
+				self::set_cc_expired($data_month, $data_year);
+				$okay = false;
+
+			} else if ($data_year == $year) {
+				//
+				// The current month is okay.
+				//
+				if ($data_month < $month) {
+					self::set_cc_expired($data_month, $data_year);
+					$okay = false;
+				}
+			}
+
 		}
 		
 
-		//
-		// Sanity checking on the credit card expiration.
-		//
-		$month = date("n");
-		$year = date("Y");
-
-		if ($data["cc_exp"]["year"] == $year) {
-			if ($data["cc_exp"]["month"] <= $month) {
-				$error = t("Credit card is expired");
-				form_set_error("cc_exp][month", $error);
-				reg_log::log($error, "", WATCHDOG_WARNING);
-				$okay = false;
-			}
-		}
 
 		//
 		// Don't allow the default birthdate of today.
@@ -324,6 +333,18 @@ class reg_form {
 		self::$reg_trans_id = $reg_trans_id;
 
 	} // End of registration_form_validate()
+
+
+	static function set_cc_expired($month, $year) {
+		$error = t("Credit card is expired (!month/!year)",
+			array(
+				"!month" => $month,
+				"!year" => $year,
+			));
+		form_set_error("cc_exp][month", $error);
+		reg_log::log($error, "", WATCHDOG_WARNING);
+	}
+
 
 
 	/**
