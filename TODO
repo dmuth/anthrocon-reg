@@ -6,16 +6,6 @@ Done
 TODO
 ====
 
-- Add a subject field to messages
-- dump data first!!
-	- Test updates
-
-
-
-- Write a build script
-	- build.sh
-		- cd ..; tar
-
 - Remove variable_get() to email addresses
 	- Write reg_data::get_contact_email()
 
