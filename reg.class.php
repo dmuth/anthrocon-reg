@@ -369,7 +369,9 @@ class reg {
 			$data = array(
 				"!email" => variable_get(reg::VAR_EMAIL, ""),
 				);
-			$retval = reg_message::load_display("no-levels-available", $data);
+	
+			$message = reg_message::load_display("no-levels-available", $data);
+			$retval = $message["value"];
 
 			$message = t("A user tried to visit the public registration page, "
 				. "but there were no membership levels available.");
@@ -382,7 +384,8 @@ class reg {
 		//
 		// Load our custom message, if we have done.
 		//
-		$retval = reg_message::load_display("header");
+		$message = reg_message::load_display("header");
+		$retval .= $message["value"];
 
 		$retval .= drupal_get_form("reg_registration_form");
 

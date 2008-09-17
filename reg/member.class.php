@@ -158,8 +158,8 @@ class reg_member {
 		$message = new reg_message();
 		$log = new reg_log();
 		$email = new reg_email($message, $log);
-		$email_sent = $email->email($data["email"], t("Your Receipt"), 
-			$message_name, $data["id"], $email_data);
+		$email_sent = $email->email($data["email"], $message_name, 
+			$data["id"], $email_data);
 
 	} // End of send_email()
 

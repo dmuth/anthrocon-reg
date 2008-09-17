@@ -43,7 +43,7 @@ class reg_success {
 
 		$retval = "<p/>\n";
 
-		$retval .= reg_message::load_display("success",
+		$message = reg_message::load_display("success",
 			array(
 				"!email" => $email,
 				"!member_email" => $data["member_email"],
@@ -53,6 +53,8 @@ class reg_success {
 				"!total_cost" => $data["total_cost"],
 				)
 			);
+
+		$retval .= $message["value"];
 
 		return($retval);
 

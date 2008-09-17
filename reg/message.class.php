@@ -60,22 +60,25 @@ class reg_message {
 	*	displayed, even for an admin.  This should be set when sending out 
 	*	emails.
 	* 
-	* @return string Just the message to display.
+	* @return array An associative array with the message to display and
+	*	the subject line, if it is an email.
 	*/
 	static function load_display($name, $data = array(), $edit_link = true) {
 
-		$retval = "";
+		$retval = array();
 
 		self::set_tokens();
 		$message = self::load($name);
-		$retval = $message["value"];
+		$retval["subject"] = $message["subject"];
+		$retval["type"] = $message["type"];
+		$retval["value"] = $message["value"];
 
 		//
 		// If the user is an admin, give them an edit link.
 		//
 		if (reg::is_admin() && $edit_link) {
 			$url = "admin/reg/settings/messages/" . $message["id"] . "/edit";
-			$retval .= " " . l(t("[Edit this blurb]"), $url, "", 
+			$retval["value"] .= " " . l(t("[Edit this blurb]"), $url, "", 
 				drupal_get_destination());
 		}
 
@@ -94,13 +97,13 @@ class reg_message {
         $url = reg_data::get_verify_url();
 		$data["!verify_url"] = l($url, $url);
 
-		$retval = t($retval, $data);
+		$retval["value"] = t($retval["value"], $data);
 
 		//
 		// No need to mess with input filters here, since the data is
 		// coming from an admin.
 		//
-		$retval = nl2br($retval);
+		$retval["value"] = nl2br($retval["value"]);
 
 		return($retval);
 

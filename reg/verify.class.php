@@ -19,9 +19,8 @@ class reg_verify {
 			array(
 				"!email" => $email,
 				)
-			)
-			);
-		$retval .= nl2br($message);
+			));
+		$retval .= nl2br($message["value"]);
 		$retval .= drupal_get_form("reg_verify_form");
 		$retval .= self::results($id_email);
 
@@ -268,8 +267,8 @@ class reg_verify {
 		$message = new reg_message();
 		$log = new reg_log();
 		$email = new reg_email($message, $log);
-		$email_sent = $email->email($data["email"], t("Your Receipt"), 
-			$message_name, $data["id"], $email_data);
+		$email_sent = $email->email($data["email"], $message_name, 
+			$data["id"], $email_data);
 
 		$message = t("Your receipt has been re-sent to %email.",
 			array(

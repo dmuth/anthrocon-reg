@@ -3,12 +3,14 @@
 Done
 ====
 
-
 TODO
 ====
 
 - Add a subject field to messages
+- dump data first!!
 	- Test updates
+
+
 
 - Write a build script
 	- build.sh

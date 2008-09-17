@@ -494,6 +494,13 @@ function reg_install() {
 			//
 			. "name VARCHAR(255), "
 			. "UNIQUE INDEX reg_message_name(name), "
+			. "subject VARCHAR(255), "
+			//
+			// The type of message.  It can be "message" or "email".
+			// The difference is that emails have subject lines associated
+			// with them.
+			//
+			. "type VARCHAR(255) DEFAULT 'message', "
 			. "value TEXT, "
 			//
 			// Internal notes
@@ -503,33 +510,50 @@ function reg_install() {
 			;
 		db_query($query);
 
-		$query = "INSERT INTO {reg_message} (name, value, notes) "
+		$query = "INSERT INTO {reg_message} (name, subject, type, value, "
+				. "notes) "
 			. "VALUES "
 			. "('no-levels-available', "
+				. "'', "
+				. "'message', "
 				. "'Placeholder message for no membership levels available.', "
 				. "'Test note.'), "
 			. "('header', "
+				. "'', "
+				. "'message', "
 				. "'Placeholder for text that goes at the top of the "
 					. "Registration page.', "
 				. "'Test note 2.'), "
 			. "('verify', "
+				. "'', "
+				. "'message', "
 				. "'Placeholder for text at the verify screen.',"
 				. "'Test note 3.'), "
 			. "('success', "
+				. "'', "
+				. "'message', "
 				. "'Placeholder for text on the success screen.',"
 				. "'Test note 4.'), "
 			. "('email-receipt', "
+				. "'Your Receipt', "
+				. "'email', "
 				. "'Placeholder for an emailed receipt.', "
 				. "'This goes out when a user purchases a mebership on the "
 					. "website.'), "
 			. "('email-receipt-no-cc', "
+				. "'Your Receipt', "
+				. "'email', "
 				. "'Placeholder for an emailed receipt with no credit card.', "
 				. "'This would go out if a user has their receipt re-sent to "
 					. "them, or if we manually re-send the receipt.'), "
 			. "('cc-declined', "
+				. "'', "
+				. "'message', "
 				. "'Placeholder for a declined card.', "
 				. "'Display when a member''s credit card is declined.'), "
 			. "('cc-error', "
+				. "'', "
+				. "'message', "
 				. "'Placeholder for a carc charging error.', "
 				. "'Display when authorize.net freaks out or similar.') "
 			;
@@ -600,4 +624,33 @@ function reg_wipe() {
 	db_query($query);
 
 } // End of reg_wipe()
+
+
+/**
+* Our first (of many?) update functions.  These are called from update.php,
+*	after someone installs an updated version of this module.
+*
+* Please check http://api.drupal.org/api/function/hook_update_N/5
+*	for a handy lits of command SQL queries, and how to use them.
+*/
+function reg_update_1() {
+
+	$retval = array();
+
+	$queries = array();
+	$queries[] = "ALTER TABLE {reg_message} ADD subject VARCHAR(255)";
+	$queries[] = "ALTER TABLE {reg_message} ADD type VARCHAR(255) "
+		. "DEFAULT 'message'";
+	$queries[] = "UPDATE {reg_message} SET type='email' "
+		. "WHERE name like 'email-%'";
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_1()
+
+
 

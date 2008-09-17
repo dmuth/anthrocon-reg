@@ -18,13 +18,15 @@ class reg_admin_settings_message {
 
 		$header = array();
 		$header[] = array("data" => "ID #", "field" => "id",);
+		$header[] = array("data" => "Type", "field" => "type",);
 		$header[] = array("data" => "Name", "field" => "name",);
+		$header[] = array("data" => "Subject", "field" => "subject",);
 		$header[] = array("data" => "Preview",);
 
 		$order_by = tablesort_sql($header);
 
 		$rows = array();
-		$query = "SELECT * FROM {reg_message} ";
+		$query = "SELECT * FROM {reg_message} $order_by";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -33,9 +35,16 @@ class reg_admin_settings_message {
 
 			$message = truncate_utf8($row["value"], 60) . "...";
 
+			$subject = "N/A";
+			if ($row["type"] == "email") {
+				$subject = l($row["subject"], $link);
+			}
+
 			$rows[] = array(
 				l($row["id"], $link),
+				l($row["type"], $link),
 				l($row["name"], $link),
+				$subject,
 				$message,
 				);
 		}
@@ -99,6 +108,18 @@ class reg_admin_settings_message {
 			"#required" => true,
 			"#value" => $row["name"],
 			);
+
+		if ($row["type"] == "email") {
+			$retval["subject"] = array(
+				"#title" => "Subject",
+				"#description" => t("The subject line in the email of the "
+					. "message."),
+				"#type" => "textfield",
+				"#size" => reg_form::FORM_TEXT_SIZE,
+				"#required" => true,
+				"#default_value" => $row["subject"],
+				);
+		}
 
 		$retval["value"] = array(
 			"#title" => "Message",
@@ -169,11 +190,11 @@ class reg_admin_settings_message {
 
 		$query = "UPDATE {reg_message} "
 			. "SET "
-			. "value='%s', notes='%s' "
+			. "subject='%s', value='%s', notes='%s' "
 			. "WHERE "
 			. "id='%s' ";
-		$query_args = array($data["value"], $data["notes"], 
-			$data["id"]);
+		$query_args = array($data["subject"], $data["value"], 
+			$data["notes"], $data["id"]);
 		db_query($query, $query_args);
 
 		$message = t("Message '!name' updated.",

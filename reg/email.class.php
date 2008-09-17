@@ -29,8 +29,6 @@ class reg_email {
 	*
 	* @param string $address The recipient
 	*
-	* @param string $subject The subject of the email
-	*
 	* @param string $message_name The name of the message to send.
 	*
 	* @param array $data Associative array of data that will replace tokens
@@ -38,10 +36,11 @@ class reg_email {
 	*
 	* @param integer $reg_id The ID from the reg table.
 	*
-	* @return mixed The sent email message is returned on success.
+	* @return mixed On success, an array with the message and subject is 
+	*	returned. 
 	*	If there is an error sending the message, false is returned.
 	*/
-	public function email($address, $subject, $message_name, $reg_id, &$data) {
+	public function email($address, $message_name, $reg_id, &$data) {
 
 		$retval = $this->message->load_display($message_name, $data, false);
 
@@ -62,7 +61,8 @@ class reg_email {
 
 		$result = true;
 		if (!$fake_email) {
-			$result = mail($address, $subject, $retval, $headers);
+			$result = mail($address, $retval["subject"], 
+				$retval["value"], $headers);
 		}
 
 		//
@@ -79,11 +79,13 @@ class reg_email {
 			return(false);
 		} 
 
-		$message = t("Email receipt sent to '!email'.\n"
-			. "Message: !message",
+		$message = t("Email receipt sent to '!email'.<br/><br/>"
+			. "Subject: !subject<br/><br/>"
+			. "!message",
 			array(
 				"!email" => $address,
-				"!message" => $retval,
+				"!subject" => $retval["subject"],
+				"!message" => $retval["value"],
 			));
 		$this->log->log($message, $reg_id);
 
