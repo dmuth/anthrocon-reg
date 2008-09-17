@@ -49,6 +49,8 @@ class reg_admin {
 				. "</li>\n"
 			. "<li>" . l(t("Add a new member"), "admin/reg/members/add") 
 				. "</li>\n"
+			. "<li>" . l(t("Settings"), "admin/reg/settings") 
+				. "</li>\n"
 			."</ul>\n"
 			;
 
