@@ -13,9 +13,15 @@ set -e
 #
 #set -x
 
+#
+# Grab our highest version, so we can get a uniquely named file.
+#
+echo "Checking version...  Make sure you have svn set up!"
+VERSION=`svn stat -v |cut -c20-26 |sort -r |head -n1 |sed -e s/" "//g`
+
 PWD=`pwd`
 DIR=`basename $PWD`
-TARBALL=${DIR}/anthrocon-reg.tgz
+TARBALL=${DIR}/anthrocon-reg-${VERSION}.tgz
 
 #
 # We don't want any revision control files included in the atrball.
