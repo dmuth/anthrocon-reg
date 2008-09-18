@@ -163,7 +163,7 @@ class reg_form {
 			if (!$captcha->check($data["reg_captcha"])) {
 				$message = t("Incorrect answer to math question.");
 				form_set_error("reg_captcha", $message);
-				reg_log::log($error, "", WATCHDOG_WARNING);
+				reg_log::log($message, "", WATCHDOG_WARNING);
 				$okay = false;
 			}
 
