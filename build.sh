@@ -21,7 +21,7 @@ VERSION=`svn stat -v |cut -c20-26 |sort -r |head -n1 |sed -e s/" "//g`
 
 PWD=`pwd`
 DIR=`basename $PWD`
-TARBALL=${DIR}/anthrocon-reg-${VERSION}.tgz
+TARBALL=${DIR}/anthrocon-reg-build_${VERSION}.tgz
 
 #
 # We don't want any revision control files included in the atrball.
