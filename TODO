@@ -6,14 +6,6 @@ Done
 TODO
 ====
 
-- Remove variable_get() to email addresses
-	- Write reg_data::get_contact_email()
-
-- Credit card gets charged twice with a captcha.  Oops.
-	- Write my own little captcha in reg_captcha?
-	- Can I use the existing captcha module for this? :-)
-	- Can I use this on the verify page?
-
 - authorize.net module, "reg_authorize.net"
 	- Settings page
 		- API keys
@@ -25,14 +17,13 @@ TODO
 	- Don't charge Amex cards
 		- Check the first digit (4, 5, or 6(?) for Discover)
 
+- Remove variable_get() to email addresses
+	- Write reg_data::get_contact_email()
+
 - Messages system
 	- Add a "subject" field to reg_message
 	- Add a reg_message::get_subject($name) function?
 		- Maybe modify load_display() to return an array?
-
-- Looking at http://api.drupal.org/api/function/t/5, I need to go back
-	and change all t() calls that use %strings into !strings.
-	- grep -E "%.*=>" *
 
 - Some utility to print unused badge numbers
 

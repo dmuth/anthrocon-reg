@@ -152,6 +152,23 @@ class reg_form {
 			$data["reg_trans_type_id"] = 1;
 		}
 
+		//
+		// Check our captcha submission.
+		//
+		if (!self::in_admin()) {
+
+			$log = new reg_log();
+			$captcha = new reg_captcha($log);
+
+			if (!$captcha->check($data["reg_captcha"])) {
+				$message = t("Incorrect answer to math question.");
+				form_set_error("reg_captcha", $message);
+				reg_log::log($error, "", WATCHDOG_WARNING);
+				$okay = false;
+			}
+
+		}
+
 		if ($data["email"] != $data["email2"]) {
 			$error = t("Email addresses do not match!");
 			form_set_error("email2", $error);
@@ -358,6 +375,14 @@ class reg_form {
 		$uri = "";
 
 		if (!self::in_admin()) {
+
+			//
+			// We're done with the captcha, clear it out.
+			//
+			$log = new reg_log();
+			$captcha = new reg_captcha($log);
+			$captcha->clear();
+
 			//
 			// Front-end submissions are always new.
 			//
@@ -550,7 +575,7 @@ class reg_form {
 			"#type" => "textfield",
 			"#title" => t("First Name"),
 			"#description" => t("Your real first name"),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["first"],
 			);
@@ -558,14 +583,14 @@ class reg_form {
 			"#type" => "textfield",
 			"#title" => t("Middle Name"),
 			"#description" => t("Your real middle name"),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["middle"],
 			);
 		$retval["last"] = array(
 			"#type" => "textfield",
 			"#title" => t("Last Name"),
 			"#description" => t("Your real last name"),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["last"],
 			);
@@ -582,7 +607,6 @@ class reg_form {
 			"#type" => "date",
 			"#title" => t("Date of Birth"),
 			"#description" => t("Your date of birth"),
-			"#size" => self::FORM_TEXT_SIZE,
 			"#required" => true,
 			"#default_value" => $date_array,
 			);
@@ -590,7 +614,7 @@ class reg_form {
 			"#type" => "textfield",
 			"#title" => t("Address Line 1"),
 			"#description" => t("Your mailing address"),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["address1"],
 			);
@@ -599,14 +623,14 @@ class reg_form {
 			"#title" => t("Address Line 2"),
 			"#description" => t("Additional address information, "
 				. "such as P.O Box number"),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["address2"],
 			);
 		$retval["city"] = array(
 			"#type" => "textfield",
 			"#title" => t("City"),
 			"#description" => t("Your city"),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["city"],
 			);
@@ -614,7 +638,7 @@ class reg_form {
 			"#type" => "textfield",
 			"#title" => t("State"),
 			"#description" => t("Your state/province."),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["state"],
 			);
@@ -622,7 +646,7 @@ class reg_form {
 			"#type" => "textfield",
 			"#title" => t("Zip Code"),
 			"#description" => t("Your Zip/Postal code"),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["zip"],
 			);
@@ -635,7 +659,7 @@ class reg_form {
 			"#title" => t("Country"),
 			"#description" => t("Your country"),
 			"#default_value" => "USA",
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["country"],
 			);
@@ -643,7 +667,7 @@ class reg_form {
 			"#type" => "textfield",
 			"#title" => t("Your email address"),
 			"#description" => "",
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["email"],
 			);
@@ -652,7 +676,7 @@ class reg_form {
 			"#title" => t("Confirm email address"),
 			"#description" => t("Please re-type your email address to "
 				. "ensure there were no typos."),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["email"],
 			);
@@ -660,48 +684,13 @@ class reg_form {
 			"#type" => "textfield",
 			"#title" => t("Your phone number"),
 			"#description" => t("A phone number where you can be reached."),
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["phone"],
 			);
 
 		if (!self::in_admin()) {
-
-			$levels = reg_data::get_valid_levels();
-			$level_options = array();
-
-			$dest = drupal_get_destination();
-
-			foreach ($levels as $key => $value) {
-				$id = $value["id"];
-				$name = $value["name"];
-				$price = $value["price"];
-				$desc = $value["description"];
-				$string = "$name <b>(\$$price USD)</b>";
-
-				//
-				// If we an admin, give a link to edit the description.
-				//
-				if (reg::is_admin()) {
-					$url = "admin/reg/levels/list/" . $id . "/edit";
-					$string .= " " . l(t("[Edit this blurb]"), $url, "", 
-						$dest);
-				}
-
-				$string .= "<br>\n"
-					. nl2br($desc)
-					;
-				$level_options[$key] = $string;
-			}
-
-			$retval["reg_level_id"] = array(
-				"#type" => "radios",
-				"#title" => t("Membership Type"),
-				"#description" => t("Which membership type would you like?"),
-				"#options" => $level_options,
-				"#default_value" => $data["reg_level_id"],
-				);
-
+			$retval["reg_level_id"] = self::get_level_options($data);
 		}
 
 		$shirt_sizes = reg_data::get_shirt_sizes();
@@ -733,6 +722,18 @@ class reg_form {
 		}
 
 		//
+		// Create our captcha.
+		//
+		if (!self::in_admin()) {
+
+			$log = new reg_log();
+			$captcha = new reg_captcha($log);
+			$retval["reg_captcha"] = $captcha->create();
+			$retval["reg_captcha"]["#theme"] = "reg_theme";
+
+		}
+
+		//
 		// Only display our registration button early if we are editing
 		// or adding from the admin.
 		//
@@ -746,6 +747,54 @@ class reg_form {
 		return($retval);
 
 	} // End of form()
+
+
+	/**
+	* Get level options for a membership.
+	*
+	* @return array An array representing a single form element of 
+	*	radio buttons.
+	*/
+	function get_level_options(&$data) {
+
+		$levels = reg_data::get_valid_levels();
+		$level_options = array();
+
+		$dest = drupal_get_destination();
+
+		foreach ($levels as $key => $value) {
+			$id = $value["id"];
+			$name = $value["name"];
+			$price = $value["price"];
+			$desc = $value["description"];
+			$string = "$name <b>(\$$price USD)</b>";
+
+			//
+			// If we an admin, give a link to edit the description.
+			//
+			if (reg::is_admin()) {
+				$url = "admin/reg/levels/list/" . $id . "/edit";
+				$string .= " " . l(t("[Edit this blurb]"), $url, "", 
+					$dest);
+			}
+
+			$string .= "<br>\n"
+				. nl2br($desc)
+				;
+			$level_options[$key] = $string;
+		}
+
+		$retval = array(
+			"#type" => "radios",
+			"#title" => t("Membership Type"),
+			"#description" => t("Which membership type would you like?"),
+			"#options" => $level_options,
+			"#default_value" => $data["reg_level_id"],
+			);
+
+		return($retval);
+
+	} // End of get_level_options()
 
 
 	/**
@@ -806,7 +855,7 @@ class reg_form {
 			"#title" => t("Credit Card Number"),
 			"#description" => t("Your Credit Card Number"),
 			"#type" => "textfield",
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["cc_num"],
 			);
 

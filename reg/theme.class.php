@@ -34,6 +34,12 @@ class reg_theme {
 	static function theme_textfield(&$item) {
 		$class = array('form-text');
 		_form_set_class($item, $class);
+
+		$size = "size=\"20\"";
+		if (!empty($item["#size"])) {
+			$size = "size=\"" . $item["#size"] . "\"";
+		}
+
 		$retval = '<input type="text" maxlength="' 
 			. $item['#maxlength'] . '" name="' . $item['#name'] 
 			. '" id="'. $item['#id'] . '" ' . $size .' value="' 
@@ -370,6 +376,10 @@ class reg_theme {
 	static function render_item($item) {
 		
 		$retval = "";
+
+		if (!empty($item["#field_prefix"])) {
+			$retval .= $item["#field_prefix"];
+		}
 
 		$type = $item["#type"];
 
