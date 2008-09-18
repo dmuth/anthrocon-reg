@@ -20,11 +20,6 @@ TODO
 - Remove variable_get() to email addresses
 	- Write reg_data::get_contact_email()
 
-- Messages system
-	- Add a "subject" field to reg_message
-	- Add a reg_message::get_subject($name) function?
-		- Maybe modify load_display() to return an array?
-
 - Some utility to print unused badge numbers
 
 - Keep in mind that I can create other modules in that directory
