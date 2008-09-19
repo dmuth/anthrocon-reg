@@ -136,6 +136,14 @@ class reg_form {
 		$okay = true;
 
 		//
+		// If there are any pre-existing form errors (required fields 
+		// missing, etc.), note that.
+		//
+		if (form_get_errors()) {
+			$okay = false;
+		}
+
+		//
 		// If we have no payment type (such as coming through the public
 		// interface), set it to credit card.
 		//
@@ -272,7 +280,11 @@ class reg_form {
 				self::$reg_trans_id = $reg_trans_id;
 			}
 
+			$message = t("In the admin interface.  Bailing out early.");
+			reg_log::log($message);
+
 			return(null);
+
 		}
 
 
@@ -335,6 +347,9 @@ class reg_form {
 		// the credit card.
 		//
 		if (empty($okay)) {
+			$message = t("One or more form errors found.  Stopping and NOT "
+				. "charging the credit card.");
+			reg_log::log($message, "", WATCHDOG_WARNING);
 			return(null);
 		}
 
