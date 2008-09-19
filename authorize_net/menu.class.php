@@ -12,7 +12,16 @@ class authorize_net_menu {
 
 		$retval = array();
 
-		if ($may_cache) {
+		//$may_cache = 1;  // Debugging
+		if (!$may_cache) {
+			//
+			// Load our Javascript
+			//
+			$path = drupal_get_path("module", "reg");
+			drupal_add_js($path . "/authorize_net.js", "module");
+
+		} else {
+
 			$retval[] = array(
 				"path" => "admin/reg/settings/gateways/authorize_net",
 				"title" => t("Authorize.net"),

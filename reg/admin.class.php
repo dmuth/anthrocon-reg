@@ -6,7 +6,6 @@
 */
 class reg_admin {
 
-
 	/**
 	* A wrapper for setting variables.  It will log the activity.
 	*/

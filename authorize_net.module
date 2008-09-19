@@ -38,9 +38,32 @@ function authorize_net_menu($may_cache) {
 function authorize_net_settings() {
 	$reg = new reg();
 	$reg->force_ssl();
-	return("Placeholder until I put a form here.");
+	$log = new reg_log();
+	$settings = new authorize_net_settings($reg, $log);
+	return($settings->settings());
 } // End of authorize_net_settings()
 
+
+function authorize_net_settings_form() {
+	$reg = new reg();
+	$log = new reg_log();
+	$settings = new authorize_net_settings($reg, $log);
+	return($settings->form());
+}
+
+function authorize_net_settings_form_validate($form_id, &$data) {
+	$reg = new reg();
+	$log = new reg_log();
+	$settings = new authorize_net_settings($reg, $log);
+	$settings->validate($form_id, $data);
+}
+
+function authorize_net_settings_form_submit($form_id, &$data) {
+	$reg = new reg();
+	$log = new reg_log();
+	$settings = new authorize_net_settings($reg, $log);
+	$settings->submit($form_id, $data);
+}
 
 
 
