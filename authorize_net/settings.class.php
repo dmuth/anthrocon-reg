@@ -14,10 +14,21 @@ class authorize_net_settings extends authorize_net {
 	* Our main settings page.
 	*/
 	function settings() {
+
 		$retval = "";
+
+		//
+		// Only run a sanity check if we're not processing a form.
+		//
+		if (empty($_REQUEST["form_id"])) {
+			$this->sanity_check();
+		}
+
 		$retval .= drupal_get_form("authorize_net_settings_form");
+
 		return($retval);
-	}
+
+	} // End of settings()
 
 
 	/**
@@ -35,18 +46,16 @@ class authorize_net_settings extends authorize_net {
 			));
 
 		$retval["credentials"] = $this->get_credentials();
-
-		$retval["test_mode"] = array(
-			"#type" => "checkbox",
-			"#title" => t("Credit Card Test Mode?"),
-			"#default_value" => $this->variable_get(self::TEST_MODE),
-			"#description" => t("If set, the gateway will be used in "
-				. "\"test mode\".  <b>Do NOT use in production!</b>"),
-			);
+		$retval["test_gateway"] = $this->get_test_gateway();
 
 		$retval["submit"] = array(
 			"#type" => "submit",
 			"#value" => t("Save"),
+			);
+
+		$retval["submit_test_gateway"] = array(
+			"#type" => "submit",
+			"#value" => t("Save and Test Credentials"),
 			);
 
 		return($retval);
@@ -81,47 +90,197 @@ class authorize_net_settings extends authorize_net {
 			"#size" => self::FORM_TEXT_SIZE,
 			);
 
-/*
-TODO: I need to figure this out.
-	- Maybe a link that goes to authorize_net/test?
-		- I'd have to tweak the menu to pass in the argment through a callback, and act on it in settings()
-
-
-I also need to write a sanity_check function, that throws an error if the ID or key are unset.  It should do this in the mains settings page, though.
-
-
-		$retval["test_gateway_details"] = array(
-			"#value" => t("Test the gateway with the above settings:"),
+		$retval["test_mode"] = array(
+			"#type" => "checkbox",
+			"#title" => t("Credit Card Test Mode?"),
+			"#default_value" => $this->variable_get(self::TEST_MODE),
+			"#description" => t("If set, the gateway will be used in "
+				. "\"test mode\".  <b>Do NOT use in production!</b>"),
 			);
-
-		$retval["test_gateway"] = array(
-			"#type" => "submit",
-			"#value" => t("Test Gateway"),
-			);
-*/
 
 		return($retval);
 
 	} // End of get_credentials()
 
 
+	/**
+	* Return our fieldset for gateway testing params.
+	*/
+	function get_test_gateway() {
+
+		$retval = array(
+			"#type" => "fieldset",
+			"#title" => t("Gateway test settings"),
+			"#tree" => true,
+			);
+
+		if (empty($_SESSION["reg"]["authorize_net"]["test_cost"])) {
+			$_SESSION["reg"]["authorize_net"]["test_cost"] = "1.00";
+		}
+
+
+		$url = "http://developer.authorize.net/guides/AIM/"
+			. "Transaction_Response/"
+			. "Response_Reason_Codes_and_Response_Reason_Text.htm"
+			;
+
+		$retval["total_cost"] = array(
+			"#type" => "textfield",
+			"#title" => t("Amount to \"charge\""),
+			"#default_value" => 
+				$_SESSION["reg"]["authorize_net"]["test_cost"],
+			"#size" => 5,
+			"#description" => t("The amount entered will force a specific "
+				. "!link.  (!link_full)<br/>\n"
+				. "Key codes: 1 == success, 2 == decline, 5 == error",
+				array(
+					"!link" => l(t("Response Reason Code"), $url),
+					"!link_full" => l(t("Full Authorize.net documentation"),
+						"http://developer.authorize.net/guides/AIM/"),
+				)),
+			);
+
+		$retval["detail"] = array(
+			"#type" => "item",
+			"#value" => t("<b>Note:</b> Testing credentials will be "
+				. "done in test mode.  Your card will NOT be charged."),
+			);
+
+		return($retval);
+
+	} // End of get_test_gateway()
+
+
+	/**
+	* A little function that checks to see if key fields are defined.
+	* If not, it sets an error to warn the user.
+	*/
+	function sanity_check() {
+
+		if (!$this->variable_get(self::LOGIN_ID)
+			) {
+			$error = t("Login ID is not specified.  It is needed "
+				. "to charge credit cards.");
+			form_set_error("credentials][api_login_id", $error);
+		}
+
+		if (!$this->variable_get(self::TRANSACTION_KEY)
+			) {
+			$error = t("API Transaction Key is not specified.  It is "
+				. "needed to charge credit cards.");
+			form_set_error("credentials][api_transaction_key", $error);
+		}
+
+		if (!function_exists("curl_init")) {
+			$error = t("Function 'curl_init' not found.  Is the CURL "
+				. "library installed with PHP?");
+			form_set_error("curl_init", $error);
+		}
+
+		if (!function_exists("curl_setopt")) {
+			$error = t("Function 'curl_setopt' not found.  Is the CURL "
+				. "library installed with PHP?");
+			form_set_error("curl_setopt", $error);
+		}
+
+
+	} // End of sanity_check()
+
+
 	function validate($form_id, &$data) {
-if ($data["op"] == t("Test Gateway")) {
-//print "TEST";
-}
-	}
+
+	} // End of validate()
+
+
+	/**
+	* Run a test transaction against the gateway, in test mode.
+	*
+	* @param array $data The data submitted to the form.
+	*/
+	function test_gateway($data) {
+
+		$cust_data = array();
+
+		$cust_data["test_request"] = "TRUE"; // Special :-)
+
+		$cust_data["cc_num"] = "4222222222222";
+		$cust_data["cc_exp"] = "01/2015";
+
+		$cust_data["total_cost"] = 1;
+		if (!empty($data["test_gateway"]["total_cost"])) {
+			$cust_data["total_cost"] = $data["test_gateway"]["total_cost"];
+		}
+
+		$cust_data["cvv"] = "123";
+		$cust_data["invoice_number"] = "1234567890";
+		$cust_data["description"] = "a test description";
+		$cust_data["first"] = "Firstname";
+		$cust_data["last"] = "Lastname";
+		$cust_data["address1"] = "address1";
+		$cust_data["address2"] = "address2";
+		$cust_data["city"] = "city name";
+		$cust_data["state"] = "state name";
+		$cust_data["zip"] = "zipcode";
+		$cust_data["country"] = "USA";
+		$cust_data["phone"] = "123-456-7890";
+		$cust_data["email"] = "doug.muth@gmail.com";
+
+		$fields = $this->prepare_data($cust_data);
+
+		try {
+			$response = $this->send_data($fields);
+		} catch (Exception $e) {
+			form_set_error("", $e->getMessage());
+		}
+
+		//
+		// Display our response.
+		//
+		$message = t("Authorize.net response: !response",
+			array("!response" => $response));
+		drupal_set_message($message);
+
+		if ($this->is_success($response)) {
+			$message = t("This (test) transaction was successful.");
+
+		} else if ($this->is_declined($response)) {
+			$message = t("This (test) transaction was declined.");
+
+		} else {
+			$message = t("Payment gateway (test) error.");
+
+		}
+
+		drupal_set_message($message);
+
+		return($response);
+
+	} // End of test_gateway()
 
 
 	function submit($form_id, &$data) {
 
 		$credentials = $data["credentials"];
+		$test_gateway = $data["test_gateway"];
 
 		$this->variable_set(self::LOGIN_ID, $credentials["api_login_id"]);
 		$this->variable_set(self::TRANSACTION_KEY, 
 			$credentials["api_transaction_key"]);
-		$this->variable_set(self::TEST_MODE, $data["test_mode"]);
+		$this->variable_set(self::TEST_MODE, $credentials["test_mode"]);
+
+		$_SESSION["reg"]["authorize_net"]["test_cost"] = 
+			$test_gateway["total_cost"];
 
 		drupal_set_message(t("Settings updated"));
+
+		//
+		// Test our credentials by hitting authorize.net in test mode.
+		// Do this AFTER the data is saved in case we updated the
+		// login ID or transaction key.
+		//
+		if ($data["op"] == t("Save and Test Credentials")) {
+			$this->test_gateway($data);
+		}
 
 	} // End of submit()
 

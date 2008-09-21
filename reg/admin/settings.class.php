@@ -50,7 +50,8 @@ class reg_admin_settings {
 			"#title" => t("Credit Card Test Mode?"),
 			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_CC, false),
 			"#description" => t("If set, credit card numbers will "
-				. "not be processed.  Do NOT use in production!"),
+				. "not be sent off to our merchant gateway.  "
+				. "Do NOT use in production!"),
 			);
 
 		$retval["no_production"]["fake_data"] = array(
