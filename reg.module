@@ -91,11 +91,23 @@ function reg_registration() {
 }
 
 function reg_registration_form($id = "") {
-	return(reg_form::reg($id));
+
+	$reg = new reg();
+	$log = new reg_log();
+	$cc_gateway = new authorize_net($reg, $log);
+
+	return(reg_form::reg($id, $cc_gateway));
+
 }
 
 function reg_registration_form_validate($form_id, &$data) {
-	reg_form::reg_validate($form_id, $data);
+
+	$reg = new reg();
+	$log = new reg_log();
+	$cc_gateway = new authorize_net($reg, $log);
+
+	reg_form::reg_validate($form_id, $data, $cc_gateway);
+
 }
 
 function reg_registration_form_submit($form_id, &$data) {

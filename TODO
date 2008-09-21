@@ -6,25 +6,6 @@ Done
 TODO
 ====
 
-- authorize.net module, "reg_authorize.net"
-
-	- New messages
-		- cc-declined
-		- cc-error
-		- cc-no-amex
-
-	- Write a master charge_cc() function in reg class
-		- Don't charge Amex cards (this should be in main charge_cc() function, with a message string)
-			- Check the first digit (4, 5, or 6(?) for Discover)
-
-	- On reg form, if not in test mode, see if authorize.net gateway is in test mode
-- reg/
-	- After successful registration, if standards of conduct exist, write log entry stating that the user has agreeed to them, with the URL.
-
-- transaction log
-	- On the detail page, mention that the custom invoice id should NEVER be shown to the customer
-
-
 - Remove variable_get() to email addresses
 	- Write reg_data::get_contact_email()
 

@@ -617,6 +617,8 @@ class reg_admin_log {
 			$rows[] = array(
 				array("data" => "Custom invoice number", "header" => true),
 				$row["invoice_number"]
+					. t(" (For internal use only.  This is NEVER to be "
+						. "shown to the user.)")
 				);
 		}
 

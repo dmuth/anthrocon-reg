@@ -555,7 +555,12 @@ function reg_install() {
 				. "'', "
 				. "'message', "
 				. "'Placeholder for a carc charging error.', "
-				. "'Display when authorize.net freaks out or similar.') "
+				. "'Display when authorize.net freaks out or similar.'), "
+			. "('cc-no-amex', "
+				. "'', "
+				. "'message', "
+				. "'At this time, we do not accept American Express.', "
+				. "'') "
 			;
 
 		db_query($query);
@@ -630,6 +635,11 @@ function reg_wipe() {
 * Our first (of many?) update functions.  These are called from update.php,
 *	after someone installs an updated version of this module.
 *
+* To force the module back to an older version for testing of these update
+*	functions, run this SQL command:
+*
+* UPDATE system SET schema_version=1 WHERE name='reg';
+*
 * Please check http://api.drupal.org/api/function/hook_update_N/5
 *	for a handy lits of command SQL queries, and how to use them.
 */
@@ -653,4 +663,26 @@ function reg_update_1() {
 } // End of reg_update_1()
 
 
+/**
+* Add some new messages for interacting with credit cards.
+*/
+function reg_update_2() {
+
+		$retval = array();
+
+		$query = "INSERT INTO {reg_message} (name, subject, type, value, "
+				. "notes) "
+			. "VALUES "
+			. "('cc-no-amex', "
+				. "'', "
+				. "'message', "
+				. "'At this time, we do not accept American Express.', "
+				. "'') "
+			;
+
+		$retval[] = update_sql($query);
+
+		return($retval);
+
+} // End of reg_update_2()
 

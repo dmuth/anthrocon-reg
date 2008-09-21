@@ -113,6 +113,14 @@ class authorize_net {
 		$convert["cc_exp"] = "x_exp_date";
 		$convert["total_cost"] = "x_amount";
 	
+		if (is_array($data["cc_exp"])) {
+			$cc_exp = 
+				sprintf("%02d", $data["cc_exp"]["month"])
+				. "/" . $data["cc_exp"]["year"]
+				;
+			$data["cc_exp"] = $cc_exp;
+		}
+
 		//
 		// When specified, place the gateway in test mode.
 		//
@@ -122,7 +130,10 @@ class authorize_net {
 
 			if (!empty($data[$key])) {
 
-				$retval[$value] = $data[$key];
+				//
+				// Filter out any instances of our delimiter
+				//
+				$retval[$value] = ereg_replace(":", "", $data[$key]);
 
 				//
 				// Get the price set down to the cents.
@@ -353,6 +364,56 @@ class authorize_net {
 		return(false);
 
 	} // End of is_test_mode()
+
+
+	/**
+	* Our public function to charge a credit card number.
+	*
+	* @param array $data Associative array of customer and credit card 
+	*	data.
+	*
+	* @return array Associative array of stats on the transaction.
+	*	This includes things like AVS and CVV responses, and the all 
+	*	important "status" field which will be either "success", 
+	*	"declined", or "error".
+	*/
+	public function charge_cc($data) {
+
+		$retval = array();
+
+		$fields = $this->prepare_data($data);
+
+		try {
+			$response = $this->send_data($fields);
+		} catch (Exception $e) {
+			$retval["status"] = "error";
+			return($retval);
+		}
+
+		if ($this->is_success($response)) {
+			$retval["status"] = "success";
+
+		} else if ($this->is_declined($response)) {
+			$retval["status"] = "declined";
+
+		} else {
+			$retval["status"] = "error";
+
+		}
+
+		//
+		// Pull out key fields and put them into our return value.
+		//
+		$results = explode(":" , $response);
+
+		$retval["auth_code"] = $results[4];
+		$retval["avs_response"] = $results[5];
+		$retval["transaction_id"] = $results[6];
+		$retval["cvv_response"] = $results[38];
+
+		return($retval);
+
+	} // End of charge_cc()
 
 
 } // End of authorize_net class

@@ -25,13 +25,21 @@ class reg_form {
 	*/
 	static private $reg_trans_id;
 
+	function __construct($cc_gateway = "") {
+
+	}
+
 
 	/**
 	* This function creates the data structure for our main registration form.
 	*
+	* @param integer $id Our registration ID, if we are editing a member.
+	*
+	* @param object $cc_gateway Our credit card gateway.
+	*
 	* @return array Associative array of registration form.
 	*/
-	static function reg($id = "") {
+	static function reg($id, $cc_gateway) {
 
 		$retval = array();
 
@@ -51,7 +59,7 @@ class reg_form {
 		// only admins can edit a registration.
 		//
 		if (empty($id)) {
-			$retval["cc"] = self::form_cc($id, $data);
+			$retval["cc"] = self::form_cc($id, $data, $cc_gateway);
 		}
 
 		return($retval);
@@ -127,8 +135,15 @@ class reg_form {
 	* This function is called to validate the form data.
 	* If there are any issues, form_set_error() should be called so
 	* that form processing does not continue.
+	*
+	* @param string $form_id Our unique form ID
+	*
+	* @param array $data Our form data.
+	*
+	* @param object $cc_gateway Our credit card gateway.
+	*
 	*/
-	static function reg_validate(&$form_id, &$data) {
+	static function reg_validate(&$form_id, &$data, &$cc_gateway) {
 
 		//
 		// Assume everything is okay, unless proven otherwise.
@@ -356,7 +371,7 @@ class reg_form {
 		//
 		// Make the transaction.  If it is successful, then add a new member.
 		//
-		$reg_trans_id = reg::charge_cc($data);
+		$reg_trans_id = reg::charge_cc($data, $cc_gateway);
 
 		//
 		// TODO: Add things to do if the charging fails!
@@ -816,7 +831,7 @@ class reg_form {
 	* This internal function creates the credit card portion of the 
 	*	registration form.
 	*/
-	static function form_cc($id, $data) {
+	static function form_cc($id, $data, $cc_gateway) {
 
 		//
 		// Set defaults if we don't have any
@@ -878,12 +893,19 @@ class reg_form {
 		if (reg::is_test_mode()) {
 			$retval["cc_num"]["#description"] = t("Running in test mode.  "
 				. "Just enter any old number.");
+
+		} else if ($cc_gateway->is_test_mode()) {
+			$retval["cc_num"]["#description"] = t("Gateway is running in "
+				. "test mode.  Your card will NOT be charged.  "
+				. "Test CC num: 4222222222222");
+
 		}
 
 		if (self::in_admin()) {
 			$retval["cc_num"]["#description"] = t("Just the last 4 digits "
 				. "are necessary.  This card will NOT be charged, since we "
 				. "are in the admin.");
+
 		} else {
 			//
 			// If this is the public facing form, we only accept credit card

@@ -249,6 +249,8 @@ class reg {
 	/**
 	* This function actually charges our credit card.
 	*
+	* @param object $cc_gateway The authorize.net gateway.
+	*
 	* @param boolean $log_only Only log the transaction, do NOT charge 
 	* the card.  This is used for when an admin enters a registration 
 	* manually.
@@ -256,7 +258,13 @@ class reg {
 	* @return boolean True if the card is charged successfully.  
 	*	False otherwise.
 	*/
-	static function charge_cc(&$data, $log_only = false) {
+	static function charge_cc($data, $cc_gateway, $log_only = false) {
+
+		//
+		// Eventually I should make this passed into the constructor.
+		//
+		$reg_message = new reg_message();
+
 
 		//
 		// Only calculate our badge cost if it wasn't already specified by 
@@ -283,14 +291,77 @@ class reg {
 
 			if (!self::is_test_mode()) {
 				//
-				// TODO: Code to actually charge the card goes here.
-				// On failure, call form_set_error(), log it, and return false.
+				// If we are not running in test mode, we are talking to
+				// authorize.net in some fashion. (possibly in test mode)
 				//
-				// I need to make sure that non-numerics are filtered out here.
-				$error = t("CC Charging not implemented yet.");
-				form_set_error("cc_num", $error);
-				reg_log::log($error, "", WATCHDOG_ERROR);
-				return(false);
+
+				//
+				// Strip non-numerics out of our credit card number
+				//
+				$data["cc_num"] = ereg_replace("[^0-9]", "", 
+					$data["cc_num"]);
+
+				if ($data["cc_num"][0] == "3") {
+					$display = $reg_message->load_display("cc-no-amex");
+					$error = $display["value"];
+					form_set_error("cc_num", $error);
+					reg_log::log($error, "", WATCHDOG_WARNING);
+					return(null);
+				}
+
+				//
+				// Create a fairly random invoice number with our timestamp
+				// and a random number applied to it.
+				//
+				// This doesn't have to be 100% unique, since the main purpose
+				// of this is to keep authorize.net from thinking two separate
+				// memberships purchased with the same card is a "duplicate".
+				//
+				$data["invoice_number"] = time() . "-" 
+					. mt_rand(100000, 999999);
+
+				if ($cc_gateway->is_test_mode()) {
+					$data["test_request"] = 1;
+				}
+
+				//$data["total_cost"] = 1; // Debugging
+
+				//
+				// Try charging the card.
+				//
+				$gateway_results = $cc_gateway->charge_cc($data);
+
+				//
+				// If the card was declined or there was an error, complain
+				// and exit.
+				//
+				if ($gateway_results["status"] == "declined") {
+					$display = $reg_message->load_display("cc-declined");
+					$error = $display["value"];
+					form_set_error("cc_num", $error);
+					reg_log::log($error, "", WATCHDOG_WARNING);
+					return(false);
+
+				} else if ($gateway_results["status"] == "error") {
+					$display = $reg_message->load_display("cc-error");
+					$error = $display["value"];
+					form_set_error("cc_num", $error);
+					reg_log::log($error, "", WATCHDOG_WARNING);
+					return(false);
+
+				}
+
+				//
+				// Otherwise, save the important fields from the transaction
+				// for logging at the end of this function.
+				//
+				$data["gateway_auth_code"] = $gateway_results["auth_code"];
+				$data["gateway_transaction_id"] = 
+					$gateway_results["transaction_id"];
+				$data["gateway_avs"] = $gateway_results["avs_response"];
+				$data["gateway_cvv"] = $gateway_results["cvv_response"];
+				$data["gateway_transaction_id"] = 
+					$gateway_results["transaction_id"];
 
 			} else {
 	
@@ -304,17 +375,6 @@ class reg {
 				$data["gateway_auth_code"] = reg_fake::get_string(6);
 				$data["gateway_transaction_id"] = reg_fake::get_number(
 					0, (pow(10, 9)));
-
-				//
-				// Create a fairly random invoice number with our timestamp
-				// and a random number applied to it.
-				//
-				// This doesn't have to be 100% unique, since the main purpose
-				// of this is to keep authorize.net from thinking two separate
-				// memberships purchased with the same card is a "duplicate".
-				//
-				$data["invoice_number"] = time() . "-" 
-					. mt_rand(100000, 999999);
 
 				$avs_codes = array("Y", "N", "D", "X", "Z");
 				$data["gateway_avs"] = reg_fake::get_item($avs_codes);
