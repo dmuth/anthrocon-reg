@@ -741,9 +741,9 @@ class reg_form {
 			) {
 			$retval["conduct"] = array(
 				"#type" => "checkbox",
-				"#title" => t("I agree with the") . "<br>" 
+				"#title" => t("I agree to comply with the") . "<br>" 
 					. l(t("Standards of Conduct"), $path),
-				"#description" => t("You must agree with the " 
+				"#description" => t("You must agree to comply with the " 
 					. l(t("Standards of Conduct"), $path))
 					. t(" in order to purchase a membership."),
 				"#required" => true,

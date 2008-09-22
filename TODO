@@ -6,7 +6,20 @@ Done
 TODO
 ====
 
-- Remove variable_get() to email addresses
+- Refactor and update the reg codebase
+	- Remove all references to statics
+	- Create a reg_factory class to instantiate objects
+
+- Messages
+	- When editing, instead of "ID 'id'", say "name 'name'"
+	- When a message is saved, redirect to the list of messages
+
+- Logs
+	- Allow searching
+
+- reg-wide email on settings page
+	- Remove variable_get() to email addresses
+	- Add a box on the settings page that defaults to the site-wide email
 	- Write reg_data::get_contact_email()
 
 - Some utility to print unused badge numbers
