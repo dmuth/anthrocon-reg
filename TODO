@@ -40,8 +40,6 @@ TODO
 Long Term
 =========
 
-- Learn how to do updates through Drupal
-
 - Can we have an upgrade type?
 	- Upgrade table that has a membership type, upgrade options, price, description, etc.
 
