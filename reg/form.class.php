@@ -54,6 +54,9 @@ class reg_form {
 
 		$retval["member"] = self::form($id, $data);
 
+		$retval["billing"] = self::form_address_billing($id, $data);
+		$retval["shipping"] = self::form_address_shipping($id, $data);
+
 		//
 		// Don't display our credit card info when we're editing, as
 		// only admins can edit a registration.
@@ -612,7 +615,6 @@ class reg_form {
 		$retval["middle"] = array(
 			"#type" => "textfield",
 			"#title" => t("Middle Name"),
-			"#description" => t("Your real middle name"),
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["middle"],
 			);
@@ -640,59 +642,6 @@ class reg_form {
 			"#required" => true,
 			"#default_value" => $date_array,
 			);
-		$retval["address1"] = array(
-			"#type" => "textfield",
-			"#title" => t("Address Line 1"),
-			"#description" => t("Your mailing address"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
-			"#required" => true,
-			"#default_value" => $data["address1"],
-			);
-		$retval["address2"] = array(
-			"#type" => "textfield",
-			"#title" => t("Address Line 2"),
-			"#description" => t("Additional address information, "
-				. "such as P.O Box number"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
-			"#default_value" => $data["address2"],
-			);
-		$retval["city"] = array(
-			"#type" => "textfield",
-			"#title" => t("City"),
-			"#description" => t("Your city"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
-			"#required" => true,
-			"#default_value" => $data["city"],
-			);
-		$retval["state"] = array(
-			"#type" => "textfield",
-			"#title" => t("State"),
-			"#description" => t("Your state/province."),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
-			"#required" => true,
-			"#default_value" => $data["state"],
-			);
-		$retval["zip"] = array(
-			"#type" => "textfield",
-			"#title" => t("Zip Code"),
-			"#description" => t("Your Zip/Postal code"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
-			"#required" => true,
-			"#default_value" => $data["zip"],
-			);
-
-		if (empty($data["country"])) {
-			$data["country"] = "USA";
-		}
-		$retval["country"] = array(
-			"#type" => "textfield",
-			"#title" => t("Country"),
-			"#description" => t("Your country"),
-			"#default_value" => "USA",
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
-			"#required" => true,
-			"#default_value" => $data["country"],
-			);
 		$retval["email"] = array(
 			"#type" => "textfield",
 			"#title" => t("Your email address"),
@@ -704,24 +653,10 @@ class reg_form {
 		$retval["email2"] = array(
 			"#type" => "textfield",
 			"#title" => t("Confirm email address"),
-			"#description" => t("Please re-type your email address to "
-				. "ensure there were no typos."),
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#required" => true,
 			"#default_value" => $data["email"],
 			);
-		$retval["phone"] = array(
-			"#type" => "textfield",
-			"#title" => t("Your phone number"),
-			"#description" => t("A phone number where you can be reached."),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
-			"#required" => true,
-			"#default_value" => $data["phone"],
-			);
-
-		if (!self::in_admin()) {
-			$retval["reg_level_id"] = self::get_level_options($data);
-		}
 
 		$shirt_sizes = reg_data::get_shirt_sizes();
 		$shirt_sizes[""] = t("Select");
@@ -749,18 +684,6 @@ class reg_form {
 				"#required" => true,
 				"#default_value" => $data["conduct"],
 			);
-		}
-
-		//
-		// Create our captcha.
-		//
-		if (!self::in_admin()) {
-
-			$log = new reg_log();
-			$captcha = new reg_captcha($log);
-			$retval["reg_captcha"] = $captcha->create();
-			$retval["reg_captcha"]["#theme"] = "reg_theme";
-
 		}
 
 		//
@@ -850,12 +773,17 @@ class reg_form {
 
 		$retval = array(
 			"#type" => "fieldset",
+			//"#title" => "Billing Information",
 			"#title" => "Payment Information",
 			//
 			// Render elements with our custom theme code
 			//
 			"#theme" => "reg_theme"
 			);
+
+		if (!self::in_admin()) {
+			$retval["reg_level_id"] = self::get_level_options($data);
+		}
 
 		if (self::in_admin()) {
 
@@ -948,6 +876,18 @@ class reg_form {
 			"#default_value" => $data["cc_exp"]["year"],
 			);
 
+		//
+		// Create our captcha.
+		//
+		if (!self::in_admin()) {
+
+			$log = new reg_log();
+			$captcha = new reg_captcha($log);
+			$retval["reg_captcha"] = $captcha->create();
+			$retval["reg_captcha"]["#theme"] = "reg_theme";
+
+		}
+
 		if (self::in_admin()) {
 
 			if (empty($data["badge_cost"])) {
@@ -975,7 +915,6 @@ class reg_form {
 				"#title" => t("Membership Cost (USD)"),
 				"#type" => "item",
 				"#value" => "<span id=\"reg-membership-cost\"></span>",
-				"#description" => t("The cost for your membership."),
 				"#size" => self::FORM_TEXT_SIZE_SMALL,
 				"#disabled" => true,
 				);
@@ -996,8 +935,9 @@ class reg_form {
 			"#type" => "item",
 			"#value" => "<span id=\"reg-total\"></span>",
 			"#description" => t("The total cost of your membership, plus "
-				. "any donation.<br>\n")
-				. t("<b>This will be billed to your credit card when you click the button below!</b>")
+				. "any donation.<br>\n"
+				. "<b>This will be billed to your credit card when you "
+				. "click the button below!</b>")
 				,
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#disabled" => true,
@@ -1010,7 +950,172 @@ class reg_form {
 
 		return($retval);
 
-	} // End of _registration_form_cc()
+	} // End of form_cc()
+
+
+	/**
+	* Our billing address section of form.
+	*/
+	function form_address_billing($id, &$data) {
+
+		$retval = array(
+			"#type" => "fieldset",
+			"#title" => "Billing Information",
+			//
+			// Render elements with our custom theme code
+			//
+			"#theme" => "reg_theme"
+			);
+
+		$retval["address1"] = array(
+			"#type" => "textfield",
+			"#title" => t("Billing Address Line 1"),
+			"#description" => t("The billing address on your credit card."),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#required" => true,
+			"#default_value" => $data["address1"],
+			);
+
+		$retval["address2"] = array(
+			"#type" => "textfield",
+			"#title" => t("Billing Address Line 2"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["address2"],
+			);
+
+		$retval["city"] = array(
+			"#type" => "textfield",
+			"#title" => t("City"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#required" => true,
+			"#default_value" => $data["city"],
+			);
+
+		$retval["state"] = array(
+			"#type" => "textfield",
+			"#title" => t("State"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#required" => true,
+			"#default_value" => $data["state"],
+			);
+
+		$retval["zip"] = array(
+			"#type" => "textfield",
+			"#title" => t("Zip Code"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#required" => true,
+			"#default_value" => $data["zip"],
+			);
+
+		if (empty($data["country"])) {
+			$data["country"] = "USA";
+		}
+
+		$retval["country"] = array(
+			"#type" => "textfield",
+			"#title" => t("Country"),
+			"#default_value" => "USA",
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#required" => true,
+			"#default_value" => $data["country"],
+			);
+
+		$retval["phone"] = array(
+			"#type" => "textfield",
+			"#title" => t("Your phone number"),
+			"#description" => t("A phone number where you can be reached."),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#required" => true,
+			"#default_value" => $data["phone"],
+			);
+
+		$retval["shipping_checkbox"] = array(
+			"#type" => "checkbox",
+			"#title" => t("Send receipt to a different address?"),
+			"#description" => t("Would you like your paper receipt sent to "
+				. "a seperate address?"),
+			);
+
+		$retval["no_receipt"] = array(
+			"#type" => "checkbox",
+			"#title" => t("Do NOT send a receipt"),
+			"#description" => t("Check this if you do NOT want a receipt sent in the mail."),
+			);
+
+		return($retval);
+
+	} // End of form_address_bill()
+
+
+	/**
+	* Our shipping address section of form.
+	*/
+	function form_address_shipping($id, &$data) {
+
+		$retval = array(
+			"#type" => "fieldset",
+			"#title" => "Shipping Information",
+			//"#collapsible" => true,
+			//"#collapsed" => true,
+			"#attributes" => array("class" => "reg-hidden"),
+			//
+			// Render elements with our custom theme code
+			//
+			"#theme" => "reg_theme"
+			);
+
+		$retval["shipping_address1"] = array(
+			"#type" => "textfield",
+			"#title" => t("Shipping Address Line 1"),
+			"#description" => t("Only fill this out if you do NOT want your "
+				. "paper receipt sent to your billing address."),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["shipping_address1"],
+			);
+
+		$retval["shipping_address2"] = array(
+			"#type" => "textfield",
+			"#title" => t("Shipping Address Line 2"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["shipping_address2"],
+			);
+
+		$retval["shipping_city"] = array(
+			"#type" => "textfield",
+			"#title" => t("Shipping City"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["shipping_city"],
+			);
+
+		$retval["shipping_state"] = array(
+			"#type" => "textfield",
+			"#title" => t("Shipping State"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["shipping_state"],
+			);
+
+		$retval["shipping_zip"] = array(
+			"#type" => "textfield",
+			"#title" => t("Shipping Zip Code"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["shipping_zip"],
+			);
+
+		if (empty($data["shipping_country"])) {
+			$data["shipping_country"] = "USA";
+		}
+
+		$retval["shipping_country"] = array(
+			"#type" => "textfield",
+			"#title" => t("Shipping Country"),
+			"#default_value" => "USA",
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#default_value" => $data["shipping_country"],
+			);
+
+		return($retval);
+
+	} // End of form_address_shipping()
 
 
 } // End of reg_form class

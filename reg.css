@@ -50,3 +50,8 @@ td .reg-value {
 	background-color: #eeeeee;
 	cursor: pointer;
 }
+
+.reg-hidden {
+	display: none;
+}
+

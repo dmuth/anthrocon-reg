@@ -301,7 +301,8 @@ class reg_theme {
 				$valign = "valign=\"top\" ";
 			}
 
-			$retval .= "<tr>"
+			$attrib = drupal_attributes($item["#attributes"]);
+			$retval .= "<tr >"
 				. "<td $valign align=\"right\" class=\"reg-name\">";
 
 			//
@@ -422,6 +423,7 @@ class reg_theme {
 
 		$retval = "";
 
+			$attrib = drupal_attributes($item["#attributes"]);
 		if (!empty($item['#description'])) {
 			$retval .= "<td>"
 				. "<div class=\"reg-form-item\">"

@@ -62,6 +62,23 @@ $(document).ready(function() {
 		$(this).removeClass("reg-hover");
 		});
 
+	/**
+	* If the checkbox is checked, show the shipping form elements.
+	*	Otherwise, hide them.
+	*/
+	$("#edit-shipping-checkbox").click(function() {
+		var checked = $(this).attr("checked");
+
+		if (checked) {
+			$(".reg-hidden").show();
+
+		} else {
+			$(".reg-hidden").hide();
+
+		}
+
+		});
+
 });
 
 
