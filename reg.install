@@ -69,6 +69,22 @@ function reg_install() {
 			. "state VARCHAR(255), "
 			. "zip VARCHAR(255), "
 			. "country VARCHAR(255), "
+
+			//
+			// Shipping information.
+			//
+			. "shipping_address1 VARCHAR(255), "
+			. "shipping_address2 VARCHAR(255), "
+			. "shipping_city VARCHAR(255), "
+			. "shipping_state VARCHAR(255), "
+			. "shipping_zip VARCHAR(255), "
+			. "shipping_country VARCHAR(255), "
+
+			//
+			// If true, do not send a physical receipt.
+			//
+			. "no_receipt CHAR(1), "
+
 			. "email VARCHAR(255), "
 			. "phone VARCHAR(255), "
 			//
@@ -668,21 +684,49 @@ function reg_update_1() {
 */
 function reg_update_2() {
 
-		$retval = array();
+	$retval = array();
 
-		$query = "INSERT INTO {reg_message} (name, subject, type, value, "
-				. "notes) "
-			. "VALUES "
-			. "('cc-no-amex', "
-				. "'', "
-				. "'message', "
-				. "'At this time, we do not accept American Express.', "
-				. "'') "
-			;
+	$query = "INSERT INTO {reg_message} (name, subject, type, value, "
+			. "notes) "
+		. "VALUES "
+		. "('cc-no-amex', "
+			. "'', "
+			. "'message', "
+			. "'At this time, we do not accept American Express.', "
+			. "'') "
+		;
 
-		$retval[] = update_sql($query);
+	$retval[] = update_sql($query);
 
-		return($retval);
+	return($retval);
 
 } // End of reg_update_2()
+
+
+/**
+* Add shipping address fields.
+*/
+function reg_update_3() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "ALTER TABLE {reg} ADD shipping_address1 VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg} ADD shipping_address2 VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg} ADD shipping_city VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg} ADD shipping_state VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg} ADD shipping_zip VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg} ADD shipping_country VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg} ADD no_receipt CHAR(1) ";
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_3()
+
+
 

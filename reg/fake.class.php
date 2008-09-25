@@ -39,6 +39,19 @@ class reg_fake {
 		$data["zip"] = self::get_number(10000, 99999) . "-" 
 			. sprintf("%04d", self::get_number(0, 9999));
 		$data["country"] = self::get_string();
+
+		$data["shipping_checkbox"] = true;
+		$data["shipping_address1"] = self::get_number(1, 1000) . " " 
+			. self::get_string();
+		$data["shipping_address2"] = self::get_string();
+		$data["shipping_city"] = self::get_string() . " " 
+			. self::get_string();
+		$data["shipping_state"] = self::get_string();
+		$data["shipping_zip"] = self::get_number(10000, 99999) . "-" 
+			. sprintf("%04d", self::get_number(0, 9999));
+		$data["shipping_country"] = self::get_string();
+		$data["no_receipt"] = self::get_random_from_set(array(true, false));
+
 		$data["email"] = self::get_string() . "@" . self::get_string()
 			. "." . self::get_string(3)
 			;

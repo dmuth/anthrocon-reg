@@ -185,6 +185,40 @@ class reg_admin_member {
 				. $row["country"]
 			);
 
+
+		//
+		// If we have any part of a shipping address, show it.
+		//
+		if (!empty($row["shipping_address1"])
+			|| !empty($row["shipping_address2"])
+			|| !empty($row["shipping_city"])
+			|| !empty($row["shipping_state"])
+			|| !empty($row["shipping_zip"])
+			|| !empty($row["shipping_country"]) ) {
+
+			$rows[] = array(
+				array("data" => "Shipping Address", "header" => true, 
+					"valign" => "top"),
+				$row["shipping_address1"] . " " 
+				. $row["shipping_address2"] . "<br>\n"
+				. $row["shipping_city"] . ", " . $row["shipping_state"] 
+				. " " . $row["shipping_zip"] . "<br>\n"
+				. $row["shipping_country"]
+			);
+
+		}
+
+		if (!empty($row["no_receipt"])) {
+			$no_receipt = t("Do NOT send a paper receipt.");
+		} else {
+			$no_receipt = t("Paper receipt requested.");
+		}
+
+		$rows[] = array(
+			array("data" => "No paper receipt?", "header" => false),
+			$no_receipt
+			);
+
 		$rows[] = array(
 			array("data" => "Email", "header" => false),
 			$row["email"]
@@ -324,7 +358,13 @@ class reg_admin_member {
 			. "first='%s', middle='%s', last='%s', "
 				. "birthdate='%s', "
 			. "address1='%s', address2='%s', city='%s', state='%s', "
-			. "zip='%s', country='%s', email='%s', phone='%s', "
+			. "zip='%s', country='%s', "
+			. "shipping_address1='%s', shipping_address2='%s', "
+			. "shipping_city='%s', shipping_state='%s', "
+			. "shipping_zip='%s', shipping_country='%s', "
+			. "no_receipt='%s', "
+
+			. "email='%s', phone='%s', "
 			. "shirt_size_id='%s' "
 			."WHERE id=%d ";
 
@@ -339,7 +379,14 @@ class reg_admin_member {
 				$data["birthdate_string"],
 			$data["address1"], $data["address2"], $data["city"], 
 				$data["state"],
-			$data["zip"], $data["country"], $data["email"], $data["phone"],
+			$data["zip"], $data["country"], 
+
+			$data["shipping_address1"], $data["shipping_address2"], 
+			$data["shipping_city"], $data["shipping_state"],
+			$data["shipping_zip"], $data["shipping_country"], 
+			$data["no_receipt"],
+
+			$data["email"], $data["phone"],
 			$data["shirt_size_id"],
 			$data["reg_id"]
 			);

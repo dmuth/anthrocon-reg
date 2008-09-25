@@ -430,7 +430,7 @@ class reg_form {
 			//
 			if (!empty($data["reg_id"])) {
 				self::reg_submit_update($data);
-				$uri = "admin/reg/members/view/" . $data["reg_id"] . "/edit";
+				$uri = "admin/reg/members/view/" . $data["reg_id"] . "/view";
 
 			} else {
 				self::reg_submit_new($data);
@@ -664,7 +664,7 @@ class reg_form {
 		$retval["shirt_size_id"] = array(
 			"#type" => "select",
 			"#title" => t("Shirt Size"),
-			"#description" => t("(For Sponsors and Super Sponsors only.)"),
+			"#description" => t("(For Sponsors and Supersponsors only.)"),
 			"#default_value" => $data["shirt_size_id"],
 			"#options" => $shirt_sizes
 			);
@@ -684,17 +684,6 @@ class reg_form {
 				"#required" => true,
 				"#default_value" => $data["conduct"],
 			);
-		}
-
-		//
-		// Only display our registration button early if we are editing
-		// or adding from the admin.
-		//
-		if (self::in_admin()) {
-			$retval["submit"] = array(
-				"#type" => "submit",
-				"#value" => t("Save")
-				);
 		}
 
 		return($retval);
@@ -1029,18 +1018,42 @@ class reg_form {
 			"#default_value" => $data["phone"],
 			);
 
+
+		//
+		// If we have the first line of a shipping address, assume we're
+		// showing the form.
+		//
+		if (!empty($data["shipping_address1"])) {
+			$data["shipping_checkbox"] = true;
+		}
+
 		$retval["shipping_checkbox"] = array(
 			"#type" => "checkbox",
 			"#title" => t("Send receipt to a different address?"),
-			"#description" => t("Would you like your paper receipt sent to "
-				. "a seperate address?"),
+			"#description" => t("Is the address of the person being "
+				. "registered different from the billing address?"),
+			"#default_value" => $data["shipping_checkbox"],
 			);
 
 		$retval["no_receipt"] = array(
 			"#type" => "checkbox",
-			"#title" => t("Do NOT send a receipt"),
-			"#description" => t("Check this if you do NOT want a receipt sent in the mail."),
+			"#title" => t("Do NOT mail a receipt"),
+			"#description" => t("Check this if you do NOT want a receipt "
+				. "sent in the mail.  You will still receive an email "
+				. "confirmation."),
+			"#default_value" => $data["no_receipt"],
 			);
+
+		//
+		// Only display our registration button early if we are editing
+		// a registration.
+		//
+		if (self::in_admin() && !empty($data["id"])) {
+			$retval["submit"] = array(
+				"#type" => "submit",
+				"#value" => t("Save")
+				);
+		}
 
 		return($retval);
 
@@ -1067,8 +1080,9 @@ class reg_form {
 		$retval["shipping_address1"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping Address Line 1"),
-			"#description" => t("Only fill this out if you do NOT want your "
-				. "paper receipt sent to your billing address."),
+			"#description" => t("Fill this out if the address of the "
+				. "person being registerd is different from the billing "
+				. "address."),
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["shipping_address1"],
 			);
@@ -1101,10 +1115,6 @@ class reg_form {
 			"#default_value" => $data["shipping_zip"],
 			);
 
-		if (empty($data["shipping_country"])) {
-			$data["shipping_country"] = "USA";
-		}
-
 		$retval["shipping_country"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping Country"),
@@ -1112,6 +1122,17 @@ class reg_form {
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			"#default_value" => $data["shipping_country"],
 			);
+
+		//
+		// Only display our registration button early if we are editing
+		// a registration.
+		//
+		if (self::in_admin() && !empty($data["id"])) {
+			$retval["submit"] = array(
+				"#type" => "submit",
+				"#value" => t("Save")
+				);
+		}
 
 		return($retval);
 

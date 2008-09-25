@@ -67,19 +67,34 @@ $(document).ready(function() {
 	*	Otherwise, hide them.
 	*/
 	$("#edit-shipping-checkbox").click(function() {
-		var checked = $(this).attr("checked");
-
-		if (checked) {
-			$(".reg-hidden").show();
-
-		} else {
-			$(".reg-hidden").hide();
-
-		}
-
+		check_shipping_checkbox();
 		});
 
+	//
+	// Check the status of our shipping checkbox at load time, too.
+	//
+	check_shipping_checkbox();
+
 });
+
+
+/**
+* Check the status of the shipping checkbox, and hide/show it accordingly.
+*/
+function check_shipping_checkbox() {
+
+	var obj = $("#edit-shipping-checkbox");
+	var checked = $(obj).attr("checked");
+
+	if (checked) {
+		$(".reg-hidden").show();
+
+	} else {
+		$(".reg-hidden").hide();
+
+	}
+
+} // End of check_shipping_checkbox()
 
 
 /**

@@ -6,13 +6,6 @@ Done
 TODO
 ====
 
-- Shipping fields
-	- Add fields to database
-	- Form
-		- autodisplay when the box is checked
-			- Try sliding down with jQuery
-		- make sure that editing works
-			- move save button when editing
 	- authorize_net
 		- Make sure shipping fields are included
 

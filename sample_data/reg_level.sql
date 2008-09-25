@@ -33,7 +33,7 @@ CREATE TABLE `reg_level` (
   `description` text,
   `notes` text,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -42,7 +42,7 @@ SET character_set_client = @saved_cs_client;
 
 LOCK TABLES `reg_level` WRITE;
 /*!40000 ALTER TABLE `reg_level` DISABLE KEYS */;
-INSERT INTO `reg_level` VALUES (1,'Attending',2009,1,'40.00',1217563200,1241236799,'An attending membership allows a member access to the convention for its duration (Thursday through Sunday), and to receive any mailings or newsletters we produce both before and after the convention for one year following the date of registration.\r\ntest1\r\ntest2\r\ntest3',''),(2,'Sponsor',2009,2,'80.00',1217563200,1241236799,'Sponsors are generous patrons who like to help us provide even more services and events for our membership. A sponsor gets the full privileges of an attending membership, as well as a nifty sponsor ribbon, a free Anthrocon T-shirt and our undying gratitude. Additionally, Sponsors will be able to pick up their registration in a private registration area away from the main registration line.',''),(3,'Supersponsor',2009,3,'175.00',1217563200,1241236799,'We consider supersponsors some of the most generous persons on the planet! We heap lavish praise and gifts unto them. Not only do they receive the privileges of a sponsor and a unique gift available only to Anthrocon supersponsors, but they are invited to relax in our supersponsor lounge, and those who pre-registered... (drumroll please) ... are invited to attend a luncheon with our guests of honor! And don\'t forget, that along with the Sponsors, Super Sponsors will be able to pick up their registration in a private registration area away from the main registration line.','');
+INSERT INTO `reg_level` VALUES (1,'Attending',2009,1,'40.00',1217563200,1233460799,'An attending membership allows a member access to the convention for its duration (Thursday through Sunday), and to receive any mailings or newsletters we produce both before and after the convention for one year following the date of registration.',''),(2,'Sponsor',2009,2,'80.00',1217563200,1244260799,'Sponsors are generous patrons who like to help us provide even more services and events for our membership. A sponsor gets the full privileges of an attending membership, as well as a nifty sponsor ribbon, a free Anthrocon T-shirt and our undying gratitude. Additionally, Sponsors will be able to pick up their registration in a private registration area away from the main registration line.',''),(3,'Supersponsor',2009,3,'175.00',1217563200,1244260799,'We consider Supersponsors some of the most generous persons on the planet! We heap lavish praise and gifts unto them. Not only do they receive the privileges of a sponsor and a unique gift available only to Anthrocon Supersponsors, but those who pre-register are invited to attend a luncheon with our Guests of Honor! And don\'t forget, that along with the Sponsors, Super Sponsors will be able to pick up their registration in a private registration area away from the main registration line.',''),(4,'Attending',2008,1,'45.00',1233460800,1244260799,'An attending membership allows a member access to the convention for its duration (Thursday through Sunday), and to receive any mailings or newsletters we produce both before and after the convention for one year following the date of registration.','');
 /*!40000 ALTER TABLE `reg_level` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2008-09-14  2:26:34
+-- Dump completed on 2008-09-25  1:34:16
