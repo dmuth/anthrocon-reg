@@ -112,6 +112,13 @@ class authorize_net {
 		$convert["cc_num"] = "x_card_num";
 		$convert["cc_exp"] = "x_exp_date";
 		$convert["total_cost"] = "x_amount";
+
+		$convert["shipping_name"] = "x_ship_to_first_name";
+		$convert["shipping_address1"] = "x_ship_to_address";
+		$convert["shipping_city"] = "x_ship_to_city";
+		$convert["shipping_state"] = "x_ship_to_state";
+		$convert["shipping_zip"] = "x_ship_to_zip";
+		$convert["shipping_country"] = "x_ship_to_country";
 	
 		if (is_array($data["cc_exp"])) {
 			$cc_exp = 
@@ -149,6 +156,7 @@ class authorize_net {
 		// Authorize.net only supports a single address field.
 		// 
 		$retval["x_address"] .= " " . $data["address2"];
+		$retval["x_ship_to_address"] .= " " . $data["shipping_address2"];
 
 		//
 		// Make note of what our customer's IP address is.

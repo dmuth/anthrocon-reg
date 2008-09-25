@@ -300,6 +300,17 @@ function reg_install() {
 			. "country VARCHAR(255), "
 
 			//
+			// Shipping information.
+			//
+			. "shipping_name VARCHAR(255), "
+			. "shipping_address1 VARCHAR(255), "
+			. "shipping_address2 VARCHAR(255), "
+			. "shipping_city VARCHAR(255), "
+			. "shipping_state VARCHAR(255), "
+			. "shipping_zip VARCHAR(255), "
+			. "shipping_country VARCHAR(255), "
+
+			//
 			// Credit card info.
 			// The "num" is really the last 4 digits.  We don't want to
 			// store any actual card numbers here.
@@ -744,4 +755,29 @@ function reg_update_4() {
 
 } // End of reg_update_4()
 
+
+/**
+* Add shipping fields for transactions.
+*/
+function reg_update_5() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_name VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_address1 VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_address2 VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_city VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_state VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_zip VARCHAR(255) ";
+	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_country VARCHAR(255) ";
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_5()
 

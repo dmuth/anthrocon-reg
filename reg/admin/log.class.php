@@ -558,10 +558,10 @@ class reg_admin_log {
 		}
 
 		if (!empty($row["address1"])) {
-			$address = $row["address1"] . "<br>\n"
-				. $row["address2"] . "<br>\n"
+			$address = $row["address1"] . "<br/>\n"
+				. $row["address2"] . "<br/>\n"
 				. $row["city"] . ", " . $row["state"] . " " . $row["zip"] 
-				. "<br>\n"
+				. "<br/>\n"
 				. $row["country"]
 				;
 			$rows[] = array(
@@ -570,6 +570,24 @@ class reg_admin_log {
 				);
 
 		}
+
+		if (!empty($row["shipping_address1"])) {
+
+			$address = $row["shipping_name"] . "<br/>\n"
+				. $row["shipping_address1"] . " " 
+				. $row["shipping_address2"] . "<br/>\n"
+				. $row["shipping_city"] . ", " . $row["shipping_state"] 
+				. " " . $row["shipping_zip"] 
+				. "<br/>\n"
+				. $row["shipping_country"]
+				;
+
+			$rows[] = array(
+				array("data" => "Address", "header" => true, "valign" => "top"),
+				$address
+				);
+		}
+
 
 		if (!empty($row["payment_type"])) {
 			$rows[] = array(

@@ -97,6 +97,9 @@ class reg_log {
 			. "reg_trans_gateway_id, "
 			. "first, middle, last, address1, address2, "
 			. "city, state, zip, country, "
+			. "shipping_name, shipping_address1, shipping_address2, "
+			. "shipping_city, shipping_state, shipping_zip, "
+			. "shipping_country, "
 			. "reg_cc_type_id, cc_num, card_expire, "
 			. "badge_cost, donation, total_cost, "
 			. "reg_log_id, gateway_auth_code, gateway_avs, gateway_cvv, "
@@ -107,6 +110,10 @@ class reg_log {
 			. "'%s', "
 			. "'%s', '%s', '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', '%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', '%s', '%s', "
+			. "'%s', "
+
 			. "'%s', '%s', '%s', "
 			. "'%s', '%s', '%s', "
 			. "'%s', '%s', '%s', '%s', "
@@ -121,6 +128,10 @@ class reg_log {
 			$data["first"], $data["middle"], $data["last"], 
 				$data["address1"], $data["address2"],
 			$data["city"], $data["state"], $data["zip"], $data["country"],
+			$data["shipping_name"], $data["shipping_address1"], 
+			$data["shipping_address2"], $data["shipping_city"], 
+			$data["shipping_state"], $data["shipping_zip"], 
+			$data["shipping_country"],
 			$data["cc_type_id"], $data["cc_num"], $exp_string,
 			$data["badge_cost"], $data["donation"], $data["total_cost"],
 			$data["reg_log_id"], $data["gateway_auth_code"], 
