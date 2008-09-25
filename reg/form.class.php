@@ -1077,13 +1077,22 @@ class reg_form {
 			"#theme" => "reg_theme"
 			);
 
+		$retval["shipping_name"] = array(
+			"#type" => "textfield",
+			"#title" => t("Shipping Name"),
+			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#description" => t("If there is a company name or similar, please "
+				. "enter it here."),
+			"#default_value" => $data["shipping_name"],
+			);
+
 		$retval["shipping_address1"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping Address Line 1"),
-			"#description" => t("Fill this out if the address of the "
-				. "person being registerd is different from the billing "
-				. "address."),
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#description" => t("Fill this out if the address of the "
+				. "person being registered is different from the billing "
+				. "address."),
 			"#default_value" => $data["shipping_address1"],
 			);
 

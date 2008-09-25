@@ -10,6 +10,7 @@ TODO
 		- Make sure shipping fields are included
 
 - Refactor and update the reg codebase
+	- Create factory for authorize.net objects
 	- Remove all references to statics
 	- Create a reg_factory class to instantiate objects
 

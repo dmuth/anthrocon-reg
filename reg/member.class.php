@@ -39,8 +39,9 @@ class reg_member {
 				. "badge_name, first, middle, last, "
 				. "birthdate, "
 				. "address1, address2, city, state, zip, country, "
-// TEST
-				. "shipping_address1, shipping_address2, shipping_city, shipping_state, shipping_zip, shipping_country, no_receipt, "
+				. "shipping_name, shipping_address1, shipping_address2, "
+				. "shipping_city, shipping_state, shipping_zip, "
+				. "shipping_country, no_receipt, "
 				. "email, "
 				. "phone, shirt_size_id "
 			. ") "
@@ -50,8 +51,9 @@ class reg_member {
 				. "'%s', '%s', '%s', '%s', "
 				. "'%s', "
 				. "'%s', '%s', '%s', '%s', '%s', '%s', "
-// TEST
-				. "'%s', '%s', '%s', '%s', '%s', '%s', '%s', "
+				. "'%s', '%s', '%s', "
+				. "'%s', '%s', '%s', "
+				. "'%s', '%s', "
 				. "'%s', "
 				. "'%s', '%s')"
 			;
@@ -70,7 +72,7 @@ class reg_member {
 			$data["last"], $date_string, 
 			$data["address1"], $data["address2"], $data["city"], 
 			$data["state"], $data["zip"], $data["country"], 
-// TEST
+			$data["shipping_name"],
 			$data["shipping_address1"], $data["shipping_address2"], 
 			$data["shipping_city"], $data["shipping_state"], 
 			$data["shipping_zip"], $data["shipping_country"], $data["no_receipt"],

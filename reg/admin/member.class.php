@@ -179,9 +179,9 @@ class reg_admin_member {
 
 		$rows[] = array(
 			array("data" => "Address", "header" => true, "valign" => "top"),
-			$row["address1"] . " " . $row["address2"] . "<br>\n"
+			$row["address1"] . " " . $row["address2"] . "<br/>\n"
 				. $row["city"] . ", " . $row["state"] . " " . $row["zip"] 
-					. "<br>\n"
+					. "<br/>\n"
 				. $row["country"]
 			);
 
@@ -189,7 +189,8 @@ class reg_admin_member {
 		//
 		// If we have any part of a shipping address, show it.
 		//
-		if (!empty($row["shipping_address1"])
+		if (!empty($row["shipping_name"])
+			||!empty($row["shipping_address1"])
 			|| !empty($row["shipping_address2"])
 			|| !empty($row["shipping_city"])
 			|| !empty($row["shipping_state"])
@@ -199,10 +200,11 @@ class reg_admin_member {
 			$rows[] = array(
 				array("data" => "Shipping Address", "header" => true, 
 					"valign" => "top"),
-				$row["shipping_address1"] . " " 
-				. $row["shipping_address2"] . "<br>\n"
+				$row["shipping_name"] . "<br/>\n"
+				. $row["shipping_address1"] . " " 
+				. $row["shipping_address2"] . "<br/>\n"
 				. $row["shipping_city"] . ", " . $row["shipping_state"] 
-				. " " . $row["shipping_zip"] . "<br>\n"
+				. " " . $row["shipping_zip"] . "<br/>\n"
 				. $row["shipping_country"]
 			);
 
@@ -359,6 +361,7 @@ class reg_admin_member {
 				. "birthdate='%s', "
 			. "address1='%s', address2='%s', city='%s', state='%s', "
 			. "zip='%s', country='%s', "
+			. "shipping_name='%s', "
 			. "shipping_address1='%s', shipping_address2='%s', "
 			. "shipping_city='%s', shipping_state='%s', "
 			. "shipping_zip='%s', shipping_country='%s', "
@@ -380,7 +383,7 @@ class reg_admin_member {
 			$data["address1"], $data["address2"], $data["city"], 
 				$data["state"],
 			$data["zip"], $data["country"], 
-
+			$data["shipping_name"],
 			$data["shipping_address1"], $data["shipping_address2"], 
 			$data["shipping_city"], $data["shipping_state"],
 			$data["shipping_zip"], $data["shipping_country"], 

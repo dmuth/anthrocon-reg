@@ -41,6 +41,8 @@ class reg_fake {
 		$data["country"] = self::get_string();
 
 		$data["shipping_checkbox"] = true;
+		$data["shipping_name"] = self::get_first_name() . " " 
+			. self::get_last_name();
 		$data["shipping_address1"] = self::get_number(1, 1000) . " " 
 			. self::get_string();
 		$data["shipping_address2"] = self::get_string();

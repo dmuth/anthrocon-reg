@@ -73,6 +73,7 @@ function reg_install() {
 			//
 			// Shipping information.
 			//
+			. "shipping_name VARCHAR(255), "
 			. "shipping_address1 VARCHAR(255), "
 			. "shipping_address2 VARCHAR(255), "
 			. "shipping_city VARCHAR(255), "
@@ -728,5 +729,19 @@ function reg_update_3() {
 
 } // End of reg_update_3()
 
+
+/**
+* Add in a shipping name.
+*/
+function reg_update_4() {
+
+	$retval = array();
+
+	$query = "ALTER TABLE {reg} ADD shipping_name VARCHAR(255) ";
+	$retval[] = update_sql($query);
+
+	return($retval);
+
+} // End of reg_update_4()
 
 
