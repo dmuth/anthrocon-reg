@@ -10,8 +10,6 @@ TODO
 	autocomplete="off" in the input tag for the credit card number
 
 - Logging
-	- Create message called cc-decline-cvv or similar
-
 	- Log the captcha question
 
 	- I should check how SSL pages are logged, since they are displayed as

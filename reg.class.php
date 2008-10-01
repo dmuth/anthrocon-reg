@@ -342,6 +342,13 @@ class reg {
 					reg_log::log($error, "", WATCHDOG_WARNING);
 					return(false);
 
+				} else if ($gateway_results["status"] == "bad cvv") {
+					$display = $reg_message->load_display("cc-declined-cvv");
+					$error = $display["value"];
+					form_set_error("cvv", $error);
+					reg_log::log($error, "", WATCHDOG_WARNING);
+					return(false);
+
 				} else if ($gateway_results["status"] == "error") {
 					$display = $reg_message->load_display("cc-error");
 					$error = $display["value"];

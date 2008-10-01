@@ -579,6 +579,11 @@ function reg_install() {
 				. "'message', "
 				. "'Placeholder for a declined card.', "
 				. "'Display when a member''s credit card is declined.'), "
+			. "('cc-declined-cvv', "
+				. "'', "
+				. "'message', "
+				. "'Sorry, but the Card Code does not appear to be valid.', "
+				. "'Display when a CVV code is invalid.'), "
 			. "('cc-error', "
 				. "'', "
 				. "'message', "
@@ -780,4 +785,32 @@ function reg_update_5() {
 	return($retval);
 
 } // End of reg_update_5()
+
+
+/**
+* Add a new message for a Card Code issue.
+*/
+function reg_update_6() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
+		. "notes)  "
+		. "VALUES "
+		. "('cc-declined-cvv', "
+		. "'', "
+		. "'message', "
+		. "'Sorry, but the Card Code does not appear to be valid.', "
+		. "'Display when a CVV code is invalid.') "
+		;
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_6()
 
