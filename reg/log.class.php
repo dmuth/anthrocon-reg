@@ -28,9 +28,19 @@ class reg_log {
 
 		watchdog("reg", $message, $severity);
 
+		//
+		// Non-apache setups (nginx, SSL accelerators, etc.) cause $base_root
+		// to not include SSL.  So we're going to do an additional check
+		// and fix there here.
+		//
+		if (reg::is_ssl()) {
+			$base_root = eregi_replace("^http://", "https://", $base_root);
+		}
+
 		$url = $base_root . request_uri();
 		$query = "INSERT INTO {reg_log} "
-			. "(reg_id, uid, date, url, referrer, remote_addr, message, "
+			. "(reg_id, uid, date, url, "
+			. "referrer, remote_addr, message, "
 				. "severity) "
 			. "VALUES "
 			. "('%s', '%s', '%s', '%s', '%s', '%s', '%s', "

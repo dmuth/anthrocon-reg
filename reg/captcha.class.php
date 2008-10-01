@@ -104,10 +104,13 @@ class reg_captcha {
 		}
 
 		if ($this->data["answer"] != $answer) {
-			$message = t("Captcha answer of '!answer' does not match "
+			$message = t("Captcha answer of '!answer' to question "
+				. "'!num1 + !num2' does not match "
 				. "expected answer of '!real_answer'",
 				array(
 					"!answer" => $answer,
+					"!num1" => $this->data["num1"],
+					"!num2" => $this->data["num2"],
 					"!real_answer" => $this->data["answer"],
 				));
 			$this->log->log($message, "", WATCHDOG_WARNING);

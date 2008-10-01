@@ -3,19 +3,12 @@
 Done
 ====
 
+
 TODO
 ====
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
-
-- Logging
-	- Log the captcha question
-
-	- I should check how SSL pages are logged, since they are displayed as
-		http://, even though the page load really DOES happen through SSL
-	- For WATCHDOG_WARNING or WATCHDOG_ERROR, the wrapper should send that
-		status to the watchdog() function as well.
 
 - reg/verify/resend should redirect the user to reg/verify after sending the email
 
