@@ -225,29 +225,30 @@ class authorize_net_settings extends authorize_net {
 		$cust_data["phone"] = "123-456-7890";
 		$cust_data["email"] = "doug.muth@gmail.com";
 
-		$fields = $this->prepare_data($cust_data);
-
-		try {
-			$response = $this->send_data($fields);
-		} catch (Exception $e) {
-			form_set_error("", $e->getMessage());
-		}
+		$status = $this->charge_cc($cust_data);
 
 		//
 		// Display our response.
 		//
 		$message = t("Authorize.net response: !response",
-			array("!response" => $response));
+			array("!response" => $status["raw_response"]));
 		drupal_set_message($message);
 
-		if ($this->is_success($response)) {
+		if ($status["status"] == "success") {
 			$message = t("This (test) transaction was successful.");
 
-		} else if ($this->is_declined($response)) {
+		} else if ($status["status"] == "declined") {
 			$message = t("This (test) transaction was declined.");
 
-		} else {
+		} else if ($status["status"] == "bad cvv") {
+			$message = t("Test (test) transaction had a bad CVV code.");
+
+		} else if ($status["status"] == "error") {
 			$message = t("Payment gateway (test) error.");
+
+		} else {
+			$message = t("Unknown status: !status",
+				array("!status" => $status["status"]));
 
 		}
 

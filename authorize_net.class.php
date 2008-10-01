@@ -191,6 +191,7 @@ class authorize_net {
 			// Sensitive values get filtered out.
 			//
 			if ($key == "x_card_num"
+				|| $key == "x_card_code" 
 				|| $key == "x_login" 
 				|| $key == "x_tran_key"
 				) {
@@ -375,6 +376,27 @@ class authorize_net {
 
 
 	/**
+	* Was there a bad CVV code?
+	*
+	* @param array $data The array of resposne values from authorize.net.
+	*/
+	protected function is_bad_cvv(&$data) {
+
+		//
+		// 65 - account was configured to reject this CVV response
+		// 78 - invalid card code format
+		//
+		if ($data[2] == "65"
+			|| $data[2] == "78") {
+			return(true);
+		}
+
+		return(false);
+
+	} // End of is_bad_cvv()
+
+
+	/**
 	* Our public function to charge a credit card number.
 	*
 	* @param array $data Associative array of customer and credit card 
@@ -398,8 +420,16 @@ class authorize_net {
 			return($retval);
 		}
 
+		//
+		// Pull out key fields and put them into our return value.
+		//
+		$results = explode(":" , $response);
+
 		if ($this->is_success($response)) {
 			$retval["status"] = "success";
+
+		} else if ($this->is_bad_cvv($results)) {
+			$retval["status"] = "bad cvv";
 
 		} else if ($this->is_declined($response)) {
 			$retval["status"] = "declined";
@@ -409,15 +439,15 @@ class authorize_net {
 
 		}
 
-		//
-		// Pull out key fields and put them into our return value.
-		//
-		$results = explode(":" , $response);
-
 		$retval["auth_code"] = $results[4];
 		$retval["avs_response"] = $results[5];
 		$retval["transaction_id"] = $results[6];
 		$retval["cvv_response"] = $results[38];
+
+		//
+		// Send back raw data for curious programmers.
+		//
+		$retval["raw_response"] = $response;
 
 		return($retval);
 
