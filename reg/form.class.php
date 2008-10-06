@@ -913,8 +913,10 @@ class reg_form {
 		$retval["donation"] = array(
 			"#title" => t("Donation (USD)"),
 			"#type" => "textfield",
-			"#description" => t("Would you like to make an additional "
-				. "donation?"),
+			"#description" => t("Would you like to add an additional "
+				. "donation?  Every dollar extra helps us bring you "
+				. "more events, more space, and a more sensational "
+				. "convention experience overall!"),
 			"#default_value" => $data["donation"],
 			"#size" => self::FORM_TEXT_SIZE_SMALL,
 			);

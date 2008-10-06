@@ -552,6 +552,12 @@ function reg_install() {
 				. "'Placeholder for text that goes at the top of the "
 					. "Registration page.', "
 				. "'Test note 2.'), "
+			. "('footer', "
+				. "'', "
+				. "'message', "
+				. "'Placeholder for text that goes at the bottom of the "
+					. "Registration page.', "
+				. "''), "
 			. "('verify', "
 				. "'', "
 				. "'message', "
@@ -813,4 +819,35 @@ function reg_update_6() {
 	return($retval);
 
 } // End of reg_update_6()
+
+
+/**
+* Add the "footer" message.
+*/
+function reg_update_7() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
+		. "notes)  "
+		. "VALUES "
+		. "('footer', "
+		. "'', "
+		. "'message', "
+		. "'Placeholder for text that goes at the bottom of the "
+			. "Registration page.', "
+		. "'') "
+		;
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+
+} // End of reg_update_7()
+
 

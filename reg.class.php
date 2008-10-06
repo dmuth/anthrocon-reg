@@ -456,6 +456,9 @@ class reg {
 
 		$retval .= drupal_get_form("reg_registration_form");
 
+		$message = reg_message::load_display("footer");
+		$retval .= $message["value"];
+
 		return($retval);
 
 	} // End of registration()

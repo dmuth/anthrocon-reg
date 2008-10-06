@@ -4,7 +4,15 @@ $(document).ready(function() {
 
 	$("#edit-badge-name").focus();
 	$("#edit-search-last").focus();
-	$("#edit-name").focus();
+
+	//
+	// This was causing inappropriate focus on the username box for
+	// users that weren't logged in, and had the effect of pushing 
+	// the page down.  I'm commenting this out for now, since I can't seem
+	// to determine where it was used in the reg system anyway--commenting
+	// it out during testing has not caused any adverse affects.
+	//
+	//$("#edit-name").focus();
 
 	//
 	// Register our handler for the payment type, and run it once.
