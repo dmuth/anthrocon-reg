@@ -92,10 +92,11 @@ class authorize_net_settings extends authorize_net {
 
 		$retval["test_mode"] = array(
 			"#type" => "checkbox",
-			"#title" => t("Credit Card Test Mode?"),
+			"#title" => t("Authorize.net Test Mode?"),
 			"#default_value" => $this->variable_get(self::TEST_MODE),
 			"#description" => t("If set, the gateway will be used in "
-				. "\"test mode\".  <b>Do NOT use in production!</b>"),
+				. "\"test mode\" and cards will not be charged.  "
+				. "<b>Do NOT use in production!</b>"),
 			);
 
 		return($retval);
@@ -132,7 +133,8 @@ class authorize_net_settings extends authorize_net {
 			"#size" => 5,
 			"#description" => t("The amount entered will force a specific "
 				. "!link.  (!link_full)<br/>\n"
-				. "Key codes: 1 == success, 2 == decline, 5 == error",
+				. "Key codes: 1 == success, 2 == decline, 5 == error "
+					. "27 == AVS mismatch, 78 = CVV mismatch",
 				array(
 					"!link" => l(t("Response Reason Code"), $url),
 					"!link_full" => l(t("Full Authorize.net documentation"),
@@ -234,11 +236,18 @@ class authorize_net_settings extends authorize_net {
 			array("!response" => $status["raw_response"]));
 		drupal_set_message($message);
 
+		$message = t("charge_cc() status: !status", 
+			array("!status" => $status["status"]));
+		drupal_set_message($message);
+
 		if ($status["status"] == "success") {
 			$message = t("This (test) transaction was successful.");
 
 		} else if ($status["status"] == "declined") {
 			$message = t("This (test) transaction was declined.");
+
+		} else if ($status["status"] == "bad avs") {
+			$message = t("Test (test) transaction had an AVS mismatch.");
 
 		} else if ($status["status"] == "bad cvv") {
 			$message = t("Test (test) transaction had a bad CVV code.");

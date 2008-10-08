@@ -544,30 +544,28 @@ function reg_install() {
 			. "('no-levels-available', "
 				. "'', "
 				. "'message', "
-				. "'Placeholder message for no membership levels available.', "
-				. "'Test note.'), "
+				. "'Sorry, there are no membership levels currently available.', "
+				. "'Shown when there are no membership levels available.'), "
 			. "('header', "
 				. "'', "
 				. "'message', "
-				. "'Placeholder for text that goes at the top of the "
-					. "Registration page.', "
-				. "'Test note 2.'), "
+				. "'Welcome to our registration system!', "
+				. "'Displayed at the top of the registration page..'), "
 			. "('footer', "
 				. "'', "
 				. "'message', "
-				. "'Placeholder for text that goes at the bottom of the "
-					. "Registration page.', "
-				. "''), "
+				. "'Thank you!', "
+				. "'Displayed at the bottom of the registration page.'), "
 			. "('verify', "
 				. "'', "
 				. "'message', "
-				. "'Placeholder for text at the verify screen.',"
-				. "'Test note 3.'), "
+				. "'Replace this with the verification text a user should see.',"
+				. "'Displayed on the verification page.'), "
 			. "('success', "
 				. "'', "
 				. "'message', "
-				. "'Placeholder for text on the success screen.',"
-				. "'Test note 4.'), "
+				. "'Success message goes here. :-)',"
+				. "'Displayed when there is a successful registration..'), "
 			. "('email-receipt', "
 				. "'Your Receipt', "
 				. "'email', "
@@ -583,22 +581,27 @@ function reg_install() {
 			. "('cc-declined', "
 				. "'', "
 				. "'message', "
-				. "'Placeholder for a declined card.', "
-				. "'Display when a member''s credit card is declined.'), "
+				. "'Sorry, but your card was declined.  Please try again..', "
+				. "'Displayed when a member''s credit card is declined.'), "
 			. "('cc-declined-cvv', "
 				. "'', "
 				. "'message', "
 				. "'Sorry, but the Card Code does not appear to be valid.', "
-				. "'Display when a CVV code is invalid.'), "
+				. "'Displayed when a CVV code is invalid.'), "
+			. "('cc-declined-avs', "
+				. "'', "
+				. "'message', "
+				. "'Sorry, but there was an AVS mismatch.', "
+				. "'Displayed when an AVS code is invalid.'), "
 			. "('cc-error', "
 				. "'', "
 				. "'message', "
-				. "'Placeholder for a carc charging error.', "
-				. "'Display when authorize.net freaks out or similar.'), "
+				. "'The merchant gateway returned an error.', "
+				. "'Displayed when authorize.net freaks out or similar.'), "
 			. "('cc-no-amex', "
 				. "'', "
 				. "'message', "
-				. "'At this time, we do not accept American Express.', "
+				. "'At this time, we do not accept American Express.  Sorry', "
 				. "'') "
 			;
 
@@ -847,7 +850,36 @@ function reg_update_7() {
 
 	return($retval);
 
-
 } // End of reg_update_7()
+
+
+/**
+* Add the "cc-declined-avs" message.
+*/
+function reg_update_8() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
+			. "notes) "
+			. "VALUES ("
+			. "'cc-declined-avs', "
+			. "'', "
+			. "'message', "
+			. "'Sorry, but there was an AVS mismatch with your credit card.  "
+				. "Please try again.', "
+			. "'Printed when there is an AVS mismatch' "
+			. ") "
+			;
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_8()
 
 

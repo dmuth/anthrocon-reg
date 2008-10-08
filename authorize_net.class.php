@@ -397,6 +397,22 @@ class authorize_net {
 
 
 	/**
+	* Was there a bad AVS code?
+	*
+	* @param array $data The array of response values from authorize.net.
+	*/
+	protected function is_bad_avs(&$data) {
+
+		if ($data[2] == "27") {
+			return(true);
+		}
+
+		return(false);
+
+	} // End of is_bad_avs()
+
+
+	/**
 	* Our public function to charge a credit card number.
 	*
 	* @param array $data Associative array of customer and credit card 
@@ -427,6 +443,9 @@ class authorize_net {
 
 		if ($this->is_success($response)) {
 			$retval["status"] = "success";
+
+		} else if ($this->is_bad_avs($results)) {
+			$retval["status"] = "bad avs";
 
 		} else if ($this->is_bad_cvv($results)) {
 			$retval["status"] = "bad cvv";
