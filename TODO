@@ -8,10 +8,6 @@ TODO
 ====
 
 - Refactor and update the reg codebase
-	- Create factory for authorize.net objects
-		- factory->getObject()
-	- Move reg_data references into reg as a first step, then change reg_data
-		to extend the reg class
 	- Create a reg_factory class to instantiate objects
 		- getObject()
 			- get_reg()
