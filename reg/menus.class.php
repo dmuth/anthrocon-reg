@@ -3,8 +3,12 @@
 /**
 * This class is just for our menu function, since it is going to grow 
 * quite big. :-)
+*
+* Do NOT name this class reg_menu!  If a function and class
+*	share identical names in PHP 5.2.4, all sorts of bad things happen!
+*	I learned this the hard way. :-(
 */
-class reg_menu {
+class reg_menus {
 
 
 	/**

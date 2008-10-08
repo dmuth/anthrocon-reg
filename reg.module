@@ -43,9 +43,13 @@ function reg_exit() {
 
 /**
 * Create our menu items.
+*
+* Do NOT name the underlying class reg_menu!  If a function and class
+*	share identical names in PHP 5.2.4, all sorts of bad things happen!
+*	I learned this the hard way. :-(
 */
 function reg_menu($may_cache) {
-	$items = reg_menu::menu($may_cache);
+	$items = reg_menus::menu($may_cache);
 	return($items);
 } // End of reg_menu()
 

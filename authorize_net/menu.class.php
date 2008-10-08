@@ -25,7 +25,7 @@ class authorize_net_menu {
 			$retval[] = array(
 				"path" => "admin/reg/settings/gateways/authorize_net",
 				"title" => t("Authorize.net"),
-				"callback" => "authorize_net_settings",
+				"callback" => "authorize_net_settings_page",
 				"type" => MENU_LOCAL_TASK,
 				"weight" => 3,
 				);
