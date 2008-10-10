@@ -90,8 +90,12 @@ function reg_success() {
 * Our public registration page.
 */
 function reg_registration() {
-	reg::force_ssl();
-	return(reg::registration());
+
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+
+	$reg->force_ssl();
+	return($reg->registration());
 }
 
 function reg_registration_form($id = "") {
@@ -100,7 +104,10 @@ function reg_registration_form($id = "") {
 	$log = new reg_log();
 	$cc_gateway = new authorize_net($reg, $log);
 
-	return(reg_form::reg($id, $cc_gateway));
+	$factory = new reg_factory();
+	$form = $factory->get_object("form");
+
+	return($form->reg($id, $cc_gateway));
 
 }
 
@@ -110,12 +117,20 @@ function reg_registration_form_validate($form_id, &$data) {
 	$log = new reg_log();
 	$cc_gateway = new authorize_net($reg, $log);
 
-	reg_form::reg_validate($form_id, $data, $cc_gateway);
+	$factory = new reg_factory();
+	$form = $factory->get_object("form");
+
+	$form->reg_validate($form_id, $data, $cc_gateway);
 
 }
 
 function reg_registration_form_submit($form_id, &$data) {
-	return(reg_form::reg_submit($form_id, $data));
+
+	$factory = new reg_factory();
+	$form = $factory->get_object("form");
+
+	return($form->reg_submit($form_id, $data));
+
 }
 
 
@@ -339,7 +354,10 @@ return("This is where our stats page would go.");
 * Our theme function for creating form elements in the reg system.
 */
 function theme_reg_theme($form) {
-	return(reg_theme::theme($form));
+	$factory = new reg_factory();
+	$theme = $factory->get_object("theme");
+	$retval = $theme->theme($form);
+	return($retval);
 }
 
 

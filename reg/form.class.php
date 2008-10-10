@@ -19,14 +19,10 @@ class reg_form {
 	const FORM_TEXT_SIZE = 40;
 	const FORM_TEXT_SIZE_SMALL = 20;
 
-	/**
-	* Temporarily store this value for going between the validation
-	*	and submission functions.
-	*/
-	static private $reg_trans_id;
-
 	function __construct($cc_gateway = "") {
-
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->fake = $factory->get_object("fake");
 	}
 
 
@@ -39,7 +35,7 @@ class reg_form {
 	*
 	* @return array Associative array of registration form.
 	*/
-	static function reg($id, $cc_gateway) {
+	function reg($id, $cc_gateway) {
 
 		$retval = array();
 
@@ -52,17 +48,17 @@ class reg_form {
 
 		}
 
-		$retval["member"] = self::form($id, $data);
+		$retval["member"] = $this->form($id, $data);
 
-		$retval["billing"] = self::form_address_billing($id, $data);
-		$retval["shipping"] = self::form_address_shipping($id, $data);
+		$retval["billing"] = $this->form_address_billing($id, $data);
+		$retval["shipping"] = $this->form_address_shipping($id, $data);
 
 		//
 		// Don't display our credit card info when we're editing, as
 		// only admins can edit a registration.
 		//
 		if (empty($id)) {
-			$retval["cc"] = self::form_cc($id, $data, $cc_gateway);
+			$retval["cc"] = $this->form_cc($id, $data, $cc_gateway);
 		}
 
 		return($retval);
@@ -109,19 +105,19 @@ class reg_form {
 	*
 	* @return boolean True if we are in a fake form.
 	*/
-	static function in_fake_form() {
+	function in_fake_form() {
 
 		//
 		// If fake data isn't set/allowed, then stop right here.
 		//
-		if (!self::is_fake_data()) {
+		if (!$this->is_fake_data()) {
 			return(false);
 		}
 
 		//
 		// If the last "page" in our URL is "fake", return true.
 		//
-		$uri = self::get_path();
+		$uri = $this->get_path();
 		$fields = split("/", $uri);
 		$index = count($fields) - 1;
 
@@ -146,7 +142,8 @@ class reg_form {
 	* @param object $cc_gateway Our credit card gateway.
 	*
 	*/
-	static function reg_validate(&$form_id, &$data, &$cc_gateway) {
+	//static function reg_validate(&$form_id, &$data, &$cc_gateway) {
+	function reg_validate(&$form_id, &$data, &$cc_gateway) {
 
 		//
 		// Assume everything is okay, unless proven otherwise.
@@ -166,7 +163,7 @@ class reg_form {
 		// interface), set it to credit card.
 		//
 		if (empty($data["reg_payment_type_id"])
-			&& !self::in_admin()
+			&& !$this->in_admin()
 			) {
 			$data["reg_payment_type_id"] = 1;
 		}
@@ -181,7 +178,7 @@ class reg_form {
 		//
 		// Check our captcha submission.
 		//
-		if (!self::in_admin()) {
+		if (!$this->in_admin()) {
 
 			$log = new reg_log();
 			$captcha = new reg_captcha($log);
@@ -205,7 +202,7 @@ class reg_form {
 		// If the payment type is a credit card, make sure that we have
 		// card information.
 		//
-		$payment_type = reg_data::get_payment_type(
+		$payment_type = $this->reg->get_payment_type(
 			$data["reg_payment_type_id"]);
 
 		//
@@ -240,7 +237,7 @@ class reg_form {
 			$data_month = $data["cc_exp"]["month"];
 
 			if ($data_year < $year) {
-				self::set_cc_expired($data_month, $data_year);
+				$this->set_cc_expired($data_month, $data_year);
 				$okay = false;
 
 			} else if ($data_year == $year) {
@@ -248,7 +245,7 @@ class reg_form {
 				// The current month is okay.
 				//
 				if ($data_month < $month) {
-					self::set_cc_expired($data_month, $data_year);
+					$this->set_cc_expired($data_month, $data_year);
 					$okay = false;
 				}
 			}
@@ -276,13 +273,13 @@ class reg_form {
 		//
 		// If we're in the admin, we can skip alot of this stuff.
 		//
-		if (self::in_admin()) {
+		if ($this->in_admin()) {
 
 			//
 			// Make sure the badge nuber is valid.
 			//
-			reg::is_badge_num_valid($data["badge_num"]);
-			reg::is_badge_num_available($data["reg_id"], 
+			$this->reg->is_badge_num_valid($data["badge_num"]);
+			$this->reg->is_badge_num_available($data["reg_id"], 
 				$data["badge_num"]);
 
 			//
@@ -295,7 +292,7 @@ class reg_form {
 			//
 			if (empty($data["reg_id"])) {
 				$reg_trans_id = reg_log::log_trans($data);
-				self::$reg_trans_id = $reg_trans_id;
+				$_SESSION["reg"]["reg_trans_id"] = $reg_trans_id;
 			}
 
 			$message = t("In the admin interface.  Bailing out early.");
@@ -309,7 +306,7 @@ class reg_form {
 		//
 		// Sanity checking on our donation amount.
 		//
-		if (!reg::is_valid_float($data["donation"])
+		if (!$this->reg->is_valid_float($data["donation"])
 			&& $data["donation"] != ""
 			) {
 			$error = t("Donation '%donation%' is not a number!",
@@ -319,7 +316,7 @@ class reg_form {
 			reg_log::log($error, "", WATCHDOG_WARNING);
 			$okay = false;
 
-		} else if (reg::is_negative_number($data["donation"])) {
+		} else if ($this->reg->is_negative_number($data["donation"])) {
 			$error = t("Donation '%donation%' cannot be a negative amount!",
 				array("%donation%" => $data["donation"])
 				);
@@ -350,7 +347,7 @@ class reg_form {
 			reg_log::log($error, "", WATCHDOG_WARNING);
 		}
 
-		$levels = reg_data::get_valid_levels();
+		$levels = $this->reg->get_valid_levels();
 		if (empty($levels[$data["reg_level_id"]])) {
 			$error = t("Registration level ID '%level%' is invalid.",
 				array("%level%" => $data["reg_level_id"])
@@ -374,13 +371,8 @@ class reg_form {
 		//
 		// Make the transaction.  If it is successful, then add a new member.
 		//
-		$reg_trans_id = reg::charge_cc($data, $cc_gateway);
-
-		//
-		// TODO: Add things to do if the charging fails!
-		//
-
-		self::$reg_trans_id = $reg_trans_id;
+		$reg_trans_id = $this->reg->charge_cc($data, $cc_gateway);
+		$_SESSION["reg"]["reg_trans_id"] = $reg_trans_id;
 
 	} // End of registration_form_validate()
 
@@ -400,14 +392,14 @@ class reg_form {
 	/**
 	* All the registration form data checks out.  
 	*/
-	static function reg_submit(&$form_id, &$data) {
+	function reg_submit(&$form_id, &$data) {
 
 		//
 		// The URI to send ourselves to
 		//
 		$uri = "";
 
-		if (!self::in_admin()) {
+		if (!$this->in_admin()) {
 
 			//
 			// We're done with the captcha, clear it out.
@@ -419,7 +411,7 @@ class reg_form {
 			//
 			// Front-end submissions are always new.
 			//
-			self::reg_submit_new($data);
+			$this->reg_submit_new($data);
 
 			$uri = "reg/success";
 
@@ -429,11 +421,11 @@ class reg_form {
 			// new member?
 			//
 			if (!empty($data["reg_id"])) {
-				self::reg_submit_update($data);
+				$this->reg_submit_update($data);
 				$uri = "admin/reg/members/view/" . $data["reg_id"] . "/view";
 
 			} else {
-				self::reg_submit_new($data);
+				$this->reg_submit_new($data);
 				$uri = "admin/reg/members";
 			}
 		}
@@ -448,10 +440,10 @@ class reg_form {
 	* success page.
 	* Also send an email out to the member.
 	*/
-	static function reg_submit_new(&$data) {
+	function reg_submit_new(&$data) {
 
 		$data["badge_num"] = reg_member::add_member($data, 
-			self::$reg_trans_id);
+			$_SESSION["reg"]["reg_trans_id"]);
 
 		//
 		// Store messages for the success page.
@@ -460,7 +452,7 @@ class reg_form {
 		$saved_data["badge_num"] = $data["badge_num"];
 
 		if (!empty($data["cc_type_id"])
-			&& !self::in_admin()
+			&& !$this->in_admin()
 			) {
 			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"], 
 				$data["cc_num"]);
@@ -471,7 +463,7 @@ class reg_form {
 
 		$saved_data["member_email"] = $data["email"];
 
-		if (self::in_admin()) {
+		if ($this->in_admin()) {
 			$message = t("Member added successfully with badge number "
 				. "'!badge_num'!",
 				array(
@@ -491,7 +483,7 @@ class reg_form {
 	*/
 	static function reg_submit_update(&$data) {
 
-		$badge_num = reg_admin_member::update_member($data, $reg_trans_id);
+		$badge_num = reg_admin_member::update_member($data);
 
 		$message = t("Registration updated!");
 		drupal_set_message($message);
@@ -518,7 +510,7 @@ class reg_form {
 	*
 	* @param array $data Associative array of membership info.
 	*/
-	static function form($id = "", &$data) {
+	function form($id = "", &$data) {
 
 		if (empty($data)) {
 			$data = array();
@@ -539,11 +531,11 @@ class reg_form {
 		// in the "fake data" form (which generates fake data upon 
 		//	being loaded) and we're not editing a current member.
 		//
-		if (self::is_fake_data()) {
-			if (!self::in_fake_form()) {
+		if ($this->is_fake_data()) {
+			if (!$this->in_fake_form()) {
 
 				if (empty($id)) {
-					$url = self::get_path() . "/fake";
+					$url = $this->get_path() . "/fake";
 					$title = t("Fill form with fake data");
 					$value = l($title, $url);
 
@@ -558,10 +550,10 @@ class reg_form {
 		//
 		// If we are in the fake form, generate fake data.
 		//
-		if (self::in_fake_form()
+		if ($this->in_fake_form()
 			&& empty($id)
 			) {
-			reg_fake::get_data($data);
+			$this->fake->get_data($data);
 		}
 
 		$retval["badge_name"] = array(
@@ -576,7 +568,7 @@ class reg_form {
 		//
 		// Display additional options for the admin to set.
 		//
-		if (self::in_admin()) {
+		if ($this->in_admin()) {
 			$retval["badge_num"] = array(
 				"#title" => t("Badge Number"),
 				"#type" => "textfield",
@@ -672,7 +664,7 @@ class reg_form {
 		$path = variable_get(self::FORM_ADMIN_CONDUCT_PATH, "");
 		if (!empty($path) 
 			&& empty($id)
-			&& !self::in_admin()
+			&& !$this->in_admin()
 			) {
 			$retval["conduct"] = array(
 				"#type" => "checkbox",
@@ -743,7 +735,7 @@ class reg_form {
 	* This internal function creates the credit card portion of the 
 	*	registration form.
 	*/
-	static function form_cc($id, $data, $cc_gateway) {
+	function form_cc($id, $data, $cc_gateway) {
 
 		//
 		// Set defaults if we don't have any
@@ -770,11 +762,11 @@ class reg_form {
 			"#theme" => "reg_theme"
 			);
 
-		if (!self::in_admin()) {
-			$retval["reg_level_id"] = self::get_level_options($data);
+		if (!$this->in_admin()) {
+			$retval["reg_level_id"] = $this->get_level_options($data);
 		}
 
-		if (self::in_admin()) {
+		if ($this->in_admin()) {
 
 			$types = reg_data::get_payment_types();
 			$types[""] = t("Select");
@@ -818,7 +810,7 @@ class reg_form {
 
 		}
 
-		if (self::in_admin()) {
+		if ($this->in_admin()) {
 			$retval["cc_num"]["#description"] = t("Just the last 4 digits "
 				. "are necessary.  This card will NOT be charged, since we "
 				. "are in the admin.");
@@ -868,7 +860,7 @@ class reg_form {
 		//
 		// Create our captcha.
 		//
-		if (!self::in_admin()) {
+		if (!$this->in_admin()) {
 
 			$log = new reg_log();
 			$captcha = new reg_captcha($log);
@@ -877,7 +869,7 @@ class reg_form {
 
 		}
 
-		if (self::in_admin()) {
+		if ($this->in_admin()) {
 
 			if (empty($data["badge_cost"])) {
 				$data["badge_cost"] = "0.00";
@@ -1050,7 +1042,7 @@ class reg_form {
 		// Only display our registration button early if we are editing
 		// a registration.
 		//
-		if (self::in_admin() && !empty($data["id"])) {
+		if ($this->in_admin() && !empty($data["id"])) {
 			$retval["submit"] = array(
 				"#type" => "submit",
 				"#value" => t("Save")
@@ -1138,7 +1130,7 @@ class reg_form {
 		// Only display our registration button early if we are editing
 		// a registration.
 		//
-		if (self::in_admin() && !empty($data["id"])) {
+		if ($this->in_admin() && !empty($data["id"])) {
 			$retval["submit"] = array(
 				"#type" => "submit",
 				"#value" => t("Save")

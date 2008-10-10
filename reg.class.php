@@ -48,6 +48,10 @@ class reg {
 
 
 	function __construct() {
+
+		$factory = new reg_factory();
+		$this->fake = $factory->get_object("fake");
+
 	}
 
 
@@ -258,7 +262,7 @@ class reg {
 	* @return boolean True if the card is charged successfully.  
 	*	False otherwise.
 	*/
-	static function charge_cc($data, $cc_gateway, $log_only = false) {
+	function charge_cc($data, $cc_gateway, $log_only = false) {
 
 		//
 		// Eventually I should make this passed into the constructor.
@@ -386,15 +390,15 @@ class reg {
 				//
 				// Generate random gateway data.
 				//
-				$data["gateway_auth_code"] = reg_fake::get_string(6);
-				$data["gateway_transaction_id"] = reg_fake::get_number(
+				$data["gateway_auth_code"] = $this->fake->get_string(6);
+				$data["gateway_transaction_id"] = $this->fake->get_number(
 					0, (pow(10, 9)));
 
 				$avs_codes = array("Y", "N", "D", "X", "Z");
-				$data["gateway_avs"] = reg_fake::get_item($avs_codes);
+				$data["gateway_avs"] = $this->fake->get_item($avs_codes);
 
 				$cvv_codes = array("Y", "N", "X", "F");
-				$data["gateway_cvv"] = reg_fake::get_item($cvv_codes);
+				$data["gateway_cvv"] = $this->fake->get_item($cvv_codes);
 
 			}
 	

@@ -10,37 +10,36 @@ TODO
 - Refactor and update the reg codebase
 	- Create a reg_factory class to instantiate objects
 		- getObject()
+			- get_log()
+				- reg
+			- get_menu()
+				- reg
+			- get_message()
+				- reg
+				- reg_log
 			- get_reg()
 				- reg_log
 				- reg_message
 				- reg_form
+				- reg_fake
 			- get_admin()
 				- reg_log
 			- get_captcha()
 			- get_email()
 				- reg
 				- reg_form
-			- get_fake()
 			- get_form()
 				- reg
 				- reg_admin_member
 				- reg_log
 				- reg_fake
-			- get_log()
-				- reg
 			- get_member()
 				- reg_form
-				- reg_log
-			- get_menu()
-				- reg
-			- get_message()
-				- reg
 				- reg_log
 			- get_success()
 				- reg
 				- reg_log
 				- reg_message
-			- get_theme()
 			- get_verify()
 				- reg
 				- reg_message

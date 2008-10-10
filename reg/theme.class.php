@@ -9,13 +9,13 @@ class reg_theme {
 	* Process a form in our own registration theme. This will allow
 	* us to print out certain form elements differently.
 	*/ 
-	static function theme(&$form) {
+	function theme(&$form) {
 
 		$retval = "";
 
 		$retval .= "<table >";
 
-		$retval .= self::theme_children($form);
+		$retval .= $this->theme_children($form);
 
 		$retval .= "</table>";
 
@@ -31,7 +31,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	static function theme_textfield(&$item) {
+	function theme_textfield(&$item) {
 		$class = array('form-text');
 		_form_set_class($item, $class);
 
@@ -59,7 +59,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	static function theme_item(&$item) {
+	function theme_item(&$item) {
 		$class = array('form-text');
 		_form_set_class($item, $class);
 
@@ -77,7 +77,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	static function theme_select(&$item) {
+	function theme_select(&$item) {
 
 		$class = array('form-select');
 		_form_set_class($item, $class);
@@ -103,14 +103,14 @@ class reg_theme {
 	*
 	* @return string HTML code for the form elements
 	*/
-	static function theme_cc_exp(&$item) {
+	function theme_cc_exp(&$item) {
 
 		$retval = "";
 		foreach (element_children($item) as $key => $value) {
 			if (!empty($retval)) {
 				$retval .= " ";
 			}
-			$retval .= self::theme_select($item[$value]);
+			$retval .= $this->theme_select($item[$value]);
 		}
 
 		return($retval);
@@ -125,7 +125,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	static function theme_checkbox(&$item) {
+	function theme_checkbox(&$item) {
 
 		$class = array('form-checkbox');
 		_form_set_class($item, $class);
@@ -156,13 +156,13 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	static function theme_date(&$item) {
+	function theme_date(&$item) {
 
-		$retval = self::theme_select($item["year"])
+		$retval = $this->theme_select($item["year"])
 			. " "
-			. self::theme_select($item["month"])
+			. $this->theme_select($item["month"])
 			. " "
-			. self::theme_select($item["day"])
+			. $this->theme_select($item["day"])
 			. " "
 			;
 
@@ -182,7 +182,7 @@ class reg_theme {
 	*	I should really rename this function to something like theme_levels()
 	*	and have it only called for the reg_level_id field...
 	*/
-	static function theme_radios(&$item) {
+	function theme_radios(&$item) {
 
 		$retval = "";
 
@@ -218,7 +218,7 @@ class reg_theme {
 				$value_found = true;
 			}
 
-			$retval .= self::radio($item, $item["#value"], $key, $value);
+			$retval .= $this->radio($item, $item["#value"], $key, $value);
 
 			$price = $levels[$key]["price"];
 
@@ -253,7 +253,7 @@ class reg_theme {
 	*
 	* @return string HTML code for the form element.
 	*/
-	static function radio($item, $default_value, $key, $value) {
+	function radio($item, $default_value, $key, $value) {
 
 		$checked = (check_plain($default_value) == $key) ? ' checked="checked" ' : ' ';
 
@@ -285,7 +285,7 @@ class reg_theme {
 	* @return string HTML code for the form, along with table row and column
 	*	code.
 	*/
-	static function theme_children(&$form) {
+	function theme_children(&$form) {
 
 		foreach (element_children($form) as $key => $value) {
 
@@ -344,7 +344,7 @@ class reg_theme {
 				$retval .= "<td class=\"reg-value\" $colspan>";
 				$retval .= '<div class="reg-form-item">' . "\n";
 
-				$retval .= self::render_item($item);
+				$retval .= $this->render_item($item);
 
 				$retval .= $required;
 
@@ -354,7 +354,7 @@ class reg_theme {
 				// Ripped from theme_form_element
 				//
 				if ($type != "radios") {
-					$retval .= self::get_description($item);
+					$retval .= $this->get_description($item);
 				}
 
 			} 
@@ -374,7 +374,7 @@ class reg_theme {
 	* @param array $item The data structure for this item.
 	*
 	*/
-	static function render_item($item) {
+	function render_item($item) {
 		
 		$retval = "";
 
@@ -385,25 +385,25 @@ class reg_theme {
 		$type = $item["#type"];
 
 		if ($type == "textfield") {
-			$retval .= self::theme_textfield($item);
+			$retval .= $this->theme_textfield($item);
 
 		} else if ($type == "select") {
-			$retval .= self::theme_select($item);
+			$retval .= $this->theme_select($item);
 
 		} else if ($type == "checkbox") {
-			$retval .= self::theme_checkbox($item);
+			$retval .= $this->theme_checkbox($item);
 
 		} else if ($type == "date") {
-			$retval .= self::theme_date($item);
+			$retval .= $this->theme_date($item);
 
 		} else if ($type == "radios") {
-			$retval .= self::theme_radios($item);
+			$retval .= $this->theme_radios($item);
 
 		} else if ($type == "cc_exp") {
-			$retval .= self::theme_cc_exp($item);
+			$retval .= $this->theme_cc_exp($item);
 
 		} else if ($type == "item") {
-			$retval .= self::theme_item($item);
+			$retval .= $this->theme_item($item);
 
 		} else {
 			//
@@ -419,7 +419,7 @@ class reg_theme {
 	} // End of render_item()
 
 
-	static function get_description(&$item) {
+	function get_description(&$item) {
 
 		$retval = "";
 
