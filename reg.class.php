@@ -50,6 +50,7 @@ class reg {
 	function __construct() {
 
 		$factory = new reg_factory();
+		$this->message = $factory->get_object("message");
 		$this->fake = $factory->get_object("fake");
 		$this->log = $factory->get_object("log");
 
@@ -444,17 +445,21 @@ class reg {
 		//
 		$levels = reg_data::get_valid_levels();
 
+		$factory = new reg_factory();
+		$reg_message = $factory->get_object("message");
+		$log = $factory->get_object("log");
+
 		if (empty($levels)) {
 			$data = array(
 				"!email" => variable_get(reg::VAR_EMAIL, ""),
 				);
 	
-			$message = reg_message::load_display("no-levels-available", $data);
+			$message = $reg_message->load_display("no-levels-available", $data);
 			$retval = $message["value"];
 
 			$message = t("A user tried to visit the public registration page, "
 				. "but there were no membership levels available.");
-			reg_log::log($message, "", WATCHDOG_WARNING);
+			$log->log($message, "", WATCHDOG_WARNING);
 
 			return($retval);
 
@@ -463,12 +468,12 @@ class reg {
 		//
 		// Load our custom message, if we have done.
 		//
-		$message = reg_message::load_display("header");
+		$message = $reg_message->load_display("header");
 		$retval .= $message["value"];
 
 		$retval .= drupal_get_form("reg_registration_form");
 
-		$message = reg_message::load_display("footer");
+		$message = $reg_message->load_display("footer");
 		$retval .= $message["value"];
 
 		return($retval);

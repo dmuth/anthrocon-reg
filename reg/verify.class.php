@@ -12,6 +12,7 @@ class reg_verify {
 
 	function __construct() {
 		$factory = new reg_factory();
+		$this->message = $factory->get_object("message");
 		$this->log = $factory->get_object("log");
 	}
 
@@ -26,7 +27,9 @@ class reg_verify {
 
 		$email = variable_get(reg::VAR_EMAIL, "");
 
-		$message = t(reg_message::load_display("verify",
+		$factory = new reg_factory();
+		$message = $factory->get_object("message");
+		$message = t($message->load_display("verify",
 			array(
 				"!email" => $email,
 				)

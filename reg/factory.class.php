@@ -25,6 +25,15 @@ class reg_factory {
 		if ($name == "theme") {
 			$retval = $this->get_theme();
 
+		} else if ($name == "admin") {
+			$retval = $this->get_admin();
+
+		} else if ($name == "captcha") {
+			$retval = $this->get_captcha();
+
+		} else if ($name == "email") {
+			$retval = $this->get_email();
+
 		} else if ($name == "fake") {
 			$retval = $this->get_fake();
 
@@ -36,6 +45,9 @@ class reg_factory {
 
 		} else if ($name == "menu") {
 			$retval = $this->get_menu();
+
+		} else if ($name == "message") {
+			$retval = $this->get_message();
 
 		} else if ($name == "reg") {
 			$retval = $this->get_reg();
@@ -57,6 +69,27 @@ class reg_factory {
 	}
 
 
+	protected function get_admin() {
+		$log = new reg_log();
+		$retval = new reg_admin($log);
+		return($retval);
+	}
+
+
+	protected function get_captcha() {
+		$retval = new reg_captcha();
+		return($retval);
+	}
+
+
+	protected function get_email() {
+		$log = $this->get_log();
+		$message = $this->get_message();
+		$form = $this->get_form();
+		$retval = new reg_email($message, $log, $form);
+		return($retval);
+	}
+
 	protected function get_fake() {
 		$retval = new reg_fake();
 		return($retval);
@@ -75,6 +108,12 @@ class reg_factory {
 
 	protected function get_menu() {
 		$retval = new reg_menus();
+		return($retval);
+	}
+
+	protected function get_message() {
+		$log = new reg_log();
+		$retval = new reg_message($reg_log);
 		return($retval);
 	}
 

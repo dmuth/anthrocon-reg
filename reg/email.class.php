@@ -3,8 +3,12 @@
 /**
 * This class is responsible for sending out messages as emails.
 *
+*
+* The reason why this extends the reg class is because the reg class also
+* depends on this class, and we can't have any circular dependencies.  
+* That would be bad.
 */
-class reg_email {
+class reg_email extends reg {
 
 	/**
 	* @var An instance of the reg_message class.
@@ -18,9 +22,12 @@ class reg_email {
 	protected $log;
 
 
-	function __construct($message, $log) {
+	function __construct($message, $log, $form) {
 		$this->message = &$message;
 		$this->log = &$log;
+
+		$factory = new reg_factory();
+		$this->form = $factory->get_object("form");
 	}
 
 
@@ -47,7 +54,7 @@ class reg_email {
 		//
 		// Try sending out our email.  If we fail, return false.
 		//
-		$our_email = variable_get(reg::VAR_EMAIL, "");
+		$our_email = variable_get(self::VAR_EMAIL, "");
 		$headers = "From: $our_email\r\n";
 		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";

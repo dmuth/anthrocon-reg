@@ -5,6 +5,12 @@
 */
 class reg_admin_settings {
 
+
+	function __construct() {
+		$factory = new reg_factory();
+		$this->admin = $factory->get_object("admin");
+	}
+
 	/**
 	* Our main settings page.
 	*/
@@ -126,13 +132,15 @@ class reg_admin_settings {
 	*/
 	static function settings_form_submit($form_id, $data) {
 
-		reg_admin::variable_set(reg_form::FORM_ADMIN_FAKE_CC, 
+		$factory = new reg_factory();
+		$admin = $factory->get_object("admin");
+		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_CC, 
 			$data["no_production"]["fake_cc"]);
-		reg_admin::variable_set(reg_form::FORM_ADMIN_FAKE_DATA, 
+		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_DATA, 
 			$data["no_production"]["fake_data"]);
-		reg_admin::variable_set(reg_form::FORM_ADMIN_FAKE_EMAIL, 
+		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_EMAIL, 
 			$data["no_production"]["fake_email"]);
-		reg_admin::variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, 
+		$admin->variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, 
 			$data["conduct_path"]);
 
 		drupal_set_message("Settings updated");

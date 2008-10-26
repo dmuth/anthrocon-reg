@@ -9,6 +9,7 @@ class reg_admin_settings_message {
 
 	function __construct() {
 		$factory = new reg_factory();
+		$this->message = $factory->get_object("message");
 		$this->log = $factory->get_object("log");
 	}
 
@@ -143,7 +144,9 @@ class reg_admin_settings_message {
 		// Retrieve tokens for this message and add in them and their
 		// descriptions.
 		//
-		$tokens = reg_message::get_tokens($row["name"]);
+		$factory = new reg_factory();
+		$message = $factory->get_object("message");
+		$tokens = $message->get_tokens($row["name"]);
 		$token_string = "";
 		foreach ($tokens as $key => $value) {
 			$token_string .= t("<b>!key</b> - !value<br>\n", 
@@ -192,7 +195,9 @@ class reg_admin_settings_message {
 	*/
 	static function form_submit($form_id, $data) {
 
-		$old_data = reg_message::load_by_id($data["id"]);
+		$factory = new reg_factory();
+		$message = $factory->get_object("message");
+		$old_data = $message->load_by_id($data["id"]);
 
 		$query = "UPDATE {reg_message} "
 			. "SET "

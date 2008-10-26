@@ -8,6 +8,7 @@ class reg_success {
 
 	function __construct() {
 		$factory = new reg_factory();
+		$this->message = $factory->get_object("message");
 		$this->log = $factory->get_object("log");
 	}
 
@@ -53,7 +54,9 @@ class reg_success {
 
 		$retval = "<p/>\n";
 
-		$message = reg_message::load_display("success",
+		$factory = new reg_factory();
+		$message = $factory->get_object("message");
+		$message = $message->load_display("success",
 			array(
 				"!email" => $email,
 				"!member_email" => $data["member_email"],

@@ -2,6 +2,7 @@
 
 /**
 * This class is used to hold our log and transaction-related functions.
+*
 * The reason why this extends the reg class is because the reg class also
 * depends on this class, and we can't have any circular dependencies.  
 * That would be bad.

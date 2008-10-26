@@ -387,7 +387,9 @@ function reg_admin_main() {
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
 
-	return(reg_admin::main());
+	$admin = $factory->get_object("admin");
+	return($admin->main());
+
 }
 
 /**

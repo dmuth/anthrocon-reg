@@ -6,7 +6,7 @@
 */
 class reg_admin {
 
-	function __construct() {
+	function __construct($log) {
 		$factory = new reg_factory();
 		$this->log = $factory->get_object("log");
 	}
@@ -14,7 +14,7 @@ class reg_admin {
 	/**
 	* A wrapper for setting variables.  It will log the activity.
 	*/
-	static function variable_set($key, $value) {
+	function variable_set($key, $value) {
 
 		$old_value = variable_get($key, "");
 
@@ -43,7 +43,7 @@ class reg_admin {
 	/**
 	* Our "main" page for the admin.
 	*/
-	static function main() {
+	function main() {
 
 		$retval = "";
 

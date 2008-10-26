@@ -3,21 +3,26 @@
 /**
 * This class is used for interacting with stored messages from user-facing
 *	pages.
+*
+* The reason why this extends the reg class is because the reg class also
+* depends on this class, and we can't have any circular dependencies.  
+* That would be bad.
 */
-class reg_message {
+class reg_message extends reg {
 
 	/**
 	* @var An associative array of tokens for each of the messages.
 	*	Strangely enough, trying to use t() on the value causes a syntax 
 	*	error in PHP.  I guess executing code there is a no-no. :-)
 	*/
-	protected static $tokens = array();
+	protected $tokens = array();
 
 
-	function __construct() {
+	function __construct($log) {
 		$factory = new reg_factory();
 		$this->log = $factory->get_object("log");
 	}
+
 
 	/**
 	* This function loads a message, based on its unique name.
@@ -27,7 +32,7 @@ class reg_message {
 	* @return array Associative array of data for the message, or null
 	*	if no message by that name was found.
 	*/
-	static function load($name) {
+	function load($name) {
 
 		$query = "SELECT * FROM {reg_message} "
 			. "WHERE "
@@ -70,12 +75,12 @@ class reg_message {
 	* @return array An associative array with the message to display and
 	*	the subject line, if it is an email.
 	*/
-	static function load_display($name, $data = array(), $edit_link = true) {
+	function load_display($name, $data = array(), $edit_link = true) {
 
 		$retval = array();
 
-		self::set_tokens();
-		$message = self::load($name);
+		$this->set_tokens();
+		$message = $this->load($name);
 		$retval["subject"] = $message["subject"];
 		$retval["type"] = $message["type"];
 		$retval["value"] = $message["value"];
@@ -83,7 +88,7 @@ class reg_message {
 		//
 		// If the user is an admin, give them an edit link.
 		//
-		if (reg::is_admin() && $edit_link) {
+		if ($this->is_admin() && $edit_link) {
 			$url = "admin/reg/settings/messages/" . $message["id"] . "/edit";
 			$retval["value"] .= " " . l(t("[Edit this blurb]"), $url, "", 
 				drupal_get_destination());
@@ -92,6 +97,7 @@ class reg_message {
 		//
 		// Grab our email address and munge it.
 		//
+// TEST
 		$data["!email"] = variable_get(reg::VAR_EMAIL, "");
 		$tmp = $data["!email"];
 		$tmp = str_replace("@", " AT ", $tmp);
@@ -120,9 +126,9 @@ class reg_message {
 	/**
 	* Same as load(), but load a message by ID.
 	*/
-	static function load_by_id($id) {
+	function load_by_id($id) {
 
-		self::set_tokens();
+		$this->set_tokens();
 		$query = "SELECT * FROM {reg_message} "
 			. "WHERE "
 			. "id='%s' ";
@@ -154,13 +160,13 @@ class reg_message {
 	* @return array An associative array full of tokens and descriptions 
 	*	for each token.
 	*/
-	static function get_tokens($key) {
+	function get_tokens($key) {
 
 		$retval = array();
-		self::set_tokens();
+		$this->set_tokens();
 
-		if (!empty(self::$tokens[$key])) {
-			$retval = self::$tokens[$key];
+		if (!empty($this->tokens[$key])) {
+			$retval = $this->tokens[$key];
 		}
 
 		return($retval);
@@ -173,13 +179,13 @@ class reg_message {
 	* The reason for this function is because we can't use any functions
 	*	or string concatenation if I set the values in the class definition.
 	*/
-	static function set_tokens() {
+	function set_tokens() {
 
-		if (!empty(self::$tokens)) {
+		if (!empty($this->tokens)) {
 			return(null);
 		}
 
-		self::$tokens = array(
+		$this->tokens = array(
 			"no-levels-available" => array(
 				"!email" => t("Our contact email."),
 				"!munged_email" => t("Our obfuscated email address.  "

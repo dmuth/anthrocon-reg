@@ -10,29 +10,18 @@ TODO
 - Refactor and update the reg codebase
 	- Create a reg_factory class to instantiate objects
 		- getObject()
-			- get_message()
-				- reg
-				- reg_log
-				- Test: reg, reg_admin_settings_message, reg_success, reg_verify
-			- get_reg()
-				- reg_log
-				- reg_message
-				- reg_form
-				- reg_fake
-				- Test: reg, reg_admin_adjust, reg_admin_cancel, reg_admin_level, reg_admin_level, reg_admin_log, reg_admin_member, reg_admin_search, reg_admin_settings, reg_email, reg_fake, reg_form, reg_log, reg_member, reg_menus, reg_message, reg_success, reg_verify
-			- get_admin()
-				- reg_log
-				- Test: reg_admin_settings
-			- get_captcha()
-			- get_email()
-				- reg
-				- reg_form
 			- get_form()
 				- reg
 				- reg_admin_member
 				- reg_log
 				- reg_fake
 				- Test: reg, reg_admin_cancel, reg_admin_level, reg_admin_member, reg_admin_search, reg_admin_settings, reg_admin_settings_message, reg_email, reg_form, reg_member, reg_verify
+			- get_reg()
+				- reg_log
+				- reg_message
+				- reg_form
+				- reg_fake
+				- Test: reg, reg_admin_adjust, reg_admin_cancel, reg_admin_level, reg_admin_level, reg_admin_log, reg_admin_member, reg_admin_search, reg_admin_settings, reg_email, reg_fake, reg_form, reg_log, reg_member, reg_menus, reg_message, reg_success, reg_verify
 			- get_member()
 				- reg_form
 				- reg_log
@@ -84,6 +73,9 @@ TODO
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
+
+- admin
+	- Put 3 most recent log entries and 3 most recent transaction on this page
 
 - admin/reg/settings/mesages/1234/edit
 	- Prevent editing of non-existant message IDs
