@@ -5,6 +5,17 @@
 */
 class reg_verify {
 
+	/*
+	* @var Our log object.
+	*/
+	protected $log;
+
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
+
 	/**
 	* Our registration verification page.
 	* Print up the search form, followed up any results.
@@ -229,7 +240,9 @@ class reg_verify {
 					"%id" => $id_email,
 				));
 			form_set_error("", $message);
-			reg_log::log($message, "", WATCHDOG_WARNING);
+			$factory = new reg_factory();
+			$log = $factory->get_object("log");
+			$log->log($message, "", WATCHDOG_WARNING);
 
 		}
 
@@ -275,7 +288,9 @@ class reg_verify {
 				"%email" => $data["email"],
 			));
 		drupal_set_message($message);
-		reg_log::log($message, $id);
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log($message, $id);
 
 	} // End of send_email()
 
@@ -358,7 +373,9 @@ class reg_verify {
 				"%cc_exp%" => $search["cc_exp"]["year"] . "-" 
 					. $search["cc_exp"]["month"],
 			));
-		reg_log::log($message, "", WATCHDOG_WARNING);
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log($message, "", WATCHDOG_WARNING);
 
 		return($rows);
 

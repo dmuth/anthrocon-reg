@@ -5,6 +5,13 @@
 */
 class reg_admin_level {
 
+	
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
+
 	/**
 	* List membership levels.
 	*/
@@ -231,25 +238,28 @@ class reg_admin_level {
 	*/
 	static function level_form_validate($form_id, &$data) {
 
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+
 		//
 		// Make sure our year and price are numbers
 		//
 		if (!reg::is_valid_number($data["year"])) {
 			$error = t("Year must be a number!");
 			form_set_error("year", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
 		if (!reg::is_valid_float($data["price"])) {
 			$error = t("Price must be a number!");
 			form_set_error("price", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
 		if ($data["price"] == 0) {
 			$error = t("Price cannot be 0!");
 			form_set_error("price", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
 		if (reg::is_negative_number($data["price"])) {
@@ -257,7 +267,7 @@ class reg_admin_level {
 				array("%price%" => $data["price"])
 				);
 			form_set_error("price", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
 		//
@@ -280,7 +290,7 @@ class reg_admin_level {
 		if ($start_time > $end_time) {
 			$error = t("Start date is after end date!");
 			form_set_error("start][day", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
 	} // End of level_form_validate()
@@ -372,7 +382,9 @@ class reg_admin_level {
 		if (!empty($old_data)) {
 			$message_log = $message . " " . reg_data::get_changed_data(
 				$data, $old_data);
-			reg_log::log($message_log);
+			$factory = new reg_factory();
+			$log = $factory->get_object("log");
+			$log->log($message_log);
 		}
 
 		$uri = "admin/reg/levels";

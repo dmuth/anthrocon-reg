@@ -51,6 +51,7 @@ class reg {
 
 		$factory = new reg_factory();
 		$this->fake = $factory->get_object("fake");
+		$this->log = $factory->get_object("log");
 
 	}
 

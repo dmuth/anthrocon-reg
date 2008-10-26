@@ -5,6 +5,12 @@
 */
 class reg_admin_cancel {
 
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
+
 	/**
 	* Cancel an existing membership.
 	*/
@@ -189,7 +195,9 @@ class reg_admin_cancel {
 		//
 		// Write a transaction record.
 		//
-		reg_log::log_trans($data);
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log_trans($data);
 
 		$reg_id = $data["reg_id"];
 		$message = t("Registration cancelled.");
@@ -200,7 +208,7 @@ class reg_admin_cancel {
 		//
 		// Write a log entry for this member.
 		//
-		reg_log::log($message, $reg_id);
+		$log->log($message, $reg_id);
 
 		$message = t("Registration cancelled.");
 		drupal_set_message($message);

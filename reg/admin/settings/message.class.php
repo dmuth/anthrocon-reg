@@ -7,6 +7,12 @@
 class reg_admin_settings_message {
 
 
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
+
 	/**
 	* List all messages.
 	*/
@@ -206,7 +212,9 @@ class reg_admin_settings_message {
 
 		$old_data["name"] = "";
 		$message .= " " . reg_data::get_changed_data($data, $old_data);
-		reg_log::log($message);
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log($message);
 
 	} // End of form_submit()
 

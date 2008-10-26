@@ -6,6 +6,11 @@
 */
 class reg_admin {
 
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
 	/**
 	* A wrapper for setting variables.  It will log the activity.
 	*/
@@ -23,7 +28,10 @@ class reg_admin {
 					)
 				);
 
-			reg_log::log($message);
+			$factory = new reg_factory();
+			$log = $factory->get_object("log");
+
+			$log->log($message);
 
 		}
 

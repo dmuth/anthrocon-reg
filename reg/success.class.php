@@ -6,6 +6,12 @@
 */
 class reg_success {
 
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
+
 	/**
 	* Check to see if our user just registered, and print up a success 
 	* message if they did.
@@ -22,7 +28,11 @@ class reg_success {
 		if (empty($data)) {
 			$message = t("No success data found.  Sending user over "
 				. "to verify page.");
-			reg_log::log($message);
+
+			$factory = new reg_factory();
+			$log = $factory->get_object("log");
+			$log->log($message);
+
 			reg::goto_url("reg/verify");
 		}
 

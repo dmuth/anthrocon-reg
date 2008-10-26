@@ -7,6 +7,11 @@
 class reg_member {
 
 
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
 	/**
 	* This function actually does the dirty work of adding a new member to
 	* the system.  It is assumed that any credit card charging has been done.
@@ -87,7 +92,10 @@ class reg_member {
 		$message = t("Added registration for badge number '!num'",
 			array("!num" => $data["badge_num"])
 			);
-		reg_log::log($message, $data["id"]);
+
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log($message, $data["id"]);
 
 		//
 		// Make a note in the just-written transaction what the member's ID is.

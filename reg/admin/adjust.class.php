@@ -7,6 +7,12 @@
 */
 class reg_admin_adjust {
 
+
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
 	static function adjust($id) {
 
 		$retval = "";
@@ -87,7 +93,9 @@ class reg_admin_adjust {
 		//
 		// Write a transaction record.
 		//
-		reg_log::log_trans($data);
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log_trans($data);
 
 		$reg_id = $data["reg_id"];
 		$message = t("Balance adjustment.");
@@ -98,7 +106,7 @@ class reg_admin_adjust {
 		//
 		// Write a log entry for this member.
 		//
-		reg_log::log($message, $reg_id);
+		$log->log($message, $reg_id);
 
 		$message = t("Balance adjustment.");
 		drupal_set_message($message);

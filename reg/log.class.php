@@ -2,8 +2,17 @@
 
 /**
 * This class is used to hold our log and transaction-related functions.
+* The reason why this extends the reg class is because the reg class also
+* depends on this class, and we can't have any circular dependencies.  
+* That would be bad.
 */
-class reg_log {
+class reg_log extends reg {
+
+	/**
+	* Our constructor.
+	*/
+	function __construct() {
+	} // End of __construct()
 
 
 	/**
@@ -22,7 +31,7 @@ class reg_log {
 	* @return integer The ID of the row that was inserted into the database.
 	*
 	*/
-	static function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
+	function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
 
 		global $user, $base_root;
 
@@ -33,7 +42,7 @@ class reg_log {
 		// to not include SSL.  So we're going to do an additional check
 		// and fix there here.
 		//
-		if (reg::is_ssl()) {
+		if ($this->is_ssl()) {
 			$base_root = eregi_replace("^http://", "https://", $base_root);
 		}
 
@@ -66,7 +75,7 @@ class reg_log {
 	*
 	* @return integer the ID of the row that was inserted into the database.
 	*/
-	static function log_trans(&$data) {
+	function log_trans(&$data) {
 
 		global $user;
 

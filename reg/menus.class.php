@@ -12,11 +12,24 @@ class reg_menus {
 
 
 	/**
+	* @var Our reg object.
+	*/
+	protected $reg;
+
+	
+	function __construct(&$reg) {
+
+		$this->reg = $reg;
+
+	} // End of __construct()
+
+
+	/**
 	* Generate our menu items and callbacks for this module.
 	*
 	* @return array Scalar array of menu data.
 	*/
-	static function menu($may_cache) {
+	function menu($may_cache) {
 
 		$retval = array();
 
@@ -56,7 +69,7 @@ class reg_menus {
 	/**
 	* Our main menu items.
 	*/
-	static function get_menu(&$retval, $may_cache) {
+	function get_menu(&$retval, $may_cache) {
 
 		if ($may_cache) {
 
@@ -282,7 +295,7 @@ Uncomment this when we actually have stats.
 	/**
 	* Menu items related to recent registrations.
 	*/
-	static function get_registrations(&$retval, $may_cache) {
+	function get_registrations(&$retval, $may_cache) {
 
 		if ($may_cache) {
 			$retval[] = array(

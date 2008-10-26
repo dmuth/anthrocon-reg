@@ -7,6 +7,12 @@
 class reg_admin_member {
 
 
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
+
 	/**
 	* Display the most recent registrations.
 	*
@@ -408,7 +414,9 @@ class reg_admin_member {
 				$data, $old_data);
 		}
 
-		reg_log::log($message, $data["reg_id"]);
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log($message, $data["reg_id"]);
 
 		return($data["badge_num"]);
 
@@ -504,7 +512,9 @@ class reg_admin_member {
 		$reg_id = $data["reg_id"];
 		$message = t("Added Note: ") . $data["notes"];
 
-		reg_log::log($message, $reg_id);
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+		$log->log($message, $reg_id);
 
 		drupal_set_message(t("Log entry saved for this member."));
 

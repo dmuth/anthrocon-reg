@@ -5,6 +5,13 @@
 */
 class reg_form {
 
+
+	//function __construct() {
+	//	$factory = new reg_factory();
+	//	$this->log = $factory->get_object("log");
+	//}
+
+
 	/**
 	* Define constants for form values
 	*/
@@ -142,8 +149,10 @@ class reg_form {
 	* @param object $cc_gateway Our credit card gateway.
 	*
 	*/
-	//static function reg_validate(&$form_id, &$data, &$cc_gateway) {
 	function reg_validate(&$form_id, &$data, &$cc_gateway) {
+
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
 
 		//
 		// Assume everything is okay, unless proven otherwise.
@@ -186,7 +195,7 @@ class reg_form {
 			if (!$captcha->check($data["reg_captcha"])) {
 				$message = t("Incorrect answer to math question.");
 				form_set_error("reg_captcha", $message);
-				reg_log::log($message, "", WATCHDOG_WARNING);
+				$log->log($message, "", WATCHDOG_WARNING);
 				$okay = false;
 			}
 
@@ -195,7 +204,7 @@ class reg_form {
 		if ($data["email"] != $data["email2"]) {
 			$error = t("Email addresses do not match!");
 			form_set_error("email2", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
 		//
@@ -218,13 +227,13 @@ class reg_form {
 			if (empty($data["cc_type_id"])) {
 				$error = t("No credit card type selected.");
 				form_set_error("cc_type_id", $error);
-				reg_log::log($error, "", WATCHDOG_WARNING);
+				$log->log($error, "", WATCHDOG_WARNING);
 			}
 
 			if (empty($data["cc_num"])) {
 				$error = t("No credit card number entered.");
 				form_set_error("cc_num", $error);
-				reg_log::log($error, "", WATCHDOG_WARNING);
+				$log->log($error, "", WATCHDOG_WARNING);
 			}
 
 			//
@@ -266,7 +275,7 @@ class reg_form {
 				. t("Did you forget to enter it?")
 				;
 			form_set_error("birthdate][year", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 			$okay = false;
 		}
 
@@ -291,12 +300,12 @@ class reg_form {
 			// that.
 			//
 			if (empty($data["reg_id"])) {
-				$reg_trans_id = reg_log::log_trans($data);
+				$reg_trans_id = $log->log_trans($data);
 				$_SESSION["reg"]["reg_trans_id"] = $reg_trans_id;
 			}
 
 			$message = t("In the admin interface.  Bailing out early.");
-			reg_log::log($message);
+			$log->log($message);
 
 			return(null);
 
@@ -313,7 +322,7 @@ class reg_form {
 				array("%donation%" => $data["donation"])
 				);
 			form_set_error("donation", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 			$okay = false;
 
 		} else if ($this->reg->is_negative_number($data["donation"])) {
@@ -321,7 +330,7 @@ class reg_form {
 				array("%donation%" => $data["donation"])
 				);
 			form_set_error("donation", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 			$okay = false;
 
 		} else if ($data["donation"] > reg::DONATION_MAX) {
@@ -333,7 +342,7 @@ class reg_form {
 					)
 				);
 			form_set_error("donation", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 			$okay = false;
         }
 
@@ -344,7 +353,7 @@ class reg_form {
 		if (empty($data["reg_level_id"])) {
 			$error = t("Membership type is required.");
 			form_set_error("reg_level_id", $error);
-			reg_log::log($error, "", WATCHDOG_WARNING);
+			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
 		$levels = $this->reg->get_valid_levels();
@@ -353,7 +362,7 @@ class reg_form {
 				array("%level%" => $data["reg_level_id"])
 				);
 			form_set_error("reg_level_id", $error);
-			reg_log::log($error, "", WATCHDOG_ERROR);
+			$log->log($error, "", WATCHDOG_ERROR);
 			$okay = false;
 		}
 
@@ -364,7 +373,7 @@ class reg_form {
 		if (empty($okay)) {
 			$message = t("One or more form errors found.  Stopping and NOT "
 				. "charging the credit card.");
-			reg_log::log($message, "", WATCHDOG_WARNING);
+			$log->log($message, "", WATCHDOG_WARNING);
 			return(null);
 		}
 
@@ -378,13 +387,17 @@ class reg_form {
 
 
 	static function set_cc_expired($month, $year) {
+
+		$factory = new reg_factory();
+		$log = $factory->get_object("log");
+
 		$error = t("Credit card is expired (!month/!year)",
 			array(
 				"!month" => $month,
 				"!year" => $year,
 			));
 		form_set_error("cc_exp][month", $error);
-		reg_log::log($error, "", WATCHDOG_WARNING);
+		$log->log($error, "", WATCHDOG_WARNING);
 	}
 
 

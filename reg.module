@@ -27,7 +27,9 @@ spl_autoload_register("reg_autoload");
 * Our list of permissions
 */
 function reg_perm() {
-	return(reg::perm());
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	return($reg->perm());
 }
 
 
@@ -36,7 +38,9 @@ function reg_init() {
 
 
 function reg_exit() {
-	reg::hook_exit();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->hook_exit();
 }
 
 
@@ -47,10 +51,20 @@ function reg_exit() {
 * Do NOT name the underlying class reg_menu!  If a function and class
 *	share identical names in PHP 5.2.4, all sorts of bad things happen!
 *	I learned this the hard way. :-(
+*
+* Though on second thought, I've since considered that maybe my PHP 
+*	cache (APC) was caching non-existant files when I moved the one
+*	reg/ directory out of the way to make way for a new installation,
+*	AND restarting the php-cgi process seemed to fix the problem.  This
+*	will require more investigation in the future.
 */
 function reg_menu($may_cache) {
-	$items = reg_menus::menu($may_cache);
+
+	$factory = new reg_factory();
+	$menu = $factory->get_object("menu");
+	$items = $menu->menu($may_cache);
 	return($items);
+
 } // End of reg_menu()
 
 
@@ -58,7 +72,9 @@ function reg_menu($may_cache) {
 * Our public verification page.
 */
 function reg_verify($id_email = "") {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	$retval = reg_verify::verify($id_email);
 	return($retval);
 } 
@@ -138,7 +154,9 @@ function reg_registration_form_submit($form_id, &$data) {
 * Our settings form.
 */
 function reg_admin_settings() {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_settings::settings());
 }
 
@@ -159,12 +177,16 @@ function reg_admin_settings_form_submit($form_id, $data) {
 * Messages admin.
 */
 function reg_admin_settings_messages() {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_settings_message::messages());
 }
 
 function reg_admin_settings_messages_edit($id = "") {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_settings_message::edit($id));
 }
 
@@ -184,12 +206,16 @@ function reg_admin_settings_message_form_submit($form_id, $data) {
 * Membership level editing stuff.
 */
 function reg_admin_levels() {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_level::levels());
 }
 
 function reg_admin_levels_edit($id = "") {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_level::levels_edit($id));
 }
 
@@ -209,7 +235,9 @@ function reg_admin_level_form_submit($form_id, $data) {
 * Viewing recent registrations.
 */
 function reg_admin_members() {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_member::recent());
 }
 
@@ -225,7 +253,9 @@ function reg_admin_members_edit($id) {
 * Our "Add a note" form.
 */
 function reg_admin_members_add_note($id) {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_member::add_note($id));
 }
 
@@ -246,7 +276,9 @@ function reg_admin_members_add_note_form_submit($form_id, &$data) {
 * Cancellation form for admins.
 */
 function reg_admin_members_cancel($id) {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_cancel::cancel($id));
 }
 
@@ -267,7 +299,9 @@ function reg_admin_members_cancel_form_submit($form_id, $data) {
 * Balance adjustments
 */
 function reg_admin_members_adjust($id) {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
 	return(reg_admin_adjust::adjust($id));
 }
 
@@ -288,7 +322,10 @@ function reg_admin_members_adjust_form_submit($form_id, $data) {
 * Searching registrations.
 */
 function reg_admin_search() {
-	reg::force_ssl();
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
+
 	$retval = reg_admin_search::search();
 	$retval .= reg_admin_search::results();
 	return($retval);
@@ -312,7 +349,11 @@ function reg_admin_search_form_submit($form_id, &$data) {
 * Adding a new registration.
 */
 function reg_admin_members_add() {
-	reg::force_ssl();
+
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
+
 	return(reg_admin_member::add_reg());
 }
 
@@ -320,7 +361,11 @@ function reg_admin_members_add() {
 * Viewing logs.
 */
 function reg_admin_log() {
-	reg::force_ssl();
+
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
+
 	return(reg_admin_log::log_recent());
 }
 
@@ -337,7 +382,11 @@ function reg_admin_trans_detail($id) {
 }
 
 function reg_admin_main() {
-	reg::force_ssl();
+
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
+
 	return(reg_admin::main());
 }
 
@@ -345,7 +394,11 @@ function reg_admin_main() {
 * Viewing registration stats.
 */
 function reg_admin_stats() {
-	reg::force_ssl();
+
+	$factory = new reg_factory();
+	$reg = $factory->get_object("reg");
+	$reg->force_ssl();
+
 return("This is where our stats page would go.");
 }
 

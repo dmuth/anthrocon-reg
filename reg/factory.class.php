@@ -31,6 +31,12 @@ class reg_factory {
 		} else if ($name == "form") {
 			$retval = $this->get_form();
 
+		} else if ($name == "log") {
+			$retval = $this->get_log();
+
+		} else if ($name == "menu") {
+			$retval = $this->get_menu();
+
 		} else if ($name == "reg") {
 			$retval = $this->get_reg();
 
@@ -59,6 +65,16 @@ class reg_factory {
 
 	protected function get_form() {
 		$retval = new reg_form();
+		return($retval);
+	}
+
+	protected function get_log() {
+		$retval = new reg_log();
+		return($retval);
+	}
+
+	protected function get_menu() {
+		$retval = new reg_menus();
 		return($retval);
 	}
 

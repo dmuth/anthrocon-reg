@@ -14,6 +14,11 @@ class reg_message {
 	protected static $tokens = array();
 
 
+	function __construct() {
+		$factory = new reg_factory();
+		$this->log = $factory->get_object("log");
+	}
+
 	/**
 	* This function loads a message, based on its unique name.
 	* 
@@ -36,7 +41,9 @@ class reg_message {
 			$message = t("Unable to load message with name '!name'!",
 				array("!name" => $name)
 				);
-			reg_log::log($message, '', WATCHDOG_WARNING);
+			$factory = new reg_factory();
+			$log = $factory->get_object("log");
+			$log->log($message, '', WATCHDOG_WARNING);
 		}
 
 		return($retval);
@@ -128,7 +135,9 @@ class reg_message {
 			$message = t("Unable to load message with id '!id'!",
 				array("!id" => $id)
 				);
-			reg_log::log($message, '', WATCHDOG_WARNING);
+			$factory = new reg_factory();
+			$log = $factory->get_object("log");
+			$log->log($message, '', WATCHDOG_WARNING);
 		}
 
 
