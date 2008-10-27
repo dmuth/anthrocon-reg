@@ -7,10 +7,14 @@
 class reg_member {
 
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->log = $factory->get_object("log");
-		$this->form = $factory->get_object("form");
+	function __construct(&$log) {
+
+		$this->log = $log;
+		//$this->form = $form;
+		//
+		// Don't include the form class due to circular dependencies.
+		//
+
 	}
 
 
@@ -24,7 +28,7 @@ class reg_member {
 	*
 	* @return integer The badge number of the member that we just added.
 	*/
-	static function add_member(&$data, $reg_trans_id = "") {
+	function add_member(&$data, $reg_trans_id = "") {
 
 		//
 		// If there is no badge number specififed OR we are in the
@@ -156,7 +160,7 @@ class reg_member {
 	/**
 	* Email out our registration receipt.
 	*/
-	static function email_receipt(&$data) {
+	function email_receipt(&$data) {
 
         //
 		// If we have credit card data, get a nice string.

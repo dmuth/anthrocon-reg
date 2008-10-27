@@ -46,6 +46,9 @@ class reg_factory {
 		} else if ($name == "log") {
 			$retval = $this->get_log();
 
+		} else if ($name == "member") {
+			$retval = $this->get_member();
+
 		} else if ($name == "menu") {
 			$retval = $this->get_menu();
 
@@ -54,6 +57,9 @@ class reg_factory {
 
 		} else if ($name == "reg") {
 			$retval = $this->get_reg();
+
+		} else if ($name == "success") {
+			$retval = $this->get_success();
 
 		} else {
 			$error = "Unknown object name: $name";
@@ -116,6 +122,17 @@ class reg_factory {
 		return($retval);
 	}
 
+	protected function get_member() {
+		$log = $this->get_log();
+		//$form = $this->get_form();
+		//
+		// Don't include the reg_form class due to circular dependencies.	
+		//
+		$retval = new reg_member($log);
+		return($retval);
+	}
+
+
 	protected function get_menu() {
 		$retval = new reg_menus();
 		return($retval);
@@ -129,6 +146,13 @@ class reg_factory {
 
 	protected function get_reg() {
 		$retval = new reg();
+		return($retval);
+	}
+
+	protected function get_success() {
+		$message = $this->get_message();
+		$log = $this->get_log();
+		$retval = new reg_success($message, $log);
 		return($retval);
 	}
 

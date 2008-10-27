@@ -97,7 +97,9 @@ function reg_verify_form_submit($form_id, &$data) {
 * Our "success" page.
 */
 function reg_success() {
-	$retval = reg_success::success();
+	$factory = new reg_factory();
+	$success = $factory->get_object("success");
+	$retval = $success->success();
 	return($retval);
 }
 

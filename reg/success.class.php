@@ -6,10 +6,11 @@
 */
 class reg_success {
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->message = $factory->get_object("message");
-		$this->log = $factory->get_object("log");
+	function __construct(&$message, &$log) {
+
+		$this->message = $message;
+		$this->log = $log;
+
 	}
 
 

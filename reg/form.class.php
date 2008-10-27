@@ -27,7 +27,8 @@ class reg_form extends reg {
 		$factory = new reg_factory();
 		$this->fake = $factory->get_object("fake");
 		$this->log = $factory->get_object("log");
-		$thiadmin_memberadmin_member = $factory->get_object("admin_member");
+		$this->admin_member = $factory->get_object("admin_member");
+		$this->member = $factory->get_object("member");
 	}
 
 
@@ -45,7 +46,7 @@ class reg_form extends reg {
 		$retval = array();
 
 		if (!empty($id)) {
-			$data = reg_admin_member::load_reg($id);
+			$data = $this->admin_member->load_reg($id);
 			$retval["reg_id"] = array(
 				"#type" => "hidden",
 				"#value" => $id,
@@ -453,7 +454,10 @@ class reg_form extends reg {
 	*/
 	function reg_submit_new(&$data) {
 
-		$data["badge_num"] = reg_member::add_member($data, 
+		$factory = new reg_factory();
+		$member = $factory->get_object("member");
+
+		$data["badge_num"] = $member->add_member($data, 
 			$_SESSION["reg"]["reg_trans_id"]);
 
 		//
@@ -494,7 +498,7 @@ class reg_form extends reg {
 	*/
 	function reg_submit_update(&$data) {
 
-		$badge_num = reg_admin_member::update_member($data);
+		$badge_num = $this->admin_member->update_member($data);
 
 		$message = t("Registration updated!");
 		drupal_set_message($message);
