@@ -10,7 +10,9 @@ class reg_member {
 	function __construct() {
 		$factory = new reg_factory();
 		$this->log = $factory->get_object("log");
+		$this->form = $factory->get_object("form");
 	}
+
 
 	/**
 	* This function actually does the dirty work of adding a new member to
@@ -29,11 +31,13 @@ class reg_member {
 		// public interface, automatically generate a badge number.
 		// Otherwise, we'll accept the admin-specified one.
 		//
+		$factory = new reg_factory();
+		$form = $factory->get_object("form");
 		if (
 			(	empty($data["badge_num"])
 				&& $data["badge_num"] != "0"
 			)
-			|| !reg_form::in_admin()) {
+			|| !$form->in_admin()) {
 			$data["badge_num"] = reg_data::get_badge_num();
 
 		}
@@ -157,8 +161,10 @@ class reg_member {
         //
 		// If we have credit card data, get a nice string.
 		//
+		$factory = new reg_factory();
+		$form = $factory->get_object("form");
 		if (!empty($data["cc_type_id"])
-			&& !reg_form::in_admin()
+			&& !$form->in_admin()
 			) {
 			$message_name = "email-receipt";
 			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"],

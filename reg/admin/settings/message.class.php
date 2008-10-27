@@ -11,6 +11,7 @@ class reg_admin_settings_message {
 		$factory = new reg_factory();
 		$this->message = $factory->get_object("message");
 		$this->log = $factory->get_object("log");
+		$this->form = $factory->get_object("form");
 	}
 
 

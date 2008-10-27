@@ -28,6 +28,9 @@ class reg_factory {
 		} else if ($name == "admin") {
 			$retval = $this->get_admin();
 
+		} else if ($name == "admin_member") {
+			$retval = $this->get_admin_member();
+
 		} else if ($name == "captcha") {
 			$retval = $this->get_captcha();
 
@@ -70,8 +73,15 @@ class reg_factory {
 
 
 	protected function get_admin() {
-		$log = new reg_log();
+		$log = $this->get_log();
 		$retval = new reg_admin($log);
+		return($retval);
+	}
+
+
+	protected function get_admin_member() {
+		$log = $this->get_log();
+		$retval = new reg_admin_member($log);
 		return($retval);
 	}
 

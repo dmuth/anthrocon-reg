@@ -10,6 +10,10 @@ class reg_admin_member {
 	function __construct() {
 		$factory = new reg_factory();
 		$this->log = $factory->get_object("log");
+		//
+		// This here is a circular dependency that I need to fix at some point.
+		//
+		//$this->form = $factory->get_object("form");
 	}
 
 

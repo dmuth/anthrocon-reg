@@ -6,6 +6,12 @@
 class reg_admin_search {
 
 
+	function __construct($form) {
+		$factory = new reg_factory();
+		$this->form = $factory->get_object("form");
+	}
+
+
 	/**
 	* Our search page.
 	*/

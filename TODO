@@ -10,12 +10,6 @@ TODO
 - Refactor and update the reg codebase
 	- Create a reg_factory class to instantiate objects
 		- getObject()
-			- get_form()
-				- reg
-				- reg_admin_member
-				- reg_log
-				- reg_fake
-				- Test: reg, reg_admin_cancel, reg_admin_level, reg_admin_member, reg_admin_search, reg_admin_settings, reg_admin_settings_message, reg_email, reg_form, reg_member, reg_verify
 			- get_reg()
 				- reg_log
 				- reg_message
@@ -69,7 +63,10 @@ TODO
 				- Test: reg_admin_settings_message, reg_menus
 		- find . -type f -name \*.class.php -exec grep -i --with-filename reg_data:: {} \;
 		- combine reg_data into reg and do a global search and replace
-	- Remove all references to statics
+	- Remove all references to statics (excluding constants)
+		- For constants, create a "get_constant()" function
+	- Search for ::
+	- Remove all "new" in any place but the factory class and reg.module
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

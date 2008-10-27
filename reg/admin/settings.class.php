@@ -9,6 +9,7 @@ class reg_admin_settings {
 	function __construct() {
 		$factory = new reg_factory();
 		$this->admin = $factory->get_object("admin");
+		$this->form = $factory->get_object("form");
 	}
 
 	/**

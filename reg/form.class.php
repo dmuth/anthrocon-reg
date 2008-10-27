@@ -2,15 +2,12 @@
 
 /**
 * This class holds the main reigstration forms.
+*
+* The reason why this extends the reg class is because the reg class also
+* depends on this class, and we can't have any circular dependencies.  
+* That would be bad.
 */
-class reg_form {
-
-
-	//function __construct() {
-	//	$factory = new reg_factory();
-	//	$this->log = $factory->get_object("log");
-	//}
-
+class reg_form extends reg {
 
 	/**
 	* Define constants for form values
@@ -28,8 +25,9 @@ class reg_form {
 
 	function __construct($cc_gateway = "") {
 		$factory = new reg_factory();
-		$this->reg = $factory->get_object("reg");
 		$this->fake = $factory->get_object("fake");
+		$this->log = $factory->get_object("log");
+		$thiadmin_memberadmin_member = $factory->get_object("admin_member");
 	}
 
 
@@ -79,7 +77,7 @@ class reg_form {
 	*
 	* @return boolean True is we are in the admin section, false otherwise.
 	*/
-	static function in_admin() {
+	function in_admin() {
 
 		if (arg(0) == "admin") {
 			return(true);
@@ -93,7 +91,7 @@ class reg_form {
 	/**
 	* Return the current Drupal path.
 	*/
-	static function get_path() {
+	function get_path() {
 
 		//
 		// Remove the leading base path.
@@ -211,7 +209,7 @@ class reg_form {
 		// If the payment type is a credit card, make sure that we have
 		// card information.
 		//
-		$payment_type = $this->reg->get_payment_type(
+		$payment_type = $this->get_payment_type(
 			$data["reg_payment_type_id"]);
 
 		//
@@ -287,8 +285,8 @@ class reg_form {
 			//
 			// Make sure the badge nuber is valid.
 			//
-			$this->reg->is_badge_num_valid($data["badge_num"]);
-			$this->reg->is_badge_num_available($data["reg_id"], 
+			$this->is_badge_num_valid($data["badge_num"]);
+			$this->is_badge_num_available($data["reg_id"], 
 				$data["badge_num"]);
 
 			//
@@ -315,7 +313,7 @@ class reg_form {
 		//
 		// Sanity checking on our donation amount.
 		//
-		if (!$this->reg->is_valid_float($data["donation"])
+		if (!$this->is_valid_float($data["donation"])
 			&& $data["donation"] != ""
 			) {
 			$error = t("Donation '%donation%' is not a number!",
@@ -325,7 +323,7 @@ class reg_form {
 			$log->log($error, "", WATCHDOG_WARNING);
 			$okay = false;
 
-		} else if ($this->reg->is_negative_number($data["donation"])) {
+		} else if ($this->is_negative_number($data["donation"])) {
 			$error = t("Donation '%donation%' cannot be a negative amount!",
 				array("%donation%" => $data["donation"])
 				);
@@ -356,7 +354,7 @@ class reg_form {
 			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
-		$levels = $this->reg->get_valid_levels();
+		$levels = $this->get_valid_levels();
 		if (empty($levels[$data["reg_level_id"]])) {
 			$error = t("Registration level ID '%level%' is invalid.",
 				array("%level%" => $data["reg_level_id"])
@@ -380,13 +378,13 @@ class reg_form {
 		//
 		// Make the transaction.  If it is successful, then add a new member.
 		//
-		$reg_trans_id = $this->reg->charge_cc($data, $cc_gateway);
+		$reg_trans_id = $this->charge_cc($data, $cc_gateway);
 		$_SESSION["reg"]["reg_trans_id"] = $reg_trans_id;
 
 	} // End of registration_form_validate()
 
 
-	static function set_cc_expired($month, $year) {
+	function set_cc_expired($month, $year) {
 
 		$factory = new reg_factory();
 		$log = $factory->get_object("log");
@@ -494,7 +492,7 @@ class reg_form {
 	* Process an updated registration.
 	* We will update the database and log this.
 	*/
-	static function reg_submit_update(&$data) {
+	function reg_submit_update(&$data) {
 
 		$badge_num = reg_admin_member::update_member($data);
 
@@ -509,7 +507,7 @@ class reg_form {
 	*
 	* @return boolean True if yes, false if no.
 	*/
-	static function is_fake_data() {
+	function is_fake_data() {
 		$retval = variable_get(reg_form::FORM_ADMIN_FAKE_DATA, "");
 		return($retval);
 	}

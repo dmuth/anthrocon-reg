@@ -8,6 +8,7 @@ class reg_admin_cancel {
 	function __construct() {
 		$factory = new reg_factory();
 		$this->log = $factory->get_object("log");
+		$this->form = $factory->get_object("form");
 	}
 
 

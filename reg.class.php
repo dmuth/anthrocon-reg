@@ -53,6 +53,7 @@ class reg {
 		$this->message = $factory->get_object("message");
 		$this->fake = $factory->get_object("fake");
 		$this->log = $factory->get_object("log");
+		$this->form = $factory->get_object("form");
 
 	}
 
