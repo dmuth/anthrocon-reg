@@ -11,7 +11,7 @@ TODO
 	- Create a reg_factory class to instantiate objects
 		- getObject()
 			- get_verify()
-				- reg
+			- reg
 				- reg_message
 				- reg_form
 				- Test: reg_menus, reg_verify
@@ -58,6 +58,7 @@ TODO
 		- For constants, create a "get_constant()" function
 	- Search for ::
 	- Remove all "new" in any place but the factory class and reg.module
+	- Put a single factory instance in the reg.module file
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

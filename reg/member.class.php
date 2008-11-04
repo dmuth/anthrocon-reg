@@ -7,9 +7,10 @@
 class reg_member {
 
 
-	function __construct(&$log) {
+	function __construct(&$log, &$email) {
 
 		$this->log = $log;
+		$this->email = $email;
 		//$this->form = $form;
 		//
 		// Don't include the form class due to circular dependencies.
@@ -165,10 +166,8 @@ class reg_member {
         //
 		// If we have credit card data, get a nice string.
 		//
-		$factory = new reg_factory();
-		$form = $factory->get_object("form");
 		if (!empty($data["cc_type_id"])
-			&& !$form->in_admin()
+			&& !reg_form::in_admin()
 			) {
 			$message_name = "email-receipt";
 			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"],
@@ -187,10 +186,7 @@ class reg_member {
 			"!total_cost" => $data["total_cost"],
 			);
 
-		$message = new reg_message();
-		$log = new reg_log();
-		$email = new reg_email($message, $log);
-		$email_sent = $email->email($data["email"], $message_name, 
+		$email_sent = $this->email->email($data["email"], $message_name, 
 			$data["id"], $email_data);
 
 	} // End of send_email()

@@ -3,18 +3,17 @@
 /**
 * This class is used so that users can verify their current registrations.
 */
-class reg_verify {
+class reg_verify extends reg {
 
 	/*
 	* @var Our log object.
 	*/
 	protected $log;
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->message = $factory->get_object("message");
-		$this->log = $factory->get_object("log");
-		$this->form = $factory->get_object("form");
+	function __construct($message, $log, $email) {
+		$this->message = $message;
+		$this->log = $log;
+		$this->email = $email;
 	}
 
 
@@ -24,7 +23,7 @@ class reg_verify {
 	*
 	* @param integer $id_email
 	*/
-	static function verify($id_email) {
+	function verify($id_email) {
 
 		$email = variable_get(reg::VAR_EMAIL, "");
 
@@ -37,7 +36,7 @@ class reg_verify {
 			));
 		$retval .= nl2br($message["value"]);
 		$retval .= drupal_get_form("reg_verify_form");
-		$retval .= self::results($id_email);
+		$retval .= $this->results($id_email);
 
 		return($retval);
 
@@ -50,7 +49,7 @@ class reg_verify {
 	* This function only returns a form data structure, so we cannot 
 	*	perform the search here.
 	*/
-	static function verify_form() {
+	function verify_form() {
 
 		$search_data = array();
 		if (!empty($_SESSION["reg"]["verify"])) {
@@ -124,7 +123,7 @@ class reg_verify {
 	} // End of verify_form()
 
 
-	static function verify_validate($form_id, &$data) {
+	function verify_validate($form_id, &$data) {
 
 		//
 		// Wipe our session array on every form submission.
@@ -136,7 +135,7 @@ class reg_verify {
 		//
 		// Check to make sure that our credit card number is valid.
 		//
-		if (!reg::is_valid_number($data["search"]["cc_num"])) {
+		if (!$this->is_valid_number($data["search"]["cc_num"])) {
 			$error = t("Invalid credit card number '%num%'",
 				array("%num%" => $data["search"]["cc_num"])
 				);
@@ -151,7 +150,7 @@ class reg_verify {
 	* the user back to the main search form, at which point the search 
 	* will be performed.
 	*/
-	static function verify_submit($form_id, &$data) {
+	function verify_submit($form_id, &$data) {
 
 		//
 		// The very first thing we're going to do here is chop off all but
@@ -165,7 +164,7 @@ class reg_verify {
 		$_SESSION["reg"]["verify"] = $data["search"];
 
 		$url = "reg/verify";
-		reg::goto_url($url);
+		$this->goto_url($url);
 
 	} // End of verify_submit()
 
@@ -175,7 +174,7 @@ class reg_verify {
 	*
 	* If no results are found, an error is thrown.
 	*/
-	static function results($id_email) {
+	function results($id_email) {
 
 		$retval = "";
 
@@ -188,7 +187,7 @@ class reg_verify {
 
 		$search = $_SESSION["reg"]["verify"];
 
-		$cursor = self::get_cursor($search);
+		$cursor = $this->get_cursor($search);
 
 		$header = array(
 			array("data" => t("Badge Number")),
@@ -231,7 +230,7 @@ class reg_verify {
 		// If we have an ID to send email to, do so.
 		//
 		if (!empty($send_email_id)) {
-			self::send_email($send_email_id);	
+			$this->send_email($send_email_id);	
 
 		} else if (!empty($id_email)) {
 			//
@@ -251,7 +250,7 @@ class reg_verify {
 		}
 
 		if (empty($rows)) {
-			self::handle_error($search);
+			$this->handle_error($search);
 		} else {
 			$retval .= t("<h2>Memberships Found:</h2>");
 			$retval .= theme("table", $header, $rows);
@@ -266,7 +265,7 @@ class reg_verify {
 	/**
 	* Send the reciept email to a specific registration ID.
 	*/
-	static function send_email($id) {
+	function send_email($id) {
 
 		$data = reg_admin_member::load_reg($id);
 		$url = reg_data::get_verify_url();
@@ -281,10 +280,7 @@ class reg_verify {
 			"!verify_url" => l($url, $url),
 			);
 
-		$message = new reg_message();
-		$log = new reg_log();
-		$email = new reg_email($message, $log);
-		$email_sent = $email->email($data["email"], $message_name, 
+		$email_sent = $this->email->email($data["email"], $message_name, 
 			$data["id"], $email_data);
 
 		$message = t("Your receipt has been re-sent to %email.",
@@ -302,7 +298,7 @@ class reg_verify {
 	/**
 	* Perform the actual query and return the cursor.
 	*/
-	static function get_cursor($search) {
+	function get_cursor($search) {
 
 		$retval = "";
 
@@ -328,14 +324,24 @@ class reg_verify {
 			. "WHERE "
 			. "reg.last='%s' "
 			. "AND reg_trans.cc_num LIKE '%%%s' "
-			. "AND reg_trans.card_expire = '%s'"
+			//
+			// Having to write queries like this are where I'm starting to
+			// wonder if storing the expiration date as a time_t was such
+			// a hot idea.
+			//
+			// At some point in the future, I should go through all the code
+			// and analyze all the queries.
+			//
+			. "AND YEAR(FROM_UNIXTIME(reg_trans.card_expire)) ='%s' "
+			. "AND MONTH(FROM_UNIXTIME(reg_trans.card_expire)) ='%s' "
 			;
 
 		$cc_exp_time = reg_data::get_time_t($search["cc_exp"]["year"], 
 			$search["cc_exp"]["month"], 1);
 
 		$args = array($search["last"], $search["cc_num"], 
-			$cc_exp_time);
+			$search["cc_exp"]["year"], $search["cc_exp"]["month"])
+			;
 
 		$retval = db_query($query, $args);
 
@@ -353,7 +359,7 @@ class reg_verify {
 	* @param array $search Our search criteria.
 	* 
 	*/
-	static function handle_error(&$search) {
+	function handle_error(&$search) {
 
 		$email = variable_get(reg::VAR_EMAIL, "");
 		$message = t("No members found.<br>\n");

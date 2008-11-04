@@ -61,6 +61,9 @@ class reg_factory {
 		} else if ($name == "success") {
 			$retval = $this->get_success();
 
+		} else if ($name == "verify") {
+			$retval = $this->get_verify();
+
 		} else {
 			$error = "Unknown object name: $name";
 			throw new Exception($error);
@@ -101,8 +104,11 @@ class reg_factory {
 	protected function get_email() {
 		$log = $this->get_log();
 		$message = $this->get_message();
-		$form = $this->get_form();
-		$retval = new reg_email($message, $log, $form);
+		//$form = $this->get_form();
+		//
+		// Don't include the reg_form class due to circular dependencies.	
+		//
+		$retval = new reg_email($message, $log);
 		return($retval);
 	}
 
@@ -124,11 +130,12 @@ class reg_factory {
 
 	protected function get_member() {
 		$log = $this->get_log();
+		$email = $this->get_email();
 		//$form = $this->get_form();
 		//
 		// Don't include the reg_form class due to circular dependencies.	
 		//
-		$retval = new reg_member($log);
+		$retval = new reg_member($log, $email);
 		return($retval);
 	}
 
@@ -153,6 +160,14 @@ class reg_factory {
 		$message = $this->get_message();
 		$log = $this->get_log();
 		$retval = new reg_success($message, $log);
+		return($retval);
+	}
+
+	protected function get_verify() {
+		$message = $this->get_message();
+		$log = $this->get_log();
+		$email = $this->get_email();
+		$retval = new reg_verify($message, $log, $email);
 		return($retval);
 	}
 

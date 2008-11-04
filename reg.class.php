@@ -50,6 +50,7 @@ class reg {
 	function __construct() {
 
 		$factory = new reg_factory();
+		$this->factory = $factory;
 		$this->message = $factory->get_object("message");
 		$this->fake = $factory->get_object("fake");
 		$this->log = $factory->get_object("log");
@@ -270,7 +271,7 @@ class reg {
 		//
 		// Eventually I should make this passed into the constructor.
 		//
-		$reg_message = new reg_message();
+		$reg_message = $this->message;
 
 
 		//

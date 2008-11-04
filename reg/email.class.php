@@ -22,12 +22,9 @@ class reg_email extends reg {
 	protected $log;
 
 
-	function __construct($message, $log, $form) {
+	function __construct($message, $log) {
 		$this->message = &$message;
 		$this->log = &$log;
-
-		$factory = new reg_factory();
-		$this->form = $factory->get_object("form");
 	}
 
 

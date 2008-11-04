@@ -17,10 +17,7 @@ class reg_menus {
 	protected $reg;
 
 	
-	function __construct(&$reg) {
-
-		$this->reg = $reg;
-
+	function __construct() {
 	} // End of __construct()
 
 

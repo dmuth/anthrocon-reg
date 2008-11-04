@@ -72,24 +72,36 @@ function reg_menu($may_cache) {
 * Our public verification page.
 */
 function reg_verify($id_email = "") {
+
 	$factory = new reg_factory();
+
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	$retval = reg_verify::verify($id_email);
+
+	$verify = $factory->get_object("verify");
+	$retval = $verify->verify($id_email);
+
 	return($retval);
 } 
 
 function reg_verify_form() {
-	return(reg_verify::verify_form());
+	$factory = new reg_factory();
+	$verify = $factory->get_object("verify");
+	$retval = $verify->verify_form();
 	return($retval);
 }
 
 function reg_verify_form_validate($form_id, &$data) {
-	reg_verify::verify_validate($form_id, $data);
+	$factory = new reg_factory();
+	$verify = $factory->get_object("verify");
+	$verify->verify_validate($form_id, $data);
 }
 
 function reg_verify_form_submit($form_id, &$data) {
-	return(reg_verify::verify_submit($form_id, $data));
+	$factory = new reg_factory();
+	$verify = $factory->get_object("verify");
+	$retval = $verify->verify_submit($form_id, $data);
+	return($retval);
 }
 
 
