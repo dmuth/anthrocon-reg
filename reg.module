@@ -171,19 +171,28 @@ function reg_admin_settings() {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	return(reg_admin_settings::settings());
+	$settings = $factory->get_object("admin_settings");
+	$retval = $settings->settings();
+	return($retval);
 }
 
 function reg_admin_settings_form() {
-	return(reg_admin_settings::settings_form());
+	$factory = new reg_factory();
+	$settings = $factory->get_object("admin_settings");
+	$retval = $settings->settings_form();
+	return($retval);
 }
 
 function reg_admin_settings_form_validate($form_id, $data) {
-	reg_admin_settings::settings_form_validate($form_id, $data);
+	$factory = new reg_factory();
+	$settings = $factory->get_object("admin_settings");
+	$settings->settings_form_validate($form_id, $data);
 }
 
 function reg_admin_settings_form_submit($form_id, $data) {
-	reg_admin_settings::settings_form_submit($form_id, $data);
+	$factory = new reg_factory();
+	$settings = $factory->get_object("admin_settings");
+	$settings->settings_form_submit($form_id, $data);
 }
 
 

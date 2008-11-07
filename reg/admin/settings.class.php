@@ -3,19 +3,17 @@
 /**
 * This class holds our main setings page.
 */
-class reg_admin_settings {
+class reg_admin_settings extends reg {
 
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->admin = $factory->get_object("admin");
-		$this->form = $factory->get_object("form");
+	function __construct($admin) {
+		$this->admin = $admin;
 	}
 
 	/**
 	* Our main settings page.
 	*/
-	static function settings() {
+	function settings() {
 
 		$retval = drupal_get_form("reg_admin_settings_form");
 
@@ -29,7 +27,7 @@ class reg_admin_settings {
 	*
 	* @return array Associative array of registration form.
 	*/
-	static function settings_form() {
+	function settings_form() {
 
 		$retval = array();
 
@@ -94,7 +92,7 @@ class reg_admin_settings {
 	* If there are any issues, form_set_error() should be called so
 	* that form processing does not continue.
 	*/
-	static function settings_form_validate(&$form_id, &$data) {
+	function settings_form_validate(&$form_id, &$data) {
 
 		//
 		// If a path was entered, make sure it is a valid alias or
@@ -131,10 +129,9 @@ class reg_admin_settings {
 	* conclusion of this funciton, the user is redirected back to the 
 	* form page.
 	*/
-	static function settings_form_submit($form_id, $data) {
+	function settings_form_submit($form_id, $data) {
 
-		$factory = new reg_factory();
-		$admin = $factory->get_object("admin");
+		$admin = $this->admin;
 		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_CC, 
 			$data["no_production"]["fake_cc"]);
 		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_DATA, 
@@ -147,7 +144,7 @@ class reg_admin_settings {
 		drupal_set_message("Settings updated");
 
 		$uri = "admin/reg/settings";
-		reg::goto_url($uri);
+		$this->goto_url($uri);
 
 	}
 
