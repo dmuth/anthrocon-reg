@@ -34,6 +34,9 @@ class reg_factory {
 		} else if ($name == "admin_settings") {
 			$retval = $this->get_admin_settings();
 
+		} else if ($name == "admin_settings_message") {
+			$retval = $this->get_admin_settings_message();
+
 		} else if ($name == "captcha") {
 			$retval = $this->get_captcha();
 
@@ -102,6 +105,13 @@ class reg_factory {
 		$admin = $this->get_admin();
 		$form = $this->get_form();
 		$retval = new reg_admin_settings($admin);
+		return($retval);
+	}
+
+	protected function get_admin_settings_message() {
+		$message = $this->get_message();
+		$log = $this->get_log();
+		$retval = new reg_admin_settings_message($message, $log);
 		return($retval);
 	}
 

@@ -4,21 +4,19 @@
 * This class is used for managing our messages that are displayed to 
 *	the user.
 */
-class reg_admin_settings_message {
+class reg_admin_settings_message extends reg {
 
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->message = $factory->get_object("message");
-		$this->log = $factory->get_object("log");
-		$this->form = $factory->get_object("form");
+	function __construct(&$message, &$log) {
+		$this->message = $message;
+		$this->log = $log;
 	}
 
 
 	/**
 	* List all messages.
 	*/
-	static function messages() {
+	function messages() {
 
 		$retval = t("Messages which will be displayed to users.  "
 			. "Some will be displayed through the web interface, "
@@ -76,7 +74,7 @@ class reg_admin_settings_message {
 	/**
 	* Edit a message.
 	*/
-	static function edit($id) {
+	function edit($id) {
 
 		$retval = drupal_get_form("reg_admin_settings_message_form", $id);
 		return($retval);
@@ -87,7 +85,7 @@ class reg_admin_settings_message {
 	/**
 	* Our form for editing a message.
 	*/
-	static function form($id) {
+	function form($id) {
 
 		$retval = array();
 		$row = array();
@@ -145,8 +143,7 @@ class reg_admin_settings_message {
 		// Retrieve tokens for this message and add in them and their
 		// descriptions.
 		//
-		$factory = new reg_factory();
-		$message = $factory->get_object("message");
+		$message = $this->message;
 		$tokens = $message->get_tokens($row["name"]);
 		$token_string = "";
 		foreach ($tokens as $key => $value) {
@@ -187,17 +184,16 @@ class reg_admin_settings_message {
 	/**
 	* This function validates a submitted form.
 	*/
-	static function form_validate($form_id, &$data) {
+	function form_validate($form_id, &$data) {
 	} // End of form_validate()
 
 
 	/**
 	* Everything in the form checks out, save the data.
 	*/
-	static function form_submit($form_id, $data) {
+	function form_submit($form_id, $data) {
 
-		$factory = new reg_factory();
-		$message = $factory->get_object("message");
+		$message = $this->message;
 		$old_data = $message->load_by_id($data["id"]);
 
 		$query = "UPDATE {reg_message} "
@@ -216,10 +212,14 @@ class reg_admin_settings_message {
 		$message = t("Message '!name' updated.", 
 			array("!name" => $old_data["name"]));
 
-		$old_data["name"] = "";
-		$message .= " " . reg_data::get_changed_data($data, $old_data);
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
+		//
+		// Unset values we're not checking.
+		//
+		unset($old_data["name"]);
+		unset($old_data["type"]);
+
+		$message .= " " . $this->get_changed_data($data, $old_data);
+		$log = $this->log;
 		$log->log($message);
 
 	} // End of form_submit()

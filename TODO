@@ -9,16 +9,6 @@ TODO
 - Refactor and update the reg codebase
 	- Create a reg_factory class to instantiate objects
 		- getObject()
-			- get_admin_settings_message()
-				- reg_form
-				- reg_message
-				- Test: reg_admin_settings_message, reg_menus
-			- get_reg()
-				- reg_log
-				- reg_message
-				- reg_form
-				- reg_fake
-				- Test: reg, reg_admin_adjust, reg_admin_cancel, reg_admin_level, reg_admin_level, reg_admin_log, reg_admin_member, reg_admin_search, reg_admin_settings, reg_email, reg_fake, reg_form, reg_log, reg_member, reg_menus, reg_message, reg_success, reg_verify
 			- get_admin_adjust()
 				- reg_admin_cancel
 					- I should extend this class
@@ -41,6 +31,12 @@ TODO
 				- reg_form
 				- reg_admin_member
 				- Test: reg_admin_search, reg_menus
+			- get_reg()
+				- reg_log
+				- reg_message
+				- reg_form
+				- reg_fake
+				- Test: reg, reg_admin_adjust, reg_admin_cancel, reg_admin_level, reg_admin_level, reg_admin_log, reg_admin_member, reg_admin_search, reg_admin_settings, reg_email, reg_fake, reg_form, reg_log, reg_member, reg_menus, reg_message, reg_success, reg_verify
 		- remove all inner uses of the reg_factory class
 		- find . -type f -name \*.class.php -exec grep -i --with-filename reg_data:: {} \;
 			- combine reg_data into reg and do a global search and replace
