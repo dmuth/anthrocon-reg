@@ -3,19 +3,18 @@
 /**
 * This class is responsible for our admin cancellation form and code.
 */
-class reg_admin_cancel {
+class reg_admin_cancel extends reg {
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->log = $factory->get_object("log");
-		$this->form = $factory->get_object("form");
+	function __construct(&$log, $reg_admin_member) {
+		$this->log = $log;
+		$this->reg_admin_member = $reg_admin_member;
 	}
 
 
 	/**
 	* Cancel an existing membership.
 	*/
-	static function cancel($id) {
+	function cancel($id) {
 
 		$retval = "";
 		$retval .= drupal_get_form("reg_admin_members_cancel_form", $id);
@@ -25,10 +24,10 @@ class reg_admin_cancel {
 	} // End of cancel()
 
 
-	static function form($id) {
+	function form($id) {
 
 		$retval = array();
-		$data = reg_admin_member::load_reg($id);
+		$data = $this->reg_admin_member->load_reg($id);
 
 		if ($data["badge_cost"] == 0) {
 			$message = t("Notice: This user's badge cost is currently ZERO. ")
@@ -79,7 +78,7 @@ class reg_admin_cancel {
 			"#disabled" => true,
 			);
 
-		$statuses = reg_data::get_statuses();
+		$statuses = $this->get_statuses();
 		$statuses[""] = t("Select");
 		//ksort($statuses);
 
@@ -92,7 +91,7 @@ class reg_admin_cancel {
 			"#default_value" => array_search("Refund", $statuses),
 			);
 
-		$types = reg_data::get_trans_types();
+		$types = $this->get_trans_types();
 		$types[""] = t("Select");
 		$retval["reg_trans_type_id"] = array(
 			"#title" => "Transaction Type",
@@ -103,7 +102,7 @@ class reg_admin_cancel {
 			"#default_value" => array_search("Refund", $types),
 			);
 
-		$types = reg_data::get_payment_types();
+		$types = $this->get_payment_types();
 		$types[""] = t("Select");
 		$retval["reg_payment_type_id"] = array(
 			"#title" => "Payment Type",
@@ -149,18 +148,18 @@ class reg_admin_cancel {
 	} // End of form()
 
 
-	static function form_validate($form_id, &$data) {
+	function form_validate($form_id, &$data) {
 
 		//
 		// Check for a valid badge cost number
 		//
-		if (!reg::is_valid_float($data["badge_cost"])) {
+		if (!$this->is_valid_float($data["badge_cost"])) {
 			$error = t("Badge cost '%cost%' is not a valid number!",
 				array("%cost%" => $data["badge_cost"]));
 			form_set_error("badge_cost", $error);
 		}
 
-		if (reg::is_negative_number($data["badge_cost"])) {
+		if ($this->is_negative_number($data["badge_cost"])) {
 			$error = t("Badge cost cannot be a negative number!");
 			form_set_error("badge_cost", $error);
 		}
@@ -168,13 +167,13 @@ class reg_admin_cancel {
 		//
 		// Check for a valid donation number
 		//
-		if (!reg::is_valid_float($data["donation"])) {
+		if (!$this->is_valid_float($data["donation"])) {
 			$error = t("Donation amount '%cost%' is not a valid number!",
 				array("%cost%" => $data["donation"]));
 			form_set_error("donation", $error);
 		}
 
-		if (reg::is_negative_number($data["donation"])) {
+		if ($this->is_negative_number($data["donation"])) {
 			$error = t("Donation amount cannot be a negative number!");
 			form_set_error("donation", $error);
 		}
@@ -185,7 +184,7 @@ class reg_admin_cancel {
 	/**
 	* Save the new note.
 	*/ 
-	static function form_submit($form_id, &$data) {
+	function form_submit($form_id, &$data) {
 
 		//
 		// Invert the numbers, since we're refunding money here..
@@ -231,7 +230,7 @@ class reg_admin_cancel {
 		// Redirect the user back to the viewing page.
 		//
 		$uri = "admin/reg/members/view/" . $reg_id . "/view";
-		reg::goto_url($uri);
+		$this->goto_url($uri);
 
 	} // End of form_submit()
 

@@ -310,19 +310,26 @@ function reg_admin_members_cancel($id) {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	return(reg_admin_cancel::cancel($id));
+	$cancel = $factory->get_object("admin_cancel");
+	return($cancel->cancel($id));
 }
 
 function reg_admin_members_cancel_form($id) {
-	return(reg_admin_cancel::form($id));
+	$factory = new reg_factory();
+	$cancel = $factory->get_object("admin_cancel");
+	return($cancel->form($id));
 }
 
 function reg_admin_members_cancel_form_validate($form_id, $data) {
-	return(reg_admin_cancel::form_validate($form_id, $data));
+	$factory = new reg_factory();
+	$cancel = $factory->get_object("admin_cancel");
+	return($cancel->form_validate($form_id, $data));
 }
 
 function reg_admin_members_cancel_form_submit($form_id, $data) {
-	return(reg_admin_cancel::form_submit($form_id, $data));
+	$factory = new reg_factory();
+	$cancel = $factory->get_object("admin_cancel");
+	return($cancel->form_submit($form_id, $data));
 }
 
 
@@ -333,19 +340,26 @@ function reg_admin_members_adjust($id) {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	return(reg_admin_adjust::adjust($id));
+	$adjust = $factory->get_object("admin_adjust");
+	return($adjust->adjust($id));
 }
 
 function reg_admin_members_adjust_form($id) {
-	return(reg_admin_adjust::form($id));
+	$factory = new reg_factory();
+	$adjust = $factory->get_object("admin_adjust");
+	return($adjust->form($id));
 }
 
 function reg_admin_members_adjust_form_validate($form_id, $data) {
-	return(reg_admin_adjust::form_validate($form_id, $data));
+	$factory = new reg_factory();
+	$adjust = $factory->get_object("admin_adjust");
+	return($adjust->form_validate($form_id, $data));
 }
 
 function reg_admin_members_adjust_form_submit($form_id, $data) {
-	return(reg_admin_adjust::form_submit($form_id, $data));
+	$factory = new reg_factory();
+	$adjust = $factory->get_object("admin_adjust");
+	return($adjust->form_submit($form_id, $data));
 }
 
 

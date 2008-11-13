@@ -5,15 +5,14 @@
 *	memberships.
 * Note that it borrows heavily from the forms in the reg_admin_cancel class.
 */
-class reg_admin_adjust {
+class reg_admin_adjust extends reg_admin_cancel {
 
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->log = $factory->get_object("log");
+	function __construct(&$log, $reg_admin_member) {
+		parent::__construct($log, $reg_admin_member);
 	}
 
-	static function adjust($id) {
+	function adjust($id) {
 
 		$retval = "";
 		$retval .= drupal_get_form("reg_admin_members_adjust_form", $id);
@@ -27,9 +26,9 @@ class reg_admin_adjust {
 	* Our member adjustment form.  We are extending the cancellation form and
 	* tweaking a few values.
 	*/
-	static function form($id) {
+	function form($id) {
 
-		$retval = reg_admin_cancel::form($id);
+		$retval = parent::form($id);
 
 		unset($retval["reg_status_id"]);
 
@@ -44,14 +43,18 @@ class reg_admin_adjust {
 
 		$retval["badge_cost"]["#default_value"] = 0.00;
 		$retval["badge_cost"]["#description"] = t("Adjustment amount.  "
-			. "Increasing the amount corresponds to a payment from the member. "
-			. "Decreasing the amount corresponds to a refund to the member. "
+			. "A positive number represents receiving a payment <b>from</b> "
+				. "the member.  "
+			. "A negative number represents refunding money <b>to</b> a "
+				. "member."
 			);
 
 		$retval["donation"]["#default_value"] = 0.00;
 		$retval["donation"]["#description"] = t("Adjustment amount.  "
-			. "Increasing the amount corresponds to a payment from the member. "
-			. "Decreasing the amount corresponds to a refund to the member. "
+			. "A positive number represents receiving a payment <b>from</b> "
+				. "the member.  "
+			. "A negative number represents refunding money <b>to</b> a "
+				. "member."
 			);
 
 		$retval["reg_payment_type_id"]["#description"] = 
@@ -66,11 +69,11 @@ class reg_admin_adjust {
 	} // End of form()
 
 
-	static function form_validate($form_id, &$data) {
+	function form_validate($form_id, &$data) {
 		//
 		// Check for a valid badge cost number
 		//
-		if (!reg::is_valid_float($data["badge_cost"])) {
+		if (!$this->is_valid_float($data["badge_cost"])) {
 			$error = t("Badge cost '%cost%' is not a valid number!",
 				array("%cost%" => $data["badge_cost"]));
 			form_set_error("badge_cost", $error);
@@ -79,7 +82,7 @@ class reg_admin_adjust {
 		//
 		// Check for a valid donation number
 		//
-		if (!reg::is_valid_float($data["donation"])) {
+		if (!$this->is_valid_float($data["donation"])) {
 			$error = t("Donation amount '%cost%' is not a valid number!",
 				array("%cost%" => $data["donation"]));
 			form_set_error("donation", $error);
@@ -88,7 +91,7 @@ class reg_admin_adjust {
 	} // End of form_validate()
 
 
-	static function form_submit($form_id, &$data) {
+	function form_submit($form_id, &$data) {
 
 		//
 		// Write a transaction record.
@@ -115,7 +118,7 @@ class reg_admin_adjust {
 		// Redirect the user back to the viewing page.
 		//
 		$uri = "admin/reg/members/view/" . $reg_id . "/view";
-		reg::goto_url($uri);
+		$this->goto_url($uri);
 
 	} // End of form_submit()
 

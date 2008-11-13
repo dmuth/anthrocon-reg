@@ -28,6 +28,12 @@ class reg_factory {
 		} else if ($name == "admin") {
 			$retval = $this->get_admin();
 
+		} else if ($name == "admin_adjust") {
+			$retval = $this->get_admin_adjust();
+
+		} else if ($name == "admin_cancel") {
+			$retval = $this->get_admin_cancel();
+
 		} else if ($name == "admin_member") {
 			$retval = $this->get_admin_member();
 
@@ -90,6 +96,22 @@ class reg_factory {
 	protected function get_admin() {
 		$log = $this->get_log();
 		$retval = new reg_admin($log);
+		return($retval);
+	}
+
+
+	protected function get_admin_adjust() {
+		$log = $this->get_log();
+		$reg_admin_member = $this->get_admin_member();
+		$retval = new reg_admin_adjust($log, $reg_admin_member);
+		return($retval);
+	}
+
+
+	protected function get_admin_cancel() {
+		$log = $this->get_log();
+		$reg_admin_member = $this->get_admin_member();
+		$retval = new reg_admin_cancel($log, $reg_admin_member);
 		return($retval);
 	}
 
