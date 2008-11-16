@@ -40,6 +40,9 @@ class reg_factory {
 		} else if ($name == "admin_member") {
 			$retval = $this->get_admin_member();
 
+		} else if ($name == "admin_search") {
+			$retval = $this->get_admin_search();
+
 		} else if ($name == "admin_settings") {
 			$retval = $this->get_admin_settings();
 
@@ -129,6 +132,13 @@ class reg_factory {
 	protected function get_admin_member() {
 		$log = $this->get_log();
 		$retval = new reg_admin_member($log);
+		return($retval);
+	}
+
+
+	protected function get_admin_search() {
+		$admin_member = $this->get_admin_member();
+		$retval = new reg_admin_search($admin_member);
 		return($retval);
 	}
 

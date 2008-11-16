@@ -380,22 +380,28 @@ function reg_admin_search() {
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
 
-	$retval = reg_admin_search::search();
-	$retval .= reg_admin_search::results();
+	$search = $factory->get_object("admin_search");
+	$retval = $search->search();
+	$retval .= $search->results();
 	return($retval);
 }
 
 function reg_admin_search_form() {
-	return(reg_admin_search::search_form());
-	return($retval);
+	$factory = new reg_factory();
+	$search = $factory->get_object("admin_search");
+	return($search->search_form());
 }
 
 function reg_admin_search_form_validate($form_id, &$data) {
-	reg_admin_search::search_validate($form_id, $data);
+	$factory = new reg_factory();
+	$search = $factory->get_object("admin_search");
+	$search->search_validate($form_id, $data);
 }
 
 function reg_admin_search_form_submit($form_id, &$data) {
-	return(reg_admin_search::search_submit($form_id, $data));
+	$factory = new reg_factory();
+	$search = $factory->get_object("admin_search");
+	return($search->search_submit($form_id, $data));
 }
 
 

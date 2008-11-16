@@ -3,19 +3,18 @@
 /**
 * This class holds functions related to our search functionality.
 */
-class reg_admin_search {
+class reg_admin_search extends reg {
 
 
-	function __construct($form) {
-		$factory = new reg_factory();
-		$this->form = $factory->get_object("form");
+	function __construct(&$admin_member) {
+		$this->admin_member = $admin_member;
 	}
 
 
 	/**
 	* Our search page.
 	*/
-	static function search() {
+	function search() {
 
 		$retval .= "<h2>Search Registrations</h2>";
 		$retval .= drupal_get_form("reg_admin_search_form");
@@ -25,9 +24,9 @@ class reg_admin_search {
 	} // End of search()
 
 
-	static function search_form() {
+	function search_form() {
 
-		$search_data = self::search_get_args();
+		$search_data = $this->search_get_args();
 
 		$retval = array();
 
@@ -72,7 +71,7 @@ class reg_admin_search {
 			"#default_value" => $search_data["address"],
 			);
 
-		$types = reg_data::get_types();
+		$types = $this->get_types();
 		$types[""] = "Select";
 		ksort($types);
 		$search["reg_type_id"] = array(
@@ -83,7 +82,7 @@ class reg_admin_search {
 			"#default_value" => $search_data["reg_type_id"],
 			);
 
-		$statuses = reg_data::get_statuses();
+		$statuses = $this->get_statuses();
 		$statuses[""] = "Select";
 		ksort($statuses);
 		$search["reg_status_id"] = array(
@@ -110,7 +109,7 @@ class reg_admin_search {
 	* If search arguments were passed in, decode them and return an
 	*       array with the data.
 	*/
-	private static function search_get_args() {
+	private function search_get_args() {
 		$arg = arg(4);
 		$arg = rawurldecode($arg);
 		$arg = html_entity_decode($arg);
@@ -122,7 +121,7 @@ class reg_admin_search {
 	/**
 	* Make sure we have valid search criteria.
 	*/
-	static function search_validate($form_id, &$data) {
+	function search_validate($form_id, &$data) {
 	} // End of search_validate()
 
 
@@ -132,13 +131,13 @@ class reg_admin_search {
 	* redirect ourselves to that URL.  That's because Drupal only allows
 	* submit functions to redirect and not display data. :-(
 	*/
-	static function search_submit($form_id, &$data) {
+	function search_submit($form_id, &$data) {
 
 		$get_data = http_build_query($data["search"]);
 		$get_data = rawurlencode($get_data);
 
 		$url = "admin/reg/members/search/" . $get_data;
-		reg::goto_url($url);
+		$this->goto_url($url);
 
 	} // End of search_submit()
 
@@ -146,24 +145,24 @@ class reg_admin_search {
 	/**
 	* Run our search and return search results.
 	*/
-	static function results() {
+	function results() {
 
 		$retval = "";
 
-		$search = self::search_get_args();
+		$search = $this->search_get_args();
                 
 		if (empty($search)) {
 			return(null);
 		}
 
-		$header = reg_admin_member::get_member_table_header();
+		$header = $this->admin_member->get_member_table_header();
 
 		$order_by = tablesort_sql($header);
 
-		$cursor = self::get_cursor($search, $order_by);
+		$cursor = $this->get_cursor($search, $order_by);
 
 		while ($row = db_fetch_array($cursor)) {
-			$rows[] = reg_admin_member::get_member_table_row($row);
+			$rows[] = $this->admin_member->get_member_table_row($row);
 		}
 
 		if (empty($rows)) {
@@ -192,7 +191,7 @@ class reg_admin_search {
 	*
 	* @param string $order_by How are we ordering the results?
 	*/
-	static function get_cursor(&$search, $order_by) {
+	function get_cursor(&$search, $order_by) {
 
 		$where = array();
 		$args = array();
