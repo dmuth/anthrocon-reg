@@ -3,20 +3,18 @@
 /**
 * This class holds functions that relate to registration levels.
 */
-class reg_admin_level {
+class reg_admin_level extends reg {
 
 	
-	function __construct() {
-		$factory = new reg_factory();
-		$this->log = $factory->get_object("log");
-		$this->form = $factory->get_object("form");
+	function __construct(&$log) {
+		$this->log = $log;
 	}
 
 
 	/**
 	* List membership levels.
 	*/
-	static function levels() {
+	function levels() {
 
 		$retval = "";
 
@@ -80,7 +78,7 @@ class reg_admin_level {
 	/**
 	* Add/edit a new membership level.
 	*/
-	static function levels_edit($id) {
+	function levels_edit($id) {
 
 		$retval = drupal_get_form("reg_admin_level_form", $id);
 		return($retval);
@@ -91,7 +89,7 @@ class reg_admin_level {
 	/**
 	* Load a specific level by ID, and return the resulting row as an array.
 	*/
-	static function load($id) {
+	function load($id) {
 
 		$query = "SELECT * FROM {reg_level} WHERE id='%d'";
 		$args = array($id);
@@ -106,7 +104,7 @@ class reg_admin_level {
 	/**
 	* Create our level for adding/editing a form.
 	*/
-	static function level_form($id) {
+	function level_form($id) {
 
 		$retval = array();
 		$row = array();
@@ -117,7 +115,7 @@ class reg_admin_level {
 		} else {
 			$title = "Edit Membership Level ID '$id'";
 
-			$row = self::load($id);
+			$row = $this->load($id);
 
 			$retval["id"] = array(
 				"#title" => "id",
@@ -152,7 +150,7 @@ class reg_admin_level {
 			"#default_value" => $row["year"] ? $row["year"] : date("Y"),
 			);
 
-		$types = reg_data::get_types();
+		$types = $this->get_types();
 		$retval["reg_type_id"] = array(
 			"#title" => "Membership Type",
 			"#description" => "The type of membership.  The user does NOT see this.",
@@ -237,7 +235,7 @@ class reg_admin_level {
 	/**
 	* This function validates a submitted level form.
 	*/
-	static function level_form_validate($form_id, &$data) {
+	function level_form_validate($form_id, &$data) {
 
 		$factory = new reg_factory();
 		$log = $factory->get_object("log");
@@ -245,13 +243,13 @@ class reg_admin_level {
 		//
 		// Make sure our year and price are numbers
 		//
-		if (!reg::is_valid_number($data["year"])) {
+		if (!$this->is_valid_number($data["year"])) {
 			$error = t("Year must be a number!");
 			form_set_error("year", $error);
 			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
-		if (!reg::is_valid_float($data["price"])) {
+		if (!$this->is_valid_float($data["price"])) {
 			$error = t("Price must be a number!");
 			form_set_error("price", $error);
 			$log->log($error, "", WATCHDOG_WARNING);
@@ -263,7 +261,7 @@ class reg_admin_level {
 			$log->log($error, "", WATCHDOG_WARNING);
 		}
 
-		if (reg::is_negative_number($data["price"])) {
+		if ($this->is_negative_number($data["price"])) {
 			$error = t("Price '%price%' cannot be a negative amount!",
 				array("%price%" => $data["price"])
 				);
@@ -275,11 +273,11 @@ class reg_admin_level {
 		// Check our data order
 		//
 		$start = $data["start"];
-		$start_time = reg_data::get_time_t($start["year"], $start["month"], 
+		$start_time = $this->get_time_t($start["year"], $start["month"], 
 			$start["day"]);
 
 		$end = $data["end"];
-		$end_time = reg_data::get_time_t($end["year"], $end["month"], 
+		$end_time = $this->get_time_t($end["year"], $end["month"], 
 			$end["day"]);
 
 		//
@@ -301,17 +299,17 @@ class reg_admin_level {
 	/**
 	* Everything in the form checks out, save the data.
 	*/
-	static function level_form_submit($form_id, $data) {
+	function level_form_submit($form_id, $data) {
 
 		//
 		// Turn the data arrays into strings
 		//
 		$start = $data["start"];
-		$data["start"] = reg_data::get_time_t($start["year"], 
+		$data["start"] = $this->get_time_t($start["year"], 
 			$start["month"], $start["day"]);
 
 		$end = $data["end"];
-		$data["end"] = reg_data::get_time_t($end["year"], $end["month"], 
+		$data["end"] = $this->get_time_t($end["year"], $end["month"], 
 			$end["day"]);
 
 		//
@@ -340,7 +338,7 @@ class reg_admin_level {
 			//
 			// Load our old data for later use.
 			//
-			$old_data = self::load($data["id"]);
+			$old_data = $this->load($data["id"]);
 
 			$query = "UPDATE {reg_level} "
 				. "SET "
@@ -381,7 +379,7 @@ class reg_admin_level {
 		// Create an audit log entry and write it out.
 		//
 		if (!empty($old_data)) {
-			$message_log = $message . " " . reg_data::get_changed_data(
+			$message_log = $message . " " . $this->get_changed_data(
 				$data, $old_data);
 			$factory = new reg_factory();
 			$log = $factory->get_object("log");
@@ -389,7 +387,7 @@ class reg_admin_level {
 		}
 
 		$uri = "admin/reg/levels";
-		reg::goto_url($uri);
+		$this->goto_url($uri);
 
 	} // End of level_form_submit()
 

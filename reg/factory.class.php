@@ -34,6 +34,9 @@ class reg_factory {
 		} else if ($name == "admin_cancel") {
 			$retval = $this->get_admin_cancel();
 
+		} else if ($name == "admin_level") {
+			$retval = $this->get_admin_level();
+
 		} else if ($name == "admin_member") {
 			$retval = $this->get_admin_member();
 
@@ -112,6 +115,13 @@ class reg_factory {
 		$log = $this->get_log();
 		$reg_admin_member = $this->get_admin_member();
 		$retval = new reg_admin_cancel($log, $reg_admin_member);
+		return($retval);
+	}
+
+
+	protected function get_admin_level() {
+		$log = $this->get_log();
+		$retval = new reg_admin_level($log);
 		return($retval);
 	}
 

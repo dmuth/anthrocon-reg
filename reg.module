@@ -240,27 +240,36 @@ function reg_admin_levels() {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	return(reg_admin_level::levels());
+	$level = $factory->get_object("admin_level");
+	return($level->levels());
 }
 
 function reg_admin_levels_edit($id = "") {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	return(reg_admin_level::levels_edit($id));
+	$level = $factory->get_object("admin_level");
+	return($level->levels_edit($id));
 }
 
 function reg_admin_level_form($id) {
-	return(reg_admin_level::level_form($id));
+	$factory = new reg_factory();
+	$level = $factory->get_object("admin_level");
+	return($level->level_form($id));
 }
 
 function reg_admin_level_form_validate($form_id, $data) {
-	reg_admin_level::level_form_validate($form_id, $data);
+	$factory = new reg_factory();
+	$level = $factory->get_object("admin_level");
+	return($level->level_form_validate($form_id, $data));
 }
 
 function reg_admin_level_form_submit($form_id, $data) {
-	reg_admin_level::level_form_submit($form_id, $data);
+	$factory = new reg_factory();
+	$level = $factory->get_object("admin_level");
+	return($level->level_form_submit($form_id, $data));
 }
+
 
 /**
 * Viewing recent registrations.
