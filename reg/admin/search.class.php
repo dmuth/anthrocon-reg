@@ -42,9 +42,9 @@ class reg_admin_search extends reg {
 		//
 		// Collapse the form if a search was done.
 		//
-		if (!empty($search_data)) {
-			$search["#collapsed"] = true;
-		}
+		//if (!empty($search_data)) {
+		//	$search["#collapsed"] = true;
+		//}
 
 		$search["badge_num"] = array(
 			"#title" => "Badge Number",
@@ -175,8 +175,8 @@ class reg_admin_search extends reg {
 				);
 		}
 
-		$retval = theme("table", $header, $rows);
-
+		$retval .= theme_pager();
+		$retval .= theme("table", $header, $rows);
 		$retval .= theme_pager();
 
 		return($retval);
