@@ -442,9 +442,8 @@ class reg {
 		//
 		$levels = $this->get_valid_levels();
 
-		$factory = new reg_factory();
-		$reg_message = $factory->get_object("message");
-		$log = $factory->get_object("log");
+		$reg_message = $this->message;
+		$log = $this->log;
 
 		if (empty($levels)) {
 			$data = array(
