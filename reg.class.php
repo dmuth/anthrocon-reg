@@ -47,15 +47,10 @@ class reg {
 	const VAR_EMAIL = "site_mail";
 
 
-	function __construct() {
-
-		$factory = new reg_factory();
-		$this->factory = $factory;
-		$this->message = $factory->get_object("message");
-		$this->fake = $factory->get_object("fake");
-		$this->log = $factory->get_object("log");
-		$this->form = $factory->get_object("form");
-
+	function __construct(&$message, &$fake, &$log) {
+		$this->message = $message;
+		$this->fake = $fake;
+		$this->log = $log;
 	}
 
 
@@ -64,7 +59,7 @@ class reg {
 	*	
 	* @return array Scalar array of permissions for this module.
 	*/
-	static function perm() {
+	function perm() {
 
 		$retval = array();
 		$retval[] = self::PERM_ADMIN;
@@ -81,7 +76,7 @@ class reg {
 	*
 	* @return boolean True if valid.  False if otherwise.
 	*/
-	static function is_valid_number($num) {
+	function is_valid_number($num) {
 
 		$num_int = intval($num);
 
@@ -101,7 +96,7 @@ class reg {
 	*
 	* @return boolean True if valid.  False if otherwise.
 	*/
-	static function is_valid_float($num) {
+	function is_valid_float($num) {
 
 		$num_float = floatval($num);
 
@@ -126,12 +121,12 @@ class reg {
 	*	OR not a number).
 	*
 	*/
-	static function is_negative_number($num) {
+	function is_negative_number($num) {
 
 		//
 		// Definitely not a negative number.
 		//
-		if (!self::is_valid_number($num)) {
+		if (!$this->is_valid_number($num)) {
 			return(false);
 		}
 
@@ -159,7 +154,7 @@ class reg {
 			return(true);
 		}
 
-		if (!self::is_valid_number($badge_num)) {
+		if (!$this->is_valid_number($badge_num)) {
 			$error = t("Badge number '%num%' is not a number!",
 				array("%num%" => $badge_num)
 				);
@@ -167,7 +162,7 @@ class reg {
 		}
 
 		//if ($badge_num_int < 0) {
-		if (self::is_negative_number($badge_num)) {
+		if ($this->is_negative_number($badge_num)) {
 			$error = t("Badge number cannot be negative!");
 			form_set_error("badge_num", $error);
 		}
@@ -190,7 +185,7 @@ class reg {
 	*	False if it is in use elsewhere.
 	* 
 	*/
-	static function is_badge_num_available($reg_id, $badge_num) {
+	function is_badge_num_available($reg_id, $badge_num) {
 
 		//
 		// If no badge number was entered, one will be assigned automatically.
@@ -279,7 +274,7 @@ class reg {
 		// a manual entry.
 		//
 		if (empty($data["badge_cost"])) {
-			$data["badge_cost"] = reg_data::get_reg_cost($data["reg_level_id"]);
+			$data["badge_cost"] = $this->get_reg_cost($data["reg_level_id"]);
 		}
 
 		//
@@ -297,7 +292,7 @@ class reg {
 			//
 			$data["reg_trans_gateway_id"] = 1;
 
-			if (!self::is_test_mode()) {
+			if (!$this->is_test_mode()) {
 				//
 				// If we are not running in test mode, we are talking to
 				// authorize.net in some fashion. (possibly in test mode)
@@ -313,7 +308,7 @@ class reg {
 					$display = $reg_message->load_display("cc-no-amex");
 					$error = $display["value"];
 					form_set_error("cc_num", $error);
-					reg_log::log($error, "", WATCHDOG_WARNING);
+					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(null);
 				}
 
@@ -347,28 +342,28 @@ class reg {
 					$display = $reg_message->load_display("cc-declined");
 					$error = $display["value"];
 					form_set_error("cc_num", $error);
-					reg_log::log($error, "", WATCHDOG_WARNING);
+					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
 				} else if ($gateway_results["status"] == "bad avs") {
 					$display = $reg_message->load_display("cc-declined-avs");
 					$error = $display["value"];
 					form_set_error("", $error);
-					reg_log::log($error, "", WATCHDOG_WARNING);
+					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
 				} else if ($gateway_results["status"] == "bad cvv") {
 					$display = $reg_message->load_display("cc-declined-cvv");
 					$error = $display["value"];
 					form_set_error("cvv", $error);
-					reg_log::log($error, "", WATCHDOG_WARNING);
+					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
 				} else if ($gateway_results["status"] == "error") {
 					$display = $reg_message->load_display("cc-error");
 					$error = $display["value"];
 					form_set_error("cc_num", $error);
-					reg_log::log($error, "", WATCHDOG_WARNING);
+					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
 				}
@@ -389,7 +384,7 @@ class reg {
 	
 				$message = t("We are in testing mode.  Automatically allow this "
 					. "'credit card'");
-				$data["reg_log_id"] = reg_log::log($message);
+				$data["reg_log_id"] = $this->log->log($message);
 
 				//
 				// Generate random gateway data.
@@ -409,11 +404,11 @@ class reg {
 		} else {
 			$message = t("Logging a manually made transaction/comp/etc. ")
 				. t("No card charging took place just now.");
-			$data["reg_log_id"] = reg_log::log($message);
+			$data["reg_log_id"] = $this->log->log($message);
 
 		}
 
-		$reg_trans_id = reg_log::log_trans($data);
+		$reg_trans_id = $this->log->log_trans($data);
 
 		return($reg_trans_id);
 
@@ -426,7 +421,7 @@ class reg {
 	*
 	* @retval boolean True if we are running in test mode.  False otherwise.
 	*/
-	static function is_test_mode() {
+	function is_test_mode() {
 
 		$retval = variable_get(reg_form::FORM_ADMIN_FAKE_CC, false);
 
@@ -438,14 +433,14 @@ class reg {
 	/**
 	* Our main registration page.
 	*/
-	static function registration() {
+	function registration() {
 
 		$retval = "";
 
 		//
 		// Get our current membership levels and make sure that we
 		//
-		$levels = reg_data::get_valid_levels();
+		$levels = $this->get_valid_levels();
 
 		$factory = new reg_factory();
 		$reg_message = $factory->get_object("message");
@@ -488,7 +483,7 @@ class reg {
 	*
 	* @return boolean True if we are.  False otherwise.
 	*/
-	static function is_ssl() {
+	function is_ssl() {
 		if ($_SERVER["SERVER_PORT"] == 443
 			|| $_SERVER["SERVER_PORT"] == 8443
 			) {
@@ -503,12 +498,12 @@ class reg {
 	/**
 	* Force the current page to be reloaded securely.
 	*/
-	static function force_ssl() {
+	function force_ssl() {
 
-		if (!self::is_ssl()) {
+		if (!$this->is_ssl()) {
 			$uri = request_uri();
 			$_SERVER["SERVER_PORT"]= 443;
-			self::goto_url($uri);
+			$this->goto_url($uri);
 		}
 
 	} // End of force_ssl()
@@ -530,7 +525,7 @@ class reg {
 	*
 	* @param string $uri The URL we want to send the user to.
 	*/
-	static function goto_url($uri) {
+	function goto_url($uri) {
 
 		$url = url($uri, null, null, true);
 
@@ -546,7 +541,7 @@ class reg {
 		// breaks drupal_goto().  So we get rid of any instances of "//"
 		// here.
 		//
-		if (self::is_ssl()) {
+		if ($this->is_ssl()) {
 			$url = eregi_replace("//", "/", $url);
 			//
 			// Oh yeah, switch to secure mode too. :-)
@@ -613,7 +608,7 @@ class reg {
 	* @return integer The badge number.  This number can be assigned
 	*	to a specific user.
 	*/
-	static function get_badge_num() {
+	function get_badge_num() {
 
 		$year = reg::YEAR;
 		$query = "UPDATE {reg_badge_num} "
@@ -633,7 +628,7 @@ class reg {
 	*
 	* @return integer The most recent insert ID.
 	*/
-	static function get_insert_id() {
+	function get_insert_id() {
 
 		$cursor = db_query("SELECT LAST_INSERT_ID() AS id");
 		$row = db_fetch_array($cursor);
@@ -655,19 +650,19 @@ class reg {
 	* @return string A human-readable string, such as "Visa ending in '1234'"
 	*
 	*/
-	static function get_cc_name($cc_type, $cc_num) {
+	function get_cc_name($cc_type, $cc_num) {
 
 		//
 		// Get the string type for a card if we don't already have it.
 		//
 		$cc_type_int = intval($cc_type);
 		if ($cc_type == (string)$cc_type_int) {
-			$types = self::get_cc_types();
+			$types = $this->get_cc_types();
 			$cc_type = $types[$cc_type];
 		}
 
 		$retval = "${cc_type} ending in '" 
-			. self::get_cc_last_4($cc_num) . "'";
+			. $this->get_cc_last_4($cc_num) . "'";
 
 		return($retval);
 
@@ -683,7 +678,7 @@ class reg {
 	*
 	* @return string The last 4 digits from our credit card number.
 	*/
-	static function get_cc_last_4($cc_num) {
+	function get_cc_last_4($cc_num) {
 
 		$retval = substr($cc_num, -4);
 
@@ -698,7 +693,7 @@ class reg {
 	* @return array The key is the membersip ID and the value is
 	*	an associative array of member data.
 	*/
-	static function get_valid_levels() {
+	function get_valid_levels() {
 
 		static $retval = array();
 
@@ -730,7 +725,7 @@ class reg {
 	*
 	* @return integer The cost of the registration.
 	*/
-	static function get_reg_cost($level_id) {
+	function get_reg_cost($level_id) {
 
 		$query = "SELECT price FROM {reg_level} "
 			. "WHERE id='%s'";
@@ -747,7 +742,7 @@ class reg {
 	/**
 	* Get the registration type ID, based on the level.
 	*/
-	static function get_reg_type_id($level_id) {
+	function get_reg_type_id($level_id) {
 
 		$query = "SELECT reg_type_id FROM {reg_level} "
 			. "WHERE id='%s'";
@@ -768,7 +763,7 @@ class reg {
 	* @return array Array where the key is the unique ID and the value is
 	*	the membership type.
 	*/
-	static function get_types() {
+	function get_types() {
 
 		//
 		// Cache our rows between calls
@@ -799,7 +794,7 @@ class reg {
 	* @return array Array where the key is the unique ID and the value is
 	*	the transaction type.
 	*/
-	static function get_trans_types() {
+	function get_trans_types() {
 
 		//
 		// Cache our rows between calls
@@ -827,7 +822,7 @@ class reg {
 	/**
 	* Retrieve data on a payment type based on an ID.
 	*/
-	static function get_payment_type($id) {
+	function get_payment_type($id) {
 
 		$query = "SELECT "
 			. "payment_type "
@@ -851,7 +846,7 @@ class reg {
 	* @return array Array where the key is the unique ID and the value is
 	*	the payment type.
 	*/
-	static function get_payment_types() {
+	function get_payment_types() {
 
 		//
 		// Cache our rows between calls
@@ -884,7 +879,7 @@ class reg {
 	*
 	* @todo I need to do something about the "detail" field at some point...
 	*/
-	static function get_statuses() {
+	function get_statuses() {
 
 		//
 		// Cache our rows between calls
@@ -916,7 +911,7 @@ class reg {
 	* @return array Array where the key is the unique ID and the value is
 	*	the credit card type.
 	*/
-	static function get_cc_types() {
+	function get_cc_types() {
 
 		//
 		// Cache our values between calls
@@ -949,7 +944,7 @@ class reg {
 	* @return array Array where the key is the unique ID and the value is
 	*	the shirt size.
 	*/
-	static function get_shirt_sizes($disabled = false) {
+	function get_shirt_sizes($disabled = false) {
 
 		//
 		// Cache our values between calls
@@ -980,7 +975,7 @@ class reg {
 	/**
 	* Return an array of credit card expiration months.
 	*/
-	static function get_cc_exp_months() {
+	function get_cc_exp_months() {
 		//
 		// We put a bogus first element in so that the rest of the elements
 		// will match their keys.
@@ -1006,7 +1001,7 @@ class reg {
 	/**
 	* Return an array of credit card expiration years.
 	*/
-	static function get_cc_exp_years() {
+	function get_cc_exp_years() {
 		$retval = array();
 
 		$start = date("Y");
@@ -1028,7 +1023,7 @@ class reg {
 	*	being run during EDT (GMT -0400), will result in a timestamp which
 	*	evaluates to 30 Dec 2008 00:00:00 -0400.
 	*/
-	static function get_time_t($year, $month, $day) {
+	function get_time_t($year, $month, $day) {
 
 		$retval = gmmktime(0, 0, 0, $month, $day, $year);
 
@@ -1044,7 +1039,7 @@ class reg {
 	* Turn a year, month, and date into a date that MySQL can understand
 	* for a field of type DATE.
 	*/
-	static function get_date($year, $month, $day) {
+	function get_date($year, $month, $day) {
 		$retval = $year . "-" . sprintf("%02d", $month)
 			. "-" . sprintf("%02d", $day);
 		return($retval);
@@ -1057,7 +1052,7 @@ class reg {
 	* Note that http://us2.php.net/mktime swears that versions of PHP
 	* after 5.1.0 can handle dates before the UNIX epoch. (1 Jan 1970)
 	*/
-	static function get_date_string($date) {
+	function get_date_string($date) {
 
 		$time = strtotime($date);
 		$retval = date("F jS, Y", $time);
@@ -1071,7 +1066,7 @@ class reg {
 	* Turn a date string from MySQL into an array that can be used
 	* in the editing form.
 	*/
-	static function get_date_array($date) {
+	function get_date_array($date) {
 
 		$retval = array();
 
@@ -1089,7 +1084,7 @@ class reg {
 	/**
 	* Format a badge number so that it is filled with leading zeros.
 	*/
-	static function format_badge_num($badge_num) {
+	function format_badge_num($badge_num) {
 
 		$retval = sprintf("%04d", $badge_num);
 		return($retval);
@@ -1109,7 +1104,7 @@ class reg {
 	* @return mixed If no changed were found, null is returned.  Otherwise
 	*	a string detailing the changes is returned.
 	*/
-	static function get_changed_data(&$data, &$old_data) {
+	function get_changed_data(&$data, &$old_data) {
 
 		$retval = "";
 
@@ -1152,8 +1147,8 @@ class reg {
 	/**
 	* Return the URL of our verification page.
 	*/
-	static function get_verify_url() {
-		$retval = reg::get_base() . "reg/verify";
+	function get_verify_url() {
+		$retval = $this->get_base() . "reg/verify";
 		return($retval);
 	} // End of get_verify_url()
 

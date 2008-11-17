@@ -4,12 +4,12 @@
 * This class handles all administrative functions that relate to members, 
 *	such as updates, adding notes, etc.
 */
-class reg_admin_member {
+class reg_admin_member extends reg {
 
 
-	function __construct() {
-		$factory = new reg_factory();
-		$this->log = $factory->get_object("log");
+	function __construct(&$log, &$admin_log) {
+		$this->log = $log;
+		$this->admin_log = $admin_log;
 		//
 		// This here is a circular dependency that I need to fix at some point.
 		//
@@ -22,9 +22,9 @@ class reg_admin_member {
 	*
 	* @return string HTML of the list of recent registrations.
 	*/
-	static function recent() {
+	function recent() {
 
-		$header = self::get_member_table_header();
+		$header = $this->get_member_table_header();
 
 		//
 		// By default, we'll be sorting by the reverse date.
@@ -47,7 +47,7 @@ class reg_admin_member {
 		$cursor = pager_query($query, reg::ITEMS_PER_PAGE);
                 
 		while ($row = db_fetch_array($cursor)) {
-			$rows[] = self::get_member_table_row($row);
+			$rows[] = $this->get_member_table_row($row);
 		}
 
 		if (empty($rows)) {
@@ -72,7 +72,7 @@ class reg_admin_member {
 	/**
 	* Return the table header for a member.
 	*/
-	static function get_member_table_header() {
+	function get_member_table_header() {
 
 		$header = array();
 		$header[] = array("data" => "Id #", "field" => "id",
@@ -95,7 +95,7 @@ class reg_admin_member {
 	*
 	* @return array A row to be displayed in a table.
 	*/
-	static function get_member_table_row(&$row) {
+	function get_member_table_row(&$row) {
 
 		$id = $row["id"];
 		$badge_num = $row["badge_num"];
@@ -107,7 +107,7 @@ class reg_admin_member {
                         
 		$retval = array(
 			l($id, $link),
-			l($row["year"] . "-" . reg_data::format_badge_num($badge_num), 
+			l($row["year"] . "-" . $this->format_badge_num($badge_num), 
 				$link),
 			l($badge_name, $link),
 			l($real_name, $link),
@@ -127,7 +127,7 @@ class reg_admin_member {
 	*
 	* @return array Array of Registration info
 	*/
-	static function load_reg($id) {
+	function load_reg($id) {
 
 		$query = "SELECT reg.*, "
 			. "reg_type.member_type, "
@@ -151,11 +151,11 @@ class reg_admin_member {
 	*
 	* @return string HTML of the member to display.
 	*/
-	static function view_reg($id) {
+	function view_reg($id) {
 
 		$retval = "";
 
-		$row = self::load_reg($id);
+		$row = $this->load_reg($id);
 
 		//
 		// Now create our table.
@@ -169,7 +169,7 @@ class reg_admin_member {
 
 		$rows[] = array(
 			array("data" => "Badge Number", "header" => true),
-			$row["year"] . "-" . reg_data::format_badge_num($row["badge_num"])
+			$row["year"] . "-" . $this->format_badge_num($row["badge_num"])
 			);
 
 		$rows[] = array(
@@ -184,7 +184,7 @@ class reg_admin_member {
 
 		$rows[] = array(
 			array("data" => "Birthdate", "header" => true),
-			reg_data::get_date_string($row["birthdate"])
+			$this->get_date_string($row["birthdate"])
 			);
 
 		$rows[] = array(
@@ -241,7 +241,7 @@ class reg_admin_member {
 			$row["phone"]
 			);
 
-		$shirt_sizes = reg_data::get_shirt_sizes();
+		$shirt_sizes = $this->get_shirt_sizes();
 		$rows[] = array(
 			array("data" => "Shirt Size", "header" => true),
 			$shirt_sizes[$row["shirt_size_id"]]
@@ -279,10 +279,10 @@ class reg_admin_member {
 		// Load up log entries and transactions for this user.
 		//
 		$retval .= "<h2>Log Entries</h2>";
-		$retval .= reg_admin_log::log_recent($row["id"]);
+		$retval .= $this->admin_log->log_recent($row["id"]);
 
 		$retval .= "<h2>Transactions</h2>";
-		$retval .= reg_admin_log::trans_recent($row["id"]);
+		$retval .= $this->admin_log->trans_recent($row["id"]);
 
 		return($retval);
 
@@ -294,7 +294,7 @@ class reg_admin_member {
 	*
 	* @param integer $id The reg_id of the record to edit.
 	*/
-	static function edit_reg($id) {
+	function edit_reg($id) {
 
 		$retval = "";
 
@@ -312,7 +312,7 @@ class reg_admin_member {
 	/**
 	* This function is used to add a new registration.
 	*/
-	static function add_reg($id = "") {
+	function add_reg($id = "") {
 
 		$retval = "";
 
@@ -330,13 +330,13 @@ class reg_admin_member {
 	* 
 	* @return integer The badge number of the member that we just updated.
 	*/
-	static function update_member($data) {
+	function update_member($data) {
 
 		//
 		// Assign a badge number if one was not entered.
 		//
 		if ($data["badge_num"] == "") {
-			$data["badge_num"] = reg_data::get_badge_num();
+			$data["badge_num"] = $this->get_badge_num();
 			$message = t("New badge number generated");
 			drupal_set_message($message);
 		}
@@ -382,7 +382,7 @@ class reg_admin_member {
 			."WHERE id=%d ";
 
 		$birth = $data["birthdate"];
-		$data["birthdate_string"] = reg_data::get_date($birth["year"], 
+		$data["birthdate_string"] = $this->get_date($birth["year"], 
 			$birth["month"], $birth["day"]);
 
 		$query_args = array(
@@ -414,7 +414,7 @@ class reg_admin_member {
 		// Create an audit log entry and write it out.
 		//
 		if (!empty($old_data)) {
-			$message .= " " . reg_data::get_changed_data(
+			$message .= " " . $this->get_changed_data(
 				$data, $old_data);
 		}
 
@@ -430,7 +430,7 @@ class reg_admin_member {
 	/**
 	* Add a note to an existing member.
 	*/
-	static function add_note($id) {
+	function add_note($id) {
 
 		$retval = "";
 
@@ -441,10 +441,10 @@ class reg_admin_member {
 	} // End of add_note()
 
 
-	static function add_note_form($id) {
+	function add_note_form($id) {
 
 		$retval = array();
-		$data = reg_admin_member::load_reg($id);
+		$data = $this->load_reg($id);
 
 		$retval["reg_id"] = array(
 			"#type" => "hidden",
@@ -504,14 +504,14 @@ class reg_admin_member {
 	} // End of add_note_form()
 
 
-	static function add_note_form_validate($form_id, &$data) {
+	function add_note_form_validate($form_id, &$data) {
 	} // End of add_note_form_validate()
 
 
 	/**
 	* Save the new note.
 	*/ 
-	static function add_note_form_submit($form_id, &$data) {
+	function add_note_form_submit($form_id, &$data) {
 
 		$reg_id = $data["reg_id"];
 		$message = t("Added Note: ") . $data["notes"];
@@ -526,7 +526,7 @@ class reg_admin_member {
 		// Redirect the user back to the viewing page.
 		//
 		$uri = "admin/reg/members/view/" . $reg_id . "/view";
-		reg::goto_url($uri);
+  		$this->goto_url($uri);
 
 	} // End of add_note_form_submit()
 

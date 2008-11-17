@@ -5,7 +5,11 @@
 * are only used be an admin.  Stuff such as code to print up recent log
 * entries, for example.
 */
-class reg_admin_log {
+class reg_admin_log extends reg {
+
+
+	function __construct() {
+	}
 
 
 	/**
@@ -21,7 +25,7 @@ class reg_admin_log {
 	* @param mixed $severity The severity of the message.  See Drupal's 
 	*	watchdog() function docs for more details on this.
 	*/
-	static function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
+	function log($message, $reg_id = "", $severity = WATCHDOG_NOTICE) {
 
 		global $user, $base_root;
 
@@ -216,7 +220,7 @@ class reg_admin_log {
 			$rows[] = array(
 				array("data" => "Badge Number", "header" => true),
 				l($row["year"] . "-" 
-					. reg_data::format_badge_num($row["badge_num"]
+					. $this->format_badge_num($row["badge_num"]
 					), $member_link)
 				);
 		}
@@ -272,7 +276,7 @@ class reg_admin_log {
 	*
 	* @return integer the ID of the row that was inserted into the database.
 	*/
-	static function log_trans(&$data) {
+	function log_trans(&$data) {
 
 		global $user;
 
@@ -320,7 +324,7 @@ class reg_admin_log {
 		}
 
 		if (!empty($data["cc_num"])) {
-			$data["cc_num"] = reg_data::get_cc_last_4($data["cc_num"]);
+			$data["cc_num"] = $this->get_cc_last_4($data["cc_num"]);
 		}
 
 		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
@@ -355,7 +359,7 @@ class reg_admin_log {
 		}
 
 
-		$id = reg_data::get_insert_id();
+		$id = $this->get_insert_id();
 
 		return($id);
 
@@ -522,7 +526,7 @@ class reg_admin_log {
 			$rows[] = array(
 				array("data" => "Badge Number", "header" => true),
 				l($row["year"] . "-" 
-					. reg_data::format_badge_num($row["badge_num"]
+					. $this->format_badge_num($row["badge_num"]
 					), $member_link)
 				);
 		}
@@ -683,7 +687,7 @@ class reg_admin_log {
 		//
 		if (!empty($row["reg_log_id"])) {
 			$retval .= "<h2>Attached Log Entry</h2>";
-			$retval .= reg_admin_log::log_detail($row["reg_log_id"]);
+			$retval .= $this->log_detail($row["reg_log_id"]);
 		}
 
 		return($retval);

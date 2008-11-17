@@ -17,7 +17,10 @@ class authorize_net_factory {
 	*/
 	function get_object($name) {
 
-		if ($name == "menu") {
+		if ($name == "authorize_net") {
+			$retval = $this->get_authorize_net();
+
+		} else if ($name == "menu") {
 			$retval = $this->get_menu();
 
 		} else if ($name == "settings") {
@@ -32,6 +35,17 @@ class authorize_net_factory {
 		return($retval);	
 
 	} // End of get_object()
+
+
+	protected function get_authorize_net() {
+
+		$factory = new reg_factory();
+		$reg = $factory->get_object("reg");
+		$log = $factory->get_object("log");
+
+		$retval = new authorize_net($reg, $log);
+		return($retval);
+	}
 
 
 	protected function get_menu() {

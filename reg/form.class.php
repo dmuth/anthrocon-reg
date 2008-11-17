@@ -416,8 +416,8 @@ class reg_form extends reg {
 			//
 			// We're done with the captcha, clear it out.
 			//
-			$log = new reg_log();
-			$captcha = new reg_captcha($log);
+			$factory = new reg_factory();
+			$captcha = $factory->get_object("captcha");
 			$captcha->clear();
 
 			//
@@ -442,7 +442,7 @@ class reg_form extends reg {
 			}
 		}
 
-		reg::goto_url($uri);
+		$this->goto_url($uri);
 
 	} // End of registration_form_submit()
 
@@ -469,7 +469,7 @@ class reg_form extends reg {
 		if (!empty($data["cc_type_id"])
 			&& !$this->in_admin()
 			) {
-			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"], 
+			$data["cc_name"] = $this->get_cc_name($data["cc_type_id"], 
 				$data["cc_num"]);
 
 			$saved_data["cc_name"] = $data["cc_name"];
@@ -597,7 +597,7 @@ class reg_form extends reg {
 				"#title" => t("Badge Type"),
 				"#type" => "select",
 				"#default_value" => $data["reg_type_id"],
-				"#options" => reg_data::get_types(),
+				"#options" => $this->get_types(),
 				"#description" => t("The registration type.")
 				);
 
@@ -605,7 +605,7 @@ class reg_form extends reg {
 				"#title" => t("Status"),
 				"#type" => "select",
 				"#default_value" => $data["reg_status_id"],
-				"#options" => reg_data::get_statuses(),
+				"#options" => $this->get_statuses(),
 				"#description" => t("The member's status.")
 				);
 
@@ -639,7 +639,7 @@ class reg_form extends reg {
 		//
 		$date_array = array();
 		if (!empty($data["birthdate"])) {
-			$date_array = reg_data::get_date_array($data["birthdate"]);
+			$date_array = $this->get_date_array($data["birthdate"]);
 		}
 		
 		$retval["birthdate"] = array(
@@ -665,7 +665,7 @@ class reg_form extends reg {
 			"#default_value" => $data["email"],
 			);
 
-		$shirt_sizes = reg_data::get_shirt_sizes();
+		$shirt_sizes = $this->get_shirt_sizes();
 		$shirt_sizes[""] = t("Select");
 		ksort($shirt_sizes);
 		$retval["shirt_size_id"] = array(
@@ -706,7 +706,7 @@ class reg_form extends reg {
 	*/
 	function get_level_options(&$data) {
 
-		$levels = reg_data::get_valid_levels();
+		$levels = $this->get_valid_levels();
 		$level_options = array();
 
 		$dest = drupal_get_destination();
@@ -721,7 +721,7 @@ class reg_form extends reg {
 			//
 			// If we an admin, give a link to edit the description.
 			//
-			if (reg::is_admin()) {
+			if ($this->is_admin()) {
 				$url = "admin/reg/levels/list/" . $id . "/edit";
 				$string .= " " . l(t("[Edit this blurb]"), $url, "", 
 					$dest);
@@ -783,7 +783,7 @@ class reg_form extends reg {
 
 		if ($this->in_admin()) {
 
-			$types = reg_data::get_payment_types();
+			$types = $this->get_payment_types();
 			$types[""] = t("Select");
 
 			$retval["reg_payment_type_id"] = array(
@@ -801,7 +801,7 @@ class reg_form extends reg {
 		$retval["cc_type_id"] = array(
 			"#title" => t("Credit Card Type"),
 			"#type" => "select",
-			"#options" => reg_data::get_cc_types(),
+			"#options" => $this->get_cc_types(),
 			"#default_value" => $data["cc_type_id"],
 			);
 
@@ -814,7 +814,7 @@ class reg_form extends reg {
 			);
 
 
-		if (reg::is_test_mode()) {
+		if ($this->is_test_mode()) {
 			$retval["cc_num"]["#description"] = t("Running in test mode.  "
 				. "Just enter any old number.");
 
@@ -861,13 +861,13 @@ class reg_form extends reg {
 			"#tree" => "true",
 			);
 		$retval["cc_exp"]["month"] = array(
-			"#options" => reg_data::get_cc_exp_months(),
+			"#options" => $this->get_cc_exp_months(),
 			"#type" => "select",
 			"#default_value" => $data["cc_exp"]["month"],
 			);
 
 		$retval["cc_exp"]["year"] = array(
-			"#options" => reg_data::get_cc_exp_years(),
+			"#options" => $this->get_cc_exp_years(),
 			"#type" => "select",
 			"#default_value" => $data["cc_exp"]["year"],
 			);

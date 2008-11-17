@@ -130,12 +130,11 @@ function reg_registration() {
 
 function reg_registration_form($id = "") {
 
-	$reg = new reg();
-	$log = new reg_log();
-	$cc_gateway = new authorize_net($reg, $log);
+	$reg_factory = new reg_factory();
+	$auth_factory = new authorize_net_factory();
 
-	$factory = new reg_factory();
-	$form = $factory->get_object("form");
+	$cc_gateway = $auth_factory->get_object("authorize_net");
+	$form = $reg_factory->get_object("form");
 
 	return($form->reg($id, $cc_gateway));
 
@@ -143,12 +142,11 @@ function reg_registration_form($id = "") {
 
 function reg_registration_form_validate($form_id, &$data) {
 
-	$reg = new reg();
-	$log = new reg_log();
-	$cc_gateway = new authorize_net($reg, $log);
+	$reg_factory = new reg_factory();
+	$auth_factory = new authorize_net_factory();
 
-	$factory = new reg_factory();
-	$form = $factory->get_object("form");
+	$cc_gateway = $auth_factory->get_object("authorize_net");
+	$form = $reg_factory->get_object("form");
 
 	$form->reg_validate($form_id, $data, $cc_gateway);
 
@@ -212,7 +210,7 @@ function reg_admin_settings_messages_edit($id = "") {
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
 	$settings = $factory->get_object("admin_settings_message");
-	return(reg_admin_settings_message::edit($id));
+	return($settings->edit($id));
 }
 
 function reg_admin_settings_message_form($id) {
@@ -278,16 +276,22 @@ function reg_admin_members() {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	return(reg_admin_member::recent());
+	$member = $factory->get_object("admin_member");
+	return($member->recent());
 }
 
 function reg_admin_members_view($id) {
-	return(reg_admin_member::view_reg($id));
+	$factory = new reg_factory();
+	$member = $factory->get_object("admin_member");
+	return($member->view_reg($id));
 }
 
 function reg_admin_members_edit($id) {
-	return(reg_admin_member::edit_reg($id));
+	$factory = new reg_factory();
+	$member = $factory->get_object("admin_member");
+	return($member->edit_reg($id));
 }
+
 
 /**
 * Our "Add a note" form.
@@ -296,19 +300,26 @@ function reg_admin_members_add_note($id) {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-	return(reg_admin_member::add_note($id));
+	$member = $factory->get_object("admin_member");
+	return($member->add_note($id));
 }
 
 function reg_admin_members_add_note_form($id) {
-	return(reg_admin_member::add_note_form($id));
+	$factory = new reg_factory();
+	$member = $factory->get_object("admin_member");
+	return($member->add_note_form($id));
 }
 
 function reg_admin_members_add_note_form_validate($form_id, &$data) {
-	return(reg_admin_member::add_note_form_validate($form_id, $data));
+	$factory = new reg_factory();
+	$member = $factory->get_object("admin_member");
+	return($member->add_note_form_validate($form_id, $data));
 }
 
 function reg_admin_members_add_note_form_submit($form_id, &$data) {
-	return(reg_admin_member::add_note_form_submit($form_id, $data));
+	$factory = new reg_factory();
+	$member = $factory->get_object("admin_member");
+	return($member->add_note_form_submit($form_id, $data));
 }
 
 
@@ -413,8 +424,8 @@ function reg_admin_members_add() {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-
-	return(reg_admin_member::add_reg());
+	$member = $factory->get_object("admin_member");
+	return($member->add_reg());
 }
 
 /**
@@ -425,20 +436,26 @@ function reg_admin_log() {
 	$factory = new reg_factory();
 	$reg = $factory->get_object("reg");
 	$reg->force_ssl();
-
-	return(reg_admin_log::log_recent());
+	$log = $factory->get_object("admin_log");
+	return($log->log_recent());
 }
 
 function reg_admin_log_detail($id) {
-	return(reg_admin_log::log_detail($id));
+	$factory = new reg_factory();
+	$log = $factory->get_object("admin_log");
+	return($log->log_detail($id));
 }
 
 function reg_admin_trans() {
-	return(reg_admin_log::trans_recent());
+	$factory = new reg_factory();
+	$log = $factory->get_object("admin_log");
+	return($log->trans_recent());
 }
 
 function reg_admin_trans_detail($id) {
-	return(reg_admin_log::trans_detail($id));
+	$factory = new reg_factory();
+	$log = $factory->get_object("admin_log");
+	return($log->trans_detail($id));
 }
 
 function reg_admin_main() {

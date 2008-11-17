@@ -4,7 +4,7 @@
 * This function is used for printing the success page for a user after 
 *	they register.
 */
-class reg_success {
+class reg_success extends reg {
 
 	function __construct(&$message, &$log) {
 
@@ -18,7 +18,7 @@ class reg_success {
 	* Check to see if our user just registered, and print up a success 
 	* message if they did.
 	*/
-	static function success() {
+	function success() {
 
 		$retval = "";
 
@@ -35,10 +35,10 @@ class reg_success {
 			$log = $factory->get_object("log");
 			$log->log($message);
 
-			reg::goto_url("reg/verify");
+			$this->goto_url("reg/verify");
 		}
 
-		$retval = self::success_page($data);
+		$retval = $this->success_page($data);
 
 		return($retval);
 
@@ -48,9 +48,9 @@ class reg_success {
 	/**
 	* Create our success page.
 	*/
-	static function success_page(&$data) {
+	function success_page(&$data) {
 
-		$url = reg_data::get_verify_url();
+		$url = $this->get_verify_url();
 		$email = variable_get(reg::VAR_EMAIL, "");
 
 		$retval = "<p/>\n";

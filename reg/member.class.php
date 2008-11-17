@@ -4,7 +4,7 @@
 * This class handles our member-centric functions, such as adding, viewing,
 *	and editing members.
 */
-class reg_member {
+class reg_member extends reg {
 
 
 	function __construct(&$log, &$email) {
@@ -43,7 +43,7 @@ class reg_member {
 				&& $data["badge_num"] != "0"
 			)
 			|| !$form->in_admin()) {
-			$data["badge_num"] = reg_data::get_badge_num();
+			$data["badge_num"] = $this->get_badge_num();
 
 		}
 
@@ -73,11 +73,11 @@ class reg_member {
 			;
 
 		$birth = $data["birthdate"];
-		$date_string = reg_data::get_date($birth["year"], $birth["month"], 
+		$date_string = $this->get_date($birth["year"], $birth["month"], 
 			$birth["day"]);
 
 		if (empty($data["reg_type_id"])) {
-			$data["reg_type_id"] = reg_data::get_reg_type_id(
+			$data["reg_type_id"] = $this->get_reg_type_id(
 				$data["reg_level_id"]);
 		}
 
@@ -96,7 +96,7 @@ class reg_member {
 			);
 		db_query($query, $query_args);
 
-		$data["id"] = reg_data::get_insert_id();
+		$data["id"] = $this->get_insert_id();
 
 		$message = t("Added registration for badge number '!num'",
 			array("!num" => $data["badge_num"])
@@ -151,7 +151,7 @@ class reg_member {
 		//
 		$data["total_cost"] = $trans_data["total_cost"];
 
-		self::email_receipt($data);
+		$this->email_receipt($data);
 
 		return($data["badge_num"]);
 
@@ -170,7 +170,7 @@ class reg_member {
 			&& !reg_form::in_admin()
 			) {
 			$message_name = "email-receipt";
-			$data["cc_name"] = reg_data::get_cc_name($data["cc_type_id"],
+			$data["cc_name"] = $this->get_cc_name($data["cc_type_id"],
 			$data["cc_num"]);
 
 		} else {

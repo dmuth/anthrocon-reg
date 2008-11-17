@@ -37,6 +37,9 @@ class reg_factory {
 		} else if ($name == "admin_level") {
 			$retval = $this->get_admin_level();
 
+		} else if ($name == "admin_log") {
+			$retval = $this->get_admin_log();
+
 		} else if ($name == "admin_member") {
 			$retval = $this->get_admin_member();
 
@@ -129,9 +132,17 @@ class reg_factory {
 	}
 
 
+	protected function get_admin_log() {
+		$log = $this->get_log();
+		$retval = new reg_admin_log();
+		return($retval);
+	}
+
+
 	protected function get_admin_member() {
 		$log = $this->get_log();
-		$retval = new reg_admin_member($log);
+		$admin_log = $this->get_admin_log();
+		$retval = new reg_admin_member($log, $admin_log);
 		return($retval);
 	}
 
@@ -158,7 +169,8 @@ class reg_factory {
 	}
 
 	protected function get_captcha() {
-		$retval = new reg_captcha();
+		$log = $this->get_log();
+		$retval = new reg_captcha($log);
 		return($retval);
 	}
 
@@ -214,7 +226,10 @@ class reg_factory {
 	}
 
 	protected function get_reg() {
-		$retval = new reg();
+		$message = $this->get_message();
+		$fake = $this->get_fake();
+		$log = $this->get_log();
+		$retval = new reg($message, $fake, $log);
 		return($retval);
 	}
 
