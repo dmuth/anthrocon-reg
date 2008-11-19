@@ -7,7 +7,6 @@
 *
 */
 
-
 /**
 * Define our autoloader, and register it.
 */
@@ -24,11 +23,16 @@ spl_autoload_register("reg_autoload");
 
 
 /**
+* Create our factory instance.
+*/
+$GLOBALS["reg_factory"] = new reg_factory();
+
+
+/**
 * Our list of permissions
 */
 function reg_perm() {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	return($reg->perm());
 }
 
@@ -38,8 +42,7 @@ function reg_init() {
 
 
 function reg_exit() {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->hook_exit();
 }
 
@@ -60,8 +63,7 @@ function reg_exit() {
 */
 function reg_menu($may_cache) {
 
-	$factory = new reg_factory();
-	$menu = $factory->get_object("menu");
+	$menu = $GLOBALS["reg_factory"]->get_object("menu");
 	$items = $menu->menu($may_cache);
 	return($items);
 
@@ -73,33 +75,28 @@ function reg_menu($may_cache) {
 */
 function reg_verify($id_email = "") {
 
-	$factory = new reg_factory();
-
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
 
-	$verify = $factory->get_object("verify");
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
 	$retval = $verify->verify($id_email);
 
 	return($retval);
 } 
 
 function reg_verify_form() {
-	$factory = new reg_factory();
-	$verify = $factory->get_object("verify");
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
 	$retval = $verify->verify_form();
 	return($retval);
 }
 
 function reg_verify_form_validate($form_id, &$data) {
-	$factory = new reg_factory();
-	$verify = $factory->get_object("verify");
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
 	$verify->verify_validate($form_id, $data);
 }
 
 function reg_verify_form_submit($form_id, &$data) {
-	$factory = new reg_factory();
-	$verify = $factory->get_object("verify");
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
 	$retval = $verify->verify_submit($form_id, $data);
 	return($retval);
 }
@@ -109,8 +106,7 @@ function reg_verify_form_submit($form_id, &$data) {
 * Our "success" page.
 */
 function reg_success() {
-	$factory = new reg_factory();
-	$success = $factory->get_object("success");
+	$success = $GLOBALS["reg_factory"]->get_object("success");
 	$retval = $success->success();
 	return($retval);
 }
@@ -121,8 +117,7 @@ function reg_success() {
 */
 function reg_registration() {
 
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 
 	$reg->force_ssl();
 	return($reg->registration());
@@ -130,11 +125,10 @@ function reg_registration() {
 
 function reg_registration_form($id = "") {
 
-	$reg_factory = new reg_factory();
 	$auth_factory = new authorize_net_factory();
 
 	$cc_gateway = $auth_factory->get_object("authorize_net");
-	$form = $reg_factory->get_object("form");
+	$form = $GLOBALS["reg_factory"]->get_object("form");
 
 	return($form->reg($id, $cc_gateway));
 
@@ -142,11 +136,10 @@ function reg_registration_form($id = "") {
 
 function reg_registration_form_validate($form_id, &$data) {
 
-	$reg_factory = new reg_factory();
 	$auth_factory = new authorize_net_factory();
 
 	$cc_gateway = $auth_factory->get_object("authorize_net");
-	$form = $reg_factory->get_object("form");
+	$form = $GLOBALS["reg_factory"]->get_object("form");
 
 	$form->reg_validate($form_id, $data, $cc_gateway);
 
@@ -154,8 +147,7 @@ function reg_registration_form_validate($form_id, &$data) {
 
 function reg_registration_form_submit($form_id, &$data) {
 
-	$factory = new reg_factory();
-	$form = $factory->get_object("form");
+	$form = $GLOBALS["reg_factory"]->get_object("form");
 
 	return($form->reg_submit($form_id, $data));
 
@@ -166,30 +158,26 @@ function reg_registration_form_submit($form_id, &$data) {
 * Our settings form.
 */
 function reg_admin_settings() {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$settings = $factory->get_object("admin_settings");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
 	$retval = $settings->settings();
 	return($retval);
 }
 
 function reg_admin_settings_form() {
-	$factory = new reg_factory();
-	$settings = $factory->get_object("admin_settings");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
 	$retval = $settings->settings_form();
 	return($retval);
 }
 
 function reg_admin_settings_form_validate($form_id, $data) {
-	$factory = new reg_factory();
-	$settings = $factory->get_object("admin_settings");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
 	$settings->settings_form_validate($form_id, $data);
 }
 
 function reg_admin_settings_form_submit($form_id, $data) {
-	$factory = new reg_factory();
-	$settings = $factory->get_object("admin_settings");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
 	$settings->settings_form_submit($form_id, $data);
 }
 
@@ -198,36 +186,31 @@ function reg_admin_settings_form_submit($form_id, $data) {
 * Messages admin.
 */
 function reg_admin_settings_messages() {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$settings = $factory->get_object("admin_settings_message");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
 	return($settings->messages());
 }
 
 function reg_admin_settings_messages_edit($id = "") {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$settings = $factory->get_object("admin_settings_message");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
 	return($settings->edit($id));
 }
 
 function reg_admin_settings_message_form($id) {
-	$factory = new reg_factory();
-	$settings = $factory->get_object("admin_settings_message");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
 	return($settings->form($id));
 }
 
 function reg_admin_settings_message_form_validate($form_id, $data) {
-	$factory = new reg_factory();
-	$settings = $factory->get_object("admin_settings_message");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
 	return($settings->form_validate($form_id, $data));
 }
 
 function reg_admin_settings_message_form_submit($form_id, $data) {
-	$factory = new reg_factory();
-	$settings = $factory->get_object("admin_settings_message");
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
 	return($settings->form_submit($form_id, $data));
 }
 
@@ -235,36 +218,31 @@ function reg_admin_settings_message_form_submit($form_id, $data) {
 * Membership level editing stuff.
 */
 function reg_admin_levels() {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$level = $factory->get_object("admin_level");
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
 	return($level->levels());
 }
 
 function reg_admin_levels_edit($id = "") {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$level = $factory->get_object("admin_level");
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
 	return($level->levels_edit($id));
 }
 
 function reg_admin_level_form($id) {
-	$factory = new reg_factory();
-	$level = $factory->get_object("admin_level");
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
 	return($level->level_form($id));
 }
 
 function reg_admin_level_form_validate($form_id, $data) {
-	$factory = new reg_factory();
-	$level = $factory->get_object("admin_level");
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
 	return($level->level_form_validate($form_id, $data));
 }
 
 function reg_admin_level_form_submit($form_id, $data) {
-	$factory = new reg_factory();
-	$level = $factory->get_object("admin_level");
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
 	return($level->level_form_submit($form_id, $data));
 }
 
@@ -273,22 +251,19 @@ function reg_admin_level_form_submit($form_id, $data) {
 * Viewing recent registrations.
 */
 function reg_admin_members() {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->recent());
 }
 
 function reg_admin_members_view($id) {
-	$factory = new reg_factory();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->view_reg($id));
 }
 
 function reg_admin_members_edit($id) {
-	$factory = new reg_factory();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->edit_reg($id));
 }
 
@@ -297,28 +272,24 @@ function reg_admin_members_edit($id) {
 * Our "Add a note" form.
 */
 function reg_admin_members_add_note($id) {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->add_note($id));
 }
 
 function reg_admin_members_add_note_form($id) {
-	$factory = new reg_factory();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->add_note_form($id));
 }
 
 function reg_admin_members_add_note_form_validate($form_id, &$data) {
-	$factory = new reg_factory();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->add_note_form_validate($form_id, $data));
 }
 
 function reg_admin_members_add_note_form_submit($form_id, &$data) {
-	$factory = new reg_factory();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->add_note_form_submit($form_id, $data));
 }
 
@@ -327,28 +298,24 @@ function reg_admin_members_add_note_form_submit($form_id, &$data) {
 * Cancellation form for admins.
 */
 function reg_admin_members_cancel($id) {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$cancel = $factory->get_object("admin_cancel");
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
 	return($cancel->cancel($id));
 }
 
 function reg_admin_members_cancel_form($id) {
-	$factory = new reg_factory();
-	$cancel = $factory->get_object("admin_cancel");
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
 	return($cancel->form($id));
 }
 
 function reg_admin_members_cancel_form_validate($form_id, $data) {
-	$factory = new reg_factory();
-	$cancel = $factory->get_object("admin_cancel");
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
 	return($cancel->form_validate($form_id, $data));
 }
 
 function reg_admin_members_cancel_form_submit($form_id, $data) {
-	$factory = new reg_factory();
-	$cancel = $factory->get_object("admin_cancel");
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
 	return($cancel->form_submit($form_id, $data));
 }
 
@@ -357,28 +324,24 @@ function reg_admin_members_cancel_form_submit($form_id, $data) {
 * Balance adjustments
 */
 function reg_admin_members_adjust($id) {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$adjust = $factory->get_object("admin_adjust");
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
 	return($adjust->adjust($id));
 }
 
 function reg_admin_members_adjust_form($id) {
-	$factory = new reg_factory();
-	$adjust = $factory->get_object("admin_adjust");
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
 	return($adjust->form($id));
 }
 
 function reg_admin_members_adjust_form_validate($form_id, $data) {
-	$factory = new reg_factory();
-	$adjust = $factory->get_object("admin_adjust");
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
 	return($adjust->form_validate($form_id, $data));
 }
 
 function reg_admin_members_adjust_form_submit($form_id, $data) {
-	$factory = new reg_factory();
-	$adjust = $factory->get_object("admin_adjust");
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
 	return($adjust->form_submit($form_id, $data));
 }
 
@@ -387,31 +350,27 @@ function reg_admin_members_adjust_form_submit($form_id, $data) {
 * Searching registrations.
 */
 function reg_admin_search() {
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
 
-	$search = $factory->get_object("admin_search");
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
 	$retval = $search->search();
 	$retval .= $search->results();
 	return($retval);
 }
 
 function reg_admin_search_form() {
-	$factory = new reg_factory();
-	$search = $factory->get_object("admin_search");
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
 	return($search->search_form());
 }
 
 function reg_admin_search_form_validate($form_id, &$data) {
-	$factory = new reg_factory();
-	$search = $factory->get_object("admin_search");
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
 	$search->search_validate($form_id, $data);
 }
 
 function reg_admin_search_form_submit($form_id, &$data) {
-	$factory = new reg_factory();
-	$search = $factory->get_object("admin_search");
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
 	return($search->search_submit($form_id, $data));
 }
 
@@ -421,10 +380,9 @@ function reg_admin_search_form_submit($form_id, &$data) {
 */
 function reg_admin_members_add() {
 
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$member = $factory->get_object("admin_member");
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->add_reg());
 }
 
@@ -433,38 +391,33 @@ function reg_admin_members_add() {
 */
 function reg_admin_log() {
 
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$log = $factory->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
 	return($log->log_recent());
 }
 
 function reg_admin_log_detail($id) {
-	$factory = new reg_factory();
-	$log = $factory->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
 	return($log->log_detail($id));
 }
 
 function reg_admin_trans() {
-	$factory = new reg_factory();
-	$log = $factory->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
 	return($log->trans_recent());
 }
 
 function reg_admin_trans_detail($id) {
-	$factory = new reg_factory();
-	$log = $factory->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
 	return($log->trans_detail($id));
 }
 
 function reg_admin_main() {
 
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
 
-	$admin = $factory->get_object("admin");
+	$admin = $GLOBALS["reg_factory"]->get_object("admin");
 	return($admin->main());
 
 }
@@ -474,8 +427,7 @@ function reg_admin_main() {
 */
 function reg_admin_stats() {
 
-	$factory = new reg_factory();
-	$reg = $factory->get_object("reg");
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
 
 return("This is where our stats page would go.");
@@ -486,8 +438,7 @@ return("This is where our stats page would go.");
 * Our theme function for creating form elements in the reg system.
 */
 function theme_reg_theme($form) {
-	$factory = new reg_factory();
-	$theme = $factory->get_object("theme");
+	$theme = $GLOBALS["reg_factory"]->get_object("theme");
 	$retval = $theme->theme($form);
 	return($retval);
 }

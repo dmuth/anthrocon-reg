@@ -9,6 +9,9 @@
 */
 class reg_factory {
 
+	function __construct() {
+	}
+
 
 	/**
 	* This is the main function that instantiates and object and treutns it.
