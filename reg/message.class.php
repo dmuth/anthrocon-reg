@@ -18,9 +18,8 @@ class reg_message extends reg {
 	protected $tokens = array();
 
 
-	function __construct($log) {
-		$factory = new reg_factory();
-		$this->log = $factory->get_object("log");
+	function __construct(&$log) {
+		$this->log = $log;
 	}
 
 
@@ -46,9 +45,7 @@ class reg_message extends reg {
 			$message = t("Unable to load message with name '!name'!",
 				array("!name" => $name)
 				);
-			$factory = new reg_factory();
-			$log = $factory->get_object("log");
-			$log->log($message, '', WATCHDOG_WARNING);
+			$this->log->log($message, '', WATCHDOG_WARNING);
 		}
 
 		return($retval);
@@ -97,7 +94,6 @@ class reg_message extends reg {
 		//
 		// Grab our email address and munge it.
 		//
-// TEST
 		$data["!email"] = variable_get(reg::VAR_EMAIL, "");
 		$tmp = $data["!email"];
 		$tmp = str_replace("@", " AT ", $tmp);
@@ -141,9 +137,7 @@ class reg_message extends reg {
 			$message = t("Unable to load message with id '!id'!",
 				array("!id" => $id)
 				);
-			$factory = new reg_factory();
-			$log = $factory->get_object("log");
-			$log->log($message, '', WATCHDOG_WARNING);
+			$this->log->log($message, '', WATCHDOG_WARNING);
 		}
 
 

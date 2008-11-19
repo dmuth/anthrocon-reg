@@ -195,9 +195,7 @@ class reg_admin_cancel extends reg {
 		//
 		// Write a transaction record.
 		//
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
-		$log->log_trans($data);
+		$this->log->log_trans($data);
 
 		$reg_id = $data["reg_id"];
 		$message = t("Registration cancelled.");
@@ -208,7 +206,7 @@ class reg_admin_cancel extends reg {
 		//
 		// Write a log entry for this member.
 		//
-		$log->log($message, $reg_id);
+		$this->log->log($message, $reg_id);
 
 		$message = t("Registration cancelled.");
 		drupal_set_message($message);

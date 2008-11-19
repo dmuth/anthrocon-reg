@@ -29,6 +29,7 @@ class reg_form extends reg {
 		$this->log = $factory->get_object("log");
 		$this->admin_member = $factory->get_object("admin_member");
 		$this->member = $factory->get_object("member");
+		$this->captcha = $factory->get_object("captcha");
 	}
 
 
@@ -150,8 +151,7 @@ class reg_form extends reg {
 	*/
 	function reg_validate(&$form_id, &$data, &$cc_gateway) {
 
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
+		$log = $this->log;
 
 		//
 		// Assume everything is okay, unless proven otherwise.
@@ -387,8 +387,7 @@ class reg_form extends reg {
 
 	function set_cc_expired($month, $year) {
 
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
+		$log = $this->log;
 
 		$error = t("Credit card is expired (!month/!year)",
 			array(
@@ -416,8 +415,7 @@ class reg_form extends reg {
 			//
 			// We're done with the captcha, clear it out.
 			//
-			$factory = new reg_factory();
-			$captcha = $factory->get_object("captcha");
+			$captcha = $this->captcha;
 			$captcha->clear();
 
 			//
@@ -454,8 +452,7 @@ class reg_form extends reg {
 	*/
 	function reg_submit_new(&$data) {
 
-		$factory = new reg_factory();
-		$member = $factory->get_object("member");
+		$member = $this->member;
 
 		$data["badge_num"] = $member->add_member($data, 
 			$_SESSION["reg"]["reg_trans_id"]);

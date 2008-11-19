@@ -237,8 +237,7 @@ class reg_admin_level extends reg {
 	*/
 	function level_form_validate($form_id, &$data) {
 
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
+		$log = $this->log;
 
 		//
 		// Make sure our year and price are numbers
@@ -381,9 +380,7 @@ class reg_admin_level extends reg {
 		if (!empty($old_data)) {
 			$message_log = $message . " " . $this->get_changed_data(
 				$data, $old_data);
-			$factory = new reg_factory();
-			$log = $factory->get_object("log");
-			$log->log($message_log);
+			$this->log->log($message_log);
 		}
 
 		$uri = "admin/reg/levels";

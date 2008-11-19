@@ -96,9 +96,7 @@ class reg_admin_adjust extends reg_admin_cancel {
 		//
 		// Write a transaction record.
 		//
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
-		$log->log_trans($data);
+		$this->log->log_trans($data);
 
 		$reg_id = $data["reg_id"];
 		$message = t("Balance adjustment.");
@@ -109,9 +107,9 @@ class reg_admin_adjust extends reg_admin_cancel {
 		//
 		// Write a log entry for this member.
 		//
-		$log->log($message, $reg_id);
+		$this->log->log($message, $reg_id);
 
-		$message = t("Balance adjustment.");
+		$message = t("Balance adjustment successful.");
 		drupal_set_message($message);
 
 		//

@@ -223,8 +223,8 @@ class reg_factory {
 	}
 
 	protected function get_message() {
-		$log = new reg_log();
-		$retval = new reg_message($reg_log);
+		$log = $this->get_log();
+		$retval = new reg_message($log);
 		return($retval);
 	}
 

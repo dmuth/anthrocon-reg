@@ -11,10 +11,6 @@ class reg_member extends reg {
 
 		$this->log = $log;
 		$this->email = $email;
-		//$this->form = $form;
-		//
-		// Don't include the form class due to circular dependencies.
-		//
 
 	}
 
@@ -32,12 +28,17 @@ class reg_member extends reg {
 	function add_member(&$data, $reg_trans_id = "") {
 
 		//
+		// I have to leave this here for now, due to a dependency loop.
+		// I'll fix that in a future version.
+		//
+		$factory = new reg_factory();
+		$form = $factory->get_object("form");
+
+		//
 		// If there is no badge number specififed OR we are in the
 		// public interface, automatically generate a badge number.
 		// Otherwise, we'll accept the admin-specified one.
 		//
-		$factory = new reg_factory();
-		$form = $factory->get_object("form");
 		if (
 			(	empty($data["badge_num"])
 				&& $data["badge_num"] != "0"
@@ -102,9 +103,7 @@ class reg_member extends reg {
 			array("!num" => $data["badge_num"])
 			);
 
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
-		$log->log($message, $data["id"]);
+		$this->log->log($message, $data["id"]);
 
 		//
 		// Make a note in the just-written transaction what the member's ID is.

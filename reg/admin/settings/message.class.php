@@ -215,8 +215,12 @@ class reg_admin_settings_message extends reg {
 		//
 		// Unset values we're not checking.
 		//
-		unset($old_data["name"]);
-		unset($old_data["type"]);
+		if (!empty($old_data["name"])) {
+			unset($old_data["name"]);
+		}
+		if (!empty($old_data["type"])) {
+			unset($old_data["type"]);
+		}
 
 		$message .= " " . $this->get_changed_data($data, $old_data);
 		$log = $this->log;

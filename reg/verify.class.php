@@ -27,9 +27,7 @@ class reg_verify extends reg {
 
 		$email = variable_get(reg::VAR_EMAIL, "");
 
-		$factory = new reg_factory();
-		$message = $factory->get_object("message");
-		$message = t($message->load_display("verify",
+		$message = t($this->message->load_display("verify",
 			array(
 				"!email" => $email,
 				)
@@ -243,9 +241,7 @@ class reg_verify extends reg {
 					"%id" => $id_email,
 				));
 			form_set_error("", $message);
-			$factory = new reg_factory();
-			$log = $factory->get_object("log");
-			$log->log($message, "", WATCHDOG_WARNING);
+			$this->log->log($message, "", WATCHDOG_WARNING);
 
 		}
 
@@ -288,9 +284,7 @@ class reg_verify extends reg {
 				"%email" => $data["email"],
 			));
 		drupal_set_message($message);
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
-		$log->log($message, $id);
+		$this->log->log($message, $id);
 
 	} // End of send_email()
 
@@ -383,9 +377,7 @@ class reg_verify extends reg {
 				"%cc_exp%" => $search["cc_exp"]["year"] . "-" 
 					. $search["cc_exp"]["month"],
 			));
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
-		$log->log($message, "", WATCHDOG_WARNING);
+		$this->log->log($message, "", WATCHDOG_WARNING);
 
 		return($rows);
 

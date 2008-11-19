@@ -7,8 +7,7 @@
 class reg_admin {
 
 	function __construct($log) {
-		$factory = new reg_factory();
-		$this->log = $factory->get_object("log");
+		$this->log = $log;
 	}
 
 	/**
@@ -28,10 +27,7 @@ class reg_admin {
 					)
 				);
 
-			$factory = new reg_factory();
-			$log = $factory->get_object("log");
-
-			$log->log($message);
+			$this->log->log($message);
 
 		}
 

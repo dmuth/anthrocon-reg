@@ -31,10 +31,7 @@ class reg_success extends reg {
 			$message = t("No success data found.  Sending user over "
 				. "to verify page.");
 
-			$factory = new reg_factory();
-			$log = $factory->get_object("log");
-			$log->log($message);
-
+			$this->log->log($message);
 			$this->goto_url("reg/verify");
 		}
 
@@ -55,9 +52,7 @@ class reg_success extends reg {
 
 		$retval = "<p/>\n";
 
-		$factory = new reg_factory();
-		$message = $factory->get_object("message");
-		$message = $message->load_display("success",
+		$message = $this->message->load_display("success",
 			array(
 				"!email" => $email,
 				"!member_email" => $data["member_email"],

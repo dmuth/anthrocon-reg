@@ -8,7 +8,6 @@ TODO
 
 - Refactor and update the reg codebase
 	- Create a reg_factory class to instantiate objects
-		- remove all inner uses of the reg_factory class
 		- find . -type f -name \*.class.php -exec grep -i --with-filename reg_data:: {} \;
 			- combine reg_data into reg and do a global search and replace
 	- Remove all references to statics (excluding constants)
