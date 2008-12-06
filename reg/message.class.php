@@ -103,7 +103,7 @@ class reg_message extends reg {
 		//
 		// Grab our verify URL, too.
 		//
-        $url = reg_data::get_verify_url();
+        $url = $this->get_verify_url();
 		$data["!verify_url"] = l($url, $url);
 
 		$retval["value"] = t($retval["value"], $data);

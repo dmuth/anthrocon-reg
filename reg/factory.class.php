@@ -100,7 +100,10 @@ class reg_factory {
 
 
 	protected function get_theme() {
-		$retval = new reg_theme();
+		$message = $this->get_message();
+		$fake = $this->get_fake();
+		$log = $this->get_log();
+		$retval = new reg_theme($message, $fake, $log);
 		return($retval);
 	}
 

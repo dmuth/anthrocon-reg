@@ -7,15 +7,24 @@ TODO
 ====
 
 - Refactor and update the reg codebase
-	- Create a reg_factory class to instantiate objects
-		- find . -type f -name \*.class.php -exec grep -i --with-filename reg_data:: {} \;
-			- combine reg_data into reg and do a global search and replace
 	- Remove all references to statics (excluding constants)
-		- For constants, create a "get_constant()" function
+
+		- For constants, create a "get_constant()" function in reg
 			- Create a private $constants array in reg class
+
 	- Search for ::
+		- find . -type f -name \*.class.php -exec grep -i --with-filename :: {} \;
 	- Remove all "new" in any place but the factory class and reg.module
 	- Put a single factory instance in the reg.module file
+
+- Issues with falling back a timezone:
+	- select id, reg_id, first, middle, last, card_expire, from_unixtime(card_expire)  from reg_trans where reg_id=53;
+		- reg_id=2 has this too.  Probably everything before the timezone change
+	- Can I add 86,000 seconds to all transactions?
+		- How about checking the date and adding a day if not 1?
+	- Can I use gmdate() for display/formatting?
+
+- reg/verify/resend should redirect the user to reg/verify after sending the email
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
@@ -34,8 +43,6 @@ TODO
 	- At signup, display a year field for the admin
 	- For /reg, get year from from the level offering
 	- Modify badge number assignment code to take a year argument
-
-- reg/verify/resend should redirect the user to reg/verify after sending the email
 
 - Messages
 	- When editing, instead of "ID 'id'", say "name 'name'"

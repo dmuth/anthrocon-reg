@@ -98,13 +98,13 @@ class reg_verify extends reg {
 				. "pay for your registration."),
 			);
 		$search["cc_exp"]["month"] = array(
-			"#options" => reg_data::get_cc_exp_months(),
+			"#options" => $this->get_cc_exp_months(),
 			"#type" => "select",
 			"#default_value" => $search_data["cc_exp"]["month"],
 			);
 
 		$search["cc_exp"]["year"] = array(
-			"#options" => reg_data::get_cc_exp_years(),
+			"#options" => $this->get_cc_exp_years(),
 			"#type" => "select",
 			"#default_value" => $search_data["cc_exp"]["year"],
 			);
@@ -156,7 +156,7 @@ class reg_verify extends reg {
 		// entered the entire number.  I don't want credit card data 
 		// anyhwere NEAR the session data.
 		//
-		$data["search"]["cc_num"] = reg_data::get_cc_last_4(
+		$data["search"]["cc_num"] = $this->get_cc_last_4(
 			$data["search"]["cc_num"]);
 
 		$_SESSION["reg"]["verify"] = $data["search"];
@@ -214,7 +214,7 @@ class reg_verify extends reg {
 
 			$rows[] = array(
 				array("data" => $row["year"] . "-" . 
-					reg_data::format_badge_num($row["badge_num"]),
+					$this->format_badge_num($row["badge_num"]),
 					//"align" => "right"
 					),
 				array("data" => $row["badge_name"]),
@@ -264,7 +264,7 @@ class reg_verify extends reg {
 	function send_email($id) {
 
 		$data = reg_admin_member::load_reg($id);
-		$url = reg_data::get_verify_url();
+		$url = $this->get_verify_url();
 
 		$message_name = "email-receipt-no-cc";
 		$email_data = array(
@@ -330,7 +330,7 @@ class reg_verify extends reg {
 			. "AND MONTH(FROM_UNIXTIME(reg_trans.card_expire)) ='%s' "
 			;
 
-		$cc_exp_time = reg_data::get_time_t($search["cc_exp"]["year"], 
+		$cc_exp_time = $this->get_time_t($search["cc_exp"]["year"], 
 			$search["cc_exp"]["month"], 1);
 
 		$args = array($search["last"], $search["cc_num"], 

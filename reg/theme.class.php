@@ -3,7 +3,12 @@
 /**
 * This class holds theme-related code for the registration system.
 */
-class reg_theme {
+class reg_theme extends reg {
+
+	function __construct(&$message, &$fake, &$log) {
+		parent::__construct($message, $fake, $log);
+	}
+
 
 	/**
 	* Process a form in our own registration theme. This will allow
@@ -189,7 +194,7 @@ class reg_theme {
 		//
 		// Get a list of our current membership levels for later use.
 		//
-		$levels = reg_data::get_valid_levels();
+		$levels = $this->get_valid_levels();
 
 		$class = 'form-radios';
 		if (isset($item['#attributes']['class'])) {

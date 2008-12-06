@@ -62,7 +62,7 @@ class reg_log extends reg {
 			);
 		db_query($query, $query_args);
 
-		$id = reg_data::get_insert_id();
+		$id = $this->get_insert_id();
 
 		return($id);
 
@@ -86,7 +86,7 @@ class reg_log extends reg {
 		// strttime() and friends will "correct" the date to be in the 
 		// previous month!
 		//
-		$exp_string = reg_data::get_time_t($exp["year"], $exp["month"], 1);
+		$exp_string = $this->get_time_t($exp["year"], $exp["month"], 1);
 
 		//
 		// Make sure we have actual numbers here, just in case.
@@ -104,7 +104,7 @@ class reg_log extends reg {
 		// bunch of security concerns.
 		//
 		if (!empty($data["cc_num"])) {
-			$data["cc_num"] = reg_data::get_cc_last_4($data["cc_num"]);
+			$data["cc_num"] = $this->get_cc_last_4($data["cc_num"]);
 		}
 
 		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
@@ -179,7 +179,7 @@ class reg_log extends reg {
 		}
 
 
-		$id = reg_data::get_insert_id();
+		$id = $this->get_insert_id();
 
 		return($id);
 
