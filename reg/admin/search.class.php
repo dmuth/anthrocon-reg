@@ -263,7 +263,8 @@ class reg_admin_search extends reg {
 			. $order_by
 			;
 
-		$retval = pager_query($query, reg::ITEMS_PER_PAGE, 0, null, $args);
+		$retval = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
+			0, null, $args);
 
 		return($retval);
 

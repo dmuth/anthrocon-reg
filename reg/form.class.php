@@ -332,12 +332,12 @@ class reg_form extends reg {
 			$log->log($error, "", WATCHDOG_WARNING);
 			$okay = false;
 
-		} else if ($data["donation"] > reg::DONATION_MAX) {
+		} else if ($data["donation"] > $this->get_constant("DONATION_MAX")) {
 			$error = t("Donations over %max% may not be made online.  "
 				. "If you wish to donate a larger amount, please "
 				. "contact us directly.",
 				array(
-					"%max%" => "$" . reg::DONATION_MAX
+					"%max%" => "$" . $this->get_constant("DONATION_MAX")
 					)
 				);
 			form_set_error("donation", $error);

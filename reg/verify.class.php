@@ -25,7 +25,7 @@ class reg_verify extends reg {
 	*/
 	function verify($id_email) {
 
-		$email = variable_get(reg::VAR_EMAIL, "");
+		$email = variable_get($this->get_constant("VAR_EMAIL"), "");
 
 		$message = t($this->message->load_display("verify",
 			array(
@@ -355,7 +355,7 @@ class reg_verify extends reg {
 	*/
 	function handle_error(&$search) {
 
-		$email = variable_get(reg::VAR_EMAIL, "");
+		$email = variable_get($this->get_constant("VAR_EMAIL"), "");
 		$message = t("No members found.<br>\n");
 		if (!empty($email)) {
 			$message .= t("If you think you are receiving this message in error, "

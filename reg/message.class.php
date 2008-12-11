@@ -94,7 +94,7 @@ class reg_message extends reg {
 		//
 		// Grab our email address and munge it.
 		//
-		$data["!email"] = variable_get(reg::VAR_EMAIL, "");
+		$data["!email"] = variable_get($this->get_constant("VAR_EMAIL"), "");
 		$tmp = $data["!email"];
 		$tmp = str_replace("@", " AT ", $tmp);
 		$tmp = str_replace(".", " DOT ", $tmp);

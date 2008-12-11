@@ -61,7 +61,9 @@ class reg_member extends reg {
 				. "phone, shirt_size_id "
 			. ") "
 			. "VALUES "
-			. "(UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '%s', '%s', '%s', "
+			. "(UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), "
+				. "'%s', "
+				. "'%s', '%s', "
 				. "'%s', "
 				. "'%s', '%s', '%s', '%s', "
 				. "'%s', "
@@ -82,7 +84,8 @@ class reg_member extends reg {
 				$data["reg_level_id"]);
 		}
 
-		$query_args = array(reg::YEAR, $data["reg_type_id"], 1, $data["badge_num"], 
+		$query_args = array($this->get_constant("YEAR"), 
+			$data["reg_type_id"], 1, $data["badge_num"], 
 			$data["badge_name"], $data["first"], $data["middle"], 
 			$data["last"], $date_string, 
 			$data["address1"], $data["address2"], $data["city"], 

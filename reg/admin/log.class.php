@@ -101,8 +101,8 @@ class reg_admin_log extends reg {
 			. $where
 			. $order_by
 			;
-		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null, 
-			$where_args);
+		$cursor = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
+			0, null, $where_args);
 		while ($row = db_fetch_array($cursor)) {
 			$id = $row["id"];
 
@@ -417,8 +417,8 @@ class reg_admin_log extends reg {
 			. $where
 			. $order_by
 			;
-		$cursor = pager_query($query, reg::ITEMS_PER_PAGE, 0, null, 
-			$where_args);
+		$cursor = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
+			0, null, $where_args);
 		while ($row = db_fetch_array($cursor)) {
 
 			$id = $row["id"];

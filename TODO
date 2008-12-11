@@ -3,17 +3,17 @@
 Done
 ====
 
+
 TODO
 ====
 
 - Refactor and update the reg codebase
-	- Remove all references to statics (excluding constants)
 
-		- For constants, create a "get_constant()" function in reg
-			- Create a private $constants array in reg class
+	- Move constants from reg_form into reg::get_constant()
+		- Update all references
+		- Search for ::
+			- find . -type f -name \*.class.php -exec grep -i --with-filename :: {} \;
 
-	- Search for ::
-		- find . -type f -name \*.class.php -exec grep -i --with-filename :: {} \;
 	- Remove all "new" in any place but the factory class and reg.module
 	- Put a single factory instance in the reg.module file
 

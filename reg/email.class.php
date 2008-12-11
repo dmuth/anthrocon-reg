@@ -51,7 +51,7 @@ class reg_email extends reg {
 		//
 		// Try sending out our email.  If we fail, return false.
 		//
-		$our_email = variable_get(self::VAR_EMAIL, "");
+		$our_email = variable_get($this->get_constant("VAR_EMAIL"), "");
 		$headers = "From: $our_email\r\n";
 		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type: text/html; charset=iso-8859-1\r\n";

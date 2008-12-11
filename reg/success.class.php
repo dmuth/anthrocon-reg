@@ -48,7 +48,7 @@ class reg_success extends reg {
 	function success_page(&$data) {
 
 		$url = $this->get_verify_url();
-		$email = variable_get(reg::VAR_EMAIL, "");
+		$email = variable_get($this->get_constant("VAR_EMAIL"), "");
 
 		$retval = "<p/>\n";
 

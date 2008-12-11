@@ -8,7 +8,11 @@
 * One reason why this code is in a separate class file is so that it will
 * not get loaded at ALL during production use of the system.
 */
-class reg_fake {
+class reg_fake extends reg {
+
+
+	function __construct() {
+	} // End of __construct()
 
 
 	/**
@@ -91,7 +95,7 @@ class reg_fake {
 		// the random value, and have the final reg_level_id to set in 
 		// the form.
 		//
-		$levels = reg::get_valid_levels();
+		$levels = $this->get_valid_levels();
 		$index = $this->get_number(0, (count($levels) - 1));
 		$level_keys = array_keys($levels);
 		$level_index = $level_keys[$index];

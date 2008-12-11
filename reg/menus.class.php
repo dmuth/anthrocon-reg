@@ -8,7 +8,7 @@
 *	share identical names in PHP 5.2.4, all sorts of bad things happen!
 *	I learned this the hard way. :-(
 */
-class reg_menus {
+class reg_menus extends reg {
 
 
 	/**
@@ -55,8 +55,8 @@ class reg_menus {
 		//
 		// Used for interacting with registrations
 		//
-		self::get_menu($retval, $may_cache);
-		self::get_registrations($retval, $may_cache);
+		$this->get_menu($retval, $may_cache);
+		$this->get_registrations($retval, $may_cache);
 
 		return($retval);
 
@@ -75,9 +75,10 @@ class reg_menus {
 			//
 			$retval[] = array(
 				"path" => "reg",
-				"title" => reg::YEAR ." " . t("Pre-Registration"),
+				"title" => $this->get_constant("YEAR") ." " 
+					. t("Pre-Registration"),
 				"callback" => "reg_registration",
-				"access" => user_access(reg::PERM_REGISTER),
+				"access" => user_access($this->get_constant("PERM_REGISTER")),
 				"type" => MENU_NORMAL_ITEM,
 				);
 
@@ -88,7 +89,7 @@ class reg_menus {
 				"path" => "reg/success",
 				"title" => t("Registration Successful!"),
 				"callback" => "reg_success",
-				"access" => user_access(reg::PERM_REGISTER),
+				"access" => user_access($this->get_constant("PERM_REGISTER")),
 				"type" => MENU_CALLBACK,
 				);
 
@@ -99,7 +100,7 @@ class reg_menus {
 				"path" => "admin/reg",
 				"title" => t("Registration Admin"),
 				"callback" => "reg_admin_main",
-				"access" => user_access(reg::PERM_ADMIN),
+				"access" => user_access($this->get_constant("PERM_ADMIN")),
 				"type" => MENU_NORMAL_ITEM,
 				);
 
@@ -188,7 +189,7 @@ Uncomment this when we actually have stats.
 				// Optional argument to resend a receipt.
 				//
 				"callback arguments" => array(arg(3)),
-				"access" => user_access(reg::PERM_REGISTER),
+				"access" => user_access($this->get_constant("PERM_REGISTER")),
 				"type" => MENU_NORMAL_ITEM,
 				);
 

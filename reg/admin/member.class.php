@@ -44,7 +44,7 @@ class reg_admin_member extends reg {
 			. "$order_by"
 			;
                 
-		$cursor = pager_query($query, reg::ITEMS_PER_PAGE);
+		$cursor = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"));
                 
 		while ($row = db_fetch_array($cursor)) {
 			$rows[] = $this->get_member_table_row($row);

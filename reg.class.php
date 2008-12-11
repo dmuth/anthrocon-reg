@@ -14,38 +14,43 @@
 class reg {
 
 	/**
-	* The current year and the lowest possible badge number.
-	* At some point, I should store these values externally.
+	* @var Our array of constants for the registration system.
+	*	These will only be retrieved through get_constant(), and 
+	*	should be considered immutable.
+	*	The reason why I am using these instead of real constants is
+	*	so that I can wrap access to these in the future if need be.
+	*	Encapsulating data and all that. :-)
 	*/
-	const YEAR = "2009";
-	const START_BADGE_NUM = "250";
-
-	/**
-	* Define constants for our permission names.
-	*/
-	const PERM_ADMIN = "admin reg system";
-	const PERM_REGISTER = "register for a membership";
-
-	/**
-	* How many items displayed per pager in a pager?
-	*/
-	const ITEMS_PER_PAGE = 20;
-
-	/**
-	* The maximum number we'll allow for donations from users.  
-	*	This is to limit damages in the case that we get hit with a 
-	*	fraudulent charge.
-	*/
-	const DONATION_MAX = 1000;
-
-	/**
-	* The name of the variable that holds the "contact" email address for
-	* the reg system.  This may change in the future, once I create a setup
-	* screen where the Registration Director can enter a custom email 
-	* address. :-)
-	*/
-	const VAR_EMAIL = "site_mail";
-
+	private $constants = array(
+		//
+		// The current year and the lowest possible badge number.
+		// At some point, I should store these values externally.
+		//
+		"year" => 2009,
+		"start_badge_num" => 250,
+		//
+		// Define constants for our permission names.
+		//
+		"perm_admin" => "admin reg system",
+		"perm_register" => "register for a membership",
+		//
+		// How many items displayed per pager in a pager?
+		//
+		"items_per_page" => 20,
+		//
+		// The maximum number we'll allow for donations from users.  
+		// This is to limit damages in the case that we get hit with a 
+		// fraudulent charge.
+		//
+		"donation_max" => "1000",
+		//
+		// The name of the variable that holds the "contact" email address 
+		// for the reg system.  This may change in the future, once I 
+		// create a setup screen where the Registration Director can 
+		// enter a custom email address. :-)
+		//
+		"var_email" => "site_mail",
+		);
 
 	function __construct(&$message, &$fake, &$log) {
 		$this->message = $message;
@@ -62,8 +67,8 @@ class reg {
 	function perm() {
 
 		$retval = array();
-		$retval[] = self::PERM_ADMIN;
-		$retval[] = self::PERM_REGISTER;
+		$retval[] = $this->get_constant("PERM_ADMIN");
+		$retval[] = $this->get_constant("PERM_REGISTER");
 		return($retval);
 
 	}
@@ -197,7 +202,7 @@ class reg {
 		//
 		// Create a query to check and see if the badge number is in use.
 		//
-		$year = self::YEAR;
+		$year = $this->get_constant("YEAR");
 		$query = "SELECT id "
 			. "FROM reg "
 			. "WHERE "
@@ -222,7 +227,7 @@ class reg {
 		// We don't want this to happen, because said number will eventually
 		// get stomped on sooner or later.
 		//
-		$year = self::YEAR;
+		$year = $this->get_constant("YEAR");
 		$query = "SELECT * "
 			. "FROM {reg_badge_num} "
 			. "WHERE "
@@ -558,7 +563,7 @@ class reg {
 	* system.  False otherwise.
 	*/
 	function is_admin() {
-		return(user_access(reg::PERM_ADMIN));
+		return(user_access($this->get_constant("PERM_ADMIN")));
 	}
 
 
@@ -609,7 +614,7 @@ class reg {
 	*/
 	function get_badge_num() {
 
-		$year = reg::YEAR;
+		$year = $this->get_constant("YEAR");
 		$query = "UPDATE {reg_badge_num} "
 			. "SET badge_num = @val := badge_num+1 "
 			. "WHERE year=%s ";
@@ -1151,6 +1156,24 @@ class reg {
 		return($retval);
 	} // End of get_verify_url()
 
+
+	/**
+	* Return a constant, based on the key.
+	*/
+	function get_constant($key) {
+
+		$key = strtolower($key);
+
+		if (!empty($this->constants[$key])) {
+			$retval = $this->constants[$key];
+		} else {
+			$error = "Constant '$key' not found!";
+			throw new Exception($error);
+		}
+
+		return($retval);
+
+	} // End of get_constant()
 
 
 } // End of reg class
