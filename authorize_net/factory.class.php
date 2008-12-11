@@ -56,8 +56,9 @@ class authorize_net_factory {
 
 	protected function get_settings() {
 
-		$reg = new reg();
-		$log = new reg_log();
+		$factory = new reg_factory();
+		$reg = $factory->get_object("reg");
+		$log = $factory->get_object("log");
 
 		$retval = new authorize_net_settings($reg, $log);
 

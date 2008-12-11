@@ -46,7 +46,8 @@ function authorize_net_menu($may_cache) {
 */
 function authorize_net_settings_page() {
 
-	$reg = new reg();
+	$reg_factory = new reg_factory();
+	$reg = $reg_factory->get_object("reg");
 	$reg->force_ssl();
 
 	$factory = new authorize_net_factory();
