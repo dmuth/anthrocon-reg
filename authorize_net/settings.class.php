@@ -77,23 +77,26 @@ class authorize_net_settings extends authorize_net {
 		$retval["api_login_id"] = array(
 			"#type" => "textfield",
 			"#title" => t("Authorize.net API Login ID"),
-			"#default_value" => $this->variable_get(self::LOGIN_ID),
+			"#default_value" => $this->variable_get(
+				$this->get_constant("LOGIN_ID")),
 			"#description" => $desc_text,
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE"),
 			);
 
 		$retval["api_transaction_key"] = array(
 			"#type" => "textfield",
 			"#title" => t("Authorize.net API Transaction Key"),
-			"#default_value" => $this->variable_get(self::TRANSACTION_KEY),
+			"#default_value" => $this->variable_get(
+				$this->get_constant("TRANSACTION_KEY")),
 			"#description" => $desc_text,
-			"#size" => self::FORM_TEXT_SIZE,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE"),
 			);
 
 		$retval["test_mode"] = array(
 			"#type" => "checkbox",
 			"#title" => t("Authorize.net Test Mode?"),
-			"#default_value" => $this->variable_get(self::TEST_MODE),
+			"#default_value" => $this->variable_get(
+				$this->get_constant("TEST_MODE")),
 			"#description" => t("If set, the gateway will be used in "
 				. "\"test mode\" and cards will not be charged.  "
 				. "<b>Do NOT use in production!</b>"),
@@ -159,14 +162,14 @@ class authorize_net_settings extends authorize_net {
 	*/
 	function sanity_check() {
 
-		if (!$this->variable_get(self::LOGIN_ID)
+		if (!$this->variable_get($this->get_constant("LOGIN_ID"))
 			) {
 			$error = t("Login ID is not specified.  It is needed "
 				. "to charge credit cards.");
 			form_set_error("credentials][api_login_id", $error);
 		}
 
-		if (!$this->variable_get(self::TRANSACTION_KEY)
+		if (!$this->variable_get($this->get_constant("TRANSACTION_KEY"))
 			) {
 			$error = t("API Transaction Key is not specified.  It is "
 				. "needed to charge credit cards.");
@@ -273,10 +276,12 @@ class authorize_net_settings extends authorize_net {
 		$credentials = $data["credentials"];
 		$test_gateway = $data["test_gateway"];
 
-		$this->variable_set(self::LOGIN_ID, $credentials["api_login_id"]);
-		$this->variable_set(self::TRANSACTION_KEY, 
+		$this->variable_set($this->get_constant("LOGIN_ID"), 
+			$credentials["api_login_id"]);
+		$this->variable_set($this->get_constant("TRANSACTION_KEY"), 
 			$credentials["api_transaction_key"]);
-		$this->variable_set(self::TEST_MODE, $credentials["test_mode"]);
+		$this->variable_set($this->get_constant("TEST_MODE"), 
+			$credentials["test_mode"]);
 
 		$_SESSION["reg"]["authorize_net"]["test_cost"] = 
 			$test_gateway["total_cost"];

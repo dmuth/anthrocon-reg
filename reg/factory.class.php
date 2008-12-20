@@ -199,7 +199,15 @@ class reg_factory {
 
 
 	protected function get_form() {
-		$retval = new reg_form();
+
+		$fake = $this->get_fake();
+		$log = $this->get_log();
+		$admin_member = $this->get_admin_member();
+		$member = $this->get_member();
+		$captcha = $this->get_captcha();
+
+		$retval = new reg_form($fake, $log, $admin_member, $member, 
+			$captcha);
 		return($retval);
 	}
 

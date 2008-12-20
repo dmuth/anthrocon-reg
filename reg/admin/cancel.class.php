@@ -52,7 +52,7 @@ class reg_admin_cancel extends reg {
 		$retval["badge_name"] = array(
 			"#title" => "Badge Name",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["badge_name"],
 			"#disabled" => true,
 			);
@@ -60,7 +60,7 @@ class reg_admin_cancel extends reg {
 		$retval["badge_num"] = array(
 			"#title" => "Badge Number",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["badge_num"],
 			"#disabled" => true,
 			);
@@ -73,7 +73,7 @@ class reg_admin_cancel extends reg {
 		$retval["real_name"] = array(
 			"#title" => "Name",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $name,
 			"#disabled" => true,
 			);
@@ -117,7 +117,7 @@ class reg_admin_cancel extends reg {
 			"#description" => t("How much of the badge cost is the user "
 				. "being refunded?"),
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["badge_cost"],
 			"#required" => true,
 			);
@@ -127,7 +127,7 @@ class reg_admin_cancel extends reg {
 			"#description" => t("How much of the donation is the user "
 				. "being refunded?"),
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["donation"],
 			"#required" => true,
 			);

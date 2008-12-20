@@ -51,7 +51,7 @@ class reg_admin_search extends reg {
 			"#type" => "textfield",
 			"#description" => t("Just the core badge number.  ")
 				. t("Do NOT include the year."),
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["badge_num"],
 			);
 
@@ -59,7 +59,7 @@ class reg_admin_search extends reg {
 			"#title" => "Name",
 			"#type" => "textfield",
 			"#description" => "Badge name or real name.",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["name"],
 			);
 
@@ -67,7 +67,7 @@ class reg_admin_search extends reg {
 			"#title" => "Address",
 			"#type" => "textfield",
 			"#description" => "Address, city, state, or country.",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["address"],
 			);
 

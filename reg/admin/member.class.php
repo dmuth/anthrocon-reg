@@ -418,9 +418,7 @@ class reg_admin_member extends reg {
 				$data, $old_data);
 		}
 
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
-		$log->log($message, $data["reg_id"]);
+		$this->log->log($message, $data["reg_id"]);
 
 		return($data["badge_num"]);
 
@@ -460,7 +458,7 @@ class reg_admin_member extends reg {
 		$retval["badge_name"] = array(
 			"#title" => "Badge Name",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["badge_name"],
 			"#disabled" => true,
 			);
@@ -468,7 +466,7 @@ class reg_admin_member extends reg {
 		$retval["badge_num"] = array(
 			"#title" => "Badge Number",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["badge_num"],
 			"#disabled" => true,
 			);
@@ -481,7 +479,7 @@ class reg_admin_member extends reg {
 		$retval["real_name"] = array(
 			"#title" => "Name",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $name,
 			"#disabled" => true,
 			);
@@ -516,9 +514,7 @@ class reg_admin_member extends reg {
 		$reg_id = $data["reg_id"];
 		$message = t("Added Note: ") . $data["notes"];
 
-		$factory = new reg_factory();
-		$log = $factory->get_object("log");
-		$log->log($message, $reg_id);
+		$this->log->log($message, $reg_id);
 
 		drupal_set_message(t("Log entry saved for this member."));
 

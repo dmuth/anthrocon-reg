@@ -50,6 +50,21 @@ class reg {
 		// enter a custom email address. :-)
 		//
 		"var_email" => "site_mail",
+
+		//
+		// Name of settings and their Drupal variables
+		//
+		"form_admin_fake_cc" => "reg_fake_cc",
+		"form_admin_conduct_path" => "reg_conduct_path",
+		"form_admin_fake_data" => "reg_fake_data",
+		"form_admin_fake_email" => "reg_fake_email",
+
+		//
+		// Size of form fields
+		//
+		"form_text_size" => 40,
+		"form_text_size_small" => 20,
+
 		);
 
 	function __construct(&$message, &$fake, &$log) {
@@ -428,7 +443,8 @@ class reg {
 	*/
 	function is_test_mode() {
 
-		$retval = variable_get(reg_form::FORM_ADMIN_FAKE_CC, false);
+		$retval = variable_get(
+			$this->get_constant("FORM_ADMIN_FAKE_CC"), false);
 
 		return($retval);
 

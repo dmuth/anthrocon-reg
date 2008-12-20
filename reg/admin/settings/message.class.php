@@ -110,7 +110,7 @@ class reg_admin_settings_message extends reg {
 		$retval["name"]  = array(
 			"#title" => "Name",
 			"#type" => "item",
-			"#size" => reg_form::FORM_TEXT_SIZE,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE"),
 			"#required" => true,
 			"#value" => $row["name"],
 			);
@@ -121,7 +121,7 @@ class reg_admin_settings_message extends reg {
 				"#description" => t("The subject line in the email of the "
 					. "message."),
 				"#type" => "textfield",
-				"#size" => reg_form::FORM_TEXT_SIZE,
+				"#size" => $this->get_constant("FORM_TEXT_SIZE"),
 				"#required" => true,
 				"#default_value" => $row["subject"],
 				);

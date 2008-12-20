@@ -61,7 +61,8 @@ class reg_email extends reg {
 		// If we are, don't really send the email, and write a special
 		// log message informing the admin.
 		//
-		$fake_email = variable_get(reg_form::FORM_ADMIN_FAKE_EMAIL, "");
+		$fake_email = variable_get(
+			$this->get_constant("FORM_ADMIN_FAKE_EMAIL"), "");
 
 		$result = true;
 		if (!$fake_email) {

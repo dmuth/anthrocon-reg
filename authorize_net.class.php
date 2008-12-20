@@ -8,19 +8,6 @@
 class authorize_net {
 
 	/**
-	* Variable names.
-	*/
-	const TEST_MODE = "authorize.net_test_mode";
-	const LOGIN_ID = "authorize.net_login_id";
-	const TRANSACTION_KEY = "authorize.net_transaction_key";
-
-	/**
-	* This will eventually be moved into the reg hierarchy once I 
-	*	sort out some of those classes...
-	*/
-	const FORM_TEXT_SIZE = 20;
-
-	/**
 	* Our reg class.
 	*/
 	protected $reg;
@@ -29,6 +16,20 @@ class authorize_net {
 	* Our log class.
 	*/
 	protected $log;
+
+	
+	/**
+	* @var Our array of constants.  The purpose of these is the same
+	* as in the reg class.
+	*/
+	private $constants = array(
+		//
+		// These are all variable names
+		//
+		"test_mode" => "authorize.net_test_mode",
+		"login_id" => "authorize.net_login_id",
+		"transaction_key" => "authorize.net_transaction_key",
+		);
 
 
 	function __construct($reg, &$log) {
@@ -88,8 +89,10 @@ class authorize_net {
 
 		$retval = array();
 
-		$retval["x_login"] = $this->variable_get(self::LOGIN_ID);
-		$retval["x_tran_key"] = $this->variable_get(self::TRANSACTION_KEY);
+		$retval["x_login"] = $this->variable_get(
+			$this->get_constant("LOGIN_ID"));
+		$retval["x_tran_key"] = $this->variable_get(
+			$this->get_constant("TRANSACTION_KEY"));
 		$retval["x_type"] = "AUTH_CAPTURE";
 		$retval["x_version"] = "3.1";
 		$retval["x_delim_data"] = "TRUE";
@@ -364,7 +367,7 @@ class authorize_net {
 	*/
 	public function is_test_mode() {
 
-		$value = $this->variable_get(self::TEST_MODE);
+		$value = $this->variable_get($this->get_constant("TEST_MODE"));
 
 		if (!empty($value)) {
 			return(true);
@@ -471,6 +474,29 @@ class authorize_net {
 		return($retval);
 
 	} // End of charge_cc()
+
+
+	/**
+	* Return a constant, based on the key.
+	*/
+	function get_constant($key) {
+
+		$key = strtolower($key);
+
+		if (!empty($this->constants[$key])) {
+			$retval = $this->constants[$key];
+
+		} else {
+			//
+			// Try the main reg object if we don't find it here.
+			//
+			$retval = $this->reg->get_constant($key);
+
+		}
+
+		return($retval);
+
+	} // End of get_constant()
 
 
 } // End of authorize_net class

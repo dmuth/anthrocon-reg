@@ -9,27 +9,12 @@
 */
 class reg_form extends reg {
 
-	/**
-	* Define constants for form values
-	*/
-	const FORM_ADMIN_FAKE_CC = "reg_fake_cc";
-	const FORM_ADMIN_CONDUCT_PATH = "reg_conduct_path";
-	const FORM_ADMIN_FAKE_DATA = "reg_fake_data";
-	const FORM_ADMIN_FAKE_EMAIL = "reg_fake_email";
-
-	/**
-	* Define other constants
-	*/
-	const FORM_TEXT_SIZE = 40;
-	const FORM_TEXT_SIZE_SMALL = 20;
-
-	function __construct($cc_gateway = "") {
-		$factory = new reg_factory();
-		$this->fake = $factory->get_object("fake");
-		$this->log = $factory->get_object("log");
-		$this->admin_member = $factory->get_object("admin_member");
-		$this->member = $factory->get_object("member");
-		$this->captcha = $factory->get_object("captcha");
+	function __construct($fake, $log, $admin_member, $member, $captcha) {
+		$this->fake = $fake;
+		$this->log = $log;
+		$this->admin_member = $admin_member;
+		$this->member = $member;
+		$this->captcha = $captcha;
 	}
 
 
@@ -188,13 +173,10 @@ class reg_form extends reg {
 		//
 		if (!$this->in_admin()) {
 
-			$log = new reg_log();
-			$captcha = new reg_captcha($log);
-
-			if (!$captcha->check($data["reg_captcha"])) {
+			if (!$this->captcha->check($data["reg_captcha"])) {
 				$message = t("Incorrect answer to math question.");
 				form_set_error("reg_captcha", $message);
-				$log->log($message, "", WATCHDOG_WARNING);
+				$this->log->log($message, "", WATCHDOG_WARNING);
 				$okay = false;
 			}
 
@@ -510,7 +492,8 @@ class reg_form extends reg {
 	* @return boolean True if yes, false if no.
 	*/
 	function is_fake_data() {
-		$retval = variable_get(reg_form::FORM_ADMIN_FAKE_DATA, "");
+		$retval = variable_get(
+			$this->get_constant("FORM_ADMIN_FAKE_DATA"), "");
 		return($retval);
 	}
 	
@@ -574,7 +557,7 @@ class reg_form extends reg {
 			"#type" => "textfield",
 			"#description" => t("The name printed on your conbadge.  ")
 				. t("This may be your real name, a nickname, or blank."),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["badge_name"],
 			);
 
@@ -587,7 +570,7 @@ class reg_form extends reg {
 				"#type" => "textfield",
 				"#description" => t("This must be UNIQUE.  If unsure, leave blank and "
 					. "one will be assigned."),
-				"#size" => self::FORM_TEXT_SIZE_SMALL,
+				"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 				"#default_value" => $data["badge_num"],
 				);
 
@@ -613,21 +596,21 @@ class reg_form extends reg {
 			"#type" => "textfield",
 			"#title" => t("First Name"),
 			"#description" => t("Your real first name"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["first"],
 			);
 		$retval["middle"] = array(
 			"#type" => "textfield",
 			"#title" => t("Middle Name"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["middle"],
 			);
 		$retval["last"] = array(
 			"#type" => "textfield",
 			"#title" => t("Last Name"),
 			"#description" => t("Your real last name"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["last"],
 			);
@@ -651,14 +634,14 @@ class reg_form extends reg {
 			"#type" => "textfield",
 			"#title" => t("Your email address"),
 			"#description" => "",
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["email"],
 			);
 		$retval["email2"] = array(
 			"#type" => "textfield",
 			"#title" => t("Confirm email address"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["email"],
 			);
@@ -674,7 +657,8 @@ class reg_form extends reg {
 			"#options" => $shirt_sizes
 			);
 
-		$path = variable_get(self::FORM_ADMIN_CONDUCT_PATH, "");
+		$path = variable_get(
+			$this->get_constant("FORM_ADMIN_CONDUCT_PATH"), "");
 		if (!empty($path) 
 			&& empty($id)
 			&& !$this->in_admin()
@@ -807,7 +791,7 @@ class reg_form extends reg {
 			"#title" => t("Credit Card Number"),
 			"#description" => t("Your Credit Card Number"),
 			"#type" => "textfield",
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["cc_num"],
 			);
 
@@ -875,9 +859,7 @@ class reg_form extends reg {
 		//
 		if (!$this->in_admin()) {
 
-			$log = new reg_log();
-			$captcha = new reg_captcha($log);
-			$retval["reg_captcha"] = $captcha->create();
+			$retval["reg_captcha"] = $this->captcha->create();
 			$retval["reg_captcha"]["#theme"] = "reg_theme";
 
 		}
@@ -896,7 +878,7 @@ class reg_form extends reg {
 					. "If they are Staff, Guest, etc. this number should "
 					. "normally be <b>0.00</b>."),
 				"#required" => true,
-				"#size" => self::FORM_TEXT_SIZE_SMALL,
+				"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 				"#default_value" => $data["badge_cost"],
 				);
 
@@ -909,7 +891,7 @@ class reg_form extends reg {
 				"#title" => t("Membership Cost (USD)"),
 				"#type" => "item",
 				"#value" => "<span id=\"reg-membership-cost\"></span>",
-				"#size" => self::FORM_TEXT_SIZE_SMALL,
+				"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 				"#disabled" => true,
 				);
 
@@ -923,7 +905,7 @@ class reg_form extends reg {
 				. "more events, more space, and a more sensational "
 				. "convention experience overall!"),
 			"#default_value" => $data["donation"],
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			);
 
 		$retval["total"] = array(
@@ -935,7 +917,7 @@ class reg_form extends reg {
 				. "<b>This will be billed to your credit card when you "
 				. "click the button below!</b>")
 				,
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#disabled" => true,
 			);
 
@@ -967,7 +949,7 @@ class reg_form extends reg {
 			"#type" => "textfield",
 			"#title" => t("Billing Address Line 1"),
 			"#description" => t("The billing address on your credit card."),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["address1"],
 			);
@@ -975,14 +957,14 @@ class reg_form extends reg {
 		$retval["address2"] = array(
 			"#type" => "textfield",
 			"#title" => t("Billing Address Line 2"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["address2"],
 			);
 
 		$retval["city"] = array(
 			"#type" => "textfield",
 			"#title" => t("City"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["city"],
 			);
@@ -990,7 +972,7 @@ class reg_form extends reg {
 		$retval["state"] = array(
 			"#type" => "textfield",
 			"#title" => t("State"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["state"],
 			);
@@ -998,7 +980,7 @@ class reg_form extends reg {
 		$retval["zip"] = array(
 			"#type" => "textfield",
 			"#title" => t("Zip Code"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["zip"],
 			);
@@ -1011,7 +993,7 @@ class reg_form extends reg {
 			"#type" => "textfield",
 			"#title" => t("Country"),
 			"#default_value" => "USA",
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["country"],
 			);
@@ -1020,7 +1002,7 @@ class reg_form extends reg {
 			"#type" => "textfield",
 			"#title" => t("Your phone number"),
 			"#description" => t("A phone number where you can be reached."),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $data["phone"],
 			);
@@ -1087,7 +1069,7 @@ class reg_form extends reg {
 		$retval["shipping_name"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping Name"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#description" => t("If there is a company name or similar, please "
 				. "enter it here."),
 			"#default_value" => $data["shipping_name"],
@@ -1096,7 +1078,7 @@ class reg_form extends reg {
 		$retval["shipping_address1"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping Address Line 1"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#description" => t("Fill this out if the address of the "
 				. "person being registered is different from the billing "
 				. "address."),
@@ -1106,28 +1088,28 @@ class reg_form extends reg {
 		$retval["shipping_address2"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping Address Line 2"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["shipping_address2"],
 			);
 
 		$retval["shipping_city"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping City"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["shipping_city"],
 			);
 
 		$retval["shipping_state"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping State"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["shipping_state"],
 			);
 
 		$retval["shipping_zip"] = array(
 			"#type" => "textfield",
 			"#title" => t("Shipping Zip Code"),
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["shipping_zip"],
 			);
 
@@ -1135,7 +1117,7 @@ class reg_form extends reg {
 			"#type" => "textfield",
 			"#title" => t("Shipping Country"),
 			"#default_value" => "USA",
-			"#size" => self::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $data["shipping_country"],
 			);
 

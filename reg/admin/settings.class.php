@@ -34,12 +34,13 @@ class reg_admin_settings extends reg {
 		$retval["conduct_path"] = array(
 			"#type" => "textfield",
 			"#title" => t("Standards of Conduct Path"),
-			"#default_value" => variable_get(reg_form::FORM_ADMIN_CONDUCT_PATH, ""),
+			"#default_value" => variable_get(
+				$this->get_constant("FORM_ADMIN_CONDUCT_PATH"), ""),
 			"#description" => t("If a valid path is entered here, "
 				. "the user will be forced to agree to the "
 				. "Standards of Conduct before registering.  Do NOT use a "
 				. "leading slash."),
-			"#size" => reg_form::FORM_TEXT_SIZE,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE"),
 			);
 
 		$retval["no_production"] = array(
@@ -53,7 +54,8 @@ class reg_admin_settings extends reg {
 		$retval["no_production"]["fake_cc"] = array(
 			"#type" => "checkbox",
 			"#title" => t("Credit Card Test Mode?"),
-			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_CC, false),
+			"#default_value" => variable_get(
+				$this->get_constant("FORM_ADMIN_FAKE_CC"), false),
 			"#description" => t("If set, credit card numbers will "
 				. "not be sent off to our merchant gateway.  "
 				. "Do NOT use in production!"),
@@ -62,7 +64,8 @@ class reg_admin_settings extends reg {
 		$retval["no_production"]["fake_data"] = array(
 			"#type" => "checkbox",
 			"#title" => t("Data entry test mode"),
-			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_DATA, ""),
+			"#default_value" => variable_get(
+				$this->get_constant("FORM_ADMIN_FAKE_DATA"), ""),
 			"#description" => t("Set this to allow fake data to be created on "
 				. "registraiton forms.  This will create an alternate submit "
 				. "button to poulate the form with fake data.  Do NOT use in "
@@ -72,7 +75,8 @@ class reg_admin_settings extends reg {
 		$retval["no_production"]["fake_email"] = array(
 			"#type" => "checkbox",
 			"#title" => t("Fake sending of emails?"),
-			"#default_value" => variable_get(reg_form::FORM_ADMIN_FAKE_EMAIL, ""),
+			"#default_value" => variable_get(
+				$this->get_constant("FORM_ADMIN_FAKE_EMAIL"), ""),
 			"#description" => t("If set, emails will NOT be sent.  This is a "
 				. "really good idea when testing."),
 			);
@@ -132,13 +136,13 @@ class reg_admin_settings extends reg {
 	function settings_form_submit($form_id, $data) {
 
 		$admin = $this->admin;
-		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_CC, 
+		$admin->variable_set($this->get_constant("FORM_ADMIN_FAKE_CC"), 
 			$data["no_production"]["fake_cc"]);
-		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_DATA, 
+		$admin->variable_set($this->get_constant("FORM_ADMIN_FAKE_DATA"), 
 			$data["no_production"]["fake_data"]);
-		$admin->variable_set(reg_form::FORM_ADMIN_FAKE_EMAIL, 
+		$admin->variable_set($this->get_constant("FORM_ADMIN_FAKE_EMAIL"), 
 			$data["no_production"]["fake_email"]);
-		$admin->variable_set(reg_form::FORM_ADMIN_CONDUCT_PATH, 
+		$admin->variable_set($this->get_constant("FORM_ADMIN_CONDUCT_PATH"), 
 			$data["conduct_path"]);
 
 		drupal_set_message("Settings updated");

@@ -135,7 +135,7 @@ class reg_admin_level extends reg {
 			"#title" => "Level Name",
 			"#description" => "What the user sees.  i.e. Attending, Sponsor, etc.",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $row["name"],
 			);
@@ -145,7 +145,7 @@ class reg_admin_level extends reg {
 			"#description" => "This is so that we can keep *proper* historic "
 				. "data from past years.",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $row["year"] ? $row["year"] : date("Y"),
 			);
@@ -164,7 +164,7 @@ class reg_admin_level extends reg {
 			"#title" => "Price",
 			"#description" => "The price of this membership",
 			"#type" => "textfield",
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#required" => true,
 			"#default_value" => $row["price"],
 			);

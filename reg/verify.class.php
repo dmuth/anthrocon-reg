@@ -70,7 +70,7 @@ class reg_verify extends reg {
 			"#type" => "textfield",
 			"#required" => true,
 			"#description" => t("Enter your last name"),
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["last"],
 			);
 
@@ -80,7 +80,7 @@ class reg_verify extends reg {
 			"#required" => true,
 			"#description" => t("Enter the last 4 digits of the credit card "
 				. "used to pay for your registration."),
-			"#size" => reg_form::FORM_TEXT_SIZE_SMALL,
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["cc_num"],
 			);
 
