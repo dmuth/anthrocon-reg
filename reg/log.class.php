@@ -86,7 +86,10 @@ class reg_log extends reg {
 		// strttime() and friends will "correct" the date to be in the 
 		// previous month!
 		//
-		$exp_string = $this->get_time_t($exp["year"], $exp["month"], 1);
+		$exp_string = 0;
+		if (!empty($exp)) {
+			$exp_string = $this->get_time_t($exp["year"], $exp["month"], 1);
+		}
 
 		//
 		// Make sure we have actual numbers here, just in case.

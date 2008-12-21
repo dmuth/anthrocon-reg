@@ -3,16 +3,9 @@
 Done
 ====
 
+
 TODO
 ====
-
-
-- Issues with falling back a timezone:
-	- select id, reg_id, first, middle, last, card_expire, from_unixtime(card_expire)  from reg_trans where reg_id=53;
-		- reg_id=2 has this too.  Probably everything before the timezone change
-	- Can I add 86,000 seconds to all transactions?
-		- How about checking the date and adding a day if not 1?
-	- Can I use gmdate() for display/formatting?
 
 - reg/verify/resend should redirect the user to reg/verify after sending the email
 

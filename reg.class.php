@@ -1036,19 +1036,24 @@ class reg {
 
 	/**
 	* This function will calculate a UNIX timestamp based on the year, 
-	*	month, and day.  Note that the timestamp will be adjusted for
-	*	the local timezone. 
-	*
-	* For example, passing in a date of 12-30-2008, while this code is
-	*	being run during EDT (GMT -0400), will result in a timestamp which
-	*	evaluates to 30 Dec 2008 00:00:00 -0400.
+	*	month, and day. 
 	*/
 	function get_time_t($year, $month, $day) {
 
 		$retval = gmmktime(0, 0, 0, $month, $day, $year);
 
-		$offset = date("Z") * -1;
-		$retval += $offset;
+		//
+		// Do NOT adjust this timestamp by any GMT offset if you are 
+		// storing it.  If you do (like I used to), it WILL throw off
+		//  your times when you switch timezones. 
+		//
+		// time_ts are absolute values.  The only time you should apply
+		// a timezone/GMT offset to them is when displaying them.
+		//
+		// If you are displaying something like a credit card expiration
+		// date, which requires a time of midnight, use a GMT offset
+		// of *0* in Drupal's format_date() function.
+		//
 
 		return($retval);
 

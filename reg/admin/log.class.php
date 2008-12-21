@@ -648,7 +648,11 @@ class reg_admin_log extends reg {
 			&& $row["payment_type"] == "Credit Card"
 			) {
 
-			$cc_exp = format_date($row["card_expire"], "custom", "M, Y");
+			//
+			// The card expiration was stored as a GMT timestamp, so
+			// display it as a GMT timestamp.
+			//
+			$cc_exp = format_date($row["card_expire"], "large", "", 0);
 
 			$cc = t("%type% ending '%num%'. Expires: %date%",
 				array(
