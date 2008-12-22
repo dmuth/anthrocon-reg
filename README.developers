@@ -2,10 +2,6 @@
 Notes For Developers
 ====================
 
-- New classes that are added to the system should NOT be static.  See 
-	the file on static_classes for more detail on why most things are currently
-	static and why it needs to stop.
-
 - Registration "levels" are our business term for "offerings" that we make,
 	of certain memberships at certain prices, during a specific timeframe.
 	the "Attending", "Sponsor", etc. types of membership are referred to
