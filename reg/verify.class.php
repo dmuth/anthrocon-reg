@@ -318,24 +318,17 @@ class reg_verify extends reg {
 			. "WHERE "
 			. "reg.last='%s' "
 			. "AND reg_trans.cc_num LIKE '%%%s' "
-			//
-			// Having to write queries like this are where I'm starting to
-			// wonder if storing the expiration date as a time_t was such
-			// a hot idea.
-			//
-			// At some point in the future, I should go through all the code
-			// and analyze all the queries.
-			//
-			. "AND YEAR(FROM_UNIXTIME(reg_trans.card_expire)) ='%s' "
-			. "AND MONTH(FROM_UNIXTIME(reg_trans.card_expire)) ='%s' "
+			. "AND reg_trans.card_expire ='%s' "
 			;
 
 		$cc_exp_time = $this->get_time_t($search["cc_exp"]["year"], 
 			$search["cc_exp"]["month"], 1);
 
-		$args = array($search["last"], $search["cc_num"], 
-			$search["cc_exp"]["year"], $search["cc_exp"]["month"])
-			;
+		$args = array(
+			$search["last"], 
+			$search["cc_num"], 
+			$cc_exp_time,
+			);
 
 		$retval = db_query($query, $args);
 
