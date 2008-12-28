@@ -358,6 +358,9 @@ class reg {
 				// If the card was declined or there was an error, complain
 				// and exit.
 				//
+				$reg_message = $this->message;
+				//$gateway_results["status"] = "success"; // Debugging
+
 				if ($gateway_results["status"] == "declined") {
 					$display = $reg_message->load_display("cc-declined");
 					$error = $display["value"];

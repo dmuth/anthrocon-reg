@@ -205,9 +205,10 @@ class reg_factory {
 		$admin_member = $this->get_admin_member();
 		$member = $this->get_member();
 		$captcha = $this->get_captcha();
+		$message = $this->get_message();
 
 		$retval = new reg_form($fake, $log, $admin_member, $member, 
-			$captcha);
+			$captcha, $message);
 		return($retval);
 	}
 

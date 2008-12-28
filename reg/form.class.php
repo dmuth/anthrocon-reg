@@ -9,12 +9,15 @@
 */
 class reg_form extends reg {
 
-	function __construct($fake, $log, $admin_member, $member, $captcha) {
+	function __construct($fake, $log, $admin_member, $member, $captcha, $message) {
 		$this->fake = $fake;
 		$this->log = $log;
 		$this->admin_member = $admin_member;
 		$this->member = $member;
 		$this->captcha = $captcha;
+
+		parent::__construct($message, $fake, $log);
+
 	}
 
 
