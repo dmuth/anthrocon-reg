@@ -4,10 +4,9 @@ Done
 ====
 
 
+
 TODO
 ====
-
-- On search page, "download these results" link
 
 - Stats page, with:
 	- Number of registrations for current year
@@ -16,6 +15,12 @@ TODO
 		- Break down by calendar year
 
 - reg/verify/resend should redirect the user to reg/verify after sending the email
+
+- authorize_net
+	- When faking authorize.net, I should do this in the authorize_net 
+		module as well, and parse the dummy result
+		- This will ensure that more of the code is actually executed 
+			in testing
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

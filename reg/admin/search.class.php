@@ -6,8 +6,9 @@
 class reg_admin_search extends reg {
 
 
-	function __construct(&$admin_member) {
+	function __construct(&$message, &$fake, &$log, &$admin_member) {
 		$this->admin_member = $admin_member;
+		parent::__construct($message, $fake, $log);
 	}
 
 
@@ -93,6 +94,20 @@ class reg_admin_search extends reg {
 			"#default_value" => $search_data["reg_status_id"],
 			);
 
+		//
+		// If we are doing a search, make a link to download the arguments.
+		//
+		if ($this->get_args_string()) {
+			$url = "admin/reg/members/search/download/" 
+				. $this->get_args_string();
+			$link = l("Download!", $url);
+			$search["test"] = array(
+				"#type" => "item",
+				"#title" => t("Download these results?"),
+				"#value" => $link,
+				);
+		}
+
 		$search["submit"] = array(
 			"#type" => "submit",
 			"#value" => t("Search")
@@ -109,13 +124,34 @@ class reg_admin_search extends reg {
 	* If search arguments were passed in, decode them and return an
 	*       array with the data.
 	*/
-	private function search_get_args() {
-		$arg = arg(4);
+	protected function search_get_args() {
+		$arg = $this->get_args_string();
 		$arg = rawurldecode($arg);
 		$arg = html_entity_decode($arg);
 		parse_str($arg, $retval);
 		return($retval);
 	}
+
+
+	/**
+	* This function gets the string of arguments that were passed in
+	*	to the URL.
+	*
+	* @return string The argument of search arguments.
+	*/
+	protected function get_args_string($offset = 0) {
+		$retval = arg(4);
+
+		//
+		// If we are doing a download, the args are pushed over by one
+		// in the URL.
+		//
+		if ($retval == "download") {
+			$retval = arg(5);
+		}
+
+		return($retval);
+	} // End of get_args_string()
 
 
 	/**
@@ -181,7 +217,7 @@ class reg_admin_search extends reg {
 
 		return($retval);
 
-	} // End of search_results()
+	} // End of results()
 
 
 	/**
@@ -254,11 +290,13 @@ class reg_admin_search extends reg {
 		$query = "SELECT "
 			. "reg.*, "
 			. "reg_type.member_type, "
-			. "reg_status.status "
+			. "reg_status.status, "
+			. "reg_shirt_size.shirt_size "
 			. "FROM "
 			. "{reg} "
 			. "LEFT JOIN {reg_type} ON reg.reg_type_id = reg_type.id "
 			. "LEFT JOIN {reg_status} ON reg.reg_status_id = reg_status.id "
+			. "LEFT JOIN {reg_shirt_size} ON reg.shirt_size_id = reg_shirt_size.id "
 			. $where_string . " "
 			. $order_by
 			;

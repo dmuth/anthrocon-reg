@@ -359,6 +359,21 @@ function reg_admin_search() {
 	return($retval);
 }
 
+function reg_admin_search_download() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search_download");
+
+	//
+	// We'll exit after printing the results of this function, as we
+	// want to allow the user to download the data.
+	//
+	$retval = $search->download();
+	print $retval;
+	exit();
+} 
+
 function reg_admin_search_form() {
 	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
 	return($search->search_form());

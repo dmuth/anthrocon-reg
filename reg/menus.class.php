@@ -313,6 +313,14 @@ Uncomment this when we actually have stats.
 				);
 
 			$retval[] = array(
+				"path" => "admin/reg/members/search/download",
+				"title" => t("Search"),
+				"callback" => "reg_admin_search_download",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 1,
+				);
+
+			$retval[] = array(
 				"path" => "admin/reg/members/add",
 				"title" => t("Add"),
 				"callback" => "reg_admin_members_add",
