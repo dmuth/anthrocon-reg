@@ -445,7 +445,9 @@ function reg_admin_stats() {
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
 
-return("This is where our stats page would go.");
+	$stats = $GLOBALS["reg_factory"]->get_object("admin_stats");
+	return($stats->get_stats());
+
 }
 
 

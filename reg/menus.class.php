@@ -112,16 +112,13 @@ class reg_menus extends reg {
 				"weight" => -10,
 				);
 
-/*
-Uncomment this when we actually have stats.
-		$retval[] = array(
-			"path" => "admin/reg/stats",
-			"title" => t("Stats"),
-			"callback" => "reg_admin_stats",
-			"type" => MENU_LOCAL_TASK,
-			"weight" => -10,
-			);
-*/
+			$retval[] = array(
+				"path" => "admin/reg/stats",
+				"title" => t("Stats"),
+				"callback" => "reg_admin_stats",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 4,
+				);
 
 			//
 			// Our membership levels
