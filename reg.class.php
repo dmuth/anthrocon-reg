@@ -797,7 +797,7 @@ class reg {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM {reg_type} ORDER BY weight";
+		$query = "SELECT * FROM {reg_type} ORDER BY weight, member_type";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
@@ -913,7 +913,7 @@ class reg {
 			return($retval);
 		}
 
-		$query = "SELECT * FROM {reg_status} ORDER BY weight";
+		$query = "SELECT * FROM {reg_status} ORDER BY weight, status";
 		$cursor = db_query($query);
 
 		while ($row = db_fetch_array($cursor)) {
