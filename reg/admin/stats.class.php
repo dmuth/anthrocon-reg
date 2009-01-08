@@ -47,8 +47,14 @@ class reg_admin_stats extends reg {
 
 		$retval = array();
 
+		$total_status = array();
+		$total_status["total"] = 0;
+
 		$types = $this->get_types();
 
+		//
+		// Loop through our types (rows in the report)
+		//
 		foreach ($types as $key => $value) {
 
 			$type_id = $key;
@@ -69,14 +75,49 @@ class reg_admin_stats extends reg {
 				$year, $type_id
 				);
 
+			//
+			// Loop through our statuses (columns in the report)
+			// 
+			$total = 0;
 			$cursor = db_query($query, $query_args);
 			while ($row = db_fetch_array($cursor)) {
+
 				$row["type"] = $type_name;
 				$status = $row["status"];
 				$retval[$type_name][$status] = $row;
+
+				//
+				// Update the type total and store it here so we won't have
+				// empty totals for otherwise empty statuses.
+				//
+				$total += $row["num"];
+				$retval[$type_name]["total"] = $total;
+
+				if (empty($total_status[$status]["num"])) {
+					$total_status[$status]["num"] = 0;
+				}
+
+				//
+				// Update the total for this status.
+				//
+				$total_status[$status]["num"] += $row["num"];
+
+				//
+				// Update the grand total
+				//
+				$total_status["total"] += $row["num"];
+
 			}
 
+
 		}
+
+		//
+		// Add the totals onto the end.
+		//
+		$retval[t("Totals")] = $total_status;
+
+		//print "<pre>"; print_r($retval); print "</pre>";
 
 		return($retval);
 
@@ -103,8 +144,15 @@ class reg_admin_stats extends reg {
 		//
 		$header = $statuses;
 		array_unshift($header, t("Badge Type"));
+		$header[] = t("Total");
 
 		$rows = array();
+
+		/**
+		* @todo For links to the search page, rip encoding code out of
+		*	reg_admin_search->search_submit() to build a search string and
+		*	then call it here.
+		*/ 
 
 		//
 		// Loop through our badge types and statuses, and get 
@@ -125,6 +173,8 @@ class reg_admin_stats extends reg {
 				}
 				$row[] = array("data" => $num, "align" => "right");
 			}
+
+			$row[] = array("data" => $value["total"], "align" => "right");
 
 			$rows[] = $row;
 
@@ -293,7 +343,9 @@ class reg_admin_stats extends reg {
 
 		$retval .= theme("table", $header, $rows);
 
-		$retval .= t("Note that a single membership can have more than one transaction.");
+		$retval .= "<p/>" 
+			. t("<b>Note:</b> A single membership can have more than one "
+			. "transaction associated with it.");
 
 		return($retval);
 
