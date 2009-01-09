@@ -3,16 +3,8 @@
 Done
 ====
 
-
-
 TODO
 ====
-
-- Stats page, with:
-	- Number of registrations for current year
-		- Break down by membership
-	- Amount of revenue for current year
-		- Break down by calendar year
 
 - reg/verify/resend should redirect the user to reg/verify after sending the email
 

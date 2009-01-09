@@ -6,8 +6,9 @@
 class reg_admin_stats extends reg {
 
 
-	function __construct(&$message, &$fake, &$log) {
+	function __construct(&$message, &$fake, &$log, &$search) {
 		$this->admin_member = $admin_member;
+		$this->search = $search;
 		parent::__construct($message, $fake, $log);
 	}
 
@@ -84,14 +85,14 @@ class reg_admin_stats extends reg {
 
 				$row["type"] = $type_name;
 				$status = $row["status"];
-				$retval[$type_name][$status] = $row;
+				$retval[$type_id][$status] = $row;
 
 				//
 				// Update the type total and store it here so we won't have
 				// empty totals for otherwise empty statuses.
 				//
 				$total += $row["num"];
-				$retval[$type_name]["total"] = $total;
+				$retval[$type_id]["total"] = $total;
 
 				if (empty($total_status[$status]["num"])) {
 					$total_status[$status]["num"] = 0;
@@ -138,6 +139,7 @@ class reg_admin_stats extends reg {
 		$retval .= t("<h3>Badge Breakdown</h3>");
 
 		$statuses = $this->get_statuses();
+		$types = $this->get_types();
 
 		//
 		// Create our header, which corresponds to the statuses.
@@ -148,30 +150,55 @@ class reg_admin_stats extends reg {
 
 		$rows = array();
 
-		/**
-		* @todo For links to the search page, rip encoding code out of
-		*	reg_admin_search->search_submit() to build a search string and
-		*	then call it here.
-		*/ 
-
 		//
 		// Loop through our badge types and statuses, and get 
 		// table cells for each.
 		//
 		foreach ($data as $key => $value) {
 
+			$type_id = $key;
+
 			$row = array();
 
-			$row[] = $key;
+			//
+			// Get the name of the row, which can be a badge type or "totals".
+			//
+			if (!empty($types[$type_id])) {
+				$row[] = $types[$type_id];
+			} else {
+				$row[] = $key;
+			}
 
 			foreach ($statuses as $key2 => $value2) {
 				$status = $value2;
+				$status_id = $key2;
 
 				$num = 0;
 				if (!empty($value[$status]["num"])) {
 					$num = $value[$status]["num"];
 				}
-				$row[] = array("data" => $num, "align" => "right");
+
+
+				if ($num != 0 && $type_id != t("Totals")) {
+
+					//
+					// Create searh criteria and append it to the URL to the 
+					// search page.
+					//
+					$search = array();
+					$search["reg_status_id"] = $status_id;
+					$search["reg_type_id"] = $type_id;
+
+					$url = "admin/reg/members/search/";
+					$get_data = $this->search->get_data($search);
+					$url .= $get_data;
+
+					$link = l($num, $url);
+				} else {
+					$link = $num;
+				}
+
+				$row[] = array("data" => $link, "align" => "right");
 			}
 
 			$row[] = array("data" => $value["total"], "align" => "right");

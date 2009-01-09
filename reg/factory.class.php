@@ -173,7 +173,8 @@ class reg_factory {
 		$message = $this->get_message();
 		$fake = $this->get_fake();
 		$log = $this->get_log();
-		$retval = new reg_admin_stats($message, $fake, $log);
+		$search = $this->get_admin_search();
+		$retval = new reg_admin_stats($message, $fake, $log, $search);
 		return($retval);
 	}
 

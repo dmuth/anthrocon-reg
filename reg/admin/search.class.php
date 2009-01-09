@@ -169,13 +169,33 @@ class reg_admin_search extends reg {
 	*/
 	function search_submit($form_id, &$data) {
 
-		$get_data = http_build_query($data["search"]);
-		$get_data = rawurlencode($get_data);
+		$get_data = $this->get_data($data["search"]);
 
 		$url = "admin/reg/members/search/" . $get_data;
+		//print $url; // Debugging
+
 		$this->goto_url($url);
 
 	} // End of search_submit()
+
+
+	/**
+	* Create a an encoded key=value string from an array of data.
+	* This string can then be appended to a URL.
+	*
+	* @param array $data Array of key/value pairs.
+	*
+	* @return string The encoded string of each of these.
+	*/
+	function get_data($data) {
+
+		//print_r($data); // Debugging
+		$retval = http_build_query($data);
+		$retval = rawurlencode($retval);
+
+		return($retval);
+
+	} // End of get_data()
 
 
 	/**
