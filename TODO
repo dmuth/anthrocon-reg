@@ -6,6 +6,25 @@ Done
 TODO
 ====
 
+- Stats
+	- Revenue by month
+		- Group by month?
+	- Registrations by month
+		- Check the created field in reg
+		- Months are rows, total number are column
+
+- It's nothing major, but if you go to the search page, search for some
+	results, and then choose to download, only the first page (20 members)
+	will be downloaded.  Whoops.
+
+- Logs
+	- Allow searching
+		- By text
+		- By username (should be a dropdown populated by a SELECT DISTINCT)
+
+- Timezones when editing levels.  Do we want to do anything there?  
+	- Maybe allow an hour?
+
 - reg/verify/resend should redirect the user to reg/verify after sending the email
 
 - authorize_net
@@ -35,9 +54,6 @@ TODO
 - Messages
 	- When editing, instead of "ID 'id'", say "name 'name'"
 	- When a message is saved, redirect to the list of messages
-
-- Logs
-	- Allow searching
 
 - reg-wide email on settings page
 	- Remove variable_get() to email addresses

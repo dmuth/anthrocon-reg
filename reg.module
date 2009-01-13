@@ -440,13 +440,27 @@ function reg_admin_main() {
 /**
 * Viewing registration stats.
 */
-function reg_admin_stats() {
+function reg_admin_stats_registration() {
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
 
 	$stats = $GLOBALS["reg_factory"]->get_object("admin_stats");
-	return($stats->get_stats());
+	return($stats->get_stats_registration());
+
+}
+
+
+/**
+* Viewing revenue stats.
+*/
+function reg_admin_stats_revenue() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$stats = $GLOBALS["reg_factory"]->get_object("admin_stats");
+	return($stats->get_stats_revenue());
 
 }
 

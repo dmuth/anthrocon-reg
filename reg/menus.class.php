@@ -53,10 +53,19 @@ class reg_menus extends reg {
 		}
 		
 		//
-		// Used for interacting with registrations
+		// Our public links
 		//
-		$this->get_menu($retval, $may_cache);
-		$this->get_registrations($retval, $may_cache);
+		$this->get_public($retval, $may_cache);
+
+		//
+		// Admin section
+		//
+		$this->get_admin($retval, $may_cache);
+		$this->get_membership_levels($retval, $may_cache);
+		$this->get_settings($retval, $may_cache);
+		$this->get_stats($retval, $may_cache);
+		$this->get_logs(&$retval, $may_cache);
+		$this->get_members($retval, $may_cache);
 
 		return($retval);
 
@@ -64,9 +73,9 @@ class reg_menus extends reg {
 
 
 	/**
-	* Our main menu items.
+	* Set our public links to the registration system.
 	*/
-	function get_menu(&$retval, $may_cache) {
+	function get_public(&$retval, $may_cache) {
 
 		if ($may_cache) {
 
@@ -93,86 +102,9 @@ class reg_menus extends reg {
 				"type" => MENU_CALLBACK,
 				);
 
-			//
-			// Admin section
-			//
-			$retval[] = array(
-				"path" => "admin/reg",
-				"title" => t("Registration Admin"),
-				"callback" => "reg_admin_main",
-				"access" => user_access($this->get_constant("PERM_ADMIN")),
-				"type" => MENU_NORMAL_ITEM,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/main",
-				"title" => t("Main"),
-				"callback" => "reg_admin_main",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/stats",
-				"title" => t("Stats"),
-				"callback" => "reg_admin_stats",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 4,
-				);
-
-			//
-			// Our membership levels
-			//
-			$retval[] = array(
-				"path" => "admin/reg/levels",
-				"title" => t("Membership Levels"),
-				"callback" => "reg_admin_levels",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 3,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/levels/list",
-				"title" => t("List"),
-				"callback" => "reg_admin_levels",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/levels/add",
-				"title" => t("Add"),
-				"callback" => "reg_admin_levels_edit",
-				"type" => MENU_LOCAL_TASK,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/settings",
-				"title" => t("Settings"),
-				"callback" => "reg_admin_settings",
-				"type" => MENU_NORMAL_ITEM,
-				"weight" => 5,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/settings/main",
-				"title" => t("Settings"),
-				"callback" => "reg_admin_settings",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => 0,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/settings/messages",
-				"title" => t("Messages"),
-				"callback" => "reg_admin_settings_messages",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
-
 		} else {
 			//
-			// Menu items that aren't cached.
+			// Since this URL involes an argument, it cannot be cached.
 			//
 
 			//
@@ -190,42 +122,78 @@ class reg_menus extends reg {
 				"type" => MENU_NORMAL_ITEM,
 				);
 
+		}
+
+	} // End of get_public()
+
+
+	/**
+	* Create our "Stats" menu item.
+	*/
+	function get_stats(&$retval, $may_cache) {
+
+		if ($may_cache) {
+
+			$retval[] = array(
+				"path" => "admin/reg/stats",
+				"title" => t("Stats"),
+				"callback" => "reg_admin_stats_registration",
+				"type" => MENU_NORMAL_ITEM,
+				"weight" => 2,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/stats/registration",
+				"title" => t("Registration"),
+				"callback" => "reg_admin_stats_registration",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => 0,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/stats/revenue",
+				"title" => t("Revenue"),
+				"callback" => "reg_admin_stats_revenue",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 0,
+				);
 
 		}
 
-		if (arg(4)) {
+	} // End of get_status()
 
-			if (!$may_cache) {
-	
-				//
-				// Used for editing a membership level.
-				//
-				$retval[] = array(
-					"path" => "admin/reg/levels/list/" . arg(4) . "/edit",
-					"title" => t("Edit"),
-					"callback" => "reg_admin_levels_edit",
-					"callback arguments" => array(arg(4)),
-					"weight" => -10,
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 0,
-					);
+	/**
+	* Get the "Main" tab under the reg admin.
+	*/
+	function get_admin(&$retval, $may_cache) {
 
-				//
-				// Used for editing a message
-				//
-				$retval[] = array(
-					"path" => "admin/reg/settings/messages/" . arg(4) . "/edit",
-					"title" => t("Edit"),
-					"callback" => "reg_admin_settings_messages_edit",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 0,
-					);
+		if ($may_cache) {
 
-			}
+			$retval[] = array(
+				"path" => "admin/reg",
+				"title" => t("Registration Admin"),
+				"callback" => "reg_admin_main",
+				"access" => user_access($this->get_constant("PERM_ADMIN")),
+				"type" => MENU_NORMAL_ITEM,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/main",
+				"title" => t("Main"),
+				"callback" => "reg_admin_main",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => -10,
+				);
 
 		}
 
+	} // End of get_admin()
+
+
+	/**
+	* Get the "Logs" tab.
+	*/
+	function get_logs(&$retval, $may_cache) {
 
 		if ($may_cache) {
 
@@ -283,14 +251,126 @@ class reg_menus extends reg {
 
 		}
 
+	} // End of get_logs()
 
-	} // End of get_menu()
+
+	/**
+	* This function gets the "Settings" menu item on the left.
+	*/
+	function get_settings(&$retval, $may_cache) {
+
+		if ($may_cache) {
+
+			$retval[] = array(
+				"path" => "admin/reg/settings",
+				"title" => t("Settings"),
+				"callback" => "reg_admin_settings",
+				"type" => MENU_NORMAL_ITEM,
+				"weight" => 3,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/main",
+				"title" => t("Settings"),
+				"callback" => "reg_admin_settings",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => 0,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/messages",
+				"title" => t("Messages"),
+				"callback" => "reg_admin_settings_messages",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 1,
+				);
+
+		}
+
+		if (arg(4)) {
+
+			if (!$may_cache) {
+	
+				//
+				// Used for editing a message
+				//
+				$retval[] = array(
+					"path" => "admin/reg/settings/messages/" . arg(4) . "/edit",
+					"title" => t("Edit"),
+					"callback" => "reg_admin_settings_messages_edit",
+					"callback arguments" => array(arg(4)),
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 0,
+					);
+
+			}
+
+		}
+
+	} // End of get_settings()
+
+
+	/**
+	* Get our menu items under the "Membership Levels" tab.
+	*/
+	function get_membership_levels(&$retval, $may_cache) {
+
+		if ($may_cache) {
+
+			$retval[] = array(
+				"path" => "admin/reg/levels",
+				"title" => t("Membership Levels"),
+				"callback" => "reg_admin_levels",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 3,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/levels/list",
+				"title" => t("List"),
+				"callback" => "reg_admin_levels",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => -10,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/levels/add",
+				"title" => t("Add"),
+				"callback" => "reg_admin_levels_edit",
+				"type" => MENU_LOCAL_TASK,
+				);
+
+		}
+
+		if (arg(4)) {
+
+			if (!$may_cache) {
+	
+				//
+				// Used for editing a membership level.
+				//
+				$retval[] = array(
+					"path" => "admin/reg/levels/list/" . arg(4) . "/edit",
+					"title" => t("Edit"),
+					"callback" => "reg_admin_levels_edit",
+					"callback arguments" => array(arg(4)),
+					"weight" => -10,
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 0,
+					);
+
+			}
+
+		}
+
+	} // End of get_membership_levels()
 
 
 	/**
 	* Menu items related to recent registrations.
+	* This is the left-hand menu item called "Members".
 	*/
-	function get_registrations(&$retval, $may_cache) {
+	function get_members(&$retval, $may_cache) {
 
 		if ($may_cache) {
 			$retval[] = array(
@@ -391,7 +471,7 @@ class reg_menus extends reg {
 
 		}
 
-	} // End of get_registrations()
+	} // End of get_members()
 
 
 } // End of reg_menu class

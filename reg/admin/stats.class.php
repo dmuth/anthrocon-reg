@@ -14,9 +14,9 @@ class reg_admin_stats extends reg {
 
 
 	/**
-	* Our statistics page.
+	* Get statistics for numbers of registrations.
 	*/
-	function get_stats() {
+	function get_stats_registration() {
 
 		$year = $this->get_constant("year");
 
@@ -28,12 +28,29 @@ class reg_admin_stats extends reg {
 		$data_reg = $this->get_reg_data($year);
 		$retval .= $this->get_reg_report($data_reg);
 
+		return($retval);
+
+	} // End of get_stats_registration()
+
+
+	/**
+	* Get statistics for revenue brought in.
+	*/
+	function get_stats_revenue() {
+
+		$year = $this->get_constant("year");
+
+		$retval .= t("<h2>Revenue Statistics for Convention Year %year</h2>",
+			array(
+				"%year" => $year,
+			));
+
 		$data_rev = $this->get_rev_data($year);
 		$retval .= $this->get_rev_report($data_rev);
 
 		return($retval);
 
-	} // End of get_stats()
+	} // End of get_stats_revenue()
 
 
 	/**
