@@ -16,11 +16,11 @@ class reg_admin_stats extends reg {
 	/**
 	* Get statistics for numbers of registrations.
 	*/
-	function get_stats_registration() {
+	function get_stats_badge() {
 
 		$year = $this->get_constant("year");
 
-		$retval .= t("<h2>Registration Statistics for Convention Year %year</h2>",
+		$retval .= t("<h2>Badge Breakdown for Convention Year %year</h2>",
 			array(
 				"%year" => $year,
 			));
@@ -40,7 +40,7 @@ class reg_admin_stats extends reg {
 
 		$year = $this->get_constant("year");
 
-		$retval .= t("<h2>Revenue Statistics for Convention Year %year</h2>",
+		$retval .= t("<h2>Revenue Breakdown for Convention Year %year</h2>",
 			array(
 				"%year" => $year,
 			));
@@ -152,8 +152,6 @@ class reg_admin_stats extends reg {
 	function get_badge_report($data) {
 
 		$retval = "";
-
-		$retval .= t("<h3>Badge Breakdown</h3>");
 
 		$statuses = $this->get_statuses();
 		$types = $this->get_types();
@@ -376,9 +374,6 @@ class reg_admin_stats extends reg {
 	function get_rev_report(&$data) {
 
 		$retval = "";
-
-		$retval .= t("<h3>Revenue Breakdown</h3>");
-
 
 		//
 		// Create our header, which corresponds to the statuses.
