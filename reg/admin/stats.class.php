@@ -237,22 +237,29 @@ class reg_admin_stats extends reg {
 	function get_rev_data($year) {
 
 		$retval = array();
+		$total = array();
 
 		//
-		// Get our starting and ending years.
+		// Get our starting and ending years.for transactions for this 
+		// convention year, grouped by months.
+		// Under normal circumstances, say for a 2009 convention, we'll
+		// have transactions in 2008 and 2009, but it doesn't hurt to
+		// make this a little more generic.
 		//
 		$years = $this->get_rev_years($year);
-
-		$total = array();
-		$total["year"] = t("Totals");
 
 		//
 		// Loop through all of our years and print stats for both.
 		//
 		for ($i = $years["start"]; $i <= $years["end"]; $i++) {
 
+			$retval[$i] = array();
+			$year_total = array();
+
 			$query = "SELECT "
 				. "COUNT(*) AS num, "
+				. "MONTH(FROM_UNIXTIME(reg_trans.date)) AS month, "
+				. "MONTHNAME(FROM_UNIXTIME(reg_trans.date)) AS month_name, "
 				. "SUM(reg_trans.badge_cost) AS badge_cost, "
 				. "SUM(reg_trans.donation) AS donation, "
 				. "SUM(reg_trans.total_cost) AS total_cost "
@@ -261,23 +268,43 @@ class reg_admin_stats extends reg {
 				. "WHERE "
 				. "reg.year = '%s' "
 				. "AND YEAR(FROM_UNIXTIME(reg_trans.date)) = '%s' "
+				. "GROUP BY month "
 				;
 			$query_args = array($year, $i);
 			$cursor = db_query($query, $query_args);
-			$row = db_fetch_array($cursor);
-			$row["year"] = $i;
 
-			$retval[$i] = $row;
+			while ($row = db_fetch_array($cursor)) {
 
-			$total["num"] += $row["num"];
-			$total["badge_cost"] += $row["badge_cost"];
-			$total["donation"] += $row["donation"];
-			$total["total_cost"] += $row["total_cost"];
+				$row["date"] = $row["month_name"] . ", " . $i;
+				$month = $row["month"];
+				$retval[$i][$month] = $row;
+
+				//
+				// Update yearly totals
+				//
+				$year_total["num"] += $row["num"];
+				$year_total["badge_cost"] += $row["badge_cost"];
+				$year_total["donation"] += $row["donation"];
+				$year_total["total_cost"] += $row["total_cost"];
+
+				//
+				// Update grand totals
+				//
+				$total["num"] += $row["num"];
+				$total["badge_cost"] += $row["badge_cost"];
+				$total["donation"] += $row["donation"];
+				$total["total_cost"] += $row["total_cost"];
+
+			}
+
+			$year_total["date"] = t("%year% totals", array("%year%" => $i));
+			$retval[$i]["total"] = $year_total;
 
 		}
 
 		//
-		// Add in our totals.
+		// Put our totals at the end so they show up at the end of
+		// the final report.
 		//
 		$retval["total"] = $total;
 
@@ -357,7 +384,7 @@ class reg_admin_stats extends reg {
 		// Create our header, which corresponds to the statuses.
 		//
 		$header = array();
-		$header[] = t("Calendar Year");
+		$header[] = t("Date");
 		$header[] = t("# Transactions");
 		$header[] = t("Badge Cost");
 		$header[] = t("Donation");
@@ -365,21 +392,68 @@ class reg_admin_stats extends reg {
 
 		$rows = array();
 
+		//
+		// Loop through year
+		//
 		foreach ($data as $key => $value) {
 
+			//
+			// Loop through months in that year
+			//
+			foreach ($value as $key2 => $value2) {
+
+				$row = array();
+
+				//
+				// If not the grand total, print up the line.
+				//
+				if ($key != "total") {
+					$row[] = array("data" => $value2["date"], "align" => "right", 
+						"header" => true);
+					$row[] = array("data" => $value2["num"], "align" => "right");
+					$row[] = array(
+						"data" => "$" . number_format($value2["badge_cost"]), 
+						"align" => "right");
+					$row[] = array(
+						"data" => "$" . number_format($value2["donation"]), 
+						"align" => "right");
+					$row[] = array(
+						"data" => "$" . number_format($value2["total_cost"]), 
+						"align" => "right");
+					$rows[] = $row;
+
+				}
+
+			}
+
+
 			$row = array();
-			$row[] = array("data" => $value["year"], "align" => "right", 
-				"header" => true);
-			$row[] = array("data" => $value["num"], "align" => "right");
-			$row[] = array(
-				"data" => "$" . number_format($value["badge_cost"]), 
-				"align" => "right");
-			$row[] = array(
-				"data" => "$" . number_format($value["donation"]), 
-				"align" => "right");
-			$row[] = array(
-				"data" => "$" . number_format($value["total_cost"]), 
-				"align" => "right");
+
+			//
+			// If this row is the grand total, then print it differently.
+			//
+			if ($key == "total") {
+
+				$row[] = array("data" => t("Grand Total"), "align" => "right", 
+					"header" => true);
+				$row[] = array("data" => $value["num"], "align" => "right");
+				$row[] = array(
+					"data" => "$" . number_format($value["badge_cost"]), 
+					"align" => "right");
+				$row[] = array(
+					"data" => "$" . number_format($value["donation"]), 
+					"align" => "right");
+				$row[] = array(
+					"data" => "$" . number_format($value["total_cost"]), 
+					"align" => "right");
+
+			} else {
+				//
+				// This is the end of a year, print an empty line for spacing.
+				//
+				$row[] = array("data" => "", "colspan" => 5);
+
+			}
 
 			$rows[] = $row;
 

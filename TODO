@@ -7,8 +7,6 @@ TODO
 ====
 
 - Stats
-	- Revenue by month
-		- Group by month?
 	- Registrations by month
 		- Check the created field in reg
 		- Months are rows, total number are column
