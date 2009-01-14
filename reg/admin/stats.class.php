@@ -25,8 +25,8 @@ class reg_admin_stats extends reg {
 				"%year" => $year,
 			));
 
-		$data_reg = $this->get_reg_data($year);
-		$retval .= $this->get_reg_report($data_reg);
+		$data_reg = $this->get_badge_data($year);
+		$retval .= $this->get_badge_report($data_reg);
 
 		return($retval);
 
@@ -61,7 +61,7 @@ class reg_admin_stats extends reg {
 	* @return array multi-dimensional array of different membership types and 
 	*	the statuses for those membership types.
 	*/
-	function get_reg_data($year) {
+	function get_badge_data($year) {
 
 		$retval = array();
 
@@ -135,21 +135,21 @@ class reg_admin_stats extends reg {
 		//
 		$retval[t("Totals")] = $total_status;
 
-		//print "<pre>"; print_r($retval); print "</pre>";
+		//print "<pre>"; print_r($retval); print "</pre>"; // Debugging
 
 		return($retval);
 
-	} // End of get_reg_data()
+	} // End of get_badge_data()
 
 
 	/**
 	* This function creates a report based on our data.
 	*
-	* @param array $data Our data structure returned from get_reg_data().
+	* @param array $data Our data structure returned from get_badge_data().
 	*
 	* @return string HTML code for the report.
 	*/
-	function get_reg_report($data) {
+	function get_badge_report($data) {
 
 		$retval = "";
 
@@ -228,7 +228,7 @@ class reg_admin_stats extends reg {
 
 		return($retval);
 
-	} // End of get_reg_report()
+	} // End of get_badge_report()
 
 
 	/**

@@ -137,15 +137,15 @@ class reg_menus extends reg {
 			$retval[] = array(
 				"path" => "admin/reg/stats",
 				"title" => t("Stats"),
-				"callback" => "reg_admin_stats_registration",
+				"callback" => "reg_admin_stats_badge",
 				"type" => MENU_NORMAL_ITEM,
 				"weight" => 2,
 				);
 
 			$retval[] = array(
 				"path" => "admin/reg/stats/registration",
-				"title" => t("Registration"),
-				"callback" => "reg_admin_stats_registration",
+				"title" => t("Badge Breakdown"),
+				"callback" => "reg_admin_stats_badge",
 				"type" => MENU_DEFAULT_LOCAL_TASK,
 				"weight" => 0,
 				);

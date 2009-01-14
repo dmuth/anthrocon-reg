@@ -440,7 +440,7 @@ function reg_admin_main() {
 /**
 * Viewing registration stats.
 */
-function reg_admin_stats_registration() {
+function reg_admin_stats_badge() {
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
