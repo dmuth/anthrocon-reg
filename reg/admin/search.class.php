@@ -246,8 +246,11 @@ class reg_admin_search extends reg {
 	* @param array $search Array of search criteria.
 	*
 	* @param string $order_by How are we ordering the results?
+	*
+	* @param $page boolean Set to true if we want to page the query,
+	*	false if we want everything.
 	*/
-	function get_cursor(&$search, $order_by) {
+	function get_cursor(&$search, $order_by, $page = true) {
 
 		$where = array();
 		$args = array();
@@ -321,8 +324,13 @@ class reg_admin_search extends reg {
 			. $order_by
 			;
 
-		$retval = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
-			0, null, $args);
+		if ($page == true) {
+			$retval = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
+				0, null, $args);
+		} else {
+			$retval = db_query($query, $args);
+
+		}
 
 		return($retval);
 

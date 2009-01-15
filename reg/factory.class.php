@@ -180,8 +180,11 @@ class reg_factory {
 
 
 	protected function get_admin_search_download() {
+		$message = $this->get_message();
+		$fake = $this->get_fake();
+		$log = $this->get_log();
 		$admin_member = $this->get_admin_member();
-		$retval = new reg_admin_search_download($admin_member);
+		$retval = new reg_admin_search_download($message, $fake, $log, $admin_member);
 		return($retval);
 	}
 

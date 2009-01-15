@@ -6,10 +6,6 @@ Done
 TODO
 ====
 
-- It's nothing major, but if you go to the search page, search for some
-	results, and then choose to download, only the first page (20 members)
-	will be downloaded.  Whoops.
-
 - Logs
 	- Allow searching
 		- By text

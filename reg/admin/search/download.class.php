@@ -50,7 +50,7 @@ class reg_admin_search_download extends reg_admin_search {
 
 		$retval .= $this->get_header($delimiter, $newline);
 
-		$cursor = $this->get_cursor($search, "ORDER BY id DESC");
+		$cursor = $this->get_cursor($search, "ORDER BY id DESC", false);
 
 		while ($row = db_fetch_array($cursor)) {
 			$retval .= $this->get_row($row, $delimiter, $newline);
