@@ -49,31 +49,15 @@ class reg_admin_log extends reg {
 
 
 	/**
-	* Our log viewer.  Lists the most recent log entries.
+	* Get our cursor for the recent log entries.
+	* 
+	* @param array $header Our header. 
 	*
-	* @param integer $id Optional registration ID to limit results
-	*	to a single membership.
+	* @param integer $id The ID of a registration to search for.  May be null.
 	*
-	* @return string HTML code of the log entry.
+	* @return A cursor that can be used by the database fetching functions.
 	*/
-	function log_recent($id = "") {
-
-		//
-		// The icons and classes variables are sraight from the
-		// watchdog_overview() function.
-		//
-		$icons = array(WATCHDOG_NOTICE  => '',
-			WATCHDOG_WARNING => theme('image', 
-				'misc/watchdog-warning.png', t('warning'), t('warning')),
-			WATCHDOG_ERROR   => theme('image', 
-				'misc/watchdog-error.png', t('error'), t('error'))
-			);
-
-		$header = array();
-		$header[] = " ";
-		$header[] = array("data" => "Date", "field" => "date");
-		$header[] = array("data" => "Message", "field" => "message");
-		$header[] = array("data" => "User", "field" => "name");
+	function log_recent_cursor(&$header, $id) {
 
 		//
 		// By default, we'll be sorting by the reverse date.
@@ -101,9 +85,29 @@ class reg_admin_log extends reg {
 			. $where
 			. $order_by
 			;
-		$cursor = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
+
+		$retval = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
 			0, null, $where_args);
+
+		return($retval);
+
+	} // End of log_recent_cursor()
+
+
+	/**
+	* Format the rows for log entries.
+	*
+	* @param $cursor The database cursor to iterate through.
+	*
+	* @return array An array of rows that can be passed into the 
+	*	table theming function.
+	*/
+	function log_recent_rows($cursor) {
+
+		$retval = array();
+
 		while ($row = db_fetch_array($cursor)) {
+
 			$id = $row["id"];
 
 			//
@@ -143,7 +147,7 @@ class reg_admin_log extends reg {
 
 			}
 
-			$rows[] = array(
+			$retval[] = array(
 				"data" => array(
 					$icon,
 					l($date, $link),
@@ -152,15 +156,54 @@ class reg_admin_log extends reg {
 					),
 				"class" => $class,
 				);
+
 		}
 
-		$retval = theme("table", $header, $rows);
+		return($retval);
+
+	} // End of log_recent_rows()
+
+
+	/**
+	* Our log viewer.  Lists the most recent log entries.
+	*
+	* @param integer $id Optional registration ID to limit results
+	*	to a single membership.
+	*
+	* @return string HTML code of the log entry.
+	*/
+	function log_recent($id = "") {
+
+		$retval = "";
+
+		//
+		// The icons and classes variables are sraight from the
+		// watchdog_overview() function.
+		//
+		$icons = array(WATCHDOG_NOTICE  => '',
+			WATCHDOG_WARNING => theme('image', 
+				'misc/watchdog-warning.png', t('warning'), t('warning')),
+			WATCHDOG_ERROR   => theme('image', 
+				'misc/watchdog-error.png', t('error'), t('error'))
+			);
+
+		$header = array();
+		$header[] = " ";
+		$header[] = array("data" => "Date", "field" => "date");
+		$header[] = array("data" => "Message", "field" => "message");
+		$header[] = array("data" => "User", "field" => "name");
+
+		$cursor = $this->log_recent_cursor($header, $id);
+
+		$rows = $this->log_recent_rows($cursor);
+
+		$retval .= theme("table", $header, $rows);
 
 		$retval .= theme_pager();
 
 		return($retval);
 
-	} // End of log()
+	} // End of log_recent()
 
 
 	/**
