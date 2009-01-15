@@ -440,6 +440,16 @@ function reg_admin_main() {
 /**
 * Viewing registration stats.
 */
+function reg_admin_stats_reg() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$stats = $GLOBALS["reg_factory"]->get_object("admin_stats");
+	return($stats->get_stats_reg());
+
+}
+
 function reg_admin_stats_badge() {
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
@@ -450,10 +460,6 @@ function reg_admin_stats_badge() {
 
 }
 
-
-/**
-* Viewing revenue stats.
-*/
 function reg_admin_stats_revenue() {
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");

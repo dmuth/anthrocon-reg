@@ -6,11 +6,6 @@ Done
 TODO
 ====
 
-- Stats
-	- Registrations by month
-		- Check the created field in reg
-		- Months are rows, total number are column
-
 - It's nothing major, but if you go to the search page, search for some
 	results, and then choose to download, only the first page (20 members)
 	will be downloaded.  Whoops.

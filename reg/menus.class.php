@@ -143,7 +143,7 @@ class reg_menus extends reg {
 				);
 
 			$retval[] = array(
-				"path" => "admin/reg/stats/registration",
+				"path" => "admin/reg/stats/badge",
 				"title" => t("Badge Breakdown"),
 				"callback" => "reg_admin_stats_badge",
 				"type" => MENU_DEFAULT_LOCAL_TASK,
@@ -151,11 +151,19 @@ class reg_menus extends reg {
 				);
 
 			$retval[] = array(
+				"path" => "admin/reg/stats/registration/activity",
+				"title" => t("Registration Activity"),
+				"callback" => "reg_admin_stats_reg",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 1,
+				);
+
+			$retval[] = array(
 				"path" => "admin/reg/stats/revenue",
 				"title" => t("Revenue"),
 				"callback" => "reg_admin_stats_revenue",
 				"type" => MENU_LOCAL_TASK,
-				"weight" => 0,
+				"weight" => 2,
 				);
 
 		}

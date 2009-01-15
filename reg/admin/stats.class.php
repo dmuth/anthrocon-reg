@@ -2,6 +2,9 @@
 
 /**
 * This class holds functions related to our search functionality.
+*
+* @todo Split this up into seperate classes for each report.
+*
 */
 class reg_admin_stats extends reg {
 
@@ -14,7 +17,7 @@ class reg_admin_stats extends reg {
 
 
 	/**
-	* Get statistics for numbers of registrations.
+	* Get badge type breakdown.
 	*/
 	function get_stats_badge() {
 
@@ -31,6 +34,26 @@ class reg_admin_stats extends reg {
 		return($retval);
 
 	} // End of get_stats_registration()
+
+
+	/**
+	* Get a breakdown of registration activity.
+	*/
+	function get_stats_reg() {
+
+		$year = $this->get_constant("year");
+
+		$retval .= t("<h2>Registration Activity for Convention Year %year</h2>",
+			array(
+				"%year" => $year,
+			));
+
+		$data = $this->get_reg_data($year);
+		$retval .= $this->get_reg_report($data);
+
+		return($retval);
+
+	} // End of get_stats_reg()
 
 
 	/**
@@ -230,6 +253,77 @@ class reg_admin_stats extends reg {
 
 
 	/**
+	* Get our registration activity.
+	*/
+	function get_reg_data($year) {
+
+		$retval = array();
+
+		$query = "SELECT "
+			. "COUNT(*) AS num, "
+			. "FROM_UNIXTIME(created, '%Y-%m') AS date, "
+			. "FROM_UNIXTIME(created, '%M, %Y') AS date_name "
+			. "FROM {reg} "
+			. "WHERE "
+			. "year='%s' "
+			. "GROUP BY date "
+			. "ORDER BY date";
+		$query_args = array($year);
+		$cursor = db_query($query, $query_args);
+
+		while ($row = db_fetch_array($cursor)) {
+			$key = $row["date"];
+			$retval[$key] = $row;
+		}
+
+		return($retval);
+
+	} // End of get_reg_data()
+
+
+	/**
+	* Get our registration activity report.
+	*/
+	function get_reg_report(&$data) {
+
+		$retval = "";
+
+		//
+		// Create our header, which corresponds to the statuses.
+		//
+		$header = array();
+		$header[] = t("Date");
+		$header[] = t("# Purchases");
+
+		$rows = array();
+
+		foreach ($data as $value) {
+			$row = array();
+			$row[] = array("data" => $value["date_name"]);
+			$row[] = array(
+				"data" => t("!num badges", 
+					array("!num" => $value["num"])),
+				"align" => "right");
+			$rows[] = $row;
+		}
+
+		$retval .= theme("table", $header, $rows);
+
+		$retval .= t("Note: This table only reflects purchases, so the numbers "
+			. "may be larger than actual attendance.  "
+			. "If you want to see refunds, please check the !link.",
+			array(
+				"!link" => l(t("Badge Breakdown Report"), 
+					"admin/reg/stats/badge")
+			)
+			);
+
+		return($retval);
+
+	} // End of get_reg_report()
+
+
+	/**
 	* Get revenue data for the given convention year.
 	*/
 	function get_rev_data($year) {
@@ -267,6 +361,7 @@ class reg_admin_stats extends reg {
 				. "reg.year = '%s' "
 				. "AND YEAR(FROM_UNIXTIME(reg_trans.date)) = '%s' "
 				. "GROUP BY month "
+				. "ORDER BY month "
 				;
 			$query_args = array($year, $i);
 			$cursor = db_query($query, $query_args);
