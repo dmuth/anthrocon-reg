@@ -168,7 +168,8 @@ class reg_menus extends reg {
 
 		}
 
-	} // End of get_status()
+	} // End of get_stats()
+
 
 	/**
 	* Get the "Main" tab under the reg admin.
