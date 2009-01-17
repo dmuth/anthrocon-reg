@@ -36,7 +36,8 @@ class reg_admin_search_download extends reg_admin_search {
 
 		$retval = "";
 
-		$search = $this->search_get_args();
+		$arg = $this->get_args_string();
+		$search = $this->get_data_to_array($arg);
                 
 		if (empty($search)) {
 			return(null);

@@ -228,7 +228,7 @@ class reg_admin_stats extends reg {
 					$search["reg_type_id"] = $type_id;
 
 					$url = "admin/reg/members/search/";
-					$get_data = $this->search->get_data($search);
+					$get_data = $this->array_to_get_data($search);
 					$url .= $get_data;
 
 					$link = l($num, $url);

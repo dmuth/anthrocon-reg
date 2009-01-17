@@ -27,7 +27,8 @@ class reg_admin_search extends reg {
 
 	function search_form() {
 
-		$search_data = $this->search_get_args();
+		$arg = $this->get_args_string();
+		$search_data = $this->get_data_to_array($arg);
 
 		$retval = array();
 
@@ -121,25 +122,13 @@ class reg_admin_search extends reg {
 
 
 	/**
-	* If search arguments were passed in, decode them and return an
-	*       array with the data.
-	*/
-	protected function search_get_args() {
-		$arg = $this->get_args_string();
-		$arg = rawurldecode($arg);
-		$arg = html_entity_decode($arg);
-		parse_str($arg, $retval);
-		return($retval);
-	}
-
-
-	/**
 	* This function gets the string of arguments that were passed in
 	*	to the URL.
 	*
 	* @return string The argument of search arguments.
 	*/
 	protected function get_args_string($offset = 0) {
+
 		$retval = arg(4);
 
 		//
@@ -151,6 +140,7 @@ class reg_admin_search extends reg {
 		}
 
 		return($retval);
+
 	} // End of get_args_string()
 
 
@@ -169,7 +159,7 @@ class reg_admin_search extends reg {
 	*/
 	function search_submit($form_id, &$data) {
 
-		$get_data = $this->get_data($data["search"]);
+		$get_data = $this->array_to_get_data($data["search"]);
 
 		$url = "admin/reg/members/search/" . $get_data;
 		//print $url; // Debugging
@@ -180,32 +170,14 @@ class reg_admin_search extends reg {
 
 
 	/**
-	* Create a an encoded key=value string from an array of data.
-	* This string can then be appended to a URL.
-	*
-	* @param array $data Array of key/value pairs.
-	*
-	* @return string The encoded string of each of these.
-	*/
-	function get_data($data) {
-
-		//print_r($data); // Debugging
-		$retval = http_build_query($data);
-		$retval = rawurlencode($retval);
-
-		return($retval);
-
-	} // End of get_data()
-
-
-	/**
 	* Run our search and return search results.
 	*/
 	function results() {
 
 		$retval = "";
 
-		$search = $this->search_get_args();
+		$arg = $this->get_args_string();
+		$search = $this->get_data_to_array($arg);
                 
 		if (empty($search)) {
 			return(null);

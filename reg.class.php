@@ -1200,5 +1200,46 @@ class reg {
 	} // End of get_constant()
 
 
+    /**
+	* Turn an array into an encoded key=value string, which can then
+	*	be added onto a URL as an argument.
+	* The reason for the extra encoding is to keep Drupal from tampering
+	*	with the data.
+    *
+    * @param array $data Array of key/value pairs.
+    *
+    * @return string The encoded string of each of these.
+    */
+    function array_to_get_data($data) {
+
+        //print_r($data); // Debugging
+        $retval = http_build_query($data);
+        $retval = rawurlencode($retval);
+
+        return($retval);
+
+    } // End of array_to_get_data()
+
+
+	/**
+	* Decode GET method data and turn it into an array that PHP can use.
+	*
+	* @param string $get_data GET data, which corresonds to a result
+	* 	from arg(), and has been encoded with rawurlencode().
+	*	The reason for the encoding is to prevent Drupal from tampering 
+	*	with the string.
+	*/
+	protected function get_data_to_array($get_data) {
+
+		$data = rawurldecode($get_data);
+		$data = html_entity_decode($data);
+		parse_str($data, $retval);
+		//print_r($retval); // Debugging
+
+		return($retval);
+
+	} // End of get_data_to_array()
+
+
 } // End of reg class
 
