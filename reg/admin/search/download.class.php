@@ -22,6 +22,7 @@ class reg_admin_search_download extends reg_admin_search {
 		);
 
 	function __construct(&$message, &$fake, &$log, &$admin_member) {
+		$this->log = $log;
 		parent::__construct($message, $fake, $log, $admin_member);
 	}
 
@@ -38,6 +39,10 @@ class reg_admin_search_download extends reg_admin_search {
 
 		$arg = $this->get_args_string();
 		$search = $this->get_data_to_array($arg);
+
+		if (!empty($search["submit"])) {
+			$this->log_download($search);
+		}
                 
 		if (empty($search)) {
 			return(null);
@@ -126,6 +131,45 @@ class reg_admin_search_download extends reg_admin_search {
 		return($retval);
 
 	} // End of get_row()
+
+
+	/**
+	* Log this download.
+	*/
+	function log_download($search) {
+
+		unset($search["submit"]);
+
+		//
+		// Turn our search criteria into text.
+		//
+		$search_text = "";
+		foreach ($search as $key => $value) {
+			if (!empty($value)) {
+				if (!empty($search_text)) {
+					$search_text .= ", ";
+				}
+				$search_text .= "$key: $value";
+			}
+		}
+
+		$message = "Downloaded membership records. ";
+		if (!empty($search_text)) {
+			$message .= "Criteria: $search_text. ";
+		}
+
+		//
+		// Note the page number as well.
+		//
+		$page = $_GET["page"];
+		if (empty($page)) {
+			$page = 0;
+		}
+		$message .= "Page: $page.";
+
+		$this->log->log($message);
+
+	} // End of log_download()
 
 
 } // End of reg_admin_search_download class

@@ -7,6 +7,7 @@ class reg_admin_search extends reg {
 
 
 	function __construct(&$message, &$fake, &$log, &$admin_member) {
+		$this->log = $log;
 		$this->admin_member = $admin_member;
 		parent::__construct($message, $fake, $log);
 	}
@@ -178,7 +179,11 @@ class reg_admin_search extends reg {
 
 		$arg = $this->get_args_string();
 		$search = $this->get_data_to_array($arg);
-                
+
+		if (!empty($search["submit"])) {
+			$this->log_search($search);
+		}
+
 		if (empty($search)) {
 			return(null);
 		}
@@ -308,6 +313,44 @@ class reg_admin_search extends reg {
 
 	} // End of get_cursor()
 
+
+	/**
+	* Log any searches that are done.
+	*/
+	function log_search($search) {
+
+		unset($search["submit"]);
+
+		//
+		// Turn our search criteria into text.
+		//
+		$search_text = "";
+		foreach ($search as $key => $value) {
+			if (!empty($value)) {
+				if (!empty($search_text)) {
+					$search_text .= ", ";
+				}
+				$search_text .= "$key: $value";
+			}
+		}
+
+		$message = "Accessed member search. ";
+		if (!empty($search_text)) {
+			$message .= "Criteria: $search_text. ";
+		}
+
+		//
+		// Note the page number as well.
+		//
+		$page = $_GET["page"];
+		if (empty($page)) {
+			$page = 0;
+		}
+		$message .= "Page: $page.";
+
+		$this->log->log($message);
+
+	} // End of log_search()
 
 } // End of class reg_search
 
