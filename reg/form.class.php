@@ -189,6 +189,14 @@ class reg_form extends reg {
 			$error = t("Email addresses do not match!");
 			form_set_error("email2", $error);
 			$log->log($error, "", WATCHDOG_WARNING);
+
+			$error = t("Email Address '!address' != '!address2'",
+				array(
+					"!address" => $data["email"],
+					"!address2" => $data["email2"],
+				)
+				);
+			$log->log($error, "", WATCHDOG_WARNING);
 			$okay = false;
 		}
 
