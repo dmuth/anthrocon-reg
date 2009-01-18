@@ -8,7 +8,8 @@
 class reg_admin_log extends reg {
 
 
-	function __construct() {
+	function __construct($message, $fake, $log) {
+        parent::__construct($message, $fake, $log);
 	}
 
 
@@ -57,7 +58,7 @@ class reg_admin_log extends reg {
 	*
 	* @return A cursor that can be used by the database fetching functions.
 	*/
-	function log_recent_cursor(&$header, $id) {
+	function log_recent_cursor(&$header, $id, $search) {
 
 		//
 		// By default, we'll be sorting by the reverse date.
@@ -67,11 +68,31 @@ class reg_admin_log extends reg {
 			$order_by = "ORDER BY id DESC";
 		}
 
-		$where = "";
+		//
+		// Create our where clause
+		//
+		$where = array();
+		$where_text = "";
 		$where_args = array();
+
 		if (!empty($id)) {
-			$where = "WHERE reg_log.reg_id='%s' ";
+			$where[] = "reg_log.reg_id='%s' ";
 			$where_args[] = $id;
+		}
+
+		if (!empty($search["text"])) {
+			$where[] = "reg_log.message LIKE '%%%s%%' ";
+			$where_args[] = $search["text"];
+		}
+
+		if (!empty($search["uid"])) {
+			$where[] = "reg_log.uid = '%s' ";
+			$where_args[] = $search["uid"];
+		}
+
+		if (!empty($where)) {
+			$where_text = "WHERE ";
+			$where_text .= join("AND ", $where);
 		}
 
 		//
@@ -82,7 +103,7 @@ class reg_admin_log extends reg {
 			. "users.uid, users.name "
 			. "FROM {reg_log} "
 			. "LEFT JOIN {users} ON reg_log.uid = users.uid "
-			. $where
+			. $where_text
 			. $order_by
 			;
 
@@ -170,9 +191,12 @@ class reg_admin_log extends reg {
 	* @param integer $id Optional registration ID to limit results
 	*	to a single membership.
 	*
+	* @param array $search Associative array of search criteria to search
+	*	for.
+	*
 	* @return string HTML code of the log entry.
 	*/
-	function log_recent($id = "") {
+	function log_recent($id = "", $search = "") {
 
 		$retval = "";
 
@@ -193,7 +217,7 @@ class reg_admin_log extends reg {
 		$header[] = array("data" => "Message", "field" => "message");
 		$header[] = array("data" => "User", "field" => "name");
 
-		$cursor = $this->log_recent_cursor($header, $id);
+		$cursor = $this->log_recent_cursor($header, $id, $search);
 
 		$rows = $this->log_recent_rows($cursor);
 

@@ -408,9 +408,25 @@ function reg_admin_log() {
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->force_ssl();
-	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_search");
 	return($log->log_recent());
 }
+
+function reg_admin_log_search_form() {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
+	return($search->search_form());
+}
+
+function reg_admin_log_search_form_validate($form_id, &$data) {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
+	return($search->search_form_validate($form_id, $data));
+}
+
+function reg_admin_log_search_form_submit($form_id, &$data) {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
+	return($search->search_form_submit($form_id, $data));
+}
+
 
 function reg_admin_log_detail($id) {
 	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
