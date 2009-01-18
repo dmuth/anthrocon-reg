@@ -588,6 +588,8 @@ class reg {
 
 	/**
 	* Our exit hook.  Note that we cannot print anything out from here.
+	* (At least not anything for the app.  Any print() calls will cause
+	*	text to be on the bottom of the page.)
 	* If we absolutely need to send a message back to the user, it can
 	* be done with drupal_set_message() or similar.
 	*/
@@ -599,6 +601,7 @@ class reg {
 		//
 		if ($_GET["q"] == "reg"
 			|| $_GET["q"] == "reg/verify"
+			|| $_GET["q"] == "reg/success"
 			) {
 			if ($GLOBALS["user"]->uid == 0) {
 				$url = $GLOBALS["base_root"] . base_path() . $_GET['q'];
