@@ -429,17 +429,17 @@ function reg_admin_log_search_form_submit($form_id, &$data) {
 
 
 function reg_admin_log_detail($id) {
-	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_view");
 	return($log->log_detail($id));
 }
 
 function reg_admin_trans() {
-	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_view");
 	return($log->trans_recent());
 }
 
 function reg_admin_trans_detail($id) {
-	$log = $GLOBALS["reg_factory"]->get_object("admin_log");
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_view");
 	return($log->trans_detail($id));
 }
 

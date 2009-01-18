@@ -4,7 +4,7 @@
 * This class extends the reg_admin_log class and adds in some 
 *	search functionality.
 */
-class reg_admin_log_search extends reg_admin_log {
+class reg_admin_log_search extends reg_admin_log_view {
 
 
 	function __construct($message, $fake, $log) {

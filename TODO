@@ -3,19 +3,8 @@
 Done
 ====
 
-- Logs
-	- Allow searching
-		- By text
-		- By username (should be a dropdown populated by a SELECT DISTINCT)
-
-
 TODO
 ====
-
-- Refactor logging
-	- Keep log() and log_tarns() in log class
-		- Put everything else in log_view
-			- log_search should extend log_view
 
 - Auditing
 	- Log member searches, downloads and membership accesses
