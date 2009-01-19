@@ -349,7 +349,7 @@ class reg_admin_search extends reg {
 			}
 		}
 
-		$message = t("Accessed member search. ");
+		$message = t("Audit log: Searched members. ");
 		if (!empty($search_text)) {
 			$message .= t("Criteria: ") . $search_text . ". ";
 		}

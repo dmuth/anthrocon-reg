@@ -542,7 +542,7 @@ class reg_admin_member extends reg {
 
 		$name .= $row["last"];
 
-		$message = t("Accessed membersip. "
+		$message = t("Audit log: Viewed membership. "
 			. "(Name: '!name', badge name: '!badge', badge num: '!num')",
 			array(
 				"!name" => $name,

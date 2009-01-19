@@ -21,6 +21,9 @@ class reg_admin_stats extends reg {
 	*/
 	function get_stats_badge() {
 
+		$message = t("Audit log: Stats: Viewed badge breakdown report.");
+		$this->log->log($message);
+
 		$year = $this->get_constant("year");
 
 		$retval .= t("<h2>Badge Breakdown for Convention Year %year</h2>",
@@ -41,6 +44,9 @@ class reg_admin_stats extends reg {
 	*/
 	function get_stats_reg() {
 
+		$message = t("Audit log: Stats: Viewed registration activity report.");
+		$this->log->log($message);
+
 		$year = $this->get_constant("year");
 
 		$retval .= t("<h2>Registration Activity for Convention Year %year</h2>",
@@ -60,6 +66,9 @@ class reg_admin_stats extends reg {
 	* Get statistics for revenue brought in.
 	*/
 	function get_stats_revenue() {
+
+		$message = t("Audit log: Stats: Viewed revenue breakdown report.");
+		$this->log->log($message);
 
 		$year = $this->get_constant("year");
 
