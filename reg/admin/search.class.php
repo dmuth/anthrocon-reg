@@ -74,6 +74,14 @@ class reg_admin_search extends reg {
 			"#default_value" => $search_data["address"],
 			);
 
+		$search["email"] = array(
+			"#title" => "Email",
+			"#type" => "textfield",
+			"#description" => "Email address.",
+			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
+			"#default_value" => $search_data["email"],
+			);
+
 		$types = $this->get_types();
 		$types[""] = "Select";
 		ksort($types);
@@ -251,6 +259,13 @@ class reg_admin_search extends reg {
 			$args[] = $search["name"];
 			$args[] = $search["name"];
 			$args[] = $search["name"];
+		}
+
+		if (!empty($search["email"])) {
+			$where[] = "("
+				. "email LIKE '%%%s%%' "
+				.")";
+			$args[] = $search["email"];
 		}
 
 		if (!empty($search["address"])) {
