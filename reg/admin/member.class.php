@@ -157,6 +157,8 @@ class reg_admin_member extends reg {
 
 		$row = $this->load_reg($id);
 
+		$this->log_view($row);
+
 		//
 		// Now create our table.
 		//
@@ -525,6 +527,33 @@ class reg_admin_member extends reg {
   		$this->goto_url($uri);
 
 	} // End of add_note_form_submit()
+
+
+	/**
+	* If a membership is viewed by an admin, log it for auditing purposes.
+	*/
+	function log_view(&$row) {
+
+		$name = $row["first"] . " ";
+
+		if (!empty($row["middle"])) {
+			$name .= $row["middle"] . " ";
+		}
+
+		$name .= $row["last"];
+
+		$message = t("Accessed membersip. "
+			. "(Name: '!name', badge name: '!badge', badge num: '!num')",
+			array(
+				"!name" => $name,
+				"!badge" => $row["badge_name"],
+				"!num" => $row["badge_num"],
+			)
+			);
+
+		$this->log->log($message, $row["id"]);
+
+	} // End of log_view()
 
 
 } // End reg_admin_member

@@ -153,9 +153,9 @@ class reg_admin_search_download extends reg_admin_search {
 			}
 		}
 
-		$message = "Downloaded membership records. ";
+		$message = t("Downloaded membership records. ");
 		if (!empty($search_text)) {
-			$message .= "Criteria: $search_text. ";
+			$message .= t("Criteria: ") . $search_text . ". ";
 		}
 
 		//

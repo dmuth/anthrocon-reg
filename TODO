@@ -6,11 +6,11 @@ Done
 TODO
 ====
 
-- Auditing
-	- Viewing individual members
-
 - Member searches
 	- Add searching by email address
+
+- admin
+	- Put 3 most recent log entries and 3 most recent transaction on this page
 
 - Timezones when editing levels.  Do we want to do anything there?  
 	- Maybe allow an hour?
@@ -25,9 +25,6 @@ TODO
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
-
-- admin
-	- Put 3 most recent log entries and 3 most recent transaction on this page
 
 - admin/reg/settings/mesages/1234/edit
 	- Prevent editing of non-existant message IDs

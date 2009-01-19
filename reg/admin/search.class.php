@@ -334,9 +334,9 @@ class reg_admin_search extends reg {
 			}
 		}
 
-		$message = "Accessed member search. ";
+		$message = t("Accessed member search. ");
 		if (!empty($search_text)) {
-			$message .= "Criteria: $search_text. ";
+			$message .= t("Criteria: ") . $search_text . ". ";
 		}
 
 		//
