@@ -5,9 +5,22 @@
 */
 class reg_admin_log_view extends reg_admin_log {
 
+	/**
+	* How many items to display per page when viewing log entires.
+	*/
+	protected $items_per_page;
 
 	function __construct($message, $fake, $log) {
         parent::__construct($message, $fake, $log);
+		$this->items_per_page = $this->get_constant("ITEMS_PER_PAGE");
+	}
+
+
+	/**
+	* Change the number of items per page.
+	*/
+	function set_items_per_page($num) {
+		$this->items_per_page = $num;
 	}
 
 
@@ -114,7 +127,7 @@ class reg_admin_log_view extends reg_admin_log {
 			. $order_by
 			;
 
-		$retval = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
+		$retval = pager_query($query, $this->items_per_page,
 			0, null, $where_args);
 
 		return($retval);
@@ -349,7 +362,7 @@ class reg_admin_log_view extends reg_admin_log {
 			. $where
 			. $order_by
 			;
-		$cursor = pager_query($query, $this->get_constant("ITEMS_PER_PAGE"), 
+		$cursor = pager_query($query, $this->items_per_page,
 			0, null, $where_args);
 		while ($row = db_fetch_array($cursor)) {
 

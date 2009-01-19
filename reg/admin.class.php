@@ -41,9 +41,14 @@ class reg_admin {
 	*/
 	function main() {
 
+		//
+		// Only display 3 log items and transactions here.
+		//
+		$this->log->set_items_per_page(3);
+
 		$retval = "";
 
-		$retval = "<h2>Quick Links:</h2>";
+		$retval = t("<h2>Quick Links:</h2>");
 
 		$retval .= "<ul>\n"
 			. "<li>" . l(t("Recent Members"), "admin/reg/members") 
@@ -55,6 +60,16 @@ class reg_admin {
 			. "<li>" . l(t("Settings"), "admin/reg/settings") 
 				. "</li>\n"
 			."</ul>\n"
+			;
+
+		//
+		// Show a few recent log entries and transactions, so we can
+		// get an idea of the status of the reg system at a glance.
+		//
+		$retval .= t("<h2>Recent Log Entries:</h2>")
+ 			. $this->log->log_recent()
+			. t("<h2>Recent Transactions:</h2>")
+			. $this->log->trans_recent()
 			;
 
 		return($retval);
