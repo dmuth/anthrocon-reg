@@ -183,7 +183,6 @@ class reg {
 			return(false);
 		}
 
-		//if ($badge_num_int < 0) {
 		if ($this->is_negative_number($badge_num)) {
 			$error = t("Badge number cannot be negative!");
 			form_set_error("badge_num", $error);
