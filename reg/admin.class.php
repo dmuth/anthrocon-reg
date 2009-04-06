@@ -6,8 +6,9 @@
 */
 class reg_admin {
 
-	function __construct($log) {
+	function __construct($log, $log_write) {
 		$this->log = $log;
+		$this->log_write = $log_write;
 	}
 
 	/**
@@ -27,7 +28,7 @@ class reg_admin {
 					)
 				);
 
-			$this->log->log($message);
+			$this->log_write->log($message);
 
 		}
 

@@ -122,7 +122,8 @@ class reg_factory {
 
 	protected function get_admin() {
 		$log = $this->get_admin_log_view();
-		$retval = new reg_admin($log);
+		$log_write = $this->get_log();
+		$retval = new reg_admin($log, $log_write);
 		return($retval);
 	}
 
