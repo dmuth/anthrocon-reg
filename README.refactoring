@@ -1,0 +1,10 @@
+
+Refactoring Ideas, DTM 5 Apr 2009
+=================================
+
+In hindsight, mixing inheritance with a factory class really wasn't such a 
+good idea.
+
+As development progresses (and as I write more unit tests), I should see 
+about cutting down on inheritance and use dependency injection instead.
+
