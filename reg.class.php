@@ -180,13 +180,18 @@ class reg {
 				array("%num%" => $badge_num)
 				);
 			form_set_error("badge_num", $error);
+			return(false);
 		}
 
 		//if ($badge_num_int < 0) {
 		if ($this->is_negative_number($badge_num)) {
 			$error = t("Badge number cannot be negative!");
 			form_set_error("badge_num", $error);
+			return(false);
 		}
+
+		// Assume success
+		return(true);
 
 	} // End of is_badge_num_valid()
 
