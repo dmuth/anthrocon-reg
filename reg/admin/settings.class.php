@@ -45,7 +45,7 @@ class reg_admin_settings extends reg {
 
 		$retval["no_production"] = array(
 			"#type" => "fieldset",
-			"#title" => t("Things not to set in production"),
+			"#title" => t("Things NOT to set in production"),
 			"#tree" => "true",
 			"#collapsible" => true,
 			"#collapsed" => false,
@@ -79,6 +79,16 @@ class reg_admin_settings extends reg {
 				$this->get_constant("FORM_ADMIN_FAKE_EMAIL"), ""),
 			"#description" => t("If set, emails will NOT be sent.  This is a "
 				. "really good idea when testing."),
+			);
+
+		$retval["no_production"]["no_ssl_redirect"] = array(
+			"#type" => "checkbox",
+			"#title" => t("Turn off SSL redirection on pages?"),
+			"#default_value" => variable_get(
+				$this->get_constant("form_admin_no_ssl_redirect"), ""),
+			"#description" => t("If set, redirection to SSL-enabled pages will be "
+				. "turned off.  This is only useful for running unit tests.  "
+				. "Do NOT enable in production, EVER!"),
 			);
 
 		$retval["submit"] = array(
@@ -144,6 +154,8 @@ class reg_admin_settings extends reg {
 			$data["no_production"]["fake_email"]);
 		$admin->variable_set($this->get_constant("FORM_ADMIN_CONDUCT_PATH"), 
 			$data["conduct_path"]);
+		$admin->variable_set($this->get_constant("form_admin_no_ssl_redirect"), 
+			$data["no_production"]["no_ssl_redirect"]);
 
 		drupal_set_message("Settings updated");
 

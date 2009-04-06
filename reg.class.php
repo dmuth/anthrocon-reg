@@ -58,6 +58,7 @@ class reg {
 		"form_admin_conduct_path" => "reg_conduct_path",
 		"form_admin_fake_data" => "reg_fake_data",
 		"form_admin_fake_email" => "reg_fake_email",
+		"form_admin_no_ssl_redirect" => "reg_no_ssl_redirect",
 
 		//
 		// Size of form fields
@@ -524,9 +525,27 @@ class reg {
 	function force_ssl() {
 
 		if (!$this->is_ssl()) {
-			$uri = request_uri();
-			$_SERVER["SERVER_PORT"]= 443;
-			$this->goto_url($uri);
+
+			$no_ssl = variable_get($this->get_constant(
+				"form_admin_no_ssl_redirect"), "");
+
+			//
+			// Only do SSL redirection if not explicitly disabled.
+			//
+			if ($no_ssl) {
+				$message = t("DANGER!  You have SSL redirection turned off!  "
+					. "If this is a production machine, please change that "
+					. "immediately! (If this is a dev machine, you may "
+					. "ignore this message. :-)");
+				$this->log->log($message, "", WATCHDOG_ERROR);
+
+			} else {
+				$uri = request_uri();
+				$_SERVER["SERVER_PORT"]= 443;
+				$this->goto_url($uri);
+
+			}
+
 		}
 
 	} // End of force_ssl()
