@@ -1,0 +1,86 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class RegMemberUnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("reg_member class"),
+			"desc" => t("Test out the reg_member class"),
+			"group" => t("Registration System"),
+			);
+	}
+
+
+	function testAddMember() {
+
+		//
+		// Test adding a member with some random data.
+		//
+		$data = array();
+		$data["badge_name"] = "Fluffy Samplefur";
+		$data["first"] = "Test first name";
+		$data["last"] = "Test last name";
+		$data["address1"] = "Test address1";
+		$data["address2"] = "Test address2";
+		$data["city"] = "Test city";
+		$data["state"] = "Test state";
+		$data["zip"] = "Test Zip/Postal code";
+		$data["country"] = "Test Country";
+		$data["email"] = "Test Email";
+		$data["phone"] = "Test Phone";
+
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($data["badge_num"]);
+		
+		//
+		// Make sure our badge number is incremented on the next member 
+		// that is added.
+		//
+		$expected = $output + 1;
+		unset($data["badge_num"]);
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertEqual($expected, $output);
+		
+		//
+		// Check all of our fields
+		//
+		$badge_num = $output;
+		$query = "SELECT * FROM reg WHERE badge_num = '%s'";
+		$query_args = array($badge_num);
+		$cursor = db_query($query, $query_args);
+		$output = db_fetch_array($cursor);
+		$this->assertEqual($badge_num, $output["badge_num"]);
+		$this->assertEqual($data["badge_name"], $output["badge_name"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["last"], $output["last"]);
+		$this->assertEqual($data["address1"], $output["address1"]);
+		$this->assertEqual($data["address2"], $output["address2"]);
+		$this->assertEqual($data["city"], $output["city"]);
+		$this->assertEqual($data["state"], $output["state"]);
+		$this->assertEqual($data["zip"], $output["zip"]);
+		$this->assertEqual($data["country"], $output["country"]);
+		$this->assertEqual($data["email"], $output["email"]);
+		$this->assertEqual($data["phone"], $output["phone"]);
+
+	} // End of testAddMember()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg_member = $this->factory->get_object("member");
+	}
+
+	function tearDown() {
+	}
+
+
+} // End of RegMemberUnitTest class
+
+
