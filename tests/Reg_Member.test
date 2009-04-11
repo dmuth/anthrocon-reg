@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class RegMemberUnitTest extends DrupalTestCase {
+class Reg_Member_UnitTest extends DrupalTestCase {
 
 	/**
 	* Implementation of get_info() for information
@@ -72,8 +72,79 @@ class RegMemberUnitTest extends DrupalTestCase {
 	} // End of testAddMember()
 
 
+	/**
+	* Add a member with a specific set badge number.
+	*/
+	function testAddMemberSetBadgeNumber() {
+
+		//
+		// Fetch the next available badge number, then use it in a 
+		// new membership.
+		//
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$badge_num = $output;
+
+		$data = array();
+		$data["badge_name"] = "Fluffy Samplefur";
+		$data["badge_num"] = $badge_num;
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertEqual($badge_num, $output);
+		
+		$query = "SELECT * FROM reg WHERE badge_num = '%s'";
+		$query_args = array($badge_num);
+		$cursor = db_query($query, $query_args);
+		$output = db_fetch_array($cursor);
+		$this->assertEqual($badge_num, $output["badge_num"]);
+		$this->assertNotNull($output["badge_name"]);
+		$this->assertEqual($data["badge_name"], $output["badge_name"]);
+
+	} // End of testAddMemberSetBadgeNumber()
+
+
+	function testIsBadgeNumAvailable() {
+
+		$data = array();
+		$data["badge_name"] = "Fluffy Samplefur";
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$badge_num = $output;
+
+		$output = $this->reg->is_badge_num_available($data["id"], 
+			$badge_num);
+		$this->assertTrue($output);
+
+		//
+		// Try using this badge number on another badge.
+		//
+		$output = $this->reg->is_badge_num_available(($data["id"] + 1), 
+			$badge_num);
+		$this->assertFalse($output);
+		//$output = drupal_get_messages();
+		//$this->assertNotNull($output["error"][0]);
+		//$regexp = t("Badge number.*is already in use");
+		//$this->assertTrue(ereg($regexp, $output["error"][0]), 
+		//	"Error message expected");
+
+		//
+		// Now try a badge number that is WAY too high.
+		//
+		$output = $this->reg->is_badge_num_available($data["id"], 
+			($badge_num + 100));
+		$this->assertTrue($output);
+		//$output = drupal_get_messages();
+		//$this->assertNotNull($output["error"][0]);
+		//$regexp = t("Badge number.*exceeds highest assigned number");
+		//$this->assertTrue(ereg($regexp, $output["error"][0]), 
+		//	"Error message found");
+		
+	} // End of testIsBadgeNumAvailable()
+
+
 	function setUp() {
 		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
 		$this->reg_member = $this->factory->get_object("member");
 	}
 
@@ -81,6 +152,7 @@ class RegMemberUnitTest extends DrupalTestCase {
 	}
 
 
-} // End of RegMemberUnitTest class
+
+} // End of Reg_Member_UnitTest class
 
 

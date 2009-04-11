@@ -7,26 +7,38 @@ TODO
 ====
 
 - Unit tests
-	testIsBadgeNumAvailable():
-		Create account first, then do conflicting number
-	testAddMember():
-		Create some transactions first
-			- Write unit test for transaction creation
-		Make sure values are updated ONLY when transaction ID is specified
-			- Write as testAddMemberTransID()?
+
+	testReg_Member_Admin:
+		testAddMember():
+			Create some transactions first
+				- Write unit test for transaction creation
+			Make sure values are updated ONLY when transaction ID is specified
+				- Write as testAddMemberTransID()?
+		- Calling drupal_get_messages() multiple times doesn't seem to be a good idea
+			- Could I create some methods called set_drupal_error() and
+				get_last_drupal_error()?
+
+	testReg:
+		- testFormatBadgeNum()
+
 	Other things to test:
 		- /reg
-			- test errors
+			- test errors (functionality test)
 			- test creation via the add_member() function
 			- test badge number assignment
 		- /admin/reg
-			- test creation
+			- test creation of a functionality test
+			- User editing
+				- Try dding a note
+				- Balance adjustment
+				- Cancelling a membership
 		- /admin/reg/logs
 			- test loging page
 			- create random log entry
 			- check for that log entry
 		- authorize.net module 
 			- different statuses
+		- For members without badge numbers, I need to NOT display "0000" on the display screen.
 
 - Check ongoing issue with gmmktime()
 	- Do I need to force the is_dst flag to 0?
@@ -46,6 +58,7 @@ TODO
 		child classes and the factory accordingly.
 
 - In confirmation email, include the membership type that was purchased.
+	- Write unit test for email first
 
 - Filter out "Audit log" from viewing individual registrations.
 

@@ -191,7 +191,7 @@ class reg_member extends reg {
 		$email_sent = $this->email->email($data["email"], $message_name, 
 			$data["id"], $email_data);
 
-	} // End of send_email()
+	} // End of email_receit()
 
 
 } // End of reg_member class
