@@ -73,6 +73,47 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 
 
 	/**
+	* Add a member, but create a transaction first.
+	*/
+	function testAddMemberWithTranasction() {
+
+		$data = array();
+		$output = $this->reg_log->log_trans($data);
+		$this->assertNotNull($output);
+		$transaction_id = $output;
+		
+		$badge_name = "testAddMemberWithTransaction " . time();
+		$regexp = t("Badge Name") . ".*" . $badge_name;
+
+		//
+		// Make sure there's no trace of a badge name.
+		//
+		$output = $this->reg_admin_log_view->trans_detail($transaction_id);
+		$this->assertNotNull($output);
+		$this->assertFalse(ereg("Badge Name", $output));
+		$this->assertFalse(ereg($regexp, $output));
+
+		$data = array();
+		$badge_name = "testAddMemberWithTransaction " . time();
+		$data["badge_name"] = $badge_name;
+		$output = $this->reg_member->add_member($data, $transaction_id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($data["badge_num"]);
+		$this->assertEqual($badge_name, $data["badge_name"]);
+		
+		//
+		// Now that we've added a member, see if the transaction was 
+		// updated with the badge name.
+		//
+		$output = $this->reg_admin_log_view->trans_detail($transaction_id);
+		$this->assertNotNull($output);
+		$this->assertTrue(ereg("Badge Name", $output));
+		$this->assertTrue(ereg($regexp, $output));
+
+	} // End of testAddMemberWithTransaction()
+
+
+	/**
 	* Add a member with a specific set badge number.
 	*/
 	function testAddMemberSetBadgeNumber() {
@@ -146,7 +187,10 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
 		$this->reg_member = $this->factory->get_object("member");
+		$this->reg_log = $this->factory->get_object("log");
+		$this->reg_admin_log_view = $this->factory->get_object("admin_log_view");
 	}
+
 
 	function tearDown() {
 	}
