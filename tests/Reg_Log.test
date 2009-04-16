@@ -1,0 +1,109 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Log_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("reg_log class"),
+			"desc" => t("Test out the reg_log class"),
+			"group" => t("Registration System"),
+			);
+	}
+
+
+	function testLogTrans() {
+
+		$data = array();
+		$data["badge_name"] = "Fluffy Samplefur testLogTrans";
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($data["id"]);
+		$reg_id = $data["id"];
+
+		//
+		// Make a transaction for this member and check to see that their 
+		// balance is updated.
+		//
+		$data = array();
+		$data["reg_id"] = $reg_id;
+		$data["badge_cost"] = 12;
+		$data["donation"] = 34;
+		$output = $this->reg_log->log_trans($data);
+		$this->assertNotNull($output);
+		$total = $data["badge_cost"] + $data["donation"];
+		$this->assertEqual($total, $data["total_cost"]);
+
+		$output = $this->reg_admin_member->load_reg($reg_id);
+		$this->assertNotNull($output);
+		$badge_cost = $output["badge_cost"];
+		$donation = $output["donation"];
+		$this->assertEqual($data["badge_cost"], $badge_cost);
+		$this->assertEqual($data["donation"], $donation);
+		$this->assertEqual($total, $output["total_cost"]);
+
+		//
+		// Repeat, and make sure that the balance is adjusted
+		//
+		$data = array();
+		$data["reg_id"] = $reg_id;
+		$data["badge_cost"] = 1;
+		$data["donation"] = 1;
+		$output = $this->reg_log->log_trans($data);
+		$this->assertNotNull($output);
+		$total = $data["badge_cost"] + $data["donation"];
+		$this->assertEqual($total, $data["total_cost"]);
+
+		$output = $this->reg_admin_member->load_reg($reg_id);
+		$this->assertNotNull($output);
+		$badge_cost += $data["badge_cost"];
+		$donation += $data["donation"];
+		$total = $badge_cost + $donation;
+		$this->assertEqual($badge_cost, $output["badge_cost"]);
+		$this->assertEqual($donation, $output["donation"]);
+		$this->assertEqual($total, $output["total_cost"]);
+
+		//
+		// Test negative numbers, too.
+		//
+		$data = array();
+		$data["reg_id"] = $reg_id;
+		$data["badge_cost"] = -7;
+		$data["donation"] = -8;
+		$output = $this->reg_log->log_trans($data);
+		$this->assertNotNull($output);
+		$total = $data["badge_cost"] + $data["donation"];
+		$this->assertEqual($total, $data["total_cost"]);
+
+		$output = $this->reg_admin_member->load_reg($reg_id);
+		$this->assertNotNull($output);
+		$badge_cost += $data["badge_cost"];
+		$donation += $data["donation"];
+		$total = $badge_cost + $donation;
+		$this->assertEqual($badge_cost, $output["badge_cost"]);
+		$this->assertEqual($donation, $output["donation"]);
+		$this->assertEqual($total, $output["total_cost"]);
+
+	} // End of testLogTrans()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_member = $this->factory->get_object("member");
+		$this->reg_admin_member = $this->factory->get_object("admin_member");
+		$this->reg_log = $this->factory->get_object("log");
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

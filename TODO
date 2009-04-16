@@ -8,15 +8,10 @@ TODO
 
 - Unit tests
 
-	testReg_Member_Admin:
-		testAddMember():
-			Create some transactions first
-				- Write unit test for transaction creation
-			Make sure values are updated ONLY when transaction ID is specified
-				- Write as testAddMemberTransID()?
-		- Calling drupal_get_messages() multiple times doesn't seem to be a good idea
-			- Could I create some methods called set_drupal_error() and
-				get_last_drupal_error()?
+	Test_Reg_Admin_Log:
+		- Write a transaction with reg_log->log_trans() and then read it back
+			- Check totals
+		- Read from the "recent transactions" page, too.
 
 	testReg:
 		- testFormatBadgeNum()
@@ -29,7 +24,7 @@ TODO
 		- /admin/reg
 			- test creation of a functionality test
 			- User editing
-				- Try dding a note
+				- Try adding a note
 				- Balance adjustment
 				- Cancelling a membership
 		- /admin/reg/logs
@@ -39,6 +34,11 @@ TODO
 		- authorize.net module 
 			- different statuses
 		- For members without badge numbers, I need to NOT display "0000" on the display screen.
+
+	testReg_Member_Admin:
+		- Calling drupal_get_messages() multiple times doesn't seem to be a good idea
+			- Could I create some methods called set_drupal_error() and
+				get_last_drupal_error()?
 
 - Check ongoing issue with gmmktime()
 	- Do I need to force the is_dst flag to 0?
