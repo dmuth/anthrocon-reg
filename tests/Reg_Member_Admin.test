@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Reg_Member_Admin_UnitTest extends DrupalTestCase {
+class Reg_Admin_Member_UnitTest extends DrupalTestCase {
 
 	/**
 	* Implementation of get_info() for information
@@ -10,7 +10,7 @@ class Reg_Member_Admin_UnitTest extends DrupalTestCase {
 	function get_info() {
 		return array(
 			"name" => t("reg_member_admin class"),
-			"desc" => t("Test out the reg_member_admin class"),
+			"desc" => t("Test out the reg_admin_member class"),
 			"group" => t("Registration System"),
 			);
 	}
@@ -128,6 +128,6 @@ class Reg_Member_Admin_UnitTest extends DrupalTestCase {
 	}
 
 
-} // End of Reg_Member_Admin_UnitTest class
+} // End of Reg_Admin_Member_UnitTest class
 
 
