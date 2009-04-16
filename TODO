@@ -8,14 +8,6 @@ TODO
 
 - Unit tests
 
-	Test_Reg_Admin_Log:
-		- Write a transaction with reg_log->log_trans() and then read it back
-			- Check totals
-		- Read from the "recent transactions" page, too.
-
-	testReg:
-		- testFormatBadgeNum()
-
 	Other things to test:
 		- /reg
 			- test errors (functionality test)
