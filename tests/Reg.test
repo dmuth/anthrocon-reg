@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class RegUnitTest extends DrupalTestCase {
+class Reg_UnitTest extends DrupalTestCase {
 
 	/**
 	* Implementation of get_info() for information
