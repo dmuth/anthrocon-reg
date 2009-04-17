@@ -79,6 +79,21 @@ class reg_form extends reg {
 
 
 	/**
+	* Are we suppressing the captcha?
+	*
+	* @return boolean True if there is to be no captcha, false otherwise.
+	*/
+	function no_captcha() {
+
+		$retval = variable_get($this->get_constant(
+			"form_admin_no_captcha"), "");
+
+		return($retval);
+
+	} // End of no_captcha()
+
+
+	/**
 	* Return the current Drupal path.
 	*/
 	function get_path() {
@@ -174,7 +189,7 @@ class reg_form extends reg {
 		//
 		// Check our captcha submission.
 		//
-		if (!$this->in_admin()) {
+		if (!$this->in_admin() && !$this->no_captcha()) {
 
 			if (!$this->captcha->check($data["reg_captcha"])) {
 				$message = t("Incorrect answer to math question.");
@@ -868,7 +883,7 @@ class reg_form extends reg {
 		//
 		// Create our captcha.
 		//
-		if (!$this->in_admin()) {
+		if (!$this->in_admin() && !$this->no_captcha()) {
 
 			$retval["reg_captcha"] = $this->captcha->create();
 			$retval["reg_captcha"]["#theme"] = "reg_theme";

@@ -91,6 +91,16 @@ class reg_admin_settings extends reg {
 				. "Do NOT enable in production, EVER!"),
 			);
 
+		$retval["no_production"]["no_captcha"] = array(
+			"#type" => "checkbox",
+			"#title" => t("Disable CAPTCHA on registration form?"),
+			"#default_value" => variable_get(
+				$this->get_constant("form_admin_no_captcha"), ""),
+			"#description" => t("If set, a CAPTCHA will not be displayed on "
+				. "the registration page.  This is useful for functionality "
+				. "testing."),
+			);
+
 		$retval["submit"] = array(
 			"#type" => "submit",
 			"#value" => "Save"
@@ -156,6 +166,8 @@ class reg_admin_settings extends reg {
 			$data["conduct_path"]);
 		$admin->variable_set($this->get_constant("form_admin_no_ssl_redirect"), 
 			$data["no_production"]["no_ssl_redirect"]);
+		$admin->variable_set($this->get_constant("form_admin_no_captcha"), 
+			$data["no_production"]["no_captcha"]);
 
 		drupal_set_message("Settings updated");
 

@@ -9,20 +9,17 @@ TODO
 - Unit tests
 
 	Other things to test:
-		- /reg
-			- test errors (functionality test)
-			- test creation via the add_member() function
-			- test badge number assignment
-		- /admin/reg
-			- test creation of a functionality test
-			- User editing
+
+		- /admin/reg (function test)
+			- Member editing
+				- Add a new member
 				- Try adding a note
+					- Check for note on user page and most recent log entry page
 				- Balance adjustment
+					- Check recent transactions page
 				- Cancelling a membership
-		- /admin/reg/logs
-			- test loging page
-			- create random log entry
-			- check for that log entry
+					- Check membership status
+
 		- authorize.net module 
 			- different statuses
 		- For members without badge numbers, I need to NOT display "0000" on the display screen.

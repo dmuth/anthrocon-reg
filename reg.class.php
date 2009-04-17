@@ -59,6 +59,7 @@ class reg {
 		"form_admin_fake_data" => "reg_fake_data",
 		"form_admin_fake_email" => "reg_fake_email",
 		"form_admin_no_ssl_redirect" => "reg_no_ssl_redirect",
+		"form_admin_no_captcha" => "reg_no_captcha",
 
 		//
 		// Size of form fields
