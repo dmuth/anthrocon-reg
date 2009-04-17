@@ -9,8 +9,8 @@ class Reg_Admin_Member_UnitTest extends DrupalTestCase {
 	*/
 	function get_info() {
 		return array(
-			"name" => t("reg_admin_member class"),
-			"desc" => t("Test out the reg_admin_member class"),
+			"name" => t("reg_admin_member Unit Test"),
+			//"desc" => t("Test out the reg_admin_member class"),
 			"group" => t("Registration System"),
 			);
 	}
