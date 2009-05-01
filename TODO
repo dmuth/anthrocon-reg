@@ -10,24 +10,24 @@ TODO
 
 	Other things to test:
 
-		- /admin/reg (function test)
-			- Member editing
-				- Add a new member
-				- Try adding a note
-					- Check for note on user page and most recent log entry page
-				- Balance adjustment
-					- Check recent transactions page
-				- Cancelling a membership
-					- Check membership status
-
 		- authorize.net module 
 			- different statuses
-		- For members without badge numbers, I need to NOT display "0000" on the display screen.
+			- I need to have some way to force the module to return a specific status
+			- I should test calls to this module
+			- I should also write a functionality test for the reg page
+
+		- admin/
+			- For members without badge numbers, I need to NOT display "0000" on the display screen.
+				- Write a unit test to catch that
+				- Display a blank instead?
 
 	testReg_Member_Admin:
 		- Calling drupal_get_messages() multiple times doesn't seem to be a good idea
 			- Could I create some methods called set_drupal_error() and
 				get_last_drupal_error()?
+
+- Verify page
+	- Check for expiration dates in the past
 
 - Check ongoing issue with gmmktime()
 	- Do I need to force the is_dst flag to 0?
@@ -50,9 +50,11 @@ TODO
 	- Write unit test for email first
 
 - Filter out "Audit log" from viewing individual registrations.
+	- I can write a functionality test for that
+		- assertNotUnwantedRaw()
 
 - Timezones when editing levels.  Do we want to do anything there?  
-	- Maybe allow an hour?
+	- Maybe allow an hour field?
 
 - reg/verify/resend should redirect the user to reg/verify after sending the email
 
