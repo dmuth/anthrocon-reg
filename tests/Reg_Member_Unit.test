@@ -11,7 +11,7 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		return array(
 			"name" => t("reg_member Unit Test"),
 			//"desc" => t("Test out the reg_member class"),
-			"group" => t("Registration System"),
+			"group" => t("Registration System Unit Tests"),
 			);
 	}
 
