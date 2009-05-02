@@ -1,0 +1,145 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Authorize_Net_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Authorize_Net Unit Test"),
+			"desc" => t("Note: These tests WILL connect to Authorize.Net to do transactions in test mode. ")
+				. t("You MAY also get emailed \"receipts\" for the sample transactions."),
+			"group" => t("Registration System - Authorize.net Unit Tests"),
+			);
+	}
+
+
+	/**
+	* Make sure that SSL is disabled.
+	*/
+	function TestNoSSL() {
+
+		$output = variable_get($this->gateway->get_constant(
+			"test_mode"), "");
+		$this->assertEqual(1, $output, t("Authorize.net test mode NOT enabled. ")
+			. t("Check the Authorize.net settings page."));
+
+		$output = $this->gateway->is_test_mode();
+		$this->assertEqual(1, $output, t("is_test_mode() failed."));
+
+	} // End of testNoSSL()
+
+
+	/**
+	* Make sure that authorize.net doesn't work at all when there's a bad login ID.
+	*/
+	function testBadLoginId() {
+
+		$key = $this->gateway->get_constant("LOGIN_ID");
+		$login_id = variable_get($key, "");
+		variable_set($this->gateway->get_constant("LOGIN_ID"), $login_id . "TEST");
+
+		$data = array();
+		$data["test_request"] = 1;
+		$output = $this->gateway->charge_cc($data);
+		$this->assertNotNull($output);
+		$this->assertEqual("error", $output["status"]);
+		$this->assertWantedPattern(
+			"/The merchant login ID or password is invalid/", 
+			$output["raw_response"]);
+
+		variable_set($this->gateway->get_constant("LOGIN_ID"), $login_id);
+
+	} // End of testBadLoginId()
+
+
+	/**
+	* Test charging the card in different ways, and simulating errors.
+	*/
+	function testChargeCc() {
+
+		//
+		// Test a simple successful transaction.
+		//
+		$data = array();
+		$data["test_request"] = 1;
+		$data["cc_num"] = "4222222222222";
+		$data["cc_exp"] = "01/2015";
+		$data["total_cost"] = 1;
+		$output = $this->gateway->charge_cc($data);
+		$this->assertNotNull($output);
+		$this->assertEqual("success", $output["status"]);
+		$this->assertEqual("000000", $output["auth_code"]);
+		$this->assertEqual("P", $output["avs_response"]);
+		$this->assertEqual("0", $output["transaction_id"]);
+		$this->assertEqual("", $output["cvv_response"]);
+
+		//
+		// Test a more complex transaction
+		//
+		$data["cvv"] = "123";
+		$data["invoice_number"] = "1234567890";
+		$data["description"] = "a test description";
+		$data["first"] = "Firstname";
+		$data["last"] = "Lastname";
+		$data["address1"] = "address1";
+		$data["city"] = "city name";
+		$data["phone"] = "123-456-7890";
+		$data["email"] = "nobody@localhost";
+		$output = $this->gateway->charge_cc($data);
+		$this->assertNotNull($output);
+		$this->assertEqual("success", $output["status"]);
+
+		//
+		// Test a declined transaction.
+		//
+		$data["total_cost"] = 2;
+		$output = $this->gateway->charge_cc($data);
+		$this->assertNotNull($output);
+		$this->assertEqual("declined", $output["status"]);
+
+		//
+		// Test an error from the merchant gateway
+		//
+		$data["total_cost"] = 5;
+		$output = $this->gateway->charge_cc($data);
+		$this->assertNotNull($output);
+		$this->assertEqual("error", $output["status"]);
+
+		//
+		// Test an AVS mismatch
+		//
+		$data["total_cost"] = 27;
+		$output = $this->gateway->charge_cc($data);
+		$this->assertNotNull($output);
+		$this->assertEqual("bad avs", $output["status"]);
+
+		//
+		// Test a CVV mismatch.
+		//
+		$data["total_cost"] = 78;
+		$output = $this->gateway->charge_cc($data);
+		$this->assertNotNull($output);
+		$this->assertEqual("bad cvv", $output["status"]);
+
+	} // End of testChargeCc()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+
+		$this->auth_factory = new authorize_net_factory();
+		$this->gateway = $this->auth_factory->get_object("authorize_net");
+	}
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

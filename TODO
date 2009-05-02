@@ -11,13 +11,17 @@ TODO
 	Other things to test:
 
 		- authorize.net module 
-			- different statuses
-			- I need to have some way to force the module to return a specific status
-			- I should test calls to this module
-			- I should also write a functionality test for the reg page
+			- Separate test for main "Credit Card Test Mode"
+				- "#default_value" => variable_get(
+					$this->get_constant("FORM_ADMIN_FAKE_CC"), false),
+				- test that with a unit test on reg->charge_cc()
+				- Also do functionality test?
+					- Set a global or something?
 
 		- admin/
 			- For members without badge numbers, I need to NOT display "0000" on the display screen.
+				- How to reproduce?  Just call add_member()?
+				- Where to fix? format_badge_num()?
 				- Write a unit test to catch that
 				- Display a blank instead?
 
