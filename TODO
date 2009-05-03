@@ -10,14 +10,6 @@ TODO
 
 	Other things to test:
 
-		- authorize.net module 
-			- Separate test for main "Credit Card Test Mode"
-				- "#default_value" => variable_get(
-					$this->get_constant("FORM_ADMIN_FAKE_CC"), false),
-				- test that with a unit test on reg->charge_cc()
-				- Also do functionality test?
-					- Set a global or something?
-
 		- admin/
 			- For members without badge numbers, I need to NOT display "0000" on the display screen.
 				- How to reproduce?  Just call add_member()?

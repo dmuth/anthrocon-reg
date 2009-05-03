@@ -1,0 +1,145 @@
+<?php
+/**
+* This test tests the main charge_cc() function in the reg system.
+*/
+class Reg_ChargeCc_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("reg charge_cc() Unit Test"),
+			"desc" => t("Test out just the charge_cc() function."),
+			"group" => t("Registration System Unit Tests"),
+			);
+	}
+
+
+	/**
+	* Make sure that both test modes are turned on.
+	*/
+	function testTestMode() {
+
+		$output = variable_get($this->gateway->get_constant(
+			"test_mode"), "");
+		$this->assertEqual(1, $output, t("Authorize.net test mode NOT enabled. ")
+			. t("Check the Authorize.net settings page."));
+
+		$output = variable_get($this->reg->get_constant(
+			"form_admin_fake_cc"), "");
+		$this->assertEqual(1, $output, t("Credit card test mode NOT enabled. ")
+			. t("Please check the settings tab."));
+		
+		$output = $this->gateway->is_test_mode();
+		$this->assertEqual(1, $output, t("is_test_mode() failed."));
+
+	} // End of testNoSSL()
+
+
+	/**
+	* Call charge_cc(), verift that faking the charge is successful, and an
+	*	entry is written to the log
+	*/
+	function testChargeCc() {
+
+		$data = array();
+		$data["badge_cost"] = "1." . mt_rand(0, 99);
+		$data["donation"] = "." . mt_rand(0, 99);
+		$output = $this->reg->charge_cc($data, $this->gateway);
+		$this->assertTrue($output);
+		$this->assertNotNull(intval($output));
+		$trans_log_id = $output;
+
+		//
+		// Load the log detail screen and make sure the values are there.
+		//
+		$output = $this->reg_log_view->trans_detail($trans_log_id);
+		$this->assertNotNull($output);
+		$regexp = "/". t("Amount") . ".*" . $data["badge_cost"] . "/";
+		$this->assertWantedPattern($regexp, $output);
+		$regexp = "/". t("Donation") . ".*" . $data["donation"] . "/";
+		$this->assertWantedPattern($regexp, $output);
+		$regexp = "/". t("Total Cost") . ".*" 
+			. ($data["badge_cost"] + $data["donation"]) . "/";
+		$this->assertWantedPattern($regexp, $output);
+
+	} // End of testChargeCc()
+
+
+// TEST
+	function testChargeCcFail() {
+
+		//
+		// Disable this setting, and restore it at the end of this test.
+		//
+		$fake_cc = variable_get($this->reg->get_constant(
+			"form_admin_fake_cc"), "");
+		variable_set($this->reg->get_constant("form_admin_fake_cc"), "");
+
+		$data = array();
+		$data["cc_num"] = "4222222222222";
+		$data["cc_exp"] = "01/2015";
+		$data["badge_cost"] = 1;
+		$output = $this->reg->charge_cc($data, $this->gateway);
+		$this->assertTrue($output);
+		$this->assertNotNull(intval($output));
+		$trans_log_id = $output;
+
+		//
+		// Load the log detail screen and make sure the values are there.
+		//
+		$output = $this->reg_log_view->trans_detail($trans_log_id);
+		$this->assertNotNull($output);
+		$regexp = "/". t("Amount") . ".*" . $data["badge_cost"] . "/";
+		$this->assertWantedPattern($regexp, $output);
+		$regexp = "/". t("Donation") . ".*" . $data["donation"] . "/";
+		$this->assertWantedPattern($regexp, $output);
+		$regexp = "/". t("Total Cost") . ".*" 
+			. ($data["badge_cost"] + $data["donation"]) . "/";
+		$this->assertWantedPattern($regexp, $output);
+
+		//
+		// Now make the charge fail in all sorts of ways.
+		//
+		$data["badge_cost"] = 2;
+		$output = $this->reg->charge_cc($data, $this->gateway);
+		$this->assertFalse($output);
+
+		$data["badge_cost"] = 5;
+		$output = $this->reg->charge_cc($data, $this->gateway);
+		$this->assertFalse($output);
+
+		$data["badge_cost"] = 27;
+		$output = $this->reg->charge_cc($data, $this->gateway);
+		$this->assertFalse($output);
+
+		$data["badge_cost"] = 78;
+		$output = $this->reg->charge_cc($data, $this->gateway);
+		$this->assertFalse($output);
+
+		variable_set($this->reg->get_constant(
+			"form_admin_fake_cc"), $fake_cc);
+
+	} // End of testChargeCcFail()
+
+
+	function setUp() {
+
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_log_view = $this->factory->get_object("admin_log_view");
+
+		$this->auth_factory = new authorize_net_factory();
+		$this->gateway = $this->auth_factory->get_object("authorize_net");
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

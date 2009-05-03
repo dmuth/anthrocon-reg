@@ -284,8 +284,9 @@ class reg {
 	* the card.  This is used for when an admin enters a registration 
 	* manually.
 	* 
-	* @return boolean True if the card is charged successfully.  
-	*	False otherwise.
+	* @return mixed Return the row ID from the transaction log
+	*	if successful, null otherwise.
+	*
 	*/
 	function charge_cc($data, $cc_gateway, $log_only = false) {
 
