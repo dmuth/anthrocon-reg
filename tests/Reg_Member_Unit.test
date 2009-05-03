@@ -16,6 +16,20 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 	}
 
 
+	/**
+	* Make sure that faking emails is turned on.
+	*/
+	function testFakeEmail() {
+
+        $output = variable_get(
+            $this->reg->get_constant("FORM_ADMIN_FAKE_EMAIL"), "");
+		$this->assertEqual(1, $output, t("Faking emails is not set. ") 
+			. t("Please do so on the settings page."));
+
+	} // End of testNoSSL()
+
+
+
 	function testAddMember() {
 
 		//
@@ -181,6 +195,29 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		//	"Error message found");
 		
 	} // End of testIsBadgeNumAvailable()
+
+
+	/**
+	* Test emailing a receipt, and make sure the membership type is in 
+	*	the receipt.
+	*/
+	function testEmailReceipt() {
+
+		$data = array();
+		$data["reg_type_id"] = 1;
+		$data["total_cost"] = 1.25;
+
+		$types = $this->reg->get_types();
+		$member_type = $types[$data["reg_type_id"]];
+		$this->assertNotNull($member_type);
+
+		$output = $this->reg_member->email_receipt($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["subject"]);
+		$this->assertNotNull($output["value"]);
+		$this->assertWantedPattern("/$member_type/", $output["value"]);
+
+	} // End of testEmailReciept()
 
 
 	function setUp() {

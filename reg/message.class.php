@@ -207,7 +207,8 @@ class reg_message extends reg {
 				"!site" => t("The name of this site."),
 				"!url" => t("The URL of this site."),
 				"!total_cost" => t("The total cost. (Badge plus donation)"),
-				"!cc_num" => t("The credit card used to pay for the membership.")
+				"!cc_num" => t("The credit card used to pay for the membership."),
+				"!member_type" => t("The type of membership. (Attending, Staff, etc.)"),
 				),
 			"email-receipt-no-cc" => array(
 				"!email" => t("Our contact email."),
@@ -216,6 +217,7 @@ class reg_message extends reg {
 				"!site" => t("The name of this site."),
 				"!url" => t("The URL of this site."),
 				"!total_cost" => t("The total cost. (Badge plus donation)"),
+				"!member_type" => t("The type of membership. (Attending, Staff, etc.)"),
 				),
 			"cc-declined" => array(
 				"!email" => t("Our contact email."),

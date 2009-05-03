@@ -6,7 +6,6 @@ Done
 TODO
 ====
 
-
 - Unit tests
 
 	Other things to test:
@@ -27,10 +26,12 @@ TODO
 	- I can write a functionality test for that
 		- assertNotUnwantedRaw()
 
-- In confirmation email, include the membership type that was purchased.
-	- Write unit test for email first
-
 - reg/verify/resend should redirect the user to reg/verify after sending the email
+
+- Some utility to print unused badge numbers
+
+- reg/
+	autocomplete="off" in the input tag for the credit card number
 
 - I guess reg_admin_log_view isn't needed since we deprecated those other
 	log viewing functions.
@@ -45,9 +46,6 @@ TODO
 		module as well, and parse the dummy result
 		- This will ensure that more of the code is actually executed 
 			in testing
-
-- reg/
-	autocomplete="off" in the input tag for the credit card number
 
 - admin/reg/settings/mesages/1234/edit
 	- Prevent editing of non-existant message IDs
@@ -69,8 +67,6 @@ TODO
 	- Remove variable_get() to email addresses
 	- Add a box on the settings page that defaults to the site-wide email
 	- Write reg_data::get_contact_email()
-
-- Some utility to print unused badge numbers
 
 - Keep in mind that I can create other modules in that directory
 	- Dealer reg module?

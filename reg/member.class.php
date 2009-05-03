@@ -162,6 +162,10 @@ class reg_member extends reg {
 
 	/**
 	* Email out our registration receipt.
+	*
+	* @param array $data Array of member data.
+	*
+	* @return array Array of the email subject and body.
 	*/
 	function email_receipt(&$data) {
 
@@ -186,12 +190,32 @@ class reg_member extends reg {
 			"!badge_num" => $data["badge_num"],
 			"!cc_name" => $data["cc_name"],
 			"!total_cost" => $data["total_cost"],
+			//
+			// I'm not 100% certain we'll always have this piece of data, 
+			// so let's have a placeholder so we don't ever have a blank 
+			// space on the email that gets sent out.
+			//
+			"!member_type" => t("(Unknown/other)"),
 			);
+
+		//
+		// If a membership type ID was specified, include it.
+		//
+		if (!empty($data["reg_type_id"])) {
+
+			$types = $this->get_types();
+			if (!empty($types[$data["reg_type_id"]])) {
+				$member_type = $types[$data["reg_type_id"]];
+				$email_data["!member_type"] = $member_type;
+			}
+		}
 
 		$email_sent = $this->email->email($data["email"], $message_name, 
 			$data["id"], $email_data);
 
-	} // End of email_receit()
+		return($email_sent);
+
+	} // End of email_receipt()
 
 
 } // End of reg_member class
