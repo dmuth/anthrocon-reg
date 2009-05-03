@@ -1,6 +1,6 @@
 <?php
 /**
-* This unit test tests out the main reg class.
+* This unit test tests the Authorize_net class.
 */
 class Authorize_Net_UnitTest extends DrupalTestCase {
 
@@ -18,9 +18,9 @@ class Authorize_Net_UnitTest extends DrupalTestCase {
 
 
 	/**
-	* Make sure that SSL is disabled.
+	* Make sure that test mode is turned on.
 	*/
-	function TestNoSSL() {
+	function testTestMode() {
 
 		$output = variable_get($this->gateway->get_constant(
 			"test_mode"), "");
@@ -38,6 +38,9 @@ class Authorize_Net_UnitTest extends DrupalTestCase {
 	*/
 	function testBadLoginId() {
 
+		//
+		// Set a bad Login ID
+		//
 		$key = $this->gateway->get_constant("LOGIN_ID");
 		$login_id = variable_get($key, "");
 		variable_set($this->gateway->get_constant("LOGIN_ID"), $login_id . "TEST");
@@ -51,6 +54,9 @@ class Authorize_Net_UnitTest extends DrupalTestCase {
 			"/The merchant login ID or password is invalid/", 
 			$output["raw_response"]);
 
+		//
+		// Restore the login ID
+		//
 		variable_set($this->gateway->get_constant("LOGIN_ID"), $login_id);
 
 	} // End of testBadLoginId()
