@@ -110,6 +110,18 @@ class reg_admin_log_view extends reg_admin_log {
 			$where_args[] = $search["uid"];
 		}
 
+		//
+		// If we are just viewing a specific member's activity, don't show 
+		// the audit log entries.  Seemed like a good idea at the time, 
+		// but the end result is that it completely filled up the member 
+		// info screen.  We can still view audit log entries on the main log 
+		// search page.
+		//
+		if (!empty($id) && empty($search)) {
+			$where[] = "reg_log.message NOT LIKE '%s%%' ";
+			$where_args[] = t("Audit log:");
+		}
+
 		if (!empty($where)) {
 			$where_text = "WHERE ";
 			$where_text .= join("AND ", $where);

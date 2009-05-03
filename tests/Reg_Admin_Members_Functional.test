@@ -91,6 +91,7 @@ class Reg_Admin_Members_Functional_Test extends DrupalTestCase {
 		$this->assertWantedPattern("/" . t("Membership Type") . ".*" 
 			. t("Attending") . "/", $output);
 		$this->assertWantedRaw(t("Email receipt sent to "));
+		$this->assertNoUnwantedRaw("Audit log:");
 
 		$this->editMember($id);
 		$this->addNote($id);

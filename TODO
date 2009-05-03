@@ -22,10 +22,6 @@ TODO
 				- Write a unit test to catch that
 				- Display a blank instead?
 
-- Filter out "Audit log" from viewing individual registrations.
-	- I can write a functionality test for that
-		- assertNotUnwantedRaw()
-
 - reg/verify/resend should redirect the user to reg/verify after sending the email
 
 - Some utility to print unused badge numbers
