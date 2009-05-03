@@ -21,11 +21,25 @@ class Reg_Admin_Log_View_UnitTest extends DrupalTestCase {
 		$data = array();
 		$data["badge_cost"] = 12;
 		$data["donation"] = 34;
+		$data["cc_num"] = "4222222222222";
+		$data["cc_exp"] = array();
+		$data["cc_exp"]["month"] = 1;
+		$data["cc_exp"]["year"] = (date("Y") + 1);
+		$data["reg_payment_type_id"] = 1;
+		$data["cc_type_id"] = 1;
+
 		$output = $this->reg_log->log_trans($data);
 		$this->assertNotNull($output);
 		$log_id = $output;
 		$total = $data["badge_cost"] + $data["donation"];
 		$this->assertEqual($total, $data["total_cost"]);
+
+		//
+		// Test the credit card expiration dates.
+		//
+		$output = $this->reg_admin_log_view->trans_detail_data($log_id);
+		$this->assertEqual($data["cc_exp"]["month"], $output["card_expire_month"]);
+		$this->assertEqual($data["cc_exp"]["year"], $output["card_expire_year"]);
 
 		$output = $this->reg_admin_log_view->trans_detail($log_id);
 		$this->assertNotNull($output);

@@ -412,32 +412,10 @@ class reg_admin_log_view extends reg_admin_log {
 	*/
 	function trans_detail($id) {
 
-		$query = "SELECT reg_trans.*, "
-			. "reg_trans.id AS reg_trans_id, "
-			. "reg.badge_num, reg.year, reg.badge_name, "
-			. "reg_payment_type.payment_type, "
-			. "reg_trans_type.trans_type, "
-			. "reg_cc_type.cc_type, "
-			. "reg_trans_gateway.*, "
-			. "users.uid, users.name "
-			. "FROM {reg_trans} "
-			. "LEFT JOIN {reg} ON reg_trans.reg_id = reg.id "
-			. "LEFT JOIN {reg_trans_type} "
-				. "ON reg_trans_type_id = reg_trans_type.id "
-			. "LEFT JOIN {reg_payment_type} "
-				. "ON reg_payment_type_id = reg_payment_type.id "
-			. "LEFT JOIN {reg_cc_type} "
-				. "ON reg_cc_type_id = reg_cc_type.id "
-			. "LEFT JOIN {reg_trans_gateway} "
-				. "ON reg_trans_gateway_id = reg_trans_gateway.id "
-			. "LEFT JOIN {users} ON reg_trans.uid = users.uid "
-			. "WHERE "
-			. "reg_trans.id='%s' ";
-		$query_args = array($id);
-		$cursor = db_query($query, $query_args);
-		$row = db_fetch_array($cursor);
-		$row["url"] = check_url($row["url"]);
-		$row["referrer"] = check_url($row["referrer"]);
+		//
+		// Load transaction data
+		//
+		$row = $this->trans_detail_data($id);
 
 		//
 		// Stick in the username if we have it.
@@ -594,10 +572,13 @@ class reg_admin_log_view extends reg_admin_log {
 			) {
 
 			//
-			// The card expiration was stored as a GMT timestamp, so
-			// display it as a GMT timestamp.
+			// Create a time_t from the expiration month and year, then
+			// format it so only the month and year are shown.
 			//
-			$cc_exp = format_date($row["card_expire"], "large", "", 0);
+			$card_expire_time_t = mktime(0,0,0,$row["card_expire_month"], 1, 
+				$row["card_expire_year"]);
+			$date_format = "F, Y";
+			$cc_exp = format_date($card_expire_time_t, "custom", $date_format);
 
 			$cc = t("%type% ending '%num%'. Expires: %date%",
 				array(
@@ -642,6 +623,55 @@ class reg_admin_log_view extends reg_admin_log {
 		return($retval);
 
 	} // End of trans_detail()
+
+
+	/**
+	* Load data for a specific transaction.
+	*
+	* @param integer $id The transaction ID
+	*
+	* @return array An array of transaction data.
+	*/
+	function trans_detail_data($id) {
+
+		$query = "SELECT reg_trans.*, "
+			//
+			// Add 1 day to timestamp to ensure that GMT offset issues 
+			// don't accidnetally bump the date into the previous month
+			//
+			. "YEAR(FROM_UNIXTIME(reg_trans.card_expire + 86400)) "
+				. "AS card_expire_year, "
+			. "MONTH(FROM_UNIXTIME(reg_trans.card_expire + 86400)) "
+				. "AS card_expire_month, "
+			. "reg_trans.id AS reg_trans_id, "
+			. "reg.badge_num, reg.year, reg.badge_name, "
+			. "reg_payment_type.payment_type, "
+			. "reg_trans_type.trans_type, "
+			. "reg_cc_type.cc_type, "
+			. "reg_trans_gateway.*, "
+			. "users.uid, users.name "
+			. "FROM {reg_trans} "
+			. "LEFT JOIN {reg} ON reg_trans.reg_id = reg.id "
+			. "LEFT JOIN {reg_trans_type} "
+				. "ON reg_trans_type_id = reg_trans_type.id "
+			. "LEFT JOIN {reg_payment_type} "
+				. "ON reg_payment_type_id = reg_payment_type.id "
+			. "LEFT JOIN {reg_cc_type} "
+				. "ON reg_cc_type_id = reg_cc_type.id "
+			. "LEFT JOIN {reg_trans_gateway} "
+				. "ON reg_trans_gateway_id = reg_trans_gateway.id "
+			. "LEFT JOIN {users} ON reg_trans.uid = users.uid "
+			. "WHERE "
+			. "reg_trans.id='%s' ";
+		$query_args = array($id);
+		$cursor = db_query($query, $query_args);
+		$retval = db_fetch_array($cursor);
+		$retval["url"] = check_url($row["url"]);
+		$retval["referrer"] = check_url($row["referrer"]);
+
+		return($retval);
+
+	} // End of trans_detail_data()
 
 
 } // End of reg_log_view class

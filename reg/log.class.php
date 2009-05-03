@@ -81,14 +81,18 @@ class reg_log extends reg {
 		global $user;
 
 		$exp = $data["cc_exp"];
+
 		//
-		// Set each expire string to the first of the month, otherwise 
-		// strttime() and friends will "correct" the date to be in the 
-		// previous month!
+		// Turn the expiration date into a time_t, and then add one day.
+		// The reason for this is because we had some GMT offset issues where
+		// folks would be unable to view their registrations, because somewhere
+		// the expiration date's time_t would be "adjusted" into the prior
+		// month.  This will prevent that from happening.
 		//
 		$exp_string = 0;
 		if (!empty($exp)) {
 			$exp_string = $this->get_time_t($exp["year"], $exp["month"], 1);
+			$exp_string += 86400;
 		}
 
 		//

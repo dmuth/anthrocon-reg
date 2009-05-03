@@ -1051,18 +1051,28 @@ class reg {
 
 	/**
 	* Return an array of credit card expiration years.
+	*
+	* @param integer $backwards How many years to start the list at before
+	*	the current year.
+	*
+	* @return array The key and value re the expiration years, 
+	*	starting at this year, minus the backward number of years.
 	*/
-	function get_cc_exp_years() {
+	function get_cc_exp_years($backwards = 0) {
+
 		$retval = array();
 
 		$start = date("Y");
 		$end = $start + 7;
+		$start += ($backwards * -1);
+
 		for ($i = $start; $i<$end; $i++) {
 			$retval[$i] = $i;
 		}
 
 		return($retval);
-	}
+
+	} // End of get_cc_exp_years()
 
 
 	/**

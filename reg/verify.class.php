@@ -104,7 +104,7 @@ class reg_verify extends reg {
 			);
 
 		$search["cc_exp"]["year"] = array(
-			"#options" => $this->get_cc_exp_years(),
+			"#options" => $this->get_cc_exp_years(1),
 			"#type" => "select",
 			"#default_value" => $search_data["cc_exp"]["year"],
 			);

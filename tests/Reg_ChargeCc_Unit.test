@@ -9,7 +9,7 @@ class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 	*/
 	function get_info() {
 		return array(
-			"name" => t("reg charge_cc() Unit Test"),
+			"name" => t("reg->charge_cc() Unit Test"),
 			"desc" => t("Test out just the charge_cc() function."),
 			"group" => t("Registration System Unit Tests"),
 			);
@@ -67,7 +67,10 @@ class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 	} // End of testChargeCc()
 
 
-// TEST
+	/**
+	* Charge the credit card through authorize.net's test system, and make
+	* sure we get the expected results.
+	*/
 	function testChargeCcFail() {
 
 		//
@@ -79,8 +82,13 @@ class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 
 		$data = array();
 		$data["cc_num"] = "4222222222222";
-		$data["cc_exp"] = "01/2015";
+		$data["cc_exp"] = array();
+		$data["cc_exp"]["month"] = 1;
+		$data["cc_exp"]["year"] = date("Y") + 2;
+		$data["reg_payment_type_id"] = 1;
+		$data["cc_type_id"] = 1;
 		$data["badge_cost"] = 1;
+
 		$output = $this->reg->charge_cc($data, $this->gateway);
 		$this->assertTrue($output);
 		$this->assertNotNull(intval($output));

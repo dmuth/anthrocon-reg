@@ -91,6 +91,27 @@ class Reg_UnitTest extends DrupalTestCase {
 	} // End of testFormatBadgeNum()
 
 
+	/**
+	* Test our credit card year expiration dates.
+	*/
+	function testGetCcExpYears() {
+
+		$output = $this->reg->get_cc_exp_years();
+		$this->assertNotNull($output);
+		$this->assertEqual(7, count($output));
+		$key = key($output);
+		$this->assertEqual(date("Y"), $output[$key]);
+
+		$output = $this->reg->get_cc_exp_years(1);
+		$this->assertNotNull($output);
+		$this->assertEqual(8, count($output));
+		$key = key($output);
+		$this->assertEqual((date("Y") - 1), $output[$key]);
+		$this->assertEqual(date("Y"), $output[($key + 1)]);
+
+	} // End of testGetCcExpYears()
+
+
 	function setUp() {
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
