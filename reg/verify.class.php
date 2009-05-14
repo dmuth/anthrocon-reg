@@ -286,6 +286,12 @@ class reg_verify extends reg {
 		drupal_set_message($message);
 		$this->log->log($message, $id);
 
+		//
+		// All done!  Redirect to the main page
+		//
+		$url = "reg/verify";
+		$this->goto_url($url);
+
 	} // End of send_email()
 
 

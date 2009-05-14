@@ -22,9 +22,23 @@ TODO
 				- Write a unit test to catch that
 				- Display a blank instead?
 
-- reg/verify/resend should redirect the user to reg/verify after sending the email
-
 - Some utility to print unused badge numbers
+	- Utility/ class directory
+	- UnusedBadgeNumbers class
+	- UnusedBadgeNumbersDisplay class
+		- Takes the UnusedBadgeNumbers object as an argument to the constructor
+
+- Omega list
+	- Fields: id, first, last, action (text field - action to take)
+	- Omega class
+		- getAll()
+		- load($id)
+		- update($id, $data)
+		- search($last_name)
+		- export()
+	- OmegaDisplay class
+		- Form functions go here
+	- Tool to scan existing list of members?  Is that feasable?
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
@@ -37,12 +51,6 @@ TODO
 - Timezones when editing levels.  Do we want to do anything there?  
 	- Maybe allow an hour field?
 
-- authorize_net
-	- When faking authorize.net, I should do this in the authorize_net 
-		module as well, and parse the dummy result
-		- This will ensure that more of the code is actually executed 
-			in testing
-
 - admin/reg/settings/mesages/1234/edit
 	- Prevent editing of non-existant message IDs
 	- Throw an error and log it
@@ -51,7 +59,12 @@ TODO
 	from the first digit
 
 - Multi-year code
+	- Have a config value for the year, defaulting to the current year
+		- Modify badge number assignment code to first check the 
+			reg_badge_num table
+			- Write a unit test for this!
 	- At signup, display a year field for the admin
+		- Default to the current year
 	- For /reg, get year from from the level offering
 	- Modify badge number assignment code to take a year argument
 
@@ -64,9 +77,38 @@ TODO
 	- Add a box on the settings page that defaults to the site-wide email
 	- Write reg_data::get_contact_email()
 
+- Onsite reg
+	- Public page to take member info, but not billing info or payment details
+	- New button on member details page: "Print Badge"
+	- New security level: "reg staff"
+	- Staff pages:
+		- Search memberships
+		- View Memberships
+			- Display log entries
+		- Edit Membership
+			- Add note
+			- Balance adjustment
+		- Print badge
+	- Badge printing system:
+		- Page to list pending badges to be printed
+			- Table to hold pending badges: reg_id, printer ("default", "minor", etc.), status ("new", "printing", "printed")
+			- Link to membership info and badge name
+			- Link to cancel print job
+		- Page to print badges
+			- Javascript:
+				- Start up Word, load badge template
+				- Query for print jobs via ajax.php file
+					- Can I place a menu item that is only called via AJAX?
+						- See http://drupal.org/node/42562
+					- reg_ajax class?
+					- Otherwise, I have to check in reg_init().  Ugh
+				- Send badge data to Word, tell Word to print
+				- Block on Word, then call ajax.php to log success
+				- Wait n seconds, loop
+				- On screen elements can be updated
+
 - Keep in mind that I can create other modules in that directory
 	- Dealer reg module?
-	- Omaga List module?
 	- Staff reg module
 	- Onsite reg module?
 		- Here's some ActiveXCode to print things up from MSIE:
@@ -77,6 +119,11 @@ TODO
 
 			app.Visible = false;
 			app.Documents.Open(file);
+			// var doc = app.Documents.Open(file); ??
+
+			//bookmark_replace() function?
+			//doc.BookMarks("AEName").range.InsertBefore("<%=AEName%>");  ???
+			//doc.BookMarks("AEName").range.Text = "foobar"; ???
 
 			app.ActiveDocument.PrintOut();
 			app.ActiveDocument.close(false);
