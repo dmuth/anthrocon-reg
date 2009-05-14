@@ -1152,7 +1152,14 @@ class reg {
 	*/
 	function format_badge_num($badge_num) {
 
-		$retval = sprintf("%04d", $badge_num);
+		if ($badge_num == "0") {
+			$retval = sprintf("%04d", $badge_num);
+		} else if ($badge_num == "" || $badge_num == null) {
+			$retval = t("(Empty)");
+		} else {
+			$retval = sprintf("%04d", $badge_num);
+		}
+
 		return($retval);
 
 	} // End of format_badge_num()

@@ -15,18 +15,15 @@ TODO
 				- Could I create some methods called set_drupal_error() and
 					get_last_drupal_error()?
 
-		- admin/
-			- For members without badge numbers, I need to NOT display "0000" on the display screen.
-				- How to reproduce?  Just call add_member()?
-				- Where to fix? format_badge_num()?
-				- Write a unit test to catch that
-				- Display a blank instead?
-
 - Some utility to print unused badge numbers
 	- Utility/ class directory
 	- UnusedBadgeNumbers class
 	- UnusedBadgeNumbersDisplay class
 		- Takes the UnusedBadgeNumbers object as an argument to the constructor
+	- Menu URLs:
+		- reg/admin/util
+		- reg/admin/util/unused_badge_nums
+			- Print form, clicking "okay" runs the utility
 
 - Omega list
 	- Fields: id, first, last, action (text field - action to take)
@@ -39,6 +36,10 @@ TODO
 	- OmegaDisplay class
 		- Form functions go here
 	- Tool to scan existing list of members?  Is that feasable?
+	- Menu URLs:
+		- reg/admin/omega_list
+		- reg/admin/omega_list/view/num
+		- reg/admin/omega_list/edit/num
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

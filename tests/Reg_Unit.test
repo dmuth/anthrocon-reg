@@ -88,6 +88,17 @@ class Reg_UnitTest extends DrupalTestCase {
 		$this->assertNotNull($output);
 		$this->assertEqual("12345", $output);
 
+		//
+		// Empty/null badge numbers
+		//
+		$output = $this->reg->format_badge_num("");
+		$this->assertNotNull($output);
+		$this->assertEqual(t("(Empty)"), $output);
+
+		$output = $this->reg->format_badge_num(null);
+		$this->assertNotNull($output);
+		$this->assertEqual(t("(Empty)"), $output);
+
 	} // End of testFormatBadgeNum()
 
 
