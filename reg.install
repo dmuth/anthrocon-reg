@@ -46,7 +46,7 @@ function reg_install() {
 			// Badge number and name.  The badge name can be blank.
 			//
 			. "badge_num INTEGER, "
-			. "INDEX reg_year_badge_num(year, badge_num), "
+			. "UNIQUE INDEX reg_year_badge_num(year, badge_num), "
 			. "badge_name VARCHAR(255), "
 			//
 			// Basic info on the badge holder
@@ -882,4 +882,24 @@ function reg_update_8() {
 
 } // End of reg_update_8()
 
+
+/**
+* Change the index on year and badge number to be unique
+*/
+function reg_update_9() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "DROP INDEX reg_year_badge_num ON reg";
+	$queries[] = "CREATE UNIQUE INDEX reg_year_badge_num ON reg(year, badge_num)";
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_9()
 

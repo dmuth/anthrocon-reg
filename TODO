@@ -65,6 +65,7 @@ TODO
 			- Write a unit test for this!
 	- At signup, display a year field for the admin
 		- Default to the current year
+	- Add year to member search page
 	- For /reg, get year from from the level offering
 	- Modify badge number assignment code to take a year argument
 
