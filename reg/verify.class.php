@@ -318,16 +318,14 @@ class reg_verify extends reg {
 			. "WHERE "
 			. "reg.last='%s' "
 			. "AND reg_trans.cc_num LIKE '%%%s' "
-			. "AND reg_trans.card_expire ='%s' "
+			. "AND YEAR(FROM_UNIXTIME(reg_trans.card_expire)) ='%s' "
+			. "AND MONTH(FROM_UNIXTIME(reg_trans.card_expire)) ='%s' "
 			;
-
-		$cc_exp_time = $this->get_time_t($search["cc_exp"]["year"], 
-			$search["cc_exp"]["month"], 1);
 
 		$args = array(
 			$search["last"], 
 			$search["cc_num"], 
-			$cc_exp_time,
+			$search["cc_exp"]["year"], $search["cc_exp"]["month"]
 			);
 
 		$retval = db_query($query, $args);
