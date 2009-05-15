@@ -1,0 +1,111 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Util_UnusedBadgeNums_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Reg_Util_UnusedBadgeNums Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("Registration System Unit Tests"),
+			);
+	}
+
+
+	function testGetMaxBadgeNum() {
+
+		$output = $this->util->getMaxBadgeNum();
+		$this->assertNotNull($output);
+		$expected = $output + 1;
+
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$output = $this->util->getMaxBadgeNum();
+		$this->assertNotNull($output);
+		$this->assertEqual($expected, $output);
+
+	} // End of testGetMaxBAdgeNum()
+
+
+	function testProcessMissing() {
+
+		$output = $this->util->processMissing(1, 2);
+		$this->assertNotNull($output);
+		$this->assertEqual(1, count($output));
+		$this->assertNotNull($output[1]);
+
+		$output = $this->util->processMissing(0, 1);
+		$this->assertNotNull($output);
+		$this->assertEqual(1, count($output));
+		$this->assertNotNull($output[0]);
+
+		$output = $this->util->processMissing(190, 200);
+		$this->assertNotNull($output);
+		$this->assertEqual(10, count($output));
+		$this->assertNotNull($output[190]);
+		$this->assertNotNull($output[199]);
+
+	} // End of testProcessMissing()
+
+
+	function testGetBadgeNums() {
+
+		//
+		// Add a member and note his badge number
+		//
+		$data = array();
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($data["badge_num"]);
+		$badge_num = $data["badge_num"];
+
+		//
+		// Get current list of unused badge numbers and make sure the badge 
+		// we just craated isn't there.
+		//
+		$output = $this->util->getBadgeNums();
+		$this->assertNotNull($output);
+		$this->assertNull($output[$badge_num]);
+		$output_count = count($output);
+		$output_last = array_slice($output, -1, 1);
+		$output_last = $output_last[0];
+
+		//
+		// Add a new badge number, get the list of missing badge numbers again, 
+		// and make sure that this badge number is found in it
+		//
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$badge_num = $output;
+		$output = $this->util->getBadgeNums();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[$badge_num]);
+
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$output = $this->util->getBadgeNums();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[$badge_num]);
+		$this->assertNotNull($output[($badge_num + 1)]);
+
+	} // End of testGetBadgeNums()
+
+
+	function setUp() {
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->reg_member = $factory->get_object("member");
+		$this->util = $factory->get_object("Util_UnusedBadgeNums");
+	}
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

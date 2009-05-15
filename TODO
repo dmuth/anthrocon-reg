@@ -15,15 +15,19 @@ TODO
 				- Could I create some methods called set_drupal_error() and
 					get_last_drupal_error()?
 
+		- Test for duplicate badge numbers in the reg table
+			- Call get_badge_num()
+			- Try inserting the number twice, then selecting a count and check the number of rows
+
 - Some utility to print unused badge numbers
-	- Utility/ class directory
-	- UnusedBadgeNumbers class
-	- UnusedBadgeNumbersDisplay class
-		- Takes the UnusedBadgeNumbers object as an argument to the constructor
 	- Menu URLs:
 		- reg/admin/util
 		- reg/admin/util/unused_badge_nums
 			- Print form, clicking "okay" runs the utility
+	- UnusedBadgeNumbersDisplay class
+		- Write unit tests first.
+		- Takes the UnusedBadgeNumbers object as an argument to the constructor
+		- Generates forms
 
 - Omega list
 	- Fields: id, first, last, action (text field - action to take)

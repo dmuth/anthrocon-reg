@@ -1,0 +1,16 @@
+
+14 May 2009, DTM
+================
+
+Note that recently the coding styles have changed.  I went from 
+using_underscores_everywhere to usingCamelCase in the names of my functions.
+
+This change was brought on due to what I see as increasing use of camelCase
+in projects I've worked with.  Since I feel that the style is becoming 
+more widely used, and since I became more comfortable in using it, I felt
+that it was time to start writing code in that style.
+
+For sanity's sake, I plan on using this style only in new classes that I
+build.  Existing classes will be kept in the underscore style.
+
+

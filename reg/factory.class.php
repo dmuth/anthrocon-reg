@@ -25,6 +25,12 @@ class reg_factory {
 
 		$retval = "";
 
+		//
+		// Since we may have issues while transferring to CamelCase, let's 
+		// make this function case-insensitive to be safe.
+		//
+		$name = strtolower($name);
+
 		if ($name == "theme") {
 			$retval = $this->get_theme();
 
@@ -99,6 +105,9 @@ class reg_factory {
 
 		} else if ($name == "verify") {
 			$retval = $this->get_verify();
+
+		} else if ($name = "util_unusedbadgenums") {
+			$retval = $this->getUtil_UnusedBadgeNums();
 
 		} else {
 			$error = "Unknown object name: $name";
@@ -315,6 +324,12 @@ class reg_factory {
 		$log = $this->get_log();
 		$email = $this->get_email();
 		$retval = new reg_verify($message, $log, $email);
+		return($retval);
+	}
+
+	protected function getUtil_UnusedBadgeNums() {
+		$reg = $this->get_reg();
+		$retval = new reg_Util_UnusedBadgeNums($reg);
 		return($retval);
 	}
 
