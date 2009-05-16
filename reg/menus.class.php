@@ -62,10 +62,15 @@ class reg_menus extends reg {
 		//
 		$this->get_admin($retval, $may_cache);
 		$this->get_membership_levels($retval, $may_cache);
-		$this->get_settings($retval, $may_cache);
-		$this->get_stats($retval, $may_cache);
-		$this->get_logs(&$retval, $may_cache);
+
 		$this->get_members($retval, $may_cache);
+		$this->get_logs(&$retval, $may_cache);
+
+		$this->get_stats($retval, $may_cache);
+
+		$this->get_settings($retval, $may_cache);
+
+		$this->get_utilities($retval, $may_cache);
 
 		return($retval);
 
@@ -482,6 +487,33 @@ class reg_menus extends reg {
 
 	} // End of get_members()
 
+
+	/**
+	* This function gets the "Utilities" menu item on the left.
+	*/
+	function get_utilities(&$retval, $may_cache) {
+
+		if ($may_cache) {
+
+			$retval[] = array(
+				"path" => "admin/reg/utils",
+				"title" => t("Utilities"),
+				"callback" => "reg_admin_utils_unused_badge_nums",
+				"type" => MENU_NORMAL_ITEM,
+				"weight" => 4,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/utils/unused_badge_nums",
+				"title" => t("Unused Badge Nums"),
+				"callback" => "reg_admin_utils_unused_badge_nums",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => -10,
+				);
+
+		}
+
+	} // End of get_utilties()
 
 } // End of reg_menu class
 

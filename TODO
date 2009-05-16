@@ -19,15 +19,13 @@ TODO
 			- Call get_badge_num()
 			- Try inserting the number twice, then selecting a count and check the number of rows
 
-- Some utility to print unused badge numbers
-	- Menu URLs:
-		- reg/admin/util
-		- reg/admin/util/unused_badge_nums
-			- Print form, clicking "okay" runs the utility
-	- UnusedBadgeNumbersDisplay class
-		- Write unit tests first.
-		- Takes the UnusedBadgeNumbers object as an argument to the constructor
-		- Generates forms
+- Duplicate registration report:
+	- Search for identical last names, phone numbers, addresses, etc.
+	- Print rows of suspected badges with:
+		- Badge number
+		- Badge name
+		- Real name
+		- Matching criteria
 
 - Omega list
 	- Fields: id, first, last, action (text field - action to take)

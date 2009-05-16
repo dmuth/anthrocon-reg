@@ -106,8 +106,11 @@ class reg_factory {
 		} else if ($name == "verify") {
 			$retval = $this->get_verify();
 
-		} else if ($name = "util_unusedbadgenums") {
+		} else if ($name == "util_unusedbadgenums") {
 			$retval = $this->getUtil_UnusedBadgeNums();
+
+		} else if ($name == "util_unusedbadgenumsdisplay") {
+			$retval = $this->getUtil_UnusedBadgeNumsDisplay();
 
 		} else {
 			$error = "Unknown object name: $name";
@@ -330,6 +333,13 @@ class reg_factory {
 	protected function getUtil_UnusedBadgeNums() {
 		$reg = $this->get_reg();
 		$retval = new reg_Util_UnusedBadgeNums($reg);
+		return($retval);
+	}
+
+	protected function getUtil_UnusedBadgeNumsDisplay() {
+		$reg = $this->get_reg();
+		$util = $this->getUtil_UnusedBadgeNums();
+		$retval = new reg_Util_UnusedBadgeNumsDisplay($reg, $util);
 		return($retval);
 	}
 
