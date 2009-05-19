@@ -110,21 +110,41 @@ class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 		//
 		// Now make the charge fail in all sorts of ways.
 		//
+		// @todo Retrieve patterns from the reg_message table.
+		//	Maybe as an alternative, I could put an error code in the message, 
+		// 		such as "ErrCode: 27", and check for that.
+		//
 		$data["badge_cost"] = 2;
 		$output = $this->reg->charge_cc($data, $this->gateway);
 		$this->assertFalse($output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "your credit card seems to have been declined";
+		$this->assertTrue(ereg($regexp, $output));
 
 		$data["badge_cost"] = 5;
 		$output = $this->reg->charge_cc($data, $this->gateway);
 		$this->assertFalse($output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "We were unable to charge your credit card at this time";
+		$this->assertTrue(ereg($regexp, $output));
 
 		$data["badge_cost"] = 27;
 		$output = $this->reg->charge_cc($data, $this->gateway);
 		$this->assertFalse($output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "our merchant gateway said there was a problem with your billing address";
+		$this->assertTrue(ereg($regexp, $output));
 
 		$data["badge_cost"] = 78;
 		$output = $this->reg->charge_cc($data, $this->gateway);
 		$this->assertFalse($output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "card security code";
+		$this->assertTrue(ereg($regexp, $output));
 
 		variable_set($this->reg->get_constant(
 			"form_admin_fake_cc"), $fake_cc);
@@ -140,6 +160,11 @@ class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 
 		$this->auth_factory = new authorize_net_factory();
 		$this->gateway = $this->auth_factory->get_object("authorize_net");
+
+		//
+		// Turn off display of errors while testing
+		//
+		$this->reg->setErrorDisplay(false);
 
 	}
 

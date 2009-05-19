@@ -13,6 +13,22 @@
 
 class reg {
 
+
+	/**
+	* @var This contains our last error that was raised.  Used mainly
+	*	for testing.
+	*/
+	protected $lastError = "";
+
+
+	/**
+	* @var Do we want to display errors?  This should only be set to false
+	*	when we're unit testing, since we'll be retrieving the errors via 
+	*	getLastError() in that scenario.
+	*/
+	protected $errorDisplay = true;
+
+
 	/**
 	* @var Our array of constants for the registration system.
 	*	These will only be retrieved through get_constant(), and 
@@ -180,13 +196,13 @@ class reg {
 			$error = t("Badge number '%num%' is not a number!",
 				array("%num%" => $badge_num)
 				);
-			form_set_error("badge_num", $error);
+			$this->setError("badge_num", $error);
 			return(false);
 		}
 
 		if ($this->is_negative_number($badge_num)) {
 			$error = t("Badge number cannot be negative!");
-			form_set_error("badge_num", $error);
+			$this->setError("badge_num", $error);
 			return(false);
 		}
 
@@ -239,7 +255,7 @@ class reg {
 			$error = t("Badge number '%num%' is already in use!",
 				array("%num%" => $badge_num)
 				);
-			form_set_error("badge_num", $error);
+			$this->setError("badge_num", $error);
 			return(false);
 		}
 
@@ -266,7 +282,7 @@ class reg {
 					"%assigned%" => $row["badge_num"],
 				)
 				);
-			form_set_error("bdage_num", $error);
+			$this->setError("badge_num", $error);
 
 		}
 
@@ -334,7 +350,7 @@ class reg {
 				if ($data["cc_num"][0] == "3") {
 					$display = $reg_message->load_display("cc-no-amex");
 					$error = $display["value"];
-					form_set_error("cc_num", $error);
+					$this->setError("cc_num", $error);
 					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(null);
 				}
@@ -371,28 +387,28 @@ class reg {
 				if ($gateway_results["status"] == "declined") {
 					$display = $reg_message->load_display("cc-declined");
 					$error = $display["value"];
-					form_set_error("cc_num", $error);
+					$this->setError("cc_num", $error);
 					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
 				} else if ($gateway_results["status"] == "bad avs") {
 					$display = $reg_message->load_display("cc-declined-avs");
 					$error = $display["value"];
-					form_set_error("", $error);
+					$this->setError("", $error);
 					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
 				} else if ($gateway_results["status"] == "bad cvv") {
 					$display = $reg_message->load_display("cc-declined-cvv");
 					$error = $display["value"];
-					form_set_error("cvv", $error);
+					$this->setError("cvv", $error);
 					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
 				} else if ($gateway_results["status"] == "error") {
 					$display = $reg_message->load_display("cc-error");
 					$error = $display["value"];
-					form_set_error("cc_num", $error);
+					$this->setError("cc_num", $error);
 					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(false);
 
@@ -1284,6 +1300,42 @@ class reg {
 		return($retval);
 
 	} // End of get_data_to_array()
+
+
+	/**
+	* Wrapper function used for setting an error.
+	*
+	* @param string $name The name of a form element
+	*
+	* @param string $error The erroor string
+	*/
+	function setError($name, $error) {
+		if ($this->errorDisplay) {
+			form_set_error($name, $error);
+		}
+		$this->lastError = $error;
+	}
+
+
+	/**
+	* Retrieve the last error that was set.
+	*
+	* @return string The last error that was set.
+	*/
+	function getLastError() {
+		return($this->lastError);
+	}
+
+
+	/**
+	* Set our errorDisplay variable.
+	*
+	* @param boolean $value True if we want errors displayed, 
+	*	false otherwise.
+	*/
+	function setErrorDisplay($value) {
+		$this->errorDisplay = $value;
+	}
 
 
 } // End of reg class

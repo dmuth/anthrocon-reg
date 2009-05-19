@@ -176,11 +176,10 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		$output = $this->reg->is_badge_num_available(($data["id"] + 1), 
 			$badge_num);
 		$this->assertFalse($output);
-		//$output = drupal_get_messages();
-		//$this->assertNotNull($output["error"][0]);
-		//$regexp = t("Badge number.*is already in use");
-		//$this->assertTrue(ereg($regexp, $output["error"][0]), 
-		//	"Error message expected");
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "already in use";
+		$this->assertTrue(ereg($regexp, $output));
 
 		//
 		// Now try a badge number that is WAY too high.
@@ -188,11 +187,10 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		$output = $this->reg->is_badge_num_available($data["id"], 
 			($badge_num + 100));
 		$this->assertTrue($output);
-		//$output = drupal_get_messages();
-		//$this->assertNotNull($output["error"][0]);
-		//$regexp = t("Badge number.*exceeds highest assigned number");
-		//$this->assertTrue(ereg($regexp, $output["error"][0]), 
-		//	"Error message found");
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "exceeds highest assigned number";
+		$this->assertTrue(ereg($regexp, $output));
 		
 	} // End of testIsBadgeNumAvailable()
 
@@ -226,6 +224,12 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		$this->reg_member = $this->factory->get_object("member");
 		$this->reg_log = $this->factory->get_object("log");
 		$this->reg_admin_log_view = $this->factory->get_object("admin_log_view");
+
+		//
+		// Turn off display of errors while testing
+		//
+		$this->reg->setErrorDisplay(false);
+
 	}
 
 

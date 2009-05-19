@@ -49,6 +49,10 @@ class Reg_UnitTest extends DrupalTestCase {
 
 		$output = $this->reg->is_badge_num_valid(-1);
 		$this->assertEqual(false, $output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "negative";
+		$this->assertTrue(ereg($regexp, $output));
 
 		$output = $this->reg->is_badge_num_valid(0);
 		$this->assertEqual(true, $output);
@@ -58,6 +62,10 @@ class Reg_UnitTest extends DrupalTestCase {
 
 		$output = $this->reg->is_badge_num_valid("Foobar");
 		$this->assertEqual(false, $output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "is not a number";
+		$this->assertTrue(ereg($regexp, $output));
 
 	} // End of testIsBadgeNumValid()
 
@@ -127,7 +135,14 @@ class Reg_UnitTest extends DrupalTestCase {
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
 		$this->reg_member = $this->factory->get_object("member");
+
+		//
+		// Turn off display of errors while testing
+		//
+		$this->reg->setErrorDisplay(false);
+
 	}
+
 
 	function tearDown() {
 	}

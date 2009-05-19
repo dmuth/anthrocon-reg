@@ -10,14 +10,11 @@ TODO
 
 	Other things to test:
 
-		testReg_Member_Admin:
-			- Calling drupal_get_messages() multiple times doesn't seem to be a good idea
-				- Could I create some methods called set_drupal_error() and
-					get_last_drupal_error()?
-
 		- Test for duplicate badge numbers in the reg table
 			- Call get_badge_num()
 			- Try inserting the number twice, then selecting a count and check the number of rows
+
+		- Write code to delete temporary simpletest roles
 
 - Duplicate registration report:
 	- Search for identical last names, phone numbers, addresses, etc.
@@ -39,9 +36,9 @@ TODO
 		- Form functions go here
 	- Tool to scan existing list of members?  Is that feasable?
 	- Menu URLs:
-		- reg/admin/omega_list
-		- reg/admin/omega_list/view/num
-		- reg/admin/omega_list/edit/num
+		- reg/admin/util/omega_list
+		- reg/admin/util/omega_list/view/num
+		- reg/admin/util/omega_list/edit/num
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
