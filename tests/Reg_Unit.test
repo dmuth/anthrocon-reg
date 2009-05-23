@@ -131,6 +131,37 @@ class Reg_UnitTest extends DrupalTestCase {
 	} // End of testGetCcExpYears()
 
 
+	function testDuplicateBadgeNumber() {
+
+		//
+		// Get the latest badge number and insert it.
+		//
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$badge_num = $output;
+		$year = $this->reg->get_constant("year");
+		$this->assertNotNull($year);
+
+		$query = "INSERT INTO {reg} "
+			. "(year, badge_num) "
+			. "VALUES "
+			. "('%s', '%s') ";
+		$query_args = array($year, $badge_num);
+		$cursor = db_query($query, $query_args);
+		$this->assertNotNull($cursor);
+
+		//
+		// Insert a duplicate badge number
+		//
+		// 22 May 2009: I have this commented out, since Simpletest 
+		// can't seem to catch exceptions. :-(
+		//
+		//$cursor = db_query($query, $query_args);
+		//$this->assertFalse($cursor);
+
+	} // End of testDuplicateBadgeNumber()
+
+
 	function setUp() {
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
