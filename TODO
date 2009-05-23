@@ -6,17 +6,18 @@ Done
 TODO
 ====
 
-- Unit tests
-
-	Other things to test:
-
-		- Test for duplicate badge numbers in the reg table
-			- Call get_badge_num()
-			- Try inserting the number twice, then selecting a count and check the number of rows
-
-		- Write code to delete temporary simpletest roles
-
 - Duplicate registration report:
+	- RegUtilDuplicate class
+		- getLastNames()
+		- getPhoneNumbers()
+		- getEmailAddresses()
+		- getAddresses()
+		- getBadgeNames()
+		- These should return: matching criteria, reg ID (for link), badge number
+	- RegUtilDuplicateDisplay
+		- Borrow from the UnusedBadgeNumsDisplay class
+		- Single button to run all reports?
+		- Auditing
 	- Search for identical last names, phone numbers, addresses, etc.
 	- Print rows of suspected badges with:
 		- Badge number
@@ -39,6 +40,10 @@ TODO
 		- reg/admin/util/omega_list
 		- reg/admin/util/omega_list/view/num
 		- reg/admin/util/omega_list/edit/num
+
+- Printing system
+
+- Onsite reg
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

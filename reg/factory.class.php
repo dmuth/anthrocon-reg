@@ -339,7 +339,8 @@ class reg_factory {
 	protected function getUtil_UnusedBadgeNumsDisplay() {
 		$reg = $this->get_reg();
 		$util = $this->getUtil_UnusedBadgeNums();
-		$retval = new reg_Util_UnusedBadgeNumsDisplay($reg, $util);
+		$log = $this->get_log();
+		$retval = new reg_Util_UnusedBadgeNumsDisplay($reg, $util, $log);
 		return($retval);
 	}
 

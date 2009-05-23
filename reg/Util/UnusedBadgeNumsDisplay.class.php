@@ -3,9 +3,10 @@
 class Reg_Util_UnusedBadgeNumsDisplay {
 
 
-	function __construct(&$reg, &$util) {
+	function __construct(&$reg, &$util, &$log) {
 		$this->reg = $reg;
 		$this->util = $util;
+		$this->log = $log;
 	}
 
 
@@ -21,6 +22,10 @@ class Reg_Util_UnusedBadgeNumsDisplay {
 		// and unset the variable.
 		//
 		if (!empty($_SESSION["reg"]["util"]["unused_badge_nums"])) {
+
+			$message = t("Audit log: Viewed unused badge number report.");
+			$this->log->log($message);
+
 			$retval .= $this->getResults();
 			unset($_SESSION["reg"]["util"]["unused_badge_nums"]);
 		}
