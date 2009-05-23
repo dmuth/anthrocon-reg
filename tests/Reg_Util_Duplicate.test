@@ -1,0 +1,117 @@
+<?php
+/**
+*/
+class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Reg_Util_Duplicate Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("Registration System Unit Tests"),
+			);
+	}
+
+
+	function test() {
+
+		$query = "INSERT INTO {reg} (last) VALUES ('%s') ";
+		$value = "testDuplicate " . time();
+		db_query($query, $value);
+		db_query($query, $value);
+
+		$output = $this->util->getLastNames();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]);
+		$this->assertNotNull($output[1]);
+		$this->assertEqual($output[0]["field"], $output[1]["field"]);
+
+		$query = "DELETE FROM {reg} WHERE last='%s' ";
+		db_query($query, $value);
+
+
+		$query = "INSERT INTO {reg} (phone) VALUES ('%s') ";
+		$value = "testDuplicate " . time();
+		db_query($query, $value);
+		db_query($query, $value);
+
+		$output = $this->util->getPhoneNumbers();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]);
+		$this->assertNotNull($output[1]);
+		$this->assertEqual($output[0]["field"], $output[1]["field"]);
+
+		$query = "DELETE FROM {reg} WHERE phone='%s'";
+		db_query($query, $value);
+
+
+		$query = "INSERT INTO {reg} (email) VALUES ('%s') ";
+		$value = "testDuplicate " . time();
+		db_query($query, $value);
+		db_query($query, $value);
+
+		$output = $this->util->getEmailAddresses();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]);
+		$this->assertNotNull($output[1]);
+		$this->assertEqual($output[0]["field"], $output[1]["field"]);
+	
+		$query = "DELETE FROM {reg} WHERE email = '%s'";
+		db_query($query, $value);
+
+
+		$query = "INSERT INTO {reg} (address1) VALUE ('%s') ";
+		$value = "testDuplicate " . time();
+		db_query($query, $value);
+		db_query($query, $value);
+
+		$output = $this->util->getAddresses();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]);
+		$this->assertNotNull($output[1]);
+		$this->assertEqual($output[0]["field"], $output[1]["field"]);
+
+		$query = "DELETE FROM {reg} WHERE address1 = '%s' ";
+		db_query($query, $value);
+
+
+		$query = "INSERT INTO {reg} (badge_name) VALUES ('%s') ";
+		$value = "testDuplicate " . time();
+		db_query($query, $value);
+		db_query($query, $value);
+
+		$output = $this->util->getBadgeNames();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]);
+		$this->assertNotNull($output[1]);
+		$this->assertEqual($output[0]["field"], $output[1]["field"]);
+
+		$query = "DELETE FROM {reg} WHERE badge_name = '%s'";
+		db_query($query, $value);
+
+	}
+
+
+	function setUp() {
+
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->util = $factory->get_object("Util_Duplicate");
+
+		//
+		// Turn off display of errors while testing
+		//
+		//$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

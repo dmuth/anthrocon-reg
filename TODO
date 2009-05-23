@@ -7,22 +7,16 @@ TODO
 ====
 
 - Duplicate registration report:
-	- RegUtilDuplicate class
-		- getLastNames()
-		- getPhoneNumbers()
-		- getEmailAddresses()
-		- getAddresses()
-		- getBadgeNames()
-		- These should return: matching criteria, reg ID (for link), badge number
 	- RegUtilDuplicateDisplay
 		- Borrow from the UnusedBadgeNumsDisplay class
 		- Single button to run all reports?
 		- Auditing
-	- Search for identical last names, phone numbers, addresses, etc.
 	- Print rows of suspected badges with:
 		- Badge number
 		- Badge name
 		- Real name
+		- Membership type
+		- Membership status
 		- Matching criteria
 
 - Omega list

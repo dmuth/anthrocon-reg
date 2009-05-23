@@ -106,6 +106,9 @@ class reg_factory {
 		} else if ($name == "verify") {
 			$retval = $this->get_verify();
 
+		} else if ($name == "util_duplicate") {
+			$retval = $this->getUtil_Duplicate();
+
 		} else if ($name == "util_unusedbadgenums") {
 			$retval = $this->getUtil_UnusedBadgeNums();
 
@@ -327,6 +330,12 @@ class reg_factory {
 		$log = $this->get_log();
 		$email = $this->get_email();
 		$retval = new reg_verify($message, $log, $email);
+		return($retval);
+	}
+
+	protected function getUtil_Duplicate() {
+		$reg = $this->get_reg();
+		$retval = new reg_Util_Duplicate($reg);
 		return($retval);
 	}
 
