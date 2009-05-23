@@ -141,6 +141,7 @@ class Reg_Functional_Test extends DrupalTestCase {
 
 
 	function tearDown() {
+		$this->core->deleteSimpletestRoles();
 	}
 
 

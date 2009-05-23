@@ -129,6 +129,9 @@ class Reg_Admin_Members_Errors_Functional_Test
 
 
 	function tearDown() {
+
+		$this->core->deleteSimpletestRoles();
+
 	}
 
 

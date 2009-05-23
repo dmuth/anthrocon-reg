@@ -39,6 +39,21 @@ class Test_Core {
     } // End of checkSettings()
         
 
+	/**
+	* Called by our cleanup functions, this removes roles that Simpletest 
+	*	created.
+	*/
+	function deleteSimpletestRoles() {
+
+		$query = "DELETE FROM {role} "
+			. "WHERE "
+			. "name LIKE 'simpletest_%'"
+			;
+		$cursor = db_query($query);
+
+	} // End of deleteSimpletestRoles()
+
+
 } // End of Test_Core class
 
 

@@ -217,6 +217,7 @@ class Reg_Admin_Members_Functional_Test extends DrupalTestCase {
 
 
 	function tearDown() {
+		$this->core->deleteSimpletestRoles();
 	}
 
 
