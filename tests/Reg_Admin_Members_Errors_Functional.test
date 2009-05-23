@@ -5,7 +5,7 @@
 include_once("Reg_Admin_Members_Functional.test");
 
 class Reg_Admin_Members_Errors_Functional_Test 
-	extends Reg_Admin_Members_Functional_Test {
+	extends DrupalTestCase {
 
 	/**
 	* Implementation of get_info() for information
@@ -24,7 +24,7 @@ class Reg_Admin_Members_Errors_Functional_Test
 	*/
 	function testErrors() {
 
-		$this->checkSettings();
+		$this->core->checkSettings();
 
 		//
 		// Log in as a user with admin privs to the reg system
@@ -114,8 +114,17 @@ class Reg_Admin_Members_Errors_Functional_Test
 
 
 	function setUp() {
+
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
+
+		//
+		// @todo
+		// I eventually need to put this into our Factory class...
+		//
+		include_once("Reg_Core.class.php");
+		$this->core = new Test_Core($this, $this->reg);
+
 	}
 
 
@@ -123,6 +132,6 @@ class Reg_Admin_Members_Errors_Functional_Test
 	}
 
 
-} // End of RegUnitTest class
+} // End of Reg_Admin_Members_Errors_Functional_Test 
 
 
