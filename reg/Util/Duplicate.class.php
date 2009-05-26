@@ -110,7 +110,7 @@ class Reg_Util_Duplicate {
 	protected function getQuery($field) {
 
 		$retval = "SELECT "
-			. "reg.id, first, last, badge_name, ${field}, "
+			. "reg.id, first, last, badge_name, year, badge_num, ${field}, "
 			. "reg_type.member_type, reg_status.status "
 			. "FROM {reg} "
 			. "JOIN {reg_type} ON reg.reg_type_id = reg_type.id "
