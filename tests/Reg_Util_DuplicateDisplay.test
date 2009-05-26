@@ -1,0 +1,78 @@
+<?php
+/**
+*/
+class Reg_Util_Duplicate_Display_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Reg_Util_DuplicateDisplay Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("Registration System Unit Tests"),
+			);
+	}
+
+
+	function testGo() {
+
+		$output = $this->util->go();
+		$this->assertNotNull($output);
+
+		//
+		// Test to make sure our session is reset
+		//
+		$_SESSION["reg"]["util"]["duplicate"] = true;
+		$this->assertNotNull($_SESSION["reg"]["util"]["duplicate"]);
+
+		$output = $this->util->go();
+		$this->assertNotNull($output);
+		$regexp = t("Possible Duplicate Memberships");
+		$this->assertTrue(ereg($regexp, $output));
+		$this->assertTrue(eregi("fieldset", $output));
+		$this->assertNull($_SESSION["reg"]["util"]["duplicate"]);
+
+		$output = $this->util->go();
+		$this->assertNotNull($output);
+		$this->assertFalse(ereg($regexp, $output));
+		$this->assertNull($_SESSION["reg"]["util"]["duplicate"]);
+
+	} // End of testGo()
+
+
+	function testGetForm() {
+
+		$output = $this->util->getForm();
+		$this->assertNotNull($output);
+
+	} // End of testGetForm()
+
+
+	function testGetResults() {
+		$output = $this->util->getResults();
+		$this->assertNotNull($output);
+	}
+
+
+	function setUp() {
+
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->util = $factory->get_object("Util_DuplicateDisplay");
+
+		//
+		// Turn off display of errors while testing
+		//
+		//$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

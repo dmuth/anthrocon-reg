@@ -6,19 +6,6 @@ Done
 TODO
 ====
 
-- Duplicate registration report:
-	- RegUtilDuplicateDisplay
-		- Borrow from the UnusedBadgeNumsDisplay class
-		- Single button to run all reports?
-		- Auditing
-	- Print rows of suspected badges with:
-		- Badge number
-		- Badge name
-		- Real name
-		- Membership type
-		- Membership status
-		- Matching criteria
-
 - Omega list
 	- Fields: id, first, last, action (text field - action to take)
 	- Omega class
@@ -29,6 +16,7 @@ TODO
 		- export()
 	- OmegaDisplay class
 		- Form functions go here
+		- Make collapsible form on top of search results, similar to member searching
 	- Tool to scan existing list of members?  Is that feasable?
 	- Menu URLs:
 		- reg/admin/util/omega_list
@@ -146,4 +134,7 @@ Long Term
 - Export data as a spreadsheet
 	- Main membership data
 	- Staff data separately?
+
+- Do distance calculations
+	- http://jan.ucc.nau.edu/~cvm/latlon_formula.html
 

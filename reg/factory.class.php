@@ -109,6 +109,9 @@ class reg_factory {
 		} else if ($name == "util_duplicate") {
 			$retval = $this->getUtil_Duplicate();
 
+		} else if ($name == "util_duplicatedisplay") {
+			$retval = $this->getUtil_DuplicateDisplay();
+
 		} else if ($name == "util_unusedbadgenums") {
 			$retval = $this->getUtil_UnusedBadgeNums();
 
@@ -336,6 +339,14 @@ class reg_factory {
 	protected function getUtil_Duplicate() {
 		$reg = $this->get_reg();
 		$retval = new reg_Util_Duplicate($reg);
+		return($retval);
+	}
+
+	protected function getUtil_DuplicateDisplay() {
+		$reg = $this->get_reg();
+		$util = $this->getUtil_Duplicate();
+		$log = $this->get_log();
+		$retval = new reg_Util_DuplicateDisplay($reg, $util, $log);
 		return($retval);
 	}
 

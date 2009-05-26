@@ -518,6 +518,39 @@ function reg_admin_utils_unused_badge_nums_form_submit($form_id, &$data) {
 
 }
 
+
+/**
+* Duplicate membership reports.
+*/
+function reg_admin_utils_duplicate() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_DuplicateDisplay");
+	$retval = $util->go($id_email);
+
+	return($retval);
+
+}
+
+function reg_admin_utils_duplicate_form() {
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_DuplicateDisplay");
+	$retval = $util->getForm();
+	return($retval);
+
+}
+
+function reg_admin_utils_duplicate_form_submit($form_id, &$data) {
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_DuplicateDisplay");
+	$retval = $util->getFormSubmit($form_id, $data);
+	return($retval);
+
+}
+
+
 /**
 * Our theme function for creating form elements in the reg system.
 */

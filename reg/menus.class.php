@@ -511,6 +511,14 @@ class reg_menus extends reg {
 				"weight" => -10,
 				);
 
+			$retval[] = array(
+				"path" => "admin/reg/utils/duplicate",
+				"title" => t("Duplicate Membership Search"),
+				"callback" => "reg_admin_utils_duplicate",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 0,
+				);
+
 		}
 
 	} // End of get_utilties()
