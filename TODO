@@ -6,26 +6,43 @@ Done
 TODO
 ====
 
-- Omega list
-	- Fields: id, first, last, action (text field - action to take)
-	- Omega class
-		- getAll()
-		- load($id)
-		- update($id, $data)
-		- search($last_name)
-		- export()
-	- OmegaDisplay class
-		- Form functions go here
-		- Make collapsible form on top of search results, similar to member searching
-	- Tool to scan existing list of members?  Is that feasable?
+- Watch list
 	- Menu URLs:
-		- reg/admin/util/omega_list
-		- reg/admin/util/omega_list/view/num
+		- reg/admin/util/watchlist
+			- reg_admin_utils_watchlist()
+				- Call WatchlistDisplay->getAll()
+					- Call Watchlist->getAll()
 		- reg/admin/util/omega_list/edit/num
+			- reg_admin_utils_watchlist_edit()
+				- Call the reg_admin_utils_watchlist_form form
+			- reg_admin_utils_watchlist_form()
+				- Call WatchlistDisplay->getForm()
+					- Call Watchlist->load()
+			- reg_admin_utils_watchlist_validate()
+			- reg_admin_utils_watchlist_submit()
+				- Call WatchlistDisplay->submitForm()
+					- Call Watchlist->load()
+					- Write to audit log with differences
+					- Call Watchlist->insert()/update()
+		- Patch into Reg_member class
+			- When editing or viewing, do a lookup against watchlist
+				- If a match, set a form error
+				- If on the edit page, refuse to display the submit button
+	- WatchlistDisplay class
+		- Form functions go here
+		- Only list Watchlist, NO search facility
+		- Audit logging of inserts/updates
 
 - Printing system
+	- Create printing queue
+	- Add button to editing form to print a badge
+		- Check current age for adult/minor status
+	- Create jQuery-powered printing page
 
 - Onsite reg
+	- Separate set of permissions for registration staff
+		- NO acccess to stats, settings or utilities
+	- Create onsite reg form that doesn't have payment info
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
@@ -137,4 +154,7 @@ Long Term
 
 - Do distance calculations
 	- http://jan.ucc.nau.edu/~cvm/latlon_formula.html
+
+- Watchlist
+	- Pre-sanitize data into new fields at insert time?
 

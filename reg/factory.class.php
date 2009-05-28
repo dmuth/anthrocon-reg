@@ -118,6 +118,9 @@ class reg_factory {
 		} else if ($name == "util_unusedbadgenumsdisplay") {
 			$retval = $this->getUtil_UnusedBadgeNumsDisplay();
 
+		} else if ($name == "util_watchlist") {
+			$retval = $this->getUtil_Watchlist();
+
 		} else {
 			$error = "Unknown object name: $name";
 			throw new Exception($error);
@@ -364,6 +367,11 @@ class reg_factory {
 		return($retval);
 	}
 
+	protected function getUtil_Watchlist() {
+		$reg = $this->get_reg();
+		$retval = new reg_Util_Watchlist($reg);
+		return($retval);
+	}
 
 } // End of reg_factory class
 

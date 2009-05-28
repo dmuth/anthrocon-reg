@@ -607,6 +607,40 @@ function reg_install() {
 
 		db_query($query);
 
+
+		//
+		// Our Watchlist.  This contains names of people who owe us money, 
+		// are not welcome at the con, etc.
+		//
+		$query = "CREATE TABLE {reg_watchlist} ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			//
+			// Real name of the individual
+			//
+			. "first VARCHAR(255) NOT NULL, "
+			. "last VARCHAR(255) NOT NULL, "
+			//
+			// Aliases for the first name.  This may be a regular expression.
+			// However, it will only be checked if the last name matches a 
+			// particular member, so we don't kill the CPU.
+			//
+			. "first_alias VARCHAR(255), "
+			//
+			// Action to take if they try to register.  This will be 
+			// displayed to the user they edit the member's record in 
+			// an error box.
+			//
+			. "action TEXT NOT NULL, "
+			//
+			// Is the current entry disabled?  Empty string means no, 
+			// anything else means yes.
+			//
+			. "disabled CHAR(1) NOT NULL DEFAULT ''"
+			. ")"
+			;
+
+		db_query($query);
+
 	} else if ($db == "pgsql") {
 		$error = "We're sorry, but we don't have Postgres support in "
 			. "this module.  ";
@@ -668,6 +702,9 @@ function reg_wipe() {
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS {reg_message}";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS {reg_watchlist}";
 	db_query($query);
 
 } // End of reg_wipe()
@@ -902,4 +939,29 @@ function reg_update_9() {
 	return($retval);
 
 } // End of reg_update_9()
+
+
+/**
+* Add the Watchlist table.
+*/
+function reg_update_10() {
+
+	$retval = array();
+
+	$query = "CREATE TABLE {reg_watchlist} ("
+		. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+		. "first VARCHAR(255) NOT NULL, "
+		. "last VARCHAR(255) NOT NULL, "
+		. "first_alias VARCHAR(255), "
+		. "action TEXT NOT NULL, "
+		. "disabled CHAR(1) NOT NULL DEFAULT ''"
+		. ")"
+		;
+
+	$retval[] = update_sql($query);
+
+	return($retval);
+
+} // End of reg_update_10()
+
 
