@@ -208,6 +208,54 @@ class Reg_Util_Watchlist_UnitTest extends DrupalTestCase {
 	} // End of testSearch()
 
 
+	/**
+	* Test sorting in our get function
+	*/
+	function testGetAllSortBy() {
+
+		$data = array();
+		$data["first"] = "testWatchlistFirst " . time();
+		$data["last"] = "testWatchlistLast " . time();
+		$data["action"] = "testWatchlistAction " . time();
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+
+		$data["first"] = "testWatchlistFirst " . time() . "A";
+		$data["last"] = "testWatchlistLast " . time() . "A";
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+
+		$data["first"] = "testWatchlistFirst " . time() . "B";
+		$data["last"] = "testWatchlistLast " . time() . "B";
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+
+		$output = $this->util->getAll();
+		$this->assertNotNull($output);
+		$first_row = $output[0];
+
+		$output = $this->util->getAll("ORDER BY last");
+		$this->assertNotNull($output);
+		$this->assertEqual($first_row["first"], $output[0]["first"]);
+		$this->assertEqual($first_row["last"], $output[0]["last"]);
+
+		$output = $this->util->getAll("ORDER BY last desc");
+		$this->assertNotNull($output);
+		$this->assertNotEqual($first_row["first"], $output[0]["first"]);
+		$this->assertNotEqual($first_row["last"], $output[0]["last"]);
+
+		$output = $this->util->getAll("ORDER BY first");
+		$this->assertNotNull($output);
+		$first_row = $output[0];
+
+		$output = $this->util->getAll("ORDER BY first desc");
+		$this->assertNotNull($output);
+		$this->assertNotEqual($first_row["first"], $output[0]["first"]);
+		$this->assertNotEqual($first_row["last"], $output[0]["last"]);
+
+	} // End of testGetAllSortBy()
+
+
 	function setUp() {
 
 		$factory = new reg_factory();
@@ -223,6 +271,7 @@ class Reg_Util_Watchlist_UnitTest extends DrupalTestCase {
 
 
 	function tearDown() {
+
 		$query = "DELETE FROM {reg_watchlist} "
 			. "WHERE "
 			. "first LIKE 'testWatchlistFirst%' "

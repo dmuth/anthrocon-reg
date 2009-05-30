@@ -1,0 +1,63 @@
+<?php
+/**
+*/
+class Reg_Util_WatchlistDisplay_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Reg_Util_WatchlistDisplay Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("Registration System Unit Tests"),
+			);
+	}
+
+
+	function test() {
+
+		$output = $this->util->getAll();
+		$this->assertNotNull($output);
+
+		$output = $this->util->getEditPage(1);
+		$this->assertNotNull($output);
+
+		$output = $this->util->getForm(1);
+		$this->assertNotNull($output);
+
+		$data = array();
+		$this->util->getFormValidate("test", $data);
+
+	}
+
+
+	function setUp() {
+
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->util = $factory->get_object("Util_WatchlistDisplay");
+
+		//
+		// Turn off display of errors while testing
+		//
+		//$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+		$query = "DELETE FROM {reg_watchlist} "
+			. "WHERE "
+			. "first LIKE 'testWatchlistFirst%' "
+			. "OR last LIKE 'testWatchlistLast%' "
+			. "OR (first LIKE 'Charles%' AND last LIKE 'Manson%') "
+			;
+		db_query($query);
+
+	} // End of tearDown()
+
+
+} // End of Reg_Util_Watchlist_Test class
+
+

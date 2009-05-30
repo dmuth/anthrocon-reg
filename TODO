@@ -7,31 +7,10 @@ TODO
 ====
 
 - Watch list
-	- Menu URLs:
-		- reg/admin/util/watchlist
-			- reg_admin_utils_watchlist()
-				- Call WatchlistDisplay->getAll()
-					- Call Watchlist->getAll()
-		- reg/admin/util/omega_list/edit/num
-			- reg_admin_utils_watchlist_edit()
-				- Call the reg_admin_utils_watchlist_form form
-			- reg_admin_utils_watchlist_form()
-				- Call WatchlistDisplay->getForm()
-					- Call Watchlist->load()
-			- reg_admin_utils_watchlist_validate()
-			- reg_admin_utils_watchlist_submit()
-				- Call WatchlistDisplay->submitForm()
-					- Call Watchlist->load()
-					- Write to audit log with differences
-					- Call Watchlist->insert()/update()
-		- Patch into Reg_member class
-			- When editing or viewing, do a lookup against watchlist
-				- If a match, set a form error
-				- If on the edit page, refuse to display the submit button
-	- WatchlistDisplay class
-		- Form functions go here
-		- Only list Watchlist, NO search facility
-		- Audit logging of inserts/updates
+	- Patch into Reg_member class
+		- When editing or viewing, do a lookup against watchlist
+			- If a match, set a form error
+			- If on the edit page, refuse to display the submit button
 
 - Printing system
 	- Create printing queue

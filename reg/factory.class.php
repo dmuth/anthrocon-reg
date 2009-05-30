@@ -121,6 +121,9 @@ class reg_factory {
 		} else if ($name == "util_watchlist") {
 			$retval = $this->getUtil_Watchlist();
 
+		} else if ($name == "util_watchlistdisplay") {
+			$retval = $this->getUtil_WatchlistDisplay();
+
 		} else {
 			$error = "Unknown object name: $name";
 			throw new Exception($error);
@@ -372,6 +375,15 @@ class reg_factory {
 		$retval = new reg_Util_Watchlist($reg);
 		return($retval);
 	}
+
+	protected function getUtil_WatchlistDisplay() {
+		$reg = $this->get_reg();
+		$util = $this->getUtil_Watchlist();
+		$log = $this->get_log();
+		$retval = new reg_Util_WatchlistDisplay($reg, $util, $log);
+		return($retval);
+	}
+
 
 } // End of reg_factory class
 

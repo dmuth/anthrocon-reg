@@ -552,6 +552,39 @@ function reg_admin_utils_duplicate_form_submit($form_id, &$data) {
 
 
 /**
+* Functions for viewing and editing the watchlist.
+*/
+function reg_admin_utils_watchlist() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getAll());
+}
+
+function reg_admin_utils_watchlist_edit($id = "") {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getEditPage($id));
+}
+
+function reg_admin_utils_watchlist_form($id) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getForm($id));
+}
+
+function reg_admin_utils_watchlist_form_validate($form_id, $data) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getFormValidate($form_id, $data));
+}
+
+function reg_admin_utils_watchlist_form_submit($form_id, $data) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getFormSubmit($form_id, $data));
+}
+
+
+/**
 * Our theme function for creating form elements in the reg system.
 */
 function theme_reg_theme($form) {
@@ -561,9 +594,4 @@ function theme_reg_theme($form) {
 }
 
 
-/* Developers only!  Uncomment this to clear out the databsae.
-include("reg.install");
-reg_wipe();
-reg_install();
-*/
 
