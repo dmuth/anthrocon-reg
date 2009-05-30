@@ -164,7 +164,7 @@ class Reg_Util_WatchlistDisplay {
 
 		}
 
-		$url = "admin/reg/utils/watchlist";
+		$url = "admin/reg/settings/watchlist";
 		$this->reg->goto_url($url);			
 
 	} // End of getFormSubmit()
@@ -197,7 +197,7 @@ class Reg_Util_WatchlistDisplay {
 		foreach ($data as $key => $value) {
 
 			$id = $value["id"];
-			$url = "admin/reg/utils/watchlist/view/" . $id . "/edit";
+			$url = "admin/reg/settings/watchlist/view/" . $id . "/edit";
 			$first = l($value["first"], $url);
 			$last = l($value["last"], $url);
 

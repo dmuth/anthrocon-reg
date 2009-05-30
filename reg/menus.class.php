@@ -299,6 +299,30 @@ class reg_menus extends reg {
 				"weight" => 1,
 				);
 
+			$retval[] = array(
+				"path" => "admin/reg/settings/watchlist",
+				"title" => t("Watchlist"),
+				"callback" => "reg_admin_utils_watchlist",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 1,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/watchlist/list",
+				"title" => t("List"),
+				"callback" => "reg_admin_utils_watchlist",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
+				"weight" => -10,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/settings/watchlist/add",
+				"title" => t("Add New Watchlist Entry"),
+				"callback" => "reg_admin_utils_watchlist_edit",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 0,
+				);
+
 		}
 
 		if (arg(4)) {
@@ -319,6 +343,19 @@ class reg_menus extends reg {
 
 			}
 
+		}
+
+		if (arg(5)) {
+
+			if (!$may_cache) {
+				$retval[] = array(
+					"path" => "admin/reg/settings/watchlist/view/" . arg(5) . "/edit",
+					//"title" => t("Edit"),
+					"callback" => "reg_admin_utils_watchlist_edit",
+					"callback arguments" => array(arg(5)),
+					"type" => MENU_CALLBACK,
+					);
+			}
 		}
 
 	} // End of get_settings()
@@ -519,38 +556,7 @@ class reg_menus extends reg {
 				"weight" => 0,
 				);
 
-			$retval[] = array(
-				"path" => "admin/reg/utils/watchlist",
-				"title" => t("Watchlist"),
-				"callback" => "reg_admin_utils_watchlist",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/utils/watchlist/list",
-				"title" => t("List"),
-				"callback" => "reg_admin_utils_watchlist",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/utils/watchlist/add",
-				"title" => t("Add New Watchlist Entry"),
-				"callback" => "reg_admin_utils_watchlist_edit",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 0,
-				);
 		}
-
-		$retval[] = array(
-			"path" => "admin/reg/utils/watchlist/view/" . arg(5) . "/edit",
-			//"title" => t("Edit"),
-			"callback" => "reg_admin_utils_watchlist_edit",
-			"callback arguments" => array(arg(5)),
-			"type" => MENU_CALLBACK,
-			);
 
 	} // End of get_utilties()
 
