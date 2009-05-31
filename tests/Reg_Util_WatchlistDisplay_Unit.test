@@ -32,6 +32,50 @@ class Reg_Util_WatchlistDisplay_UnitTest extends DrupalTestCase {
 	}
 
 
+	/**
+	* Test our search wrapper.
+	*/
+	function testSearch() {
+
+		//
+		// Make sure there's no match.
+		//
+		$data = array();
+		$data["first"] = "testWatchlistFirst " . time();
+		$data["last"] = "testWatchlistLast " . time();
+		$output = $this->util->search($data);
+		$this->assertFalse($output);
+
+		//
+		// insert this user and make sure he matches
+		//
+		$query = "INSERT INTO {reg_watchlist} (first, last, action) "
+			. "VALUES "
+			. "('%s', '%s', '%s') "
+			;
+		$query_args = array($data["first"], $data["last"], "Test action");
+		db_query($query, $query_args);
+
+		$output = $this->util->search($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["first"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertNotNull($output["last"]);
+		$this->assertEqual($data["last"], $output["last"]);
+
+		//
+		// Now check for an innocent user
+		//
+		$data["first"] = "John";
+		$data["last"] = "Smith";
+		$output = $this->util->search($data);
+		$this->assertFalse($output);
+
+
+
+	} // End of testSearch()
+
+
 	function setUp() {
 
 		$factory = new reg_factory();
@@ -51,7 +95,6 @@ class Reg_Util_WatchlistDisplay_UnitTest extends DrupalTestCase {
 			. "WHERE "
 			. "first LIKE 'testWatchlistFirst%' "
 			. "OR last LIKE 'testWatchlistLast%' "
-			. "OR (first LIKE 'Charles%' AND last LIKE 'Manson%') "
 			;
 		db_query($query);
 

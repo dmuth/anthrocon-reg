@@ -6,15 +6,10 @@ Done
 TODO
 ====
 
-- Watch list
-	- Patch into Reg_member class
-		- When editing or viewing, do a lookup against watchlist
-			- If a match, set a form error
-			- If on the edit page, refuse to display the submit button
-
 - Printing system
 	- Create printing queue
 	- Add button to editing form to print a badge
+		- Button should honor 
 		- Check current age for adult/minor status
 	- Create jQuery-powered printing page
 
@@ -22,6 +17,8 @@ TODO
 	- Separate set of permissions for registration staff
 		- NO acccess to stats, settings or utilities
 	- Create onsite reg form that doesn't have payment info
+		- Create new class that calls reg_form->form() for form, but its own
+			validation and submission functions?
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

@@ -45,8 +45,6 @@ class Reg_Util_WatchlistDisplay {
 
 		if (!empty($id)) {
 			$retval .= "<h2>" . t("Edit Watchlist Record") . "</h3>";
-		} else {
-			$retval .= "<h2>" . t("Create New Watchlist Record") . "</h3>";
 		}
 
 		$retval .= drupal_get_form("reg_admin_utils_watchlist_form", $id);
@@ -221,6 +219,44 @@ class Reg_Util_WatchlistDisplay {
 		return($retval);
 
 	} // End getRows()
+
+
+	/**
+	* Wrapper for our search function.  This sets things to display if 
+	*	there is a match.
+	*
+	* @param array $data Array of first and last name to search for.
+	*
+	* @return mixed Array of match data if there is a match, otherwise false.
+	*/
+	function search(&$data) {
+
+		$match = $this->util->search($data);
+
+		if ($match) {
+
+			$error = t("Warning!  This member matches the watchlist entry for '%first %last'!",
+				array(
+					"%first" => $match["first"],
+					"%last" => $match["last"],
+				));
+			drupal_set_message($error, "error");
+
+			$error = t("The system will NOT let you continue with this member "
+				. "until they are removed from the watchlist.");
+			drupal_set_message($error, "error");
+
+			$error = t("Recommended action: %action",
+				array(
+					"%action" => $match["action"]
+					));
+			drupal_set_message($error, "error");
+
+        }
+
+		return($match);
+
+	} // End of search()
 
 
 } // End of Reg_Util_WatchlistDisplay class

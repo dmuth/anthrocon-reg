@@ -204,7 +204,8 @@ class reg_factory {
 	protected function get_admin_member() {
 		$log = $this->get_log();
 		$admin_log_view = $this->get_admin_log_view();
-		$retval = new reg_admin_member($log, $admin_log_view);
+		$watchlist = $this->getUtil_WatchlistDisplay();
+		$retval = new reg_admin_member($log, $admin_log_view, $watchlist);
 		return($retval);
 	}
 
@@ -285,9 +286,10 @@ class reg_factory {
 		$member = $this->get_member();
 		$captcha = $this->get_captcha();
 		$message = $this->get_message();
+		$watchlist = $this->getUtil_WatchlistDisplay();
 
 		$retval = new reg_form($fake, $log, $admin_member, $member, 
-			$captcha, $message);
+			$captcha, $message, $watchlist);
 		return($retval);
 	}
 

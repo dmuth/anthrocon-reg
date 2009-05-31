@@ -7,9 +7,10 @@
 class reg_admin_member extends reg {
 
 
-	function __construct(&$log, &$admin_log) {
+	function __construct(&$log, &$admin_log, &$watchlist) {
 		$this->log = $log;
 		$this->admin_log = $admin_log;
+		$this->watchlist = $watchlist;
 		//
 		// This here is a circular dependency that I need to fix at some point.
 		//
@@ -158,6 +159,15 @@ class reg_admin_member extends reg {
 		$row = $this->load_reg($id);
 
 		$this->log_view($row);
+
+		//
+		// Is this person on the watchlist?
+		//
+		$watchlist_data = array(
+			"first" => $row["first"],
+			"last" => $row["last"],
+			);
+		$match = $this->watchlist->search($watchlist_data);
 
 		//
 		// Now create our table.

@@ -9,12 +9,14 @@
 */
 class reg_form extends reg {
 
-	function __construct($fake, $log, $admin_member, $member, $captcha, $message) {
+	function __construct($fake, $log, $admin_member, $member, $captcha, 
+		$message, &$watchlist) {
 		$this->fake = $fake;
 		$this->log = $log;
 		$this->admin_member = $admin_member;
 		$this->member = $member;
 		$this->captcha = $captcha;
+		$this->watchlist = $watchlist;
 
 		parent::__construct($message, $fake, $log);
 
@@ -591,6 +593,16 @@ class reg_form extends reg {
 		// Display additional options for the admin to set.
 		//
 		if ($this->in_admin()) {
+
+			//
+			// Is this person on the watchlist?
+			//
+			$watchlist_data = array(
+				"first" => $data["first"],
+				"last" => $data["last"],
+				);
+			$this->watchlist_match = $this->watchlist->search($watchlist_data);
+
 			$retval["badge_num"] = array(
 				"#title" => t("Badge Number"),
 				"#type" => "textfield",
@@ -1068,6 +1080,16 @@ class reg_form extends reg {
 				"#type" => "submit",
 				"#value" => t("Save")
 				);
+
+			//
+			// If on the watchlist, disable the saving button.
+			//
+			if ($this->watchlist_match) {
+				$retval["submit"]["#disabled"] = true;
+				$retval["submit"]["#value"] = 
+					t("Disabled for members on watchlist");
+			}
+
 		}
 
 		return($retval);
@@ -1156,6 +1178,16 @@ class reg_form extends reg {
 				"#type" => "submit",
 				"#value" => t("Save")
 				);
+
+			//
+			// If on the watchlist, disable the saving button.
+			//
+			if ($this->watchlist_match) {
+				$retval["submit"]["#disabled"] = true;
+				$retval["submit"]["#value"] = 
+					t("Disabled for members on watchlist");
+			}
+
 		}
 
 		return($retval);
