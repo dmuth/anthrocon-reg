@@ -2,14 +2,14 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Reg_Util_Printing_Test extends DrupalTestCase {
+class Reg_Util_Print_Test extends DrupalTestCase {
 
 	/**
 	* Implementation of get_info() for information
 	*/
 	function get_info() {
 		return array(
-			"name" => t("Reg_Util_Printing Unit Test"),
+			"name" => t("Reg_Util_Print Unit Test"),
 			//"desc" => t("Test out the reg class"),
 			"group" => t("Registration System Unit Tests"),
 			);
@@ -124,8 +124,8 @@ class Reg_Util_Printing_Test extends DrupalTestCase {
 	*/
 	function testStatus() {
 
-		$status = "testReg_Util_Printing status " . time();
-		$printer = "testReg_Util_Printing printer " . time();
+		$status = "testReg_Util_Print status " . time();
+		$printer = "testReg_Util_Print printer " . time();
 
 		$output = $this->util->getAllJobs($status, $printer);
 		$this->assertNotNull($output);
@@ -150,7 +150,7 @@ class Reg_Util_Printing_Test extends DrupalTestCase {
 	function setUp() {
 
 		$this->factory = new reg_factory();
-		$this->util = $this->factory->get_object("Util_Printing");
+		$this->util = $this->factory->get_object("Util_Print");
 
 	}
 

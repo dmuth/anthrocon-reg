@@ -1,6 +1,6 @@
 <?php
 
-class Reg_Util_Printing {
+class Reg_Util_Print {
 
 
 	function __construct(&$reg) {
@@ -171,5 +171,5 @@ class Reg_Util_Printing {
 	} // End of updateJob()
 
 
-} // End of Reg_Util_Printing class
+} // End of Reg_Util_Print class
 

@@ -2,7 +2,7 @@
 /**
 * This class is used to create the user-facing form for our printing client.
 */
-class Reg_Util_PrintingClient {
+class Reg_Util_PrintClient {
 
 
 	function __construct() {
@@ -131,5 +131,5 @@ class Reg_Util_PrintingClient {
 	} // End of getForm()
 
 
-} // End of Reg_Util_PrintingClient class
+} // End of Reg_Util_PrintClient class
 

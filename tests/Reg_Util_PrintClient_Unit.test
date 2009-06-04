@@ -2,14 +2,14 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Reg_Util_PrintingClient_Test extends DrupalTestCase {
+class Reg_Util_PrintClient_Test extends DrupalTestCase {
 
 	/**
 	* Implementation of get_info() for information
 	*/
 	function get_info() {
 		return array(
-			"name" => t("Reg_Util_PrintingClient Unit Test"),
+			"name" => t("Reg_Util_PrintClient Unit Test"),
 			//"desc" => t("Test out the reg class"),
 			"group" => t("Registration System Unit Tests"),
 			);
@@ -30,7 +30,7 @@ class Reg_Util_PrintingClient_Test extends DrupalTestCase {
 	function setUp() {
 
 		$this->factory = new reg_factory();
-		$this->util = $this->factory->get_object("Util_PrintingClient");
+		$this->util = $this->factory->get_object("Util_PrintClient");
 
 	}
 

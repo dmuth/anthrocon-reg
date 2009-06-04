@@ -589,12 +589,12 @@ return("TEST - pending print jobs go here");
 }
 
 function reg_admin_utils_print_client() {
-	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintingClient");
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintClient");
 	return($util->getPage());
 }
 
 function reg_admin_utils_print_client_form() {
-	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintingClient");
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintClient");
 	return($util->getForm());
 }
 
