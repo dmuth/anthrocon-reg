@@ -7,11 +7,21 @@ TODO
 ====
 
 - Printing system
-	- Create printing queue
+	- Write tests:
+		- Populate queue
+		- AJAX handlers:
+			- Fetch from queue
+				- Lock database before and after
+				- Should tell how many are remaining
+			- Update queue
+				- Take queue ID
 	- Add button to editing form to print a badge
-		- Button should honor 
+		- Maybe make "print badge" as a separate menu item?
+			- Honor watchlist status
+			- Tell in advance if the badge will be an adult or minor badge
 		- Check current age for adult/minor status
-	- Create jQuery-powered printing page
+
+- Move "membership levels" into Settings menu item
 
 - Onsite reg
 	- Separate set of permissions for registration staff
@@ -19,6 +29,13 @@ TODO
 	- Create onsite reg form that doesn't have payment info
 		- Create new class that calls reg_form->form() for form, but its own
 			validation and submission functions?
+			- Maybe split out reg_form->form into a separate class?
+		- Thankyou text should be stored as a message
+	- Create a form for staff members to "process/validate" registrations
+		- Should only have a few fields.
+		- Should have an option to print
+	- WAMP issues
+		- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
@@ -27,6 +44,8 @@ TODO
 	log viewing functions.
 	- Let's go back and move that code back into reg_admin_log, and update
 		child classes and the factory accordingly.
+
+- If watchlist is empty, display a single row in the watchlist indicating that.
 
 - Timezones when editing levels.  Do we want to do anything there?  
 	- Maybe allow an hour field?

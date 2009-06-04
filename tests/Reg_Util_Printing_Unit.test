@@ -1,0 +1,165 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Util_Printing_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Reg_Util_Printing Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("Registration System Unit Tests"),
+			);
+	}
+
+
+	function test() {
+
+		$output = $this->util->getAllJobs();
+		$this->assertNotNull($output);
+		$num = count($output);
+
+		$output = $this->util->addJob(1);
+		$this->assertNotNull($output);
+		$id = $output;
+
+		$output = $this->util->getJob($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertNotNull($output["status"]);
+		$this->assertEqual("new", $output["status"]);
+		$this->assertNotNull($output["printer"]);
+		$this->assertEqual("default", $output["printer"]);
+
+		$output = $this->util->getAllJobs();
+		$this->assertNotNull($output);
+		$expected = ($num + 1);
+		$this->assertEqual($expected, count($output));
+
+		$output = $this->util->getNextJob();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+
+		//$this->assertEqual($id, $output["id"]);
+		$this->assertNotNull($output["reg_id"]);
+		$this->assertNotNull($output["badge_name"]);
+		$this->assertNotNull($output["badge_num"]);
+		$this->assertNotNull($output["year"]);
+		$this->assertNotNull($output["member_type"]);
+		$next_job_id = $output["id"];
+
+		$output = $this->util->getJob($next_job_id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertEqual("printing", $output["status"]);
+
+		$this->util->updateJob($id, "printed");
+		$output = $this->util->getJob($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertEqual("printed", $output["status"]);
+
+		$output = $this->util->getAllJobs();
+		$this->assertNotNull($output);
+		$expected = ($num + 1);
+		$this->assertEqual($expected, count($output));
+
+	} // End of test()
+
+
+	function testCustomPrinter() {
+
+		$output = $this->util->getAllJobs("", "default");
+		$this->assertNotNull($output);
+		$num = count($output);
+
+		$output = $this->util->getAllJobs("", "minor");
+		$this->assertNotNull($output);
+		$num_minor = count($output);
+
+		$output = $this->util->addJob(1, "minor");
+		$this->assertNotNull($output);
+		$id = $output;
+
+		$output = $this->util->getAllJobs("", "default");
+		$this->assertNotNull($output);
+		$expected = $num;
+		$this->assertEqual($expected, count($output));
+
+		$output = $this->util->getAllJobs("", "minor");
+		$this->assertNotNull($output);
+		$expected = ($num_minor + 1);
+		$this->assertEqual($expected, count($output));
+
+		$output = $this->util->getNextJob("minor");
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertEqual($id, $output["id"]);
+
+		$output = $this->util->getJob($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertEqual("printing", $output["status"]);
+
+		$this->util->updateJob($id, "printed");
+		$output = $this->util->getJob($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertEqual("printed", $output["status"]);
+
+		$output = $this->util->getAllJobs("", "minor");
+		$this->assertNotNull($output);
+		$expected = ($num_minor + 1);
+		$this->assertEqual($expected, count($output));
+
+	} // End of testCustomPrinter()
+
+
+	/**
+	* Test searching for different statuses.
+	*/
+	function testStatus() {
+
+		$status = "testReg_Util_Printing status " . time();
+		$printer = "testReg_Util_Printing printer " . time();
+
+		$output = $this->util->getAllJobs($status, $printer);
+		$this->assertNotNull($output);
+		$this->assertEqual(0, count($output));
+
+		$output = $this->util->addJob(1, $printer);
+		$this->assertNotNull($output);
+		$this->util->updateJob($output, $status);
+
+		$output = $this->util->addJob(1, $printer);
+		$this->assertNotNull($output);
+		$this->util->updateJob($output, $status);
+		$id = $output;
+
+		$output = $this->util->getAllJobs($status, $printer);
+		$this->assertNotNull($output);
+		$this->assertEqual(2, count($output));
+
+	} // End of testStats()
+
+
+	function setUp() {
+
+		$this->factory = new reg_factory();
+		$this->util = $this->factory->get_object("Util_Printing");
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+
+

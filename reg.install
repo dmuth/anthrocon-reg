@@ -641,6 +641,28 @@ function reg_install() {
 
 		db_query($query);
 
+		$query = "CREATE TABLE {reg_print_jobs} ("
+			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+			//
+			// Reference to the badge that we're printing
+			//
+			. "reg_id INTEGER NOT NULL, "
+			//
+			// What printer is this being sent to?  It can be a string
+			// such as "default" for the default printer, or "minor" for the 
+			// minor printer.
+			//
+			. "printer VARCHAR(255) NOT NULL DEFAULT 'default', "
+			//
+			// The status of the print job, such as "new", "printing", 
+			// or "printed".
+			//
+			. "status VARCHAR(255) NOT NULL DEFAULT 'new' "
+			. ") "
+			;
+
+		db_query($query);
+
 	} else if ($db == "pgsql") {
 		$error = "We're sorry, but we don't have Postgres support in "
 			. "this module.  ";
@@ -705,6 +727,9 @@ function reg_wipe() {
 	db_query($query);
 
 	$query = "DROP TABLE IF EXISTS {reg_watchlist}";
+	db_query($query);
+
+	$query = "DROP TABLE IF EXISTS {reg_print_jobs}";
 	db_query($query);
 
 } // End of reg_wipe()
@@ -964,4 +989,38 @@ function reg_update_10() {
 
 } // End of reg_update_10()
 
+
+/**
+* Add the print jobs table.
+*/
+function reg_update_11() {
+
+	$retval = array();
+
+	$query = "CREATE TABLE {reg_print_jobs} ("
+		. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
+		//
+		// Reference to the badge that we're printing
+		//
+		. "reg_id INTEGER NOT NULL, "
+		//
+		// What printer is this being sent to?  It can be a string
+		// such as "default" for the default printer, or "minor" for the 
+		// minor printer.
+		//
+		. "printer VARCHAR(255) NOT NULL DEFAULT 'default', "
+		//
+		// The status of the print job, such as "new", "printing", 
+		// or "printed".
+		//
+		. "status VARCHAR(255) NOT NULL DEFAULT 'new' "
+		. ") "
+		;
+
+	$retval[] = update_sql($query);
+
+	return($retval);
+
+
+} // End of reg_update_11()
 

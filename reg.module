@@ -583,6 +583,30 @@ function reg_admin_utils_watchlist_form_submit($form_id, $data) {
 	return($util->getFormSubmit($form_id, $data));
 }
 
+// TEST
+function reg_admin_utils_print_queue() {
+return("TEST - pending print jobs go here");
+}
+
+function reg_admin_utils_print_client() {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintingClient");
+	return($util->getPage());
+}
+
+function reg_admin_utils_print_client_form() {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintingClient");
+	return($util->getForm());
+}
+
+function reg_admin_utils_print_ajax_fetch($printer = "") {
+print "TEST AJAX fetching stuff goes here";
+exit();
+}
+
+function reg_admin_utils_print_ajax_update($id, $status) {
+print "TEST: $id, $status";
+exit();
+}
 
 /**
 * Our theme function for creating form elements in the reg system.

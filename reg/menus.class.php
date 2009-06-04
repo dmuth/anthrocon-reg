@@ -553,8 +553,60 @@ class reg_menus extends reg {
 				"title" => t("Duplicate Membership Search"),
 				"callback" => "reg_admin_utils_duplicate",
 				"type" => MENU_LOCAL_TASK,
+				"weight" => 1,
+				);
+
+
+			$retval[] = array(
+				"path" => "admin/reg/utils/print",
+				"title" => t("Badge Printing"),
+				"callback" => "reg_admin_utils_print_queue",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 2,
+				);
+
+			$retval[] = array(
+				"path" => "admin/reg/utils/print/queue",
+				"title" => t("Print Queue"),
+				"callback" => "reg_admin_utils_print_queue",
+				"type" => MENU_DEFAULT_LOCAL_TASK,
 				"weight" => 0,
 				);
+
+			$retval[] = array(
+				"path" => "admin/reg/utils/print/client",
+				"title" => t("Printer Client"),
+				"callback" => "reg_admin_utils_print_client",
+				"type" => MENU_LOCAL_TASK,
+				"weight" => 1,
+				);
+
+		} // if ($may_cache
+
+		if (!$may_cache) {
+
+			$action = arg(6);
+
+			if ($action == "fetch") {
+				$retval[] = array(
+					"path" => "admin/reg/utils/print/client/ajax/fetch",
+					"callback" => "reg_admin_utils_print_ajax_fetch",
+					"callback arguments" => array(arg(7)),
+					"type" => MENU_CALLBACK,
+					"weight" => 0,
+					);
+
+			} else if ($action == "update") {
+
+				$retval[] = array(
+					"path" => "admin/reg/utils/print/client/ajax/update",
+					"callback" => "reg_admin_utils_print_ajax_update",
+					"callback arguments" => array(arg(7), arg(8)),
+					"type" => MENU_CALLBACK,
+					"weight" => 0,
+					);
+
+			}
 
 		}
 
