@@ -494,7 +494,7 @@ class reg {
 
 		if (empty($levels)) {
 			$data = array(
-				"!email" => variable_get(reg::VAR_EMAIL, ""),
+				"!email" => variable_get($this->get_constant("VAR_EMAIL"), ""),
 				);
 	
 			$message = $reg_message->load_display("no-levels-available", $data);
@@ -1336,6 +1336,90 @@ class reg {
 	function setErrorDisplay($value) {
 		$this->errorDisplay = $value;
 	}
+
+
+	/**
+	* Is the member a minor?
+	*
+	* @param string $birthdate Date in YYYY-MM-DD format.
+	*
+	* @param string $now Optional date to check against in YYYY-MM-DD format.
+	*	If not specified, checks against today.
+	*
+	* @return boolean True if the member is a minor, false otherwise.
+	*/
+	function isMinor($birthdate, $now = "") {
+
+		if (empty($now)) {
+			$now = date("Y-n-j", time());
+		}
+
+		//
+		// Split our dates into arrays, and then subtract 18 from the "now"
+		// year so that we have a target birthdate.
+		//
+		$birthdate = explode("-", $birthdate);
+		$now = explode("-", $now);
+		$now[0] -= 18;
+
+		//
+		// Sanity checking
+		//
+		if (empty($birthdate[2])) {
+			$error = "Invalid birthdate: " . print_r($birthdate, true);
+			throw new Exception($error);
+		}
+
+		if (empty($now[2])) {
+			$error = "Invalid date: " . print_r($now, true);
+			throw new Exception($error);
+		}
+
+		//
+		// Finally, check our date!
+		//
+		if ($birthdate[0] < $now[0]) {
+			//
+			// Definitely older than 18
+			//
+			return(false);
+
+		} else if ($birthdate[0] > $now[0]) {
+			//
+			// Definitely younger than 18
+			//
+			return(true);
+
+		} else {
+			//
+			// Uh oh, the year is the same.  Check months and days now.
+			//
+			if ($birthdate[1] < $now[1]) {
+				return(false);
+
+			} else if ($birthdate[1] > $now[1]) {
+				return(true);
+
+			} else {
+				if ($birthdate[2] < $now[2]) {
+					return(false);
+
+				} else if ($birthdate[2] > $now[2]) {
+					return(true);
+
+				} else {
+					//
+					// Happy 18th birthday!
+					//
+					return(false);
+				}
+
+			}
+
+		}
+
+
+	} // End of isMinor()
 
 
 } // End of reg class

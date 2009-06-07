@@ -13,16 +13,26 @@ class Reg_Util_Print {
 	*
 	* @param string $status A specific status to search for.
 	*
+	* @param string $order_by How do we want to order our jobs by?
+	*
+	* @param boolean $pager If true, use the pager_query() function.
+	*
 	* @return array An array of all matching rows from the 
 	*	reg_print_jobs table.
 	*/
-	function getAllJobs($status = "", $printer = "") {
+	function getAllJobs($status = "", $printer = "", $order_by = "", $pager = false) {
 
 		$retval = array();
 
-		$query = "SELECT * "
-			. "FROM {reg_print_jobs} "
+		$query = "SELECT "
+			. "jobs.*, "
+			. "reg.badge_name, reg.year, reg.badge_num, "
+			. "reg_type.member_type AS member_type "
+			. "FROM {reg_print_jobs} AS jobs "
+			. "JOIN {reg} AS reg ON jobs.reg_id = reg.id "
+			. "JOIN {reg_type} AS reg_type ON reg_type.id = reg.reg_type_id "
 			;
+
 		$query_where = array();
 		$query_args = array();
 
@@ -31,7 +41,7 @@ class Reg_Util_Print {
 			$query_args[] = $status;
 		}
 
-		if (!empty($printer)) {
+		if (!empty($printer) && $printer != "") {
 			$query_where[] = "printer='%s' ";
 			$query_args[] = $printer;
 		}
@@ -40,7 +50,18 @@ class Reg_Util_Print {
 			$query .= "WHERE " . join("AND ", $query_where);
 		}
 
-		$cursor = db_query($query, $query_args);
+		//
+		// Add in our ordering
+		//
+		$query .= $order_by;
+
+		if (!$pager) {
+			$cursor = db_query($query, $query_args);
+		} else {
+			$cursor = pager_query($query, $this->reg->get_constant("ITEMS_PER_PAGE"),
+				0, null, $query_args);
+		}
+
 		while ($row = db_fetch_array($cursor)) {
 			$retval[] = $row;
 		}
@@ -63,6 +84,13 @@ class Reg_Util_Print {
 	function addJob($reg_id, $printer = "default") {
 
 		$retval = "";
+
+		//
+		// Don't let empty strings be passed in
+		//
+		if ($printer == "") {
+			$printer = "default";
+		}
 
 		$query = "INSERT INTO {reg_print_jobs} "
 			. "(reg_id, printer, status) "

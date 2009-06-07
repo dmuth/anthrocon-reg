@@ -347,6 +347,32 @@ function reg_admin_members_adjust_form_submit($form_id, $data) {
 
 
 /**
+* Printing individual badges.
+*/
+function reg_admin_members_print($id) {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getPage($id));
+}
+
+function reg_admin_members_print_form($id) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getForm($id));
+}
+
+function reg_admin_members_print_form_validate($form_id, $data) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getFormValidate($form_id, $data));
+}
+
+function reg_admin_members_print_form_submit($form_id, $data) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getFormSubmit($form_id, $data));
+}
+
+
+/**
 * Searching registrations.
 */
 function reg_admin_search() {
@@ -583,11 +609,38 @@ function reg_admin_utils_watchlist_form_submit($form_id, $data) {
 	return($util->getFormSubmit($form_id, $data));
 }
 
-// TEST
+/**
+* Display the current print queue.
+*/
 function reg_admin_utils_print_queue() {
-return("TEST - pending print jobs go here");
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getPage());
 }
 
+function reg_admin_utils_print_queue_form() {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getForm());
+}
+
+function theme_reg_admin_utils_print_queue_form($form) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getFormTheme($form));
+}
+
+function reg_admin_utils_print_queue_form_validate($form_id, &$data) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getFormValidate($form_id, $data));
+}
+
+function reg_admin_utils_print_queue_form_submit($form_id, &$data) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getFormSubmit($form_id, $data));
+}
+
+
+/**
+* Monitor the print queue for jobs and print them.
+*/
 function reg_admin_utils_print_client() {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintClient");
 	return($util->getPage());

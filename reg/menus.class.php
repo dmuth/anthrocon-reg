@@ -518,6 +518,15 @@ class reg_menus extends reg {
 					"weight" => 3,
 					);
 
+				$retval[] = array(
+					"path" => "admin/reg/members/view/" . arg(4) . "/print",
+					"title" => t("Print Badge"),
+					"callback" => "reg_admin_members_print",
+					"callback arguments" => array(arg(4)),
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 4,
+					);
+
 			}
 
 		}

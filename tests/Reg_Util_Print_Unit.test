@@ -37,6 +37,9 @@ class Reg_Util_Print_Test extends DrupalTestCase {
 
 		$output = $this->util->getAllJobs();
 		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]["reg_id"]);
+		$this->assertNotNull($output[0]["badge_name"]);
+		$this->assertNotNull($output[0]["badge_num"]);
 		$expected = ($num + 1);
 		$this->assertEqual($expected, count($output));
 
@@ -65,6 +68,9 @@ class Reg_Util_Print_Test extends DrupalTestCase {
 
 		$output = $this->util->getAllJobs();
 		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]["reg_id"]);
+		$this->assertNotNull($output[0]["badge_name"]);
+		$this->assertNotNull($output[0]["badge_num"]);
 		$expected = ($num + 1);
 		$this->assertEqual($expected, count($output));
 
@@ -92,12 +98,18 @@ class Reg_Util_Print_Test extends DrupalTestCase {
 
 		$output = $this->util->getAllJobs("", "minor");
 		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]["reg_id"]);
+		$this->assertNotNull($output[0]["badge_name"]);
+		$this->assertNotNull($output[0]["badge_num"]);
 		$expected = ($num_minor + 1);
 		$this->assertEqual($expected, count($output));
 
 		$output = $this->util->getNextJob("minor");
 		$this->assertNotNull($output);
 		$this->assertNotNull($output["id"]);
+		//
+		// Sometimes this test fails.  I'm not enturely sure why yet...
+		//
 		$this->assertEqual($id, $output["id"]);
 
 		$output = $this->util->getJob($id);
@@ -113,6 +125,9 @@ class Reg_Util_Print_Test extends DrupalTestCase {
 
 		$output = $this->util->getAllJobs("", "minor");
 		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]["reg_id"]);
+		$this->assertNotNull($output[0]["badge_name"]);
+		$this->assertNotNull($output[0]["badge_num"]);
 		$expected = ($num_minor + 1);
 		$this->assertEqual($expected, count($output));
 

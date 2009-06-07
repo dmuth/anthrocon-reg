@@ -115,8 +115,14 @@ class reg_factory {
 		} else if ($name == "util_print") {
 			$retval = $this->getUtil_Print();
 
+		} else if ($name == "util_printbadge") {
+			$retval = $this->getUtil_PrintBadge();
+
 		} else if ($name == "util_printclient") {
 			$retval = $this->getUtil_PrintClient();
+
+		} else if ($name == "util_printdisplay") {
+			$retval = $this->getUtil_PrintDisplay();
 
 		} else if ($name == "util_unusedbadgenums") {
 			$retval = $this->getUtil_UnusedBadgeNums();
@@ -370,8 +376,27 @@ class reg_factory {
 		return($retval);
 	}
 
+	protected function getUtil_PrintBadge() {
+		$reg = $this->get_reg();
+		$admin_member = $this->get_admin_member();
+		$util_print = $this->getUtil_Print();
+		$util_watchlist = $this->getUtil_WatchlistDisplay();
+		$log = $this->get_log();
+		$retval = new reg_Util_PrintBadge($reg, $admin_member, $util_print, 
+			$util_watchlist, $log);
+		return($retval);
+	}
+
 	protected function getUtil_PrintClient() {
 		$retval = new reg_Util_PrintClient();
+		return($retval);
+	}
+
+	protected function getUtil_PrintDisplay() {
+		$reg = $this->get_reg();
+		$util = $this->getUtil_Print();
+		$log = $this->get_log();
+		$retval = new reg_Util_PrintDisplay($reg, $util, $log);
 		return($retval);
 	}
 

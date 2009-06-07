@@ -162,6 +162,98 @@ class Reg_UnitTest extends DrupalTestCase {
 	} // End of testDuplicateBadgeNumber()
 
 
+// TEST
+	function testIsMinor() {
+
+		$time_t = mktime(0, 0, 0, date("n"), date("j"), (date("Y") - 18));
+		$birthdate = date("Y-n-j", $time_t);
+
+		//
+		// Test with today's date
+		//
+		$output = $this->reg->isMinor($birthdate);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t - 86400));
+		$output = $this->reg->isMinor($input);
+		$this->assertFalse($output);
+		
+		$input = date("Y-n-j", ($time_t + 86400));
+		$output = $this->reg->isMinor($input);
+		$this->assertTrue($output);
+		
+		//
+		// Test past and future dates
+		//
+		$input = date("Y-n-j", ($time_t) - 86400);
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) - (86400 * 2));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) + 86400);
+		$now = date("Y-n-j", (time() + 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) + (86400 * 2));
+		$now = date("Y-n-j", (time() + 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertTrue($output);
+
+		//
+		// 17 years old.
+		//
+		$input = date("Y-n-j", ($time_t) + (86400 * 370));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertTrue($output);
+
+		$input = date("Y-n-j", ($time_t) + (86400 * 40));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertTrue($output);
+
+		//
+		// 19 years old.
+		//
+		$input = date("Y-n-j", ($time_t) - (86400 * 370));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) - (86400 * 40));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		//
+		// Try out some invalid dates.
+		//
+		try {
+			$output = $this->reg->isMinor("foobar", $now);
+		} catch (Exception $e) {
+		}
+		$this->assertNotNull($e);
+		$regexp = "Invalid";
+		$this->assertTrue(ereg($regexp, $e->getMessage()));
+
+		try {
+			$output = $this->reg->isMinor($input, "foorbar");
+		} catch (Exception $e) {
+		}
+		$this->assertNotNull($e);
+		$regexp = "Invalid";
+		$this->assertTrue(ereg($regexp, $e->getMessage()));
+		
+
+	} // End of testIsMinor()
+
+
 	function setUp() {
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");

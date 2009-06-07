@@ -7,25 +7,33 @@ TODO
 ====
 
 - Printing system
-	- Write tests:
-		- Populate queue
-		- AJAX handlers:
-			- Fetch from queue
-				- Lock database before and after
-				- Should tell how many are remaining
-			- Update queue
-				- Take queue ID
-	- Add button to editing form to print a badge
-		- Maybe make "print badge" as a separate menu item?
-			- Honor watchlist status
-			- Tell in advance if the badge will be an adult or minor badge
-		- Check current age for adult/minor status
+
+	- TODO:
+		- Locking in updateJob()
+			- Write a locking method in reg class
+				- Write a test for the locking method
+		- Locking in fetchJob()?
+			- Same lock as updateJob()
+
+	- test updated jQuery code in MSIE
+
+	- Reg_Util_PrintAJAX
+		- fetch($printer = "default")
+			- admin/reg/utils/print/client/ajax/fetch/(printer)
+			- Wrapper to getNextJob($printer)
+		- update($id, $status)
+			- admin/reg/utils/print/client/ajax/update/(id)/(status)
+			- Wrapper to Reg_Util_Print->updateJob()
+		- patch into jQuery code
+			- Possibly write wrapper for $.get() as $.getDebug()?
 
 - Move "membership levels" into Settings menu item
 
+- Move "logs" into top-level item on the lefthand side
+
 - Onsite reg
 	- Separate set of permissions for registration staff
-		- NO acccess to stats, settings or utilities
+		- NO acccess to stats, logs, settings or utilities
 	- Create onsite reg form that doesn't have payment info
 		- Create new class that calls reg_form->form() for form, but its own
 			validation and submission functions?
@@ -36,6 +44,7 @@ TODO
 		- Should have an option to print
 	- WAMP issues
 		- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
+			- Test an admin/reg/wamp menu item that blocks HTTP access to files in that directory
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
@@ -71,6 +80,10 @@ TODO
 - Messages
 	- When editing, instead of "ID 'id'", say "name 'name'"
 	- When a message is saved, redirect to the list of messages
+
+- Theme
+	- Work on the theme code at some point
+	- Create hidden test page that shows all sorts of different form elements in a demo
 
 - reg-wide email on settings page
 	- Remove variable_get() to email addresses

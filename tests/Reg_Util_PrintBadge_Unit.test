@@ -1,0 +1,48 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Util_PrintBadge_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Reg_Util_PrintBadge Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("Registration System Unit Tests"),
+			);
+	}
+
+
+	function test() {
+
+		$output = $this->util->getPage(1);
+		$this->assertNotNull($output);
+
+		$output = $this->util->getForm(1);
+		$this->assertNotNull($output);
+
+		//
+		// We cannot test the validate and submit functions, but they
+		// are really only wrappers for other functions that already 
+		// have tests written.
+		//
+
+	} // End of test()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->util = $this->factory->get_object("Util_PrintBadge");
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+
