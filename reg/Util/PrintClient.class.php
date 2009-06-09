@@ -42,9 +42,29 @@ class Reg_Util_PrintClient {
 		//	$path = str_replace("http://", "https://", $path);
 		//}
 
+		//
+		// Do we want to only test non-MSIE-specific stuff?
+		//
+		$js_nomsie = "jQuery.fn.printerWidget.debugNoMSIE = false;";
+		if ($this->isNoMSIE()) {
+			$js_nomsie = "jQuery.fn.printerWidget.debugNoMSIE = true;";
+		}
+
+		$base_url = $GLOBALS["base_url"];
+
+		//
+		// If we're in SSL, adjust our base URL.
+		//
+		$port = getenv("SERVER_PORT");
+		if ($port == 443) {
+			$base_url = str_replace("http://", "https://", $base_url);
+		}
+
 		$js = "$(document).ready(function() {\n"
 			. "\tvar reg_base_path = '${path}';\n"
-			. "\tjQuery.fn.printerWidget(reg_base_path);\n"
+			. "\tvar reg_base_url = '${base_url}';\n"
+			. "\t${js_nomsie}\n"
+			. "\tjQuery.fn.printerWidget(reg_base_path, reg_base_url);\n"
 			. "});\n"
 			;
 
@@ -94,6 +114,27 @@ class Reg_Util_PrintClient {
 			);
 
 		//
+		// Don't print this when we're already testing.
+		//
+		if (!$this->isNoMSIE()) {
+			$url = "admin/reg/utils/print/client/nomsie";
+			$link = l(t("Click to test in another browser with fake badges"), $url);
+			$retval["debug"] = array(
+				"#type" => "fieldset",
+				"#title" => t("Debugging"),
+				"#collapsible" => true,
+				"#collapsed" => true,
+				"#theme" => "reg_theme",
+				);
+
+			$retval["debug"]["no_msie"] = array(
+				"#type" => "item",
+				"#title" => t("Test in a non-MSIE browser?"),
+				"#value" => $link,
+				);
+		}
+
+		//
 		// This will be updated by Javascript.
 		//
 		$retval["status"] = array(
@@ -129,6 +170,23 @@ class Reg_Util_PrintClient {
 		return($retval);
 
 	} // End of getForm()
+
+
+	/**
+	* Are we in the "test with non-MSIE stuff" mode?
+	*
+	* @return boolean True if we're in non-MSIE mode.  False otherwise.
+	*/
+	function isNoMSIE() {
+
+		$uri = request_uri();
+		if (strstr($uri, "print/client/nomsie")) {
+			return(true);
+		}
+
+		return(false);
+
+	} // End of isNoMSIE()
 
 
 } // End of Reg_Util_PrintClient class

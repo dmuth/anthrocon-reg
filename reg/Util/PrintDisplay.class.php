@@ -134,7 +134,7 @@ class Reg_Util_PrintDisplay {
 		$rows = array();
 		foreach (element_children($form["rows"]) as $key) {
 
-			$reg_id = $form["rows"][$key]["reg_id"]["#value"];
+			$reg_id = $form["rows"][$key]["reg_id"][$key]["#value"];
 			$url = "admin/reg/members/view/" . $reg_id . "/view";
 
 			$row = array();
@@ -241,7 +241,7 @@ class Reg_Util_PrintDisplay {
 		$retval[] = array("data" => t("Cancel?"));
 		$retval[] = array("data" => t("Job ID"),
 			"field" => "id", 
-			"sort" => "desc",
+			"sort" => "asc",
 			);
 		$retval[] = array("data" => t("Status")
 			);

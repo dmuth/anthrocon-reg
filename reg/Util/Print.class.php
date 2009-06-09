@@ -3,8 +3,9 @@
 class Reg_Util_Print {
 
 
-	function __construct(&$reg) {
+	function __construct(&$reg, &$log) {
 		$this->reg = $reg;
+		$this->log = $log;
 	} // End of __construct()
 
 
@@ -141,7 +142,16 @@ class Reg_Util_Print {
 	*/
 	function getNextJob($printer = "default") {
 
+		$this->getLock();
+
 		$retval = "";
+
+		//
+		// Don't let empty strings be passed in
+		//
+		if ($printer == "") {
+			$printer = "default";
+		}
 
 		$query = "SELECT "
 			. "jobs.*, "
@@ -161,17 +171,21 @@ class Reg_Util_Print {
 		$retval = db_fetch_array($cursor);
 		$id = $retval["id"];
 
-		//
-		// Now that we have that record, mark it as "printing".
-		//
-		$query = "UPDATE {reg_print_jobs} "
-			. "SET "
-			. "status='printing' "
-			. "WHERE "
-			. "id='%s' "
-			;
-		$query_args = array($id);
-		db_query($query, $query_args);
+		if (!empty($id)) {
+			//
+			// Now that we have that record, mark it as "printing".
+			//
+			$query = "UPDATE {reg_print_jobs} "
+				. "SET "
+				. "status='printing' "
+				. "WHERE "
+				. "id='%s' "
+				;
+			$query_args = array($id);
+			db_query($query, $query_args);
+		}
+
+		$this->releaseLock();
 
 		return($retval);
 
@@ -187,6 +201,8 @@ class Reg_Util_Print {
 	*/
 	function updateJob($id, $status) {
 
+		$this->getLock();
+
 		$query = "UPDATE {reg_print_jobs} "
 			. "SET "
 			. "status='%s' "
@@ -196,7 +212,62 @@ class Reg_Util_Print {
 		$query_args = array($status, $id);
 		db_query($query, $query_args);
 
+		$this->releaseLock();
+
 	} // End of updateJob()
+
+
+	/**
+	* Acquire a lock.  This way we can make sure that only one thread can
+	* select or update at a time.  This is important, because we may 
+	* have multiple printers printing the same type of badge at the 
+	* same time.
+	*/
+	function getLock() {
+
+		$lock = "Reg_Util_Print";
+		$query = "SELECT GET_LOCK('%s', 3)";
+		$query_args = array($lock);
+		$cursor = db_query($query, $query_args);
+		$row = db_fetch_array($cursor);
+		$key = key($row);
+		$value = $row[$key];
+
+		//
+		// If there was an issue, log it.  Don't throw a traceback, because 
+		// that won't work too well when being called from AJAX.
+		//
+		if (!$value) {
+			$message = "Unable to acquire lock '$lock'";
+			$this->log->log($message, "", WATCHDOG_ERROR);
+		}
+
+	} // End of getLock()
+
+
+	/**
+	* Release our lock.
+	*/
+	function releaseLock() {
+
+		$lock = "Reg_Util_Print";
+		$query = "SELECT RELEASE_LOCK('%s')";
+		$query_args = array($lock);
+		$cursor = db_query($query, $query_args);
+		$row = db_fetch_array($cursor);
+		$key = key($row);
+		$value = $row[$key];
+		
+		//
+		// If there was an issue, log it.  Don't throw a traceback, because 
+		// that won't work too well when being called from AJAX.
+		//
+		if (!$value) {
+			$message = "Unable to release lock '$lock'";
+			$this->log->log($message, "", WATCHDOG_ERROR);
+		}	
+
+	} // End of releaseLock()
 
 
 } // End of Reg_Util_Print class

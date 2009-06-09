@@ -651,14 +651,18 @@ function reg_admin_utils_print_client_form() {
 	return($util->getForm());
 }
 
+/**
+* AJAX calls for interacting with print jobs.
+*/
 function reg_admin_utils_print_ajax_fetch($printer = "") {
-print "TEST AJAX fetching stuff goes here";
-exit();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintAjax");
+	print $util->fetch($printer);
 }
 
 function reg_admin_utils_print_ajax_update($id, $status) {
-print "TEST: $id, $status";
-exit();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintAjax");
+	$util->update($id, $status);
+	exit();
 }
 
 /**

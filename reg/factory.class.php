@@ -115,6 +115,9 @@ class reg_factory {
 		} else if ($name == "util_print") {
 			$retval = $this->getUtil_Print();
 
+		} else if ($name == "util_printajax") {
+			$retval = $this->getUtil_PrintAjax();
+
 		} else if ($name == "util_printbadge") {
 			$retval = $this->getUtil_PrintBadge();
 
@@ -372,7 +375,16 @@ class reg_factory {
 
 	protected function getUtil_Print() {
 		$reg = $this->get_reg();
-		$retval = new reg_Util_Print($reg);
+		$log = $this->get_log();
+		$retval = new reg_Util_Print($reg, $log);
+		return($retval);
+	}
+
+	protected function getUtil_PrintAjax() {
+		$reg = $this->get_reg();
+		$util = $this->getUtil_Print();
+		$log = $this->get_log();
+		$retval = new Reg_Util_PrintAjax($reg, $util, $log);
 		return($retval);
 	}
 

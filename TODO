@@ -6,30 +6,12 @@ Done
 TODO
 ====
 
-- Printing system
-
-	- TODO:
-		- Locking in updateJob()
-			- Write a locking method in reg class
-				- Write a test for the locking method
-		- Locking in fetchJob()?
-			- Same lock as updateJob()
-
-	- test updated jQuery code in MSIE
-
-	- Reg_Util_PrintAJAX
-		- fetch($printer = "default")
-			- admin/reg/utils/print/client/ajax/fetch/(printer)
-			- Wrapper to getNextJob($printer)
-		- update($id, $status)
-			- admin/reg/utils/print/client/ajax/update/(id)/(status)
-			- Wrapper to Reg_Util_Print->updateJob()
-		- patch into jQuery code
-			- Possibly write wrapper for $.get() as $.getDebug()?
-
 - Move "membership levels" into Settings menu item
 
 - Move "logs" into top-level item on the lefthand side
+
+- Member search screen:
+	- Add min badge number/max badge number for reg downloads
 
 - Onsite reg
 	- Separate set of permissions for registration staff
@@ -48,6 +30,9 @@ TODO
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
+
+- Search screen
+	- Allow a range of badge numbers to be searched on/downloaded
 
 - I guess reg_admin_log_view isn't needed since we deprecated those other
 	log viewing functions.
@@ -102,46 +87,10 @@ TODO
 			- Add note
 			- Balance adjustment
 		- Print badge
-	- Badge printing system:
-		- Page to list pending badges to be printed
-			- Table to hold pending badges: reg_id, printer ("default", "minor", etc.), status ("new", "printing", "printed")
-			- Link to membership info and badge name
-			- Link to cancel print job
-		- Page to print badges
-			- Javascript:
-				- Start up Word, load badge template
-				- Query for print jobs via ajax.php file
-					- Can I place a menu item that is only called via AJAX?
-						- See http://drupal.org/node/42562
-					- reg_ajax class?
-					- Otherwise, I have to check in reg_init().  Ugh
-				- Send badge data to Word, tell Word to print
-				- Block on Word, then call ajax.php to log success
-				- Wait n seconds, loop
-				- On screen elements can be updated
 
 - Keep in mind that I can create other modules in that directory
 	- Dealer reg module?
 	- Staff reg module
-	- Onsite reg module?
-		- Here's some ActiveXCode to print things up from MSIE:
-			var app = new ActiveXObject("word.application");
-
-			// This could/should be replaced with a web-based path?
-			var file = "file:///C:/wamp/www/template.doc";
-
-			app.Visible = false;
-			app.Documents.Open(file);
-			// var doc = app.Documents.Open(file); ??
-
-			//bookmark_replace() function?
-			//doc.BookMarks("AEName").range.InsertBefore("<%=AEName%>");  ???
-			//doc.BookMarks("AEName").range.Text = "foobar"; ???
-
-			app.ActiveDocument.PrintOut();
-			app.ActiveDocument.close(false);
-
-			app.quit();
 
 - Admin
 	- Resend confirmation email

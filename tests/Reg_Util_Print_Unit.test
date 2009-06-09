@@ -104,12 +104,16 @@ class Reg_Util_Print_Test extends DrupalTestCase {
 		$expected = ($num_minor + 1);
 		$this->assertEqual($expected, count($output));
 
-		$output = $this->util->getNextJob("minor");
+		//
+		// Have this loop here, because we may have other pending print jobs.
+		// This code will go through all of them, until we get finally get
+		// to the print job that we inserted.
+		//
+		while ($tmp = $this->util->getNextJob("minor")) {
+			$output = $tmp;
+		}
 		$this->assertNotNull($output);
 		$this->assertNotNull($output["id"]);
-		//
-		// Sometimes this test fails.  I'm not enturely sure why yet...
-		//
 		$this->assertEqual($id, $output["id"]);
 
 		$output = $this->util->getJob($id);

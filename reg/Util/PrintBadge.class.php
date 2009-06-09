@@ -143,7 +143,7 @@ class Reg_Util_PrintBadge {
 
 		$id = $this->util_print->addJob($data["id"], $printer);
 
-		$message = t("Badge sent to printer. (Print Job ID: !id)", 
+		$message = t("Badge queued for printing. (Print Job ID: !id)", 
 			array("!id" => $id)
 			);
 		drupal_set_message($message);
