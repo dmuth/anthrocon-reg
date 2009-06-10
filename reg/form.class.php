@@ -742,7 +742,7 @@ class reg_form extends reg {
 			// If we an admin, give a link to edit the description.
 			//
 			if ($this->is_admin()) {
-				$url = "admin/reg/levels/list/" . $id . "/edit";
+				$url = "admin/reg/settings/levels/list/" . $id . "/edit";
 				$string .= " " . l(t("[Edit this blurb]"), $url, "", 
 					$dest);
 			}

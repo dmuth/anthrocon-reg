@@ -142,6 +142,7 @@ class reg_menus extends reg {
 			$retval[] = array(
 				"path" => "admin/reg/stats",
 				"title" => t("Stats"),
+				"access" => user_access($this->get_constant("perm_admin")),
 				"callback" => "reg_admin_stats_badge",
 				"type" => MENU_NORMAL_ITEM,
 				"weight" => 2,
@@ -187,7 +188,8 @@ class reg_menus extends reg {
 				"path" => "admin/reg",
 				"title" => t("Registration Admin"),
 				"callback" => "reg_admin_main",
-				"access" => user_access($this->get_constant("PERM_ADMIN")),
+				"access" => user_access($this->get_constant("perm_staff")) 
+					|| user_access($this->get_constant("perm_admin")),
 				"type" => MENU_NORMAL_ITEM,
 				);
 
@@ -218,7 +220,9 @@ class reg_menus extends reg {
 				"path" => "admin/reg/logs",
 				"title" => t("Logs"),
 				"callback" => "reg_admin_log",
-				"type" => MENU_LOCAL_TASK,
+				"access" => user_access($this->get_constant("perm_staff")) 
+					|| user_access($this->get_constant("perm_admin")),
+				"type" => MENU_NORMAL_ITEM,
 				"weight" => 2,
 				);
 
@@ -279,6 +283,7 @@ class reg_menus extends reg {
 				"path" => "admin/reg/settings",
 				"title" => t("Settings"),
 				"callback" => "reg_admin_settings",
+				"access" => user_access($this->get_constant("perm_admin")),
 				"type" => MENU_NORMAL_ITEM,
 				"weight" => 3,
 				);
@@ -369,15 +374,15 @@ class reg_menus extends reg {
 		if ($may_cache) {
 
 			$retval[] = array(
-				"path" => "admin/reg/levels",
+				"path" => "admin/reg/settings/levels",
 				"title" => t("Membership Levels"),
 				"callback" => "reg_admin_levels",
 				"type" => MENU_LOCAL_TASK,
-				"weight" => 3,
+				"weight" => 2,
 				);
 
 			$retval[] = array(
-				"path" => "admin/reg/levels/list",
+				"path" => "admin/reg/settings/levels/list",
 				"title" => t("List"),
 				"callback" => "reg_admin_levels",
 				"type" => MENU_DEFAULT_LOCAL_TASK,
@@ -385,7 +390,7 @@ class reg_menus extends reg {
 				);
 
 			$retval[] = array(
-				"path" => "admin/reg/levels/add",
+				"path" => "admin/reg/settings/levels/add",
 				"title" => t("Add"),
 				"callback" => "reg_admin_levels_edit",
 				"type" => MENU_LOCAL_TASK,
@@ -393,7 +398,7 @@ class reg_menus extends reg {
 
 		}
 
-		if (arg(4)) {
+		if (arg(5)) {
 
 			if (!$may_cache) {
 	
@@ -401,10 +406,10 @@ class reg_menus extends reg {
 				// Used for editing a membership level.
 				//
 				$retval[] = array(
-					"path" => "admin/reg/levels/list/" . arg(4) . "/edit",
+					"path" => "admin/reg/settings/levels/list/" . arg(5) . "/edit",
 					"title" => t("Edit"),
 					"callback" => "reg_admin_levels_edit",
-					"callback arguments" => array(arg(4)),
+					"callback arguments" => array(arg(5)),
 					"weight" => -10,
 					"type" => MENU_LOCAL_TASK,
 					"weight" => 0,
@@ -428,6 +433,8 @@ class reg_menus extends reg {
 				"path" => "admin/reg/members",
 				"title" => t("Members"),
 				"callback" => "reg_admin_members",
+				"access" => user_access($this->get_constant("perm_staff")) 
+					|| user_access($this->get_constant("perm_admin")),
 				"type" => MENU_NORMAL_ITEM,
 				"weight" => 1,
 				);
@@ -545,6 +552,7 @@ class reg_menus extends reg {
 				"path" => "admin/reg/utils",
 				"title" => t("Utilities"),
 				"callback" => "reg_admin_utils_unused_badge_nums",
+				"access" => user_access($this->get_constant("perm_admin")),
 				"type" => MENU_NORMAL_ITEM,
 				"weight" => 4,
 				);

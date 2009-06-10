@@ -6,10 +6,12 @@
 */
 class reg_admin {
 
-	function __construct($log, $log_write) {
+	function __construct(&$log, &$log_write, &$reg) {
 		$this->log = $log;
 		$this->log_write = $log_write;
+		$this->reg = $reg;
 	}
+
 
 	/**
 	* A wrapper for setting variables.  It will log the activity.
@@ -58,10 +60,19 @@ class reg_admin {
 				. "</li>\n"
 			. "<li>" . l(t("Add a new member"), "admin/reg/members/add") 
 				. "</li>\n"
-			. "<li>" . l(t("Settings"), "admin/reg/settings") 
+			. "<li>" . l(t("Logs"), "admin/reg/logs") 
 				. "</li>\n"
-			."</ul>\n"
 			;
+
+		//
+		// Only print this if we're an admin
+		//
+		if (user_access($this->reg->get_constant("perm_admin"))) {
+			$retval .= "<li>" . l(t("Settings"), "admin/reg/settings") 
+				. "</li>\n";
+		}
+
+		$retval .= "</ul>\n";
 
 		//
 		// Show a few recent log entries and transactions, so we can

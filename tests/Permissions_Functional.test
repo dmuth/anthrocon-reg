@@ -1,0 +1,170 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Permissions_Functional_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of get_info() for information
+	*/
+	function get_info() {
+		return array(
+			"name" => t("Permissions Function Test"),
+			"desc" => t("Test different permission levels for reg."),
+			"group" => t("Registration System Functional Tests"),
+			);
+	}
+
+
+	/**
+	* Don't log in and test the admin.
+	* (it should fail)
+	*/
+	function testAnonymousPerms() {
+
+		$output = $this->drupalGet(url("admin/reg"));
+		$this->assertNotNull($output);
+		$regexp = t("Quick Links");
+		$this->assertFalse(ereg($regexp, $output));
+
+	} // End of testAnonymousPerms()
+ 
+
+	/**
+	* Log in as a user and test the admin.
+	* (it should fail)
+	*/
+	function testUserPerms() {
+
+		$perms = array("access content");
+		$this->assertNotNull($perms);
+		$user = $this->drupalCreateUserRolePerm($perms);
+		$this->assertNotNull($user);
+
+		$output = $this->drupalLoginUser($user);
+		$this->assertNotNull($output);
+
+		$output = $this->drupalGet(url("admin/reg"));
+		$this->assertNotNull($output);
+		$regexp = t("Quick Links");
+		$this->assertFalse(ereg($regexp, $output));
+
+	} // End of testUserPerms()
+
+
+	/**
+	* Log in as a staff member and test our various pages.
+	* (Some should fail due to permissions
+	*/
+	function testStaffPerms() {
+
+		$perms = array($this->reg->get_constant("perm_staff"));
+		$this->assertNotNull($perms);
+		$user = $this->drupalCreateUserRolePerm($perms);
+		$this->assertNotNull($user);
+
+		$output = $this->drupalLoginUser($user);
+		$this->assertNotNull($output);
+
+		$output = $this->drupalGet(url("admin/reg"));
+		$this->assertNotNull($output);
+		$regexp = t("Quick Links");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/members"));
+		$this->assertNotNull($output);
+		$regexp = t("Badge Name");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/logs"));
+		$this->assertNotNull($output);
+		$regexp = t("Search Log Entries");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/stats"));
+		$this->assertNotNull($output);
+		$regexp = t("Badge Breakdown");
+		$this->assertFalse(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/settings"));
+		$this->assertNotNull($output);
+		$regexp = t("Standards of Conduct Path");
+		$this->assertFalse(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/utils"));
+		$this->assertNotNull($output);
+		$regexp = t("Badge Printing");
+		$this->assertFalse(ereg($regexp, $output));
+
+	} // End of testStaffPerms()
+
+
+	/**
+	* Log in as an admin and test our various pages.
+	* (they should all succeed)
+	*/
+	function testAdminPerms() {
+
+		$perms = array($this->reg->get_constant("perm_admin"));
+		$this->assertNotNull($perms);
+		$user = $this->drupalCreateUserRolePerm($perms);
+		$this->assertNotNull($user);
+
+		$output = $this->drupalLoginUser($user);
+		$this->assertNotNull($output);
+
+		$output = $this->drupalGet(url("admin/reg"));
+		$this->assertNotNull($output);
+		$regexp = t("Quick Links");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/members"));
+		$this->assertNotNull($output);
+		$regexp = t("Badge Name");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/logs"));
+		$this->assertNotNull($output);
+		$regexp = t("Search Log Entries");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/stats"));
+		$this->assertNotNull($output);
+		$regexp = t("Badge Breakdown");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/settings"));
+		$this->assertNotNull($output);
+		$regexp = t("Standards of Conduct Path");
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->drupalGet(url("admin/reg/utils"));
+		$this->assertNotNull($output);
+		$regexp = t("Badge Printing");
+		$this->assertTrue(ereg($regexp, $output));
+
+	} // End of testAdminPerms()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+
+		//
+		// @todo
+		// I eventually need to put this into our Factory class...
+		//
+		include_once("Reg_Core.class.php");
+		$this->core = new Test_Core($this, $this->reg);
+
+	}
+
+
+	function tearDown() {
+		$this->core->deleteSimpletestRoles();
+	}
+
+
+} // End of RegUnitTest class
+
+

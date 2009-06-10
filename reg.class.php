@@ -48,6 +48,7 @@ class reg {
 		// Define constants for our permission names.
 		//
 		"perm_admin" => "admin reg system",
+		"perm_staff" => "registration staff",
 		"perm_register" => "register for a membership",
 		//
 		// How many items displayed per pager in a pager?
@@ -101,6 +102,7 @@ class reg {
 
 		$retval = array();
 		$retval[] = $this->get_constant("PERM_ADMIN");
+		$retval[] = $this->get_constant("perm_staff");
 		$retval[] = $this->get_constant("PERM_REGISTER");
 		return($retval);
 

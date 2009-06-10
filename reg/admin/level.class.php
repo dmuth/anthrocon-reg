@@ -44,7 +44,7 @@ class reg_admin_level extends reg {
 
 		while ($row = db_fetch_array($cursor)) {
 
-			$link = "admin/reg/levels/list/" . $row["id"] . "/edit";
+			$link = "admin/reg/settings/levels/list/" . $row["id"] . "/edit";
 			$rows[] = array(
 				l($row["id"], $link),
 				l($row["name"], $link),
@@ -383,7 +383,7 @@ class reg_admin_level extends reg {
 			$this->log->log($message_log);
 		}
 
-		$uri = "admin/reg/levels";
+		$uri = "admin/reg/settings/levels";
 		$this->goto_url($uri);
 
 	} // End of level_form_submit()

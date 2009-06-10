@@ -6,16 +6,10 @@ Done
 TODO
 ====
 
-- Move "membership levels" into Settings menu item
-
-- Move "logs" into top-level item on the lefthand side
-
 - Member search screen:
 	- Add min badge number/max badge number for reg downloads
 
 - Onsite reg
-	- Separate set of permissions for registration staff
-		- NO acccess to stats, logs, settings or utilities
 	- Create onsite reg form that doesn't have payment info
 		- Create new class that calls reg_form->form() for form, but its own
 			validation and submission functions?
@@ -30,9 +24,6 @@ TODO
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
-
-- Search screen
-	- Allow a range of badge numbers to be searched on/downloaded
 
 - I guess reg_admin_log_view isn't needed since we deprecated those other
 	log viewing functions.
