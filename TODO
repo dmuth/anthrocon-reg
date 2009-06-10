@@ -6,9 +6,6 @@ Done
 TODO
 ====
 
-- Member search screen:
-	- Add min badge number/max badge number for reg downloads
-
 - Onsite reg
 	- Create onsite reg form that doesn't have payment info
 		- Create new class that calls reg_form->form() for form, but its own
@@ -18,9 +15,10 @@ TODO
 	- Create a form for staff members to "process/validate" registrations
 		- Should only have a few fields.
 		- Should have an option to print
-	- WAMP issues
-		- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
-			- Test an admin/reg/wamp menu item that blocks HTTP access to files in that directory
+
+- WAMP issues
+	- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
+		- Test an admin/reg/wamp menu item that blocks HTTP access to files in that directory
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

@@ -49,11 +49,15 @@ class reg_admin_search extends reg {
 		//	$search["#collapsed"] = true;
 		//}
 
+		$description = t("Just the core badge number. ")
+			. t("Do NOT include the year.")
+			. "<br/>"
+			. t("Ranges are acceptable, such as '1-500', '30-40', '-500', '501-', etc.")		
+			;
 		$search["badge_num"] = array(
 			"#title" => "Badge Number",
 			"#type" => "textfield",
-			"#description" => t("Just the core badge number.  ")
-				. t("Do NOT include the year."),
+			"#description" => $description,
 			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["badge_num"],
 			);
@@ -243,8 +247,59 @@ class reg_admin_search extends reg {
 		if (isset($search["badge_num"])
 			&& $search["badge_num"] != ""
 			) {
-			$where[] = "badge_num='%s'";
-			$args[] = $search["badge_num"];
+
+			//
+			// If we have a hyphen in our badge number, search on a range.
+			//
+			$fields = explode("-", $search["badge_num"]);
+			if (count($fields) > 1) {
+
+				if (!empty($fields[0]) && !empty($fields[1])) {
+					//
+					// We have a starting and ending badge number
+					//
+					if ($fields[0] > $fields[1]) {
+						//
+						// We can't seem to tag the form element, since we're not in 
+						// the form-generation function.  Oops.
+						//
+						$error = t("Second number in range must be greater than first number.");
+						form_set_error("", $error);
+					}
+					$where[] = "badge_num >= '%s'";
+					$where[] = "badge_num <= '%s'";
+					$args[] = $fields[0];
+					$args[] = $fields[1];
+
+				} else if (!empty($fields[0]) && empty($fields[1])) {
+					//
+					// We have a starting badge number
+					//
+					$where[] = "badge_num >= '%s'";
+					$args[] = $fields[0];
+
+				} else if (empty($fields[0]) && !empty($fields[1])) {
+					//
+					// we have an ending badge number
+					//
+					$where[] = "badge_num <= '%s'";
+					$args[] = $fields[1];
+
+				} else {
+					//
+					// Both fields are empty.  Treat that the same as null.
+					//
+				}
+
+			} else {
+				//
+				// No range.  Just a badge number.
+				//
+				$where[] = "badge_num='%s'";
+				$args[] = $search["badge_num"];
+
+			}
+
 		}
 
 		if (!empty($search["name"])) {

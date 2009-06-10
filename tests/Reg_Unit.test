@@ -162,7 +162,6 @@ class Reg_UnitTest extends DrupalTestCase {
 	} // End of testDuplicateBadgeNumber()
 
 
-// TEST
 	function testIsMinor() {
 
 		$time_t = mktime(0, 0, 0, date("n"), date("j"), (date("Y") - 18));
