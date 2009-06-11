@@ -385,7 +385,7 @@ class reg_factory {
 		$reg = $this->get_reg();
 		$util = $this->getUtil_Print();
 		$log = $this->get_log();
-		$retval = new Reg_Util_PrintAjax($reg, $util, $log);
+		$retval = new reg_Util_PrintAjax($reg, $util, $log);
 		return($retval);
 	}
 
