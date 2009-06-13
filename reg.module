@@ -672,6 +672,8 @@ function reg_admin_utils_watchlist_form_submit($form_id, $data) {
 * Display the current print queue.
 */
 function reg_admin_utils_print_queue() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
 	return($util->getPage());
 }
@@ -701,6 +703,8 @@ function reg_admin_utils_print_queue_form_submit($form_id, &$data) {
 * Monitor the print queue for jobs and print them.
 */
 function reg_admin_utils_print_client() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintClient");
 	return($util->getPage());
 }
