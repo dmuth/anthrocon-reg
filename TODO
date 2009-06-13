@@ -7,18 +7,44 @@ TODO
 ====
 
 - Onsite reg
+
+	- reg_admin_OnsiteValidate?
+
 	- Create onsite reg form that doesn't have payment info
-		- Create new class that calls reg_form->form() for form, but its own
-			validation and submission functions?
-			- Maybe split out reg_form->form into a separate class?
-		- Thankyou text should be stored as a message
 	- Create a form for staff members to "process/validate" registrations
+		- Should only be displayed if badge status is "new"
+		- Should check the watchlist
 		- Should only have a few fields.
-		- Should have an option to print
+			- First Name (editable)
+			- Last Name (editable)
+			- Badge Name (editable)
+			- Membership level and money due
+			- Money paid (editable)
+			- Payment method (editable)
+			- Donation (editable)
+			- Notes field
+			- Button to save
+			- Button to save and print
+
+- Check SSL redirect on printing pages...
+
+- Add "reason on watchlist" to Watchlist?
 
 - WAMP issues
 	- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
-		- Test an admin/reg/wamp menu item that blocks HTTP access to files in that directory
+	- Scripts
+		- Dump just the reg tables
+		- Create a set of keys
+		- MySQL wrapper for command line client
+	- Config files
+		- Apache with SSL
+		- MySQL with replication
+		- svn?
+	- http://api.drupal.org/api/function/hook_requirements/5
+		- Write "runtime" phase code to check the permissions in that directory
+
+- Store and encrypt credit card numbers
+	- Retrieve credit card numbers via an AJAX-powered button that will log the access
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number

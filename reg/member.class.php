@@ -7,10 +7,11 @@
 class reg_member extends reg {
 
 
-	function __construct(&$log, &$email) {
+	function __construct(&$log, &$email, &$form_core) {
 
 		$this->log = $log;
 		$this->email = $email;
+		$this->form_core = $form_core;
 
 	}
 
@@ -28,13 +29,6 @@ class reg_member extends reg {
 	function add_member(&$data, $reg_trans_id = "") {
 
 		//
-		// I have to leave this here for now, due to a dependency loop.
-		// I'll fix that in a future version.
-		//
-		$factory = new reg_factory();
-		$form = $factory->get_object("form");
-
-		//
 		// If there is no badge number specififed OR we are in the
 		// public interface, automatically generate a badge number.
 		// Otherwise, we'll accept the admin-specified one.
@@ -43,7 +37,7 @@ class reg_member extends reg {
 			(	empty($data["badge_num"])
 				&& $data["badge_num"] != "0"
 			)
-			|| !$form->in_admin()) {
+			|| !$this->form_core->in_admin()) {
 			$data["badge_num"] = $this->get_badge_num();
 
 		}
@@ -173,7 +167,7 @@ class reg_member extends reg {
 		// If we have credit card data, get a nice string.
 		//
 		if (!empty($data["cc_type_id"])
-			&& !reg_form::in_admin()
+			&& !$this->form_core->in_admin()
 			) {
 			$message_name = "email-receipt";
 			$data["cc_name"] = $this->get_cc_name($data["cc_type_id"],

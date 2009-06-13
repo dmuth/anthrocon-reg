@@ -155,6 +155,39 @@ function reg_registration_form_submit($form_id, &$data) {
 
 
 /**
+* Our onsite registration form.
+*/
+function reg_onsitereg() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getPage());
+}
+
+function reg_onsitereg_form() {
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getForm());
+}
+
+function reg_onsitereg_form_validate($form_id, &$data) {
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getFormValidate($form_id, $data));
+}
+
+function reg_onsitereg_form_submit($form_id, &$data) {
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getFormSubmit($form_id, $data));
+}
+
+function reg_onsitereg_success() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getSuccessPage());
+}
+
+
+/**
 * Our settings form.
 */
 function reg_admin_settings() {

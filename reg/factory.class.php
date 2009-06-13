@@ -85,6 +85,9 @@ class reg_factory {
 		} else if ($name == "form") {
 			$retval = $this->get_form();
 
+		} else if ($name == "formcore") {
+			$retval = $this->get_FormCore();
+
 		} else if ($name == "log") {
 			$retval = $this->get_log();
 
@@ -99,6 +102,9 @@ class reg_factory {
 
 		} else if ($name == "reg") {
 			$retval = $this->get_reg();
+
+		} else if ($name == "onsitedisplay") {
+			$retval = $this->get_OnsiteDisplay();
 
 		} else if ($name == "success") {
 			$retval = $this->get_success();
@@ -303,9 +309,22 @@ class reg_factory {
 		$captcha = $this->get_captcha();
 		$message = $this->get_message();
 		$watchlist = $this->getUtil_WatchlistDisplay();
+		$form_core = $this->get_FormCore();
 
 		$retval = new reg_form($fake, $log, $admin_member, $member, 
-			$captcha, $message, $watchlist);
+			$captcha, $message, $watchlist, $form_core);
+		return($retval);
+	}
+
+	protected function get_FormCore() {
+		$reg = $this->get_reg();
+		$admin_member = $this->get_admin_member();
+		$watchlist = $this->getUtil_WatchlistDisplay();
+		$fake = $this->get_fake();
+		$captcha = $this->get_captcha();
+		$log = $this->get_log();
+		$retval = new reg_FormCore($reg, $admin_member, $watchlist, $fake, 
+			$captcha, $log);
 		return($retval);
 	}
 
@@ -317,11 +336,12 @@ class reg_factory {
 	protected function get_member() {
 		$log = $this->get_log();
 		$email = $this->get_email();
+		$form_core = $this->get_FormCore();
 		//$form = $this->get_form();
 		//
 		// Don't include the reg_form class due to circular dependencies.	
 		//
-		$retval = new reg_member($log, $email);
+		$retval = new reg_member($log, $email, $form_core);
 		return($retval);
 	}
 
@@ -342,6 +362,19 @@ class reg_factory {
 		$fake = $this->get_fake();
 		$log = $this->get_log();
 		$retval = new reg($message, $fake, $log);
+		return($retval);
+	}
+
+	protected function get_OnsiteDisplay() {
+		$reg = $this->get_reg();
+		$form_core = $this->get_FormCore();
+		$auth_factory = new authorize_net_factory();
+		$cc_gateway = $auth_factory->get_object("authorize_net");
+		$log = $this->get_log();
+		$message = $this->get_message();
+		$captcha = $this->get_captcha();
+		$retval = new reg_OnsiteDisplay($reg, $form_core, $cc_gateway, 
+			$log, $message, $captcha);
 		return($retval);
 	}
 

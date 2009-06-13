@@ -229,6 +229,9 @@ class reg_message extends reg {
 				"!munged_email" => t("Our obfuscated email address.  "
 					. "Please use this on public pages!"),
 				),
+			"onsite-thankyou" => array(
+				"!link" => t("Link back to the Onsite Registration page"),
+				),
 			);
 
 	} // End of set_tokens()

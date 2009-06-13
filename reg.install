@@ -602,8 +602,15 @@ function reg_install() {
 				. "'', "
 				. "'message', "
 				. "'At this time, we do not accept American Express.  Sorry', "
-				. "'') "
-			;
+				. "''), "
+			. "('onsite-thankyou', "
+				. "'', "
+				. "'message', "
+				. "'You have registered successfully!  "
+					. "Please wait for the next available agent, "
+					. "and have a form of payment ready..', "
+				. "'Display for a successful onsite registration.') "
+				;
 
 		db_query($query);
 
@@ -1021,6 +1028,35 @@ function reg_update_11() {
 
 	return($retval);
 
-
 } // End of reg_update_11()
+
+
+/**
+* Add a new message for a succesful onsite registration.
+*/
+function reg_update_12() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
+		. "notes)  "
+		. "VALUES "
+		. "('onsite-thankyou', "
+		. "'', "
+		. "'message', "
+		. "'You have registered successfully!  "
+			. "Please wait for the next available agent, "
+			. "and have a form of payment ready..', "
+		. "'Display for a successful onsite registration.') "
+		;
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_12()
 

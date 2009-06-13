@@ -72,6 +72,8 @@ class reg_menus extends reg {
 
 		$this->get_utilities($retval, $may_cache);
 
+		$this->getOnsiteReg($retval, $may_cache);
+
 		return($retval);
 
 	} // End of menu()
@@ -628,6 +630,36 @@ class reg_menus extends reg {
 		}
 
 	} // End of get_utilties()
+
+
+	/**
+	* Onsite registration.
+	*/
+	function getOnsiteReg(&$retval, $may_cache) {
+
+		if ($may_cache) {
+
+			$retval[] = array(
+				"path" => "onsitereg",
+				"title" => t("On-site Registration"),
+				"callback" => "reg_onsitereg",
+				"access" => user_access($this->get_constant("perm_onsitereg")),
+				"type" => MENU_NORMAL_ITEM,
+				"weight" => 0,
+				);
+
+			$retval[] = array(
+				"path" => "onsitereg/success",
+				"title" => t("Success!"),
+				"callback" => "reg_onsitereg_success",
+				"access" => user_access($this->get_constant("perm_onsitereg")),
+				"type" => MENU_NORMAL_ITEM,
+				"weight" => 0,
+				);
+		}
+
+	} // End of getOnsiteReg()
+
 
 } // End of reg_menu class
 

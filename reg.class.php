@@ -50,6 +50,7 @@ class reg {
 		"perm_admin" => "admin reg system",
 		"perm_staff" => "registration staff",
 		"perm_register" => "register for a membership",
+		"perm_onsitereg" => "register onsite",
 		//
 		// How many items displayed per pager in a pager?
 		//
@@ -104,6 +105,8 @@ class reg {
 		$retval[] = $this->get_constant("PERM_ADMIN");
 		$retval[] = $this->get_constant("perm_staff");
 		$retval[] = $this->get_constant("PERM_REGISTER");
+		$retval[] = $this->get_constant("perm_onsitereg");
+
 		return($retval);
 
 	}
@@ -645,6 +648,8 @@ class reg {
 		if ($_GET["q"] == "reg"
 			|| $_GET["q"] == "reg/verify"
 			|| $_GET["q"] == "reg/success"
+			|| $_GET["q"] == "onsitereg"
+			|| $_GET["q"] == "onsitereg/success"
 			) {
 			if ($GLOBALS["user"]->uid == 0) {
 				$url = $GLOBALS["base_root"] . base_path() . $_GET['q'];
