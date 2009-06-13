@@ -6,7 +6,7 @@ Done
 TODO
 ====
 
-- Add "reason on watchlist" to Watchlist?
+- Add "reason on watchlist" to Watchlist
 
 - WAMP issues
 	- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
@@ -41,49 +41,14 @@ TODO
 	- Prevent editing of non-existant message IDs
 	- Throw an error and log it
 
-- modify code to get the name and last 4 of the card number to get that name
-	from the first digit
-
-- Multi-year code
-	- Have a config value for the year, defaulting to the current year
-		- Modify badge number assignment code to first check the 
-			reg_badge_num table
-			- Write a unit test for this!
-	- At signup, display a year field for the admin
-		- Default to the current year
-	- Add year to member search page
-	- For /reg, get year from from the level offering
-	- Modify badge number assignment code to take a year argument
-
 - Messages
 	- When editing, instead of "ID 'id'", say "name 'name'"
 	- When a message is saved, redirect to the list of messages
-
-- Theme
-	- Work on the theme code at some point
-	- Create hidden test page that shows all sorts of different form elements in a demo
 
 - reg-wide email on settings page
 	- Remove variable_get() to email addresses
 	- Add a box on the settings page that defaults to the site-wide email
 	- Write reg_data::get_contact_email()
-
-- Onsite reg
-	- Public page to take member info, but not billing info or payment details
-	- New button on member details page: "Print Badge"
-	- New security level: "reg staff"
-	- Staff pages:
-		- Search memberships
-		- View Memberships
-			- Display log entries
-		- Edit Membership
-			- Add note
-			- Balance adjustment
-		- Print badge
-
-- Keep in mind that I can create other modules in that directory
-	- Dealer reg module?
-	- Staff reg module
 
 - Admin
 	- Resend confirmation email
@@ -98,13 +63,32 @@ Long Term
 - Can we have an upgrade type?
 	- Upgrade table that has a membership type, upgrade options, price, description, etc.
 
-- Export data as a spreadsheet
-	- Main membership data
-	- Staff data separately?
-
 - Do distance calculations
 	- http://jan.ucc.nau.edu/~cvm/latlon_formula.html
 
-- Watchlist
-	- Pre-sanitize data into new fields at insert time?
+- 2010 reg
+	- Onsite reg
+		- Should do something sane when no levels are available
+			- Borrow code/message from reg page
+		- Maybe have a flag on the levels table if it only applies to onsite registration
 
+	- Theme
+		- Work on the theme code at some point
+		- Create hidden test page that shows all sorts of different form elements in a demo
+
+- Multi-year code
+	- Have a config value for the year, defaulting to the current year
+		- Modify badge number assignment code to first check the 
+			reg_badge_num table
+			- Write a unit test for this!
+	- At signup, display a year field for the admin
+		- Default to the current year
+	- Add year to member search page
+	- For /reg, get year from from the level offering
+	- Modify badge number assignment code to take a year argument
+
+- Credit card number storage
+	- Encrypt card numbers in database
+		- Still store last 4 digits in usual location?
+	- Display only via an AJAX widget on the transaction log viewing page
+		- Access to the full card number should be audited
