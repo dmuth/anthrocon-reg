@@ -99,7 +99,19 @@ function reg_install() {
 			//
 			. "badge_cost DECIMAL(10, 2) DEFAULT 0.00, "
 			. "donation DECIMAL(10, 2) DEFAULT 0.00, "
+
+			//
+			// How much the member "owes" us.  This is only meaningful 
+			// for onsite registrations.
+			//
+			. "badge_cost_due DECIMAL(10, 2) DEFAULT 0.00, "
+			. "donation_due DECIMAL(10, 2) DEFAULT 0.00, "
+
+			//
+			// The total amount of money that the member has given us.
+			//
 			. "total_cost DECIMAL(10, 2) DEFAULT 0.00 "
+
 			. ")"
 			;
 		db_query($query);
@@ -1059,4 +1071,25 @@ function reg_update_12() {
 	return($retval);
 
 } // End of reg_update_12()
+
+
+/**
+* Add new fields to the reg table.
+*/
+function reg_update_13() {
+
+	$retval = array();
+
+	$queries = array();
+
+	$queries[] = "ALTER TABLE {reg} ADD badge_cost_due DECIMAL(10, 2) DEFAULT 0.00";
+	$queries[] = "ALTER TABLE {reg} ADD donation_due DECIMAL(10, 2) DEFAULT 0.00";
+
+	foreach ($queries as $key => $value) {
+		$retval[] = update_sql($value);
+	}
+
+	return($retval);
+
+} // End of reg_update_13()
 

@@ -118,13 +118,18 @@ class Reg_OnsiteDisplay {
 	*/
 	function addMember(&$data) {
 
+		$levels = $this->reg->get_valid_levels();
+		$reg_level_id = $data["reg_level_id"];
+		$badge_cost_due = $levels[$reg_level_id]["price"];
+
 		$query = "INSERT INTO {reg} "
 			. "(created, modified, year, reg_type_id, reg_status_id, "
 			. "badge_name, first, middle, last, "
 			. "birthdate, "
 			. "address1, address2, city, state, zip, country, "
 			. "email, "
-			. "phone, shirt_size_id "
+			. "phone, shirt_size_id, "
+			. "badge_cost_due, donation_due "
 			. ") "
 			. "VALUES "
 			. "( "
@@ -133,6 +138,7 @@ class Reg_OnsiteDisplay {
 			. "'%s', "
 			. "'%s', '%s', '%s', '%s', '%s', '%s', "
 			. "'%s', "
+			. "'%s', '%s', "
 			. "'%s', '%s' "
 			. ") "
 			;
@@ -156,7 +162,8 @@ class Reg_OnsiteDisplay {
 			$data["address1"], $data["address2"], $data["city"],
 			$data["state"], $data["zip"], $data["country"],
 			$data["email"], $data["phone"],
-			$data["shirt_size_id"]
+			$data["shirt_size_id"],
+			$badge_cost_due, $data["donation"]
 			);
         db_query($query, $query_args);
 

@@ -106,6 +106,9 @@ class reg_factory {
 		} else if ($name == "onsitedisplay") {
 			$retval = $this->get_OnsiteDisplay();
 
+		} else if ($name == "onsitevalidate") {
+			$retval = $this->get_OnsiteValidate();
+
 		} else if ($name == "success") {
 			$retval = $this->get_success();
 
@@ -375,6 +378,17 @@ class reg_factory {
 		$captcha = $this->get_captcha();
 		$retval = new reg_OnsiteDisplay($reg, $form_core, $cc_gateway, 
 			$log, $message, $captcha);
+		return($retval);
+	}
+
+	protected function get_OnsiteValidate() {
+		$reg = $this->get_reg();
+		$admin_member = $this->get_admin_member();
+		$util_watchlist = $this->getUtil_WatchlistDisplay();
+		$log = $this->get_log();
+		$util_print = $this->getUtil_Print();
+		$retval = new reg_OnsiteValidate($reg, $admin_member, $util_watchlist, 
+			$log, $util_print);
 		return($retval);
 	}
 

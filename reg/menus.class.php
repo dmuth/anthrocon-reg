@@ -536,6 +536,15 @@ class reg_menus extends reg {
 					"weight" => 4,
 					);
 
+				$retval[] = array(
+					"path" => "admin/reg/members/view/" . arg(4) . "/validate",
+					"title" => t("Validate"),
+					"callback" => "reg_admin_members_validate",
+					"callback arguments" => array(arg(4)),
+					"type" => MENU_LOCAL_TASK,
+					"weight" => 5,
+					);
+
 			}
 
 		}
@@ -653,7 +662,7 @@ class reg_menus extends reg {
 				"title" => t("Success!"),
 				"callback" => "reg_onsitereg_success",
 				"access" => user_access($this->get_constant("perm_onsitereg")),
-				"type" => MENU_NORMAL_ITEM,
+				"type" => MENU_CALLBACK,
 				"weight" => 0,
 				);
 		}

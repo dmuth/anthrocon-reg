@@ -406,6 +406,32 @@ function reg_admin_members_print_form_submit($form_id, $data) {
 
 
 /**
+* Validating onsite registrations.
+*/
+function reg_admin_members_validate($id) {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getPage($id));
+}
+
+function reg_admin_members_validate_form($id) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getForm($id));
+}
+
+function reg_admin_members_validate_form_validate($form_id, $data) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getFormValidate($form_id, $data));
+}
+
+function reg_admin_members_validate_form_submit($form_id, $data) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getFormSubmit($form_id, $data));
+}
+
+
+/**
 * Searching registrations.
 */
 function reg_admin_search() {
