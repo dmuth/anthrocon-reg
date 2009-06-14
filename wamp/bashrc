@@ -1,13 +1,14 @@
 #
 # This file should be included by our main bashrc file
 #
-
-DIR=`dirname $0`
+# To use this file:
+# cd path/to/this/directory
+# . bashrc 
+#
 
 #
-# Load our main settings
+# Add our binary directory into the path
 #
-. ${DIR}/bin/core.sh
-
-PATH=$PATH:${WAMP}/www/wamp/bin
+DIR=`pwd`/bin
+PATH=$PATH:$DIR
 

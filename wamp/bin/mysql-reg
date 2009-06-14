@@ -13,12 +13,18 @@ set -e
 #
 DIR=`dirname $0`
 
-. ${DIR}/core.sh
+#
+# Change into this directory because Cygwin has some issues with
+# absolute paths...
+#
+cd ${DIR}
 
-USER=`${PHP} ${DIR}/mysql-reg-data ${WAMP} user`
-PASS=`${PHP} ${DIR}/mysql-reg-data ${WAMP} pass`
-HOST=`${PHP} ${DIR}/mysql-reg-data ${WAMP} host`
-DATABASE=`${PHP} ${DIR}/mysql-reg-data ${WAMP} database`
+. ./core.sh
+
+USER=`${PHP} ./mysql-reg-data ${WAMP} user`
+PASS=`${PHP} ./mysql-reg-data ${WAMP} pass`
+HOST=`${PHP} ./mysql-reg-data ${WAMP} host`
+DATABASE=`${PHP} ./mysql-reg-data ${WAMP} database`
 
 ${MYSQL} -u ${USER} -p${PASS} ${DATABASE} $@
 
