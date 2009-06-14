@@ -1,0 +1,13 @@
+#
+# This file should be included by our main bashrc file
+#
+
+DIR=`dirname $0`
+
+#
+# Load our main settings
+#
+. ${DIR}/bin/core.sh
+
+PATH=$PATH:${WAMP}/www/wamp/bin
+
