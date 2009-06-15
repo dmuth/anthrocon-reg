@@ -28,6 +28,8 @@ WAMP:
 	- Create the database in phpMyAdmin
 	- Import the data
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
+	- If seeing the main page over and over, make sure the rewrite module is enabled
+	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
 
 
 TODO:
