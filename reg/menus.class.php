@@ -64,7 +64,7 @@ class reg_menus extends reg {
 		$this->get_membership_levels($retval, $may_cache);
 
 		$this->get_members($retval, $may_cache);
-		$this->get_logs(&$retval, $may_cache);
+		$this->get_logs($retval, $may_cache);
 
 		$this->get_stats($retval, $may_cache);
 
