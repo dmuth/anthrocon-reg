@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Script to semi-automate generation of SSL keys
+#
+
+#
+# Create our initial key
+#
+openssl genrsa -des3 -out myserver.key 1024
+
+#
+# This will stript the password/encryption off of the key we just created
+#
+openssl rsa -in myserver.key -out myserver.pem
+
+#
+# Generate our certificate request
+#
+openssl req -new -key myserver.key -out myserver.csr
+
+#
+# Finally, generate a self-signed certificate
+#
+openssl x509 -req -days 365 -in myserver.csr -signkey myserver.key -out myserver.crt
+

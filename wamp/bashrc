@@ -12,3 +12,8 @@
 DIR=`pwd`/bin
 PATH=$PATH:$DIR
 
+#
+# Set an editor for SVN
+#
+export SVN_EDITOR=nano
+
