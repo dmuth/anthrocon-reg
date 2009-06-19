@@ -5,6 +5,7 @@
 // This way, the database credentials are only kept in one place on the system.
 //
 
+
 if (empty($argv[2])) {
 	$error = "Syntax: " 
 		. $argv[0] . " c:/path/to/wamp/ host|user|pass|database";
