@@ -612,6 +612,18 @@ class reg {
 		//
 		if ($this->is_ssl()) {
 			$url = eregi_replace("//", "/", $url);
+
+			//
+			// One more issue here... when running in SSL under 
+			// WAMP, the URL will start with "https:/", which is 
+			// bad.  I'm not sure why the URL is different, if 
+			// it's because we're running under Apache vs. nginx, 
+			// PHP vs PHP-cgi, or something entirely different.  
+			// At some point, I really need to write a unit test 
+			// for this logic...
+			// 
+			$url = ereg_replace("^https:/([^/])", "https://\\1", $url);
+
 			//
 			// Oh yeah, switch to secure mode too. :-)
 			//
