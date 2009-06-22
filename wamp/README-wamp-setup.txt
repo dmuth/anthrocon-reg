@@ -30,7 +30,18 @@ WAMP:
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
 	- If seeing the main page over and over, make sure the rewrite module is enabled
 	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
-
+- MySQL replication:
+	- Set log-bin and server-id on Master server
+	- Set server-id on Slave server
+	- Open up the Windows firewall on the Slave and Master
+	- Useful commands:
+		- FLUSH WITH READ LOCK
+		- UNLOCK TABLES
+		- SHOW MASTER STATUS
+		- CHANGE MASTER TO MASTER_HOST='hostname', MASTER_USER='user', MASTER_PASSWORD='pass', MASTER_LOG_FILE='logfilename', MASTER_LOG_POS=pos
+		- START SLAVE
+		- STOP SLAVE
+		- SHOW SLAVE STATUS
 
 TODO:
 - remote access to webserver
