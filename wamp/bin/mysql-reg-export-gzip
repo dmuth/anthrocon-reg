@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# This script exports registration data and gzips it into a unique filename.
+#
+
+#
+# Make errors fatal
+#
+set -e
+
+#
+# Get the current directory
+#
+DIR=`dirname $0`
+OLD_DIR=`pwd`
+
+#
+# Change into this directory because Cygwin has some issues with
+# absolute paths...
+#
+cd ${DIR}
+
+. ./core.sh
+
+USER=`${PHP} ./mysql-reg-data ${WAMP} user`
+PASS=`${PHP} ./mysql-reg-data ${WAMP} pass`
+HOST=`${PHP} ./mysql-reg-data ${WAMP} host`
+DATABASE=`${PHP} ./mysql-reg-data ${WAMP} database`
+
+cd $OLD_DIR
+
+#
+# Get our list of registration tables
+#
+CMD="${MYSQL} -u ${USER} -p${PASS} ${DATABASE} $@"
+SQL="SHOW TABLES LIKE 'reg%'"
+TABLES=""
+for ROW in `echo $SQL | $CMD -s`
+do
+	#
+	# Chop off the carriage returns and newlines, and glue the table
+	# name onto the list.
+	#
+	ROW=`echo $ROW | tr -d "\r\n"`
+	TABLES="$TABLES $ROW"
+done
+
+#
+# Name the file in YYYYMMDDHHMMSS format.
+#
+FILE=reg-dump-`date +%Y%m%d%H%M%S`.gz
+
+${MYSQLDUMP} -u ${USER} -p${PASS} ${DATABASE} ${TABLES} | gzip > ${FILE}
+
+echo "File '${FILE}' written."
