@@ -9,20 +9,24 @@ TODO
 - Add "reason on watchlist" to Watchlist
 
 - WAMP issues
+	- Test the backup program
+	- Deployment scripts:
+		- Script to create a "regstaff" user
 	- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
 	- Scripts
-		- Dump just the reg tables
-		- Create a set of keys
-		- MySQL wrapper for command line client
+		- Create a set of SSL keys
 	- Config files
 		- Apache with SSL
+			- How to handle paths to keys?
+				- Can I write an install script that does path substitution?
+			- http://www.neubreed.com.au/blog/enabling-and-configuring-ssl-for-apache-2-2-under-windows-wamp-server-2
 		- MySQL with replication
 		- svn?
-	- http://api.drupal.org/api/function/hook_requirements/5
-		- Write "runtime" phase code to check the permissions in that directory
-
 - Store and encrypt credit card numbers
 	- Retrieve credit card numbers via an AJAX-powered button that will log the access
+
+- http://api.drupal.org/api/function/hook_requirements/5
+	- Write "runtime" phase code to check the permissions in the WAMP directory
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
