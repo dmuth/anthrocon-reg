@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# This script exports the entire database.  Useful when setting up replication.
+#
+
+#
+# Make errors fatal
+#
+set -e
+
+#
+# Get the current directory
+#
+DIR=`dirname $0`
+OLD_DIR=`pwd`
+
+#
+# Change into this directory because Cygwin has some issues with
+# absolute paths...
+#
+cd ${DIR}
+
+. ./core.sh
+
+USER=`${PHP} ./mysql-reg-data ${WAMP} user`
+PASS=`${PHP} ./mysql-reg-data ${WAMP} pass`
+HOST=`${PHP} ./mysql-reg-data ${WAMP} host`
+DATABASE=`${PHP} ./mysql-reg-data ${WAMP} database`
+
+cd $OLD_DIR
+
+#
+# Get our list of registration tables
+#
+CMD="${MYSQL} -u ${USER} -p${PASS} ${DATABASE} $@"
+
+${MYSQLDUMP} -u ${USER} -p${PASS} ${DATABASE} 
+
+
