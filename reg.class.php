@@ -658,9 +658,11 @@ class reg {
 		// clear out the cache for this page.  
 		//
 		if ($_GET["q"] == "reg"
+			|| $_GET["q"] == "reg/fake"
 			|| $_GET["q"] == "reg/verify"
 			|| $_GET["q"] == "reg/success"
 			|| $_GET["q"] == "onsitereg"
+			|| $_GET["q"] == "onsitereg/fake"
 			|| $_GET["q"] == "onsitereg/success"
 			) {
 			if ($GLOBALS["user"]->uid == 0) {
