@@ -91,6 +91,21 @@ class reg_form extends reg {
 		}
 
 		//
+		// Did the user agree to the Standards of Conduct?
+		//
+		// This has to be checked for, because it seems that the latest 
+		// version of Drupal doesn't honor #required checkbox fields in 
+		// forms. *sigh*
+		//
+		if (!$this->form_core->in_admin()) {
+			if (!$this->form_core->checkStandardsOfConduct(
+				$data["conduct"])) {
+				$okay = false;
+			}
+		}
+
+
+		//
 		// Check our captcha submission.
 		//
 		if (!$this->form_core->in_admin()) {
@@ -214,7 +229,7 @@ class reg_form extends reg {
 		//
 		// Make sure our registration level is valid
 		//
-		if ($this->form_core->checkLevel($data["reg_level_id"])) {
+		if (!$this->form_core->checkLevel($data["reg_level_id"])) {
 			$okay = false;
 		}
 

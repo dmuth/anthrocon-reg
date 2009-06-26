@@ -77,6 +77,20 @@ class Reg_OnsiteDisplay {
 		$this->form_core->checkCaptcha($data["reg_captcha"]);
 
 		//
+		// Did the user agree to the Standards of Conduct?
+		//
+		// This has to be checked for, because it seems that the latest 
+		// version of Drupal doesn't honor #required checkbox fields in 
+		// forms. *sigh*
+		//
+		if (!$this->form_core->in_admin()) {
+			if (!$this->form_core->checkStandardsOfConduct(
+				$data["conduct"])) {
+				$okay = false;
+			}
+		}
+
+		//
 		// Make sure our email addresses match.
 		//
 		$this->form_core->checkEmailAddresses($data["email"], 

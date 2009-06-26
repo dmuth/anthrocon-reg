@@ -225,12 +225,14 @@ class Reg_FormCore {
 
 		$path = variable_get(
 			$this->reg->get_constant("FORM_ADMIN_CONDUCT_PATH"), "");
+
 		if (!empty($path) 
 			&& empty($id)
 			&& !$this->in_admin()
 			) {
 			$retval["conduct"] = array(
 				"#type" => "checkbox",
+				//"#type" => "textfield",
 				"#title" => t("I agree to comply with the") . "<br>" 
 					. l(t("Standards of Conduct"), $path),
 				"#description" => t("You must agree to comply with the " 
@@ -839,6 +841,54 @@ class Reg_FormCore {
 		return(true);
 
 	} // End of checkCaptcha()
+
+
+	/**
+	* Check to see if our Standards of Conduct were agreed to.
+	*
+	* @param boolea $conduct Did the user agree to follow our 
+	*	Standards of Conduct?
+	*
+	* @return boolean True if the user agreed (or there was no 
+	*	standards of conduct).  False otherwise.
+	*/
+	function checkStandardsOfConduct($conduct) {
+
+		$path = variable_get(
+			$this->reg->get_constant("FORM_ADMIN_CONDUCT_PATH"), "");
+
+		//
+		// No standards of conduct to check.  All is well.
+		//
+		if (empty($path)) {
+			return(true);
+		}
+
+		//
+		// We're in the admin.  All is well.	
+		//
+		if ($this->in_admin()) {
+			return(true);
+		}
+
+		//
+		// We agreed.  Return true.
+		//
+		if (!empty($conduct)) {
+			return(true);
+
+		} else {
+			//
+			// We had a standards of conduct and didn't agree.  That's bad.
+			//
+			$message = t("You must agree to the Standards of Conduct");
+			form_set_error("conduct", $message);
+			$this->log->log($message, "", WATCHDOG_WARNING);
+			return(false);
+
+		}
+
+	} // End of checkStandardsOfConduct()
 
 
 	/**

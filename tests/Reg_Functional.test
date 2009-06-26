@@ -107,6 +107,7 @@ class Reg_Functional_Test extends DrupalTestCase {
 		$edit["email2"] = $edit["email"];
 		$edit["birthdate-year"] = "2000";
 		$edit["badge_name"] = "Test Reg Function " . time();
+		$edit["conduct"] = true;
 		$this->drupalPostRequest($url, $edit, t("Register"));
 		$this->assertWantedRaw(t("Successful"));
 
