@@ -32,15 +32,14 @@ class Reg_Util_PrintClient {
 			. drupal_get_path("module", "reg");
 
 		//
-		// If we're in SSL, fix the path.
+		// Word freaks out over self-signed SSL certs, and even hangs
+		// in some cases.  So let's convert an HTTPS path to plain 
+		// old HTTP for now.
 		//
-		// Okay, this is commented out for awhile, since Word freaks out 
-		// over self-signed SSL certificates.
+		// Maybe in the future I could copy the doc file locally and
+		// open that file instead...
 		//
-		//$port = getenv("SERVER_PORT");
-		//if ($port == 443) {
-		//	$path = str_replace("http://", "https://", $path);
-		//}
+		$path = ereg_replace("^https://", "http://", $path);
 
 		//
 		// Do we want to only test non-MSIE-specific stuff?
