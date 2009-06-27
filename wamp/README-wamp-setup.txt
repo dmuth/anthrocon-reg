@@ -17,19 +17,28 @@ Cygwin:
 Optional:
 - Download gvim for editing files under Cygwin
 
+Printing:
+- Problems with MSIE?
+	- Set "Initialize and script ActiveX controls not marked as safe" to "Enable"
+
 WAMP:
 - Download WAMP
 - Run installer
 - docroot is in c:\wamp\www\ or /cygdrive/c/wamp/www/
 - Copy in the latest backup of the website
+
 - Drupal on WAMP:
 	- Make sure that the settings.php file is readable
 	- Get database credentials from settings.php and create that user in phpMyAdmin
 	- Create the database in phpMyAdmin
 	- Import the data
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
+	- Disable key modules:
+		- UPDATE system SET status=0 WHERE name='aggregator'
+		- UPDATE system SET status=0 WHERE name LIKE 'xmlsitemap%'
 	- If seeing the main page over and over, make sure the rewrite module is enabled
 	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
+
 - MySQL replication:
 	- Set log-bin and server-id on Master server
 	- Set server-id on Slave server

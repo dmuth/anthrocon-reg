@@ -8,25 +8,23 @@ TODO
 
 - Add "reason on watchlist" to Watchlist
 
-- WAMP issues
-	- Test the backup program
-	- Deployment scripts:
-		- Script to create a "regstaff" user
-	- Folder to store Apache and MySQL configuration, SSL-generating scripts, etc.
-	- Scripts
-		- Create a set of SSL keys
-	- Config files
-		- Apache with SSL
-			- How to handle paths to keys?
-				- Can I write an install script that does path substitution?
-			- http://www.neubreed.com.au/blog/enabling-and-configuring-ssl-for-apache-2-2-under-windows-wamp-server-2
-		- MySQL with replication
-		- svn?
+- Port to Drupal 6
+	- http://drupal.org/node/114774
+	- Info file
+	- Change install()
+	- Change uninstall()
+	- Change update_N()
+	- New menu system: http://drupal.org/node/103114
+	- reg_init() will now become reg_boot()	
+	- watchdog(): Do NOT call t() on messages
+	- Unit test fun!
+
 - Store and encrypt credit card numbers
 	- Retrieve credit card numbers via an AJAX-powered button that will log the access
 
-- http://api.drupal.org/api/function/hook_requirements/5
-	- Write "runtime" phase code to check the permissions in the WAMP directory
+- curl_init() missing
+	- In WAMP, curl_init() is not installed
+	- I should write a check for that function, 
 
 - reg/
 	autocomplete="off" in the input tag for the credit card number
@@ -96,3 +94,4 @@ Long Term
 		- Still store last 4 digits in usual location?
 	- Display only via an AJAX widget on the transaction log viewing page
 		- Access to the full card number should be audited
+
