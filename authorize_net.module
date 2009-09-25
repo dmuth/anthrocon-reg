@@ -11,16 +11,29 @@
 * Define our autoloader, and register it.
 */
 function authorize_net_autoload($class) {
+
 	//print "$class<br>\n"; // Debugging
-	$class = str_replace("_", "/", $class);
-	$class = str_replace("authorize/net", "authorize_net", $class);
-	//print "$class<br>\n"; // Debugging
-	$file = $class . ".class.php";
-	//print "$file<br>\n"; // Debugging
+	$file = str_replace("_", "/", $class);
+	//print "1: $file<br/>\n";
+	$file = str_replace("authorize/net", "authorize_net", $file);
+	//print "2: $file<br/>\n";
+	$file .= ".class.php";
+	//print "3: $file<br>\n"; // Debugging
+
+	//
+	// WE're not responsible for views classes.
+	//
+	if (preg_match("/^views_/", $class)) {
+		return(null);
+	}
+
 	include_once($file);
-}
+
+} // End of authorload_net_autoload()
+
 
 spl_autoload_register("authorize_net_autoload");
+
 
 /**
 * Create our menu items.

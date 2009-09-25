@@ -11,13 +11,31 @@
 * Define our autoloader, and register it.
 */
 function reg_autoload($class) {
+
 	//print "$class<br>\n"; // Debugging
-	$class = str_replace("_", "/", $class);
-	//print "$class<br>\n"; // Debugging
-	$file = $class . ".class.php";
+	$file = str_replace("_", "/", $class);
+	//print __FUNCTION__ . "(): $class<br>\n"; // Debugging
+	$file = $file . ".class.php";
 	//print "$file<br>\n"; // Debugging
+
+	//
+	// WE're not responsible for views classes.
+	//
+	if (preg_match("/^views_/", $class)) {
+		return(null);
+	}
+
+	//
+	// We're not responsible for authorize_net classes.
+	//
+	if (preg_match("/^authorize_net/", $class)) {
+		return(null);
+	}
+
 	include_once($file);
-}
+
+} // End of reg_autoload()
+
 
 spl_autoload_register("reg_autoload");
 
