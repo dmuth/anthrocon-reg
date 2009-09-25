@@ -8,29 +8,16 @@ class authorize_net_menu {
 	function __construct() {
 	}
 
-	public function get_menu($may_cache) {
+	public function get_menu() {
 
 		$retval = array();
 
-		//$may_cache = 1;  // Debugging
-		if (!$may_cache) {
-			//
-			// Load our Javascript
-			//
-			$path = drupal_get_path("module", "reg");
-			drupal_add_js($path . "/authorize_net.js", "module");
-
-		} else {
-
-			$retval[] = array(
-				"path" => "admin/reg/settings/gateways/authorize_net",
-				"title" => t("Authorize.net"),
-				"callback" => "authorize_net_settings_page",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 3,
-				);
-
-		}
+		$retval["admin/reg/settings/gateways/authorize_net"] = array(
+			"title" => "Authorize.net",
+			"page callback" => "authorize_net_settings_page",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 3,
+			);
 
 		return($retval);
 

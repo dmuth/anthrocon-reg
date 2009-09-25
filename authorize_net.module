@@ -35,15 +35,26 @@ function authorize_net_autoload($class) {
 spl_autoload_register("authorize_net_autoload");
 
 
+function authorize_net_init() {
+
+	//
+	// Load our Javascript
+	//
+	$path = drupal_get_path("module", "authorize_net");
+	drupal_add_js($path . "/authorize_net.js", "module");
+
+} // End of authorize_net_init()
+
+
 /**
 * Create our menu items.
 */
-function authorize_net_menu($may_cache) {
+function authorize_net_menu() {
 
 	$factory = new authorize_net_factory();
 	$menu = $factory->get_object("menu");
 
-	$items = $menu->get_menu($may_cache);
+	$items = $menu->get_menu();
 
 	return($items);
 
