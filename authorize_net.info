@@ -3,6 +3,9 @@ name = Authorize.net
 description = "Interface for Authorize.net"
 package = Anthrocon
 
-version = 1.0
+core = 6.x
+
+version = 1.1
+
 
 
