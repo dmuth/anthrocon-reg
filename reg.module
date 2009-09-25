@@ -56,6 +56,10 @@ function reg_perm() {
 
 
 function reg_init() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->hook_init();
+
 }
 
 
@@ -79,10 +83,10 @@ function reg_exit() {
 *	AND restarting the php-cgi process seemed to fix the problem.  This
 *	will require more investigation in the future.
 */
-function reg_menu($may_cache) {
+function reg_menu() {
 
 	$menu = $GLOBALS["reg_factory"]->get_object("menu");
-	$items = $menu->menu($may_cache);
+	$items = $menu->menu();
 	return($items);
 
 } // End of reg_menu()

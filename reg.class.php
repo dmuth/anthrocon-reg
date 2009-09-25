@@ -645,6 +645,26 @@ class reg {
 
 
 	/**
+	* Our init hook.
+	*/
+	function hook_init() {
+
+		//
+		// Load our Javascript
+		//
+		$path = drupal_get_path("module", "reg");
+		drupal_add_js($path . "/reg.js", "module");
+
+		//
+		// Include our CSS
+		//
+		$path = drupal_get_path("module", "reg") . "/reg.css";
+		drupal_add_css($path, "module", "all", false);
+
+	} // End of hook_init()
+
+
+	/**
 	* Our exit hook.  Note that we cannot print anything out from here.
 	* (At least not anything for the app.  Any print() calls will cause
 	*	text to be on the bottom of the page.)

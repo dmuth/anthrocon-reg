@@ -26,53 +26,31 @@ class reg_menus extends reg {
 	*
 	* @return array Scalar array of menu data.
 	*/
-	function menu($may_cache) {
+	function menu() {
 
 		$retval = array();
 
-		// Debugging.  Note that this will break viewing of individual members.
-		//$may_cache = 1; 
-		if (!$may_cache) {
-			//
-			// Code that is in this block will be executed on every
-			// page load.
-			//
-
-			//
-			// Load our Javascript
-			//
-			$path = drupal_get_path("module", "reg");
-			drupal_add_js($path . "/reg.js", "module");
-
-			//
-			// Include our CSS
-			//
-			$path = drupal_get_path("module", "reg") . "/reg.css";
-			drupal_add_css($path, "module", "all", false);
-
-		}
-		
 		//
 		// Our public links
 		//
-		$this->get_public($retval, $may_cache);
+		$this->get_public($retval);
 
 		//
 		// Admin section
 		//
-		$this->get_admin($retval, $may_cache);
-		$this->get_membership_levels($retval, $may_cache);
+		$this->get_admin($retval);
+		$this->get_membership_levels($retval);
 
-		$this->get_members($retval, $may_cache);
-		$this->get_logs($retval, $may_cache);
+		$this->get_members($retval);
+		$this->get_logs($retval);
 
-		$this->get_stats($retval, $may_cache);
+		$this->get_stats($retval);
 
-		$this->get_settings($retval, $may_cache);
+		$this->get_settings($retval);
 
-		$this->get_utilities($retval, $may_cache);
+		$this->get_utilities($retval);
 
-		$this->getOnsiteReg($retval, $may_cache);
+		$this->getOnsiteReg($retval);
 
 		return($retval);
 
@@ -82,54 +60,42 @@ class reg_menus extends reg {
 	/**
 	* Set our public links to the registration system.
 	*/
-	function get_public(&$retval, $may_cache) {
+	function get_public(&$retval) {
 
-		if ($may_cache) {
+		//
+		// Public link
+		//
+		$retval["reg"] = array(
+			"title" => $this->get_constant("YEAR") ." " 
+				. "Pre-Registration",
+			"page callback" => "reg_registration",
+			"access arguments" => array($this->get_constant("PERM_REGISTER")),
+			"type" => MENU_NORMAL_ITEM,
+			);
 
-			//
-			// Public link
-			//
-			$retval[] = array(
-				"path" => "reg",
-				"title" => $this->get_constant("YEAR") ." " 
-					. t("Pre-Registration"),
-				"callback" => "reg_registration",
-				"access" => user_access($this->get_constant("PERM_REGISTER")),
-				"type" => MENU_NORMAL_ITEM,
-				);
+		//
+		// Success page
+		//
+		$retval["reg/success"] = array(
+			"title" => "Registration Successful!",
+			"page callback" => "reg_success",
+			"access arguments" => array($this->get_constant("PERM_REGISTER")),
+			"type" => MENU_CALLBACK,
+			);
 
+		//
+		// Verify a registraiton
+		//
+		$retval["reg/verify/%/%"] = array(
+			"title" => "Verify an existing registration",
+			"page callback" => "reg_verify",
 			//
-			// Success page
+			// Optional argument to resend a receipt.
 			//
-			$retval[] = array(
-				"path" => "reg/success",
-				"title" => t("Registration Successful!"),
-				"callback" => "reg_success",
-				"access" => user_access($this->get_constant("PERM_REGISTER")),
-				"type" => MENU_CALLBACK,
-				);
-
-		} else {
-			//
-			// Since this URL involes an argument, it cannot be cached.
-			//
-
-			//
-			// Verify a registraiton
-			//
-			$retval[] = array(
-				"path" => "reg/verify",
-				"title" => t("Verify an existing registration"),
-				"callback" => "reg_verify",
-				//
-				// Optional argument to resend a receipt.
-				//
-				"callback arguments" => array(arg(3)),
-				"access" => user_access($this->get_constant("PERM_REGISTER")),
-				"type" => MENU_NORMAL_ITEM,
-				);
-
-		}
+			"page arguments" => array(arg(3)),
+			"access arguments" => array($this->get_constant("PERM_REGISTER")),
+			"type" => MENU_NORMAL_ITEM,
+			);
 
 	} // End of get_public()
 
@@ -137,44 +103,36 @@ class reg_menus extends reg {
 	/**
 	* Create our "Stats" menu item.
 	*/
-	function get_stats(&$retval, $may_cache) {
+	function get_stats(&$retval) {
 
-		if ($may_cache) {
+		$retval["admin/reg/stats"] = array(
+			"title" => "Stats",
+			"access arguments" => array($this->get_constant("perm_admin")),
+			"page callback" => "reg_admin_stats_badge",
+			"type" => MENU_NORMAL_ITEM,
+			"weight" => 2,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/stats",
-				"title" => t("Stats"),
-				"access" => user_access($this->get_constant("perm_admin")),
-				"callback" => "reg_admin_stats_badge",
-				"type" => MENU_NORMAL_ITEM,
-				"weight" => 2,
-				);
+		$retval["admin/reg/stats/badge"] = array(
+			"title" => "Badge Breakdown",
+			"page callback" => "reg_admin_stats_badge",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => 0,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/stats/badge",
-				"title" => t("Badge Breakdown"),
-				"callback" => "reg_admin_stats_badge",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => 0,
-				);
+		$retval["admin/reg/stats/registration/activity"] = array(
+			"title" => "Registration Activity",
+			"page callback" => "reg_admin_stats_reg",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/stats/registration/activity",
-				"title" => t("Registration Activity"),
-				"callback" => "reg_admin_stats_reg",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/stats/revenue",
-				"title" => t("Revenue"),
-				"callback" => "reg_admin_stats_revenue",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 2,
-				);
-
-		}
+		$retval["admin/reg/stats/revenue"] = array(
+			"title" => "Revenue",
+			"page callback" => "reg_admin_stats_revenue",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
 
 	} // End of get_stats()
 
@@ -182,28 +140,21 @@ class reg_menus extends reg {
 	/**
 	* Get the "Main" tab under the reg admin.
 	*/
-	function get_admin(&$retval, $may_cache) {
+	function get_admin(&$retval) {
 
-		if ($may_cache) {
+		$retval["admin/reg"] = array(
+			"title" => "Registration Admin",
+			"page callback" => "reg_admin_main",
+			"access arguments" => array($this->get_constant("perm_staff")),
+			"type" => MENU_NORMAL_ITEM,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg",
-				"title" => t("Registration Admin"),
-				"callback" => "reg_admin_main",
-				"access" => user_access($this->get_constant("perm_staff")) 
-					|| user_access($this->get_constant("perm_admin")),
-				"type" => MENU_NORMAL_ITEM,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/main",
-				"title" => t("Main"),
-				"callback" => "reg_admin_main",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
-
-		}
+		$retval["admin/reg/main"] = array(
+			"title" => "Main",
+			"page callback" => "reg_admin_main",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
 
 	} // End of get_admin()
 
@@ -211,65 +162,48 @@ class reg_menus extends reg {
 	/**
 	* Get the "Logs" tab.
 	*/
-	function get_logs(&$retval, $may_cache) {
+	function get_logs(&$retval) {
 
-		if ($may_cache) {
+		//
+		// Viewing registration-related logs.
+		//
+		$retval["admin/reg/logs"] = array(
+			"title" => "Logs",
+			"page callback" => "reg_admin_log",
+			"access arguments" => array($this->get_constant("perm_staff")),
+			"type" => MENU_NORMAL_ITEM,
+			"weight" => 2,
+			);
 
-			//
-			// Viewing registration-related logs.
-			//
-			$retval[] = array(
-				"path" => "admin/reg/logs",
-				"title" => t("Logs"),
-				"callback" => "reg_admin_log",
-				"access" => user_access($this->get_constant("perm_staff")) 
-					|| user_access($this->get_constant("perm_admin")),
-				"type" => MENU_NORMAL_ITEM,
-				"weight" => 2,
-				);
+		$retval["admin/reg/logs/view"] = array(
+			"title" => "Registration Logs",
+			"page callback" => "reg_admin_log",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => 2,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/logs/view",
-				"title" => t("Registration Logs"),
-				"callback" => "reg_admin_log",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => 2,
-				);
+		$retval["admin/reg/logs/transactions"] = array(
+			"title" => "Transactions",
+			"page callback" => "reg_admin_trans",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/logs/transactions",
-				"title" => t("Transactions"),
-				"callback" => "reg_admin_trans",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 2,
-				);
+		$retval["admin/reg/logs/view/%/view"] = array(
+			"title" => "Logs Item Detail",
+			"page callback" => "reg_admin_log_detail",
+			"type" => MENU_LOCAL_TASK,
+			"page arguments" => array(arg(4)),
+			"weight" => 2,
+			);
 
-		}
-
-		if (arg(4)) {
-
-			if (!$may_cache) {
-				$retval[] = array(
-					"path" => "admin/reg/logs/view/" . arg(4) . "/view",
-					"title" => t("Logs Item Detail"),
-					"callback" => "reg_admin_log_detail",
-					"type" => MENU_LOCAL_TASK,
-					"callback arguments" => array(arg(4)),
-					"weight" => 2,
-					);
-
-				$retval[] = array(
-					"path" => "admin/reg/logs/transactions/" . arg(4) . "/view",
-					"title" => t("Transaction Item Detail"),
-					"callback" => "reg_admin_trans_detail",
-					"type" => MENU_LOCAL_TASK,
-					"callback arguments" => array(arg(4)),
-					"weight" => 2,
-					);
-
-			}
-
-		}
+		$retval["admin/reg/logs/transactions/%/view"] = array(
+			"title" => "Transaction Item Detail",
+			"page callback" => "reg_admin_trans_detail",
+			"type" => MENU_LOCAL_TASK,
+			"page arguments" => array(arg(4)),
+			"weight" => 2,
+			);
 
 	} // End of get_logs()
 
@@ -277,93 +211,68 @@ class reg_menus extends reg {
 	/**
 	* This function gets the "Settings" menu item on the left.
 	*/
-	function get_settings(&$retval, $may_cache) {
+	function get_settings(&$retval) {
 
-		if ($may_cache) {
+		$retval["admin/reg/settings"] = array(
+			"title" => "Settings",
+			"page callback" => "reg_admin_settings",
+			"access arguments" => array($this->get_constant("perm_admin")),
+			"type" => MENU_NORMAL_ITEM,
+			"weight" => 3,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings",
-				"title" => t("Settings"),
-				"callback" => "reg_admin_settings",
-				"access" => user_access($this->get_constant("perm_admin")),
-				"type" => MENU_NORMAL_ITEM,
-				"weight" => 3,
-				);
+		$retval["admin/reg/settings/main"] = array(
+			"title" => "Settings",
+			"page callback" => "reg_admin_settings",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => 0,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/main",
-				"title" => t("Settings"),
-				"callback" => "reg_admin_settings",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => 0,
-				);
+		$retval["admin/reg/settings/messages"] = array(
+			"title" => "Messages",
+			"page callback" => "reg_admin_settings_messages",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/messages",
-				"title" => t("Messages"),
-				"callback" => "reg_admin_settings_messages",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
+		$retval["admin/reg/settings/watchlist"] = array(
+			"title" => "Watchlist",
+			"page callback" => "reg_admin_utils_watchlist",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/watchlist",
-				"title" => t("Watchlist"),
-				"callback" => "reg_admin_utils_watchlist",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
+		$retval["admin/reg/settings/watchlist/list"] = array(
+			"title" => "List",
+			"page callback" => "reg_admin_utils_watchlist",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/watchlist/list",
-				"title" => t("List"),
-				"callback" => "reg_admin_utils_watchlist",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
+		$retval["admin/reg/settings/watchlist/add"] = array(
+			"title" => "Add New Watchlist Entry",
+			"page callback" => "reg_admin_utils_watchlist_edit",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 0,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/watchlist/add",
-				"title" => t("Add New Watchlist Entry"),
-				"callback" => "reg_admin_utils_watchlist_edit",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 0,
-				);
+		//
+		// Used for editing a message
+		//
+		$retval["admin/reg/settings/message/%/edit"] = array(
+			"title" => "Edit",
+			"page callback" => "reg_admin_settings_messages_edit",
+			"page arguments" => array(arg(4)),
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 0,
+			);
 
-		}
-
-		if (arg(4)) {
-
-			if (!$may_cache) {
-	
-				//
-				// Used for editing a message
-				//
-				$retval[] = array(
-					"path" => "admin/reg/settings/messages/" . arg(4) . "/edit",
-					"title" => t("Edit"),
-					"callback" => "reg_admin_settings_messages_edit",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 0,
-					);
-
-			}
-
-		}
-
-		if (arg(5)) {
-
-			if (!$may_cache) {
-				$retval[] = array(
-					"path" => "admin/reg/settings/watchlist/view/" . arg(5) . "/edit",
-					//"title" => t("Edit"),
-					"callback" => "reg_admin_utils_watchlist_edit",
-					"callback arguments" => array(arg(5)),
-					"type" => MENU_CALLBACK,
-					);
-			}
-		}
+		$retval["admin/reg/settings/watchlist/view/%/edit"] = array(
+			//"title" => t("Edit"),
+			"page callback" => "reg_admin_utils_watchlist_edit",
+			"page arguments" => array(arg(5)),
+			"type" => MENU_CALLBACK,
+			);
 
 	} // End of get_settings()
 
@@ -371,55 +280,39 @@ class reg_menus extends reg {
 	/**
 	* Get our menu items under the "Membership Levels" tab.
 	*/
-	function get_membership_levels(&$retval, $may_cache) {
+	function get_membership_levels(&$retval) {
 
-		if ($may_cache) {
+		$retval["admin/reg/settings/levels"] = array(
+			"title" => "Membership Levels",
+			"page callback" => "reg_admin_levels",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/levels",
-				"title" => t("Membership Levels"),
-				"callback" => "reg_admin_levels",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 2,
-				);
+		$retval["admin/reg/settings/levels/list"] = array(
+			"title" => "List",
+			"page callback" => "reg_admin_levels",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/levels/list",
-				"title" => t("List"),
-				"callback" => "reg_admin_levels",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
+		$retval["admin/reg/settings/levels/add"] = array(
+			"title" => "Add",
+			"page callback" => "reg_admin_levels_edit",
+			"type" => MENU_LOCAL_TASK,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/settings/levels/add",
-				"title" => t("Add"),
-				"callback" => "reg_admin_levels_edit",
-				"type" => MENU_LOCAL_TASK,
-				);
-
-		}
-
-		if (arg(5)) {
-
-			if (!$may_cache) {
-	
-				//
-				// Used for editing a membership level.
-				//
-				$retval[] = array(
-					"path" => "admin/reg/settings/levels/list/" . arg(5) . "/edit",
-					"title" => t("Edit"),
-					"callback" => "reg_admin_levels_edit",
-					"callback arguments" => array(arg(5)),
-					"weight" => -10,
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 0,
-					);
-
-			}
-
-		}
+		//
+		// Used for editing a membership level.
+		//
+		$retval["admin/reg/settings/levels/list/%/edit"] = array(
+			"title" => "Edit",
+			"page callback" => "reg_admin_levels_edit",
+			"page arguments" => array(arg(5)),
+			"weight" => -10,
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 0,
+			);
 
 	} // End of get_membership_levels()
 
@@ -428,126 +321,102 @@ class reg_menus extends reg {
 	* Menu items related to recent registrations.
 	* This is the left-hand menu item called "Members".
 	*/
-	function get_members(&$retval, $may_cache) {
+	function get_members(&$retval) {
 
-		if ($may_cache) {
-			$retval[] = array(
-				"path" => "admin/reg/members",
-				"title" => t("Members"),
-				"callback" => "reg_admin_members",
-				"access" => user_access($this->get_constant("perm_staff")) 
-					|| user_access($this->get_constant("perm_admin")),
-				"type" => MENU_NORMAL_ITEM,
-				"weight" => 1,
-				);
+		$retval["admin/reg/members"] = array(
+			"title" => "Members",
+			"page callback" => "reg_admin_members",
+			"access arguments" => array($this->get_constant("perm_staff")),
+			"type" => MENU_NORMAL_ITEM,
+			"weight" => 1,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/members/search",
-				"title" => t("Search"),
-				"callback" => "reg_admin_search",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
+		$retval["admin/reg/members/search"] = array(
+			"title" => "Search",
+			"page callback" => "reg_admin_search",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/members/search/download",
-				"title" => t("Search"),
-				"callback" => "reg_admin_search_download",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
+		$retval["admin/reg/member/search/download"] = array(
+			"title" => "Search",
+			"page callback" => "reg_admin_search_download",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/members/add",
-				"title" => t("Add"),
-				"callback" => "reg_admin_members_add",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 2,
-				);
+		$retval["admin/reg/members/add"] = array(
+			"title" => "Add",
+			"page callback" => "reg_admin_members_add",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/members/view",
-				"title" => t("Recent"),
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
-
-		}
+		$retval["admin/reg/members/view"] = array(
+			"title" => "Recent",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
 
 		//
 		// If we have a member ID to view, add in some dynamic menu items.
 		//
-		if (arg(4)) {
+		$retval["admin/reg/members/view/%/view"] = array(
+			"title" => "View",
+			"page callback" => "reg_admin_members_view",
+			"page arguments" => array(arg(4)),
+			"weight" => -10,
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 0,
+			);
 
-			if (!$may_cache) {
+		$retval["admin/reg/members/view/%/edit"] = array(
+			"title" => "Edit",
+			"page callback" => "reg_admin_members_edit",
+			"page arguments" => array(arg(4)),
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
-				$retval[] = array(
-					"path" => "admin/reg/members/view/" . arg(4) . "/view",
-					"title" => t("View"),
-					"callback" => "reg_admin_members_view",
-					"callback arguments" => array(arg(4)),
-					"weight" => -10,
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 0,
-					);
+		$retval["admin/reg/members/view/%/add_note"] = array(
+			"title" => "Add Note",
+			"page callback" => "reg_admin_members_add_note",
+			"page arguments" => array(arg(4)),
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
 
-				$retval[] = array(
-					"path" => "admin/reg/members/view/" . arg(4) . "/edit",
-					"title" => t("Edit"),
-					"callback" => "reg_admin_members_edit",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 1,
-					);
+		$retval["admin/reg/members/view/%/cancel"] = array(
+			"title" => "Cancel Membership",
+			"page callback" => "reg_admin_members_cancel",
+			"page arguments" => array(arg(4)),
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
 
-				$retval[] = array(
-					"path" => "admin/reg/members/view/" . arg(4) . "/add_note",
-					"title" => t("Add Note"),
-					"callback" => "reg_admin_members_add_note",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 2,
-					);
+		$retval["admin/reg/members/view/%/adjust"] = array(
+			"title" => "Balance Adjustment",
+			"page callback" => "reg_admin_members_adjust",
+			"page arguments" => array(arg(4)),
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 3,
+			);
 
-				$retval[] = array(
-					"path" => "admin/reg/members/view/" . arg(4) . "/cancel",
-					"title" => t("Cancel Membership"),
-					"callback" => "reg_admin_members_cancel",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 2,
-					);
+		$retval["admin/reg/members/view/%/print"] = array(
+			"title" => "Print Badge",
+			"page callback" => "reg_admin_members_print",
+			"page arguments" => array(arg(4)),
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 4,
+			);
 
-				$retval[] = array(
-					"path" => "admin/reg/members/view/" . arg(4) . "/adjust",
-					"title" => t("Balance Adjustment"),
-					"callback" => "reg_admin_members_adjust",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 3,
-					);
-
-				$retval[] = array(
-					"path" => "admin/reg/members/view/" . arg(4) . "/print",
-					"title" => t("Print Badge"),
-					"callback" => "reg_admin_members_print",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 4,
-					);
-
-				$retval[] = array(
-					"path" => "admin/reg/members/view/" . arg(4) . "/validate",
-					"title" => t("Validate"),
-					"callback" => "reg_admin_members_validate",
-					"callback arguments" => array(arg(4)),
-					"type" => MENU_LOCAL_TASK,
-					"weight" => 5,
-					);
-
-			}
-
-		}
+		$retval["admin/reg/members/view/%/validate"] = array(
+			"title" => "Validate",
+			"page callback" => "reg_admin_members_validate",
+			"page arguments" => array(arg(4)),
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 5,
+			);
 
 	} // End of get_members()
 
@@ -555,88 +424,65 @@ class reg_menus extends reg {
 	/**
 	* This function gets the "Utilities" menu item on the left.
 	*/
-	function get_utilities(&$retval, $may_cache) {
+	function get_utilities(&$retval) {
 
-		if ($may_cache) {
+		$retval["admin/reg/utils"] = array(
+			"title" => "Utilities",
+			"page callback" => "reg_admin_utils_unused_badge_nums",
+			"access arguments" => array($this->get_constant("perm_admin")),
+			"type" => MENU_NORMAL_ITEM,
+			"weight" => 4,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/utils",
-				"title" => t("Utilities"),
-				"callback" => "reg_admin_utils_unused_badge_nums",
-				"access" => user_access($this->get_constant("perm_admin")),
-				"type" => MENU_NORMAL_ITEM,
-				"weight" => 4,
-				);
+		$retval["admin/reg/utils/unused_badge_nums"] = array(
+			"title" => "Unused Badge Nums",
+			"page callback" => "reg_admin_utils_unused_badge_nums",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/utils/unused_badge_nums",
-				"title" => t("Unused Badge Nums"),
-				"callback" => "reg_admin_utils_unused_badge_nums",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => -10,
-				);
-
-			$retval[] = array(
-				"path" => "admin/reg/utils/duplicate",
-				"title" => t("Duplicate Membership Search"),
-				"callback" => "reg_admin_utils_duplicate",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
+		$retval["admin/reg/utils/duplicate"] = array(
+			"title" => "Duplicate Membership Search",
+			"page callback" => "reg_admin_utils_duplicate",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
 
-			$retval[] = array(
-				"path" => "admin/reg/utils/print",
-				"title" => t("Badge Printing"),
-				"callback" => "reg_admin_utils_print_queue",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 2,
-				);
+		$retval["admin/reg/utils/print"] = array(
+			"title" => "Badge Printing",
+			"page callback" => "reg_admin_utils_print_queue",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 2,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/utils/print/queue",
-				"title" => t("Print Queue"),
-				"callback" => "reg_admin_utils_print_queue",
-				"type" => MENU_DEFAULT_LOCAL_TASK,
-				"weight" => 0,
-				);
+		$retval["admin/reg/utils/print/queue"] = array(
+			"title" => "Print Queue",
+			"page callback" => "reg_admin_utils_print_queue",
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => 0,
+			);
 
-			$retval[] = array(
-				"path" => "admin/reg/utils/print/client",
-				"title" => t("Printer Client"),
-				"callback" => "reg_admin_utils_print_client",
-				"type" => MENU_LOCAL_TASK,
-				"weight" => 1,
-				);
+		$retval["admin/reg/utils/print/client"] = array(
+			"title" => "Printer Client",
+			"page callback" => "reg_admin_utils_print_client",
+			"type" => MENU_LOCAL_TASK,
+			"weight" => 1,
+			);
 
-		} // if ($may_cache
+		$retval["admin/reg/utils/print/client/ajax/fetch/%"] = array(
+			"page callback" => "reg_admin_utils_print_ajax_fetch",
+			"page arguments" => array(arg(7)),
+			"type" => MENU_CALLBACK,
+			"weight" => 0,
+			);
 
-		if (!$may_cache) {
-
-			$action = arg(6);
-
-			if ($action == "fetch") {
-				$retval[] = array(
-					"path" => "admin/reg/utils/print/client/ajax/fetch",
-					"callback" => "reg_admin_utils_print_ajax_fetch",
-					"callback arguments" => array(arg(7)),
-					"type" => MENU_CALLBACK,
-					"weight" => 0,
-					);
-
-			} else if ($action == "update") {
-
-				$retval[] = array(
-					"path" => "admin/reg/utils/print/client/ajax/update",
-					"callback" => "reg_admin_utils_print_ajax_update",
-					"callback arguments" => array(arg(7), arg(8)),
-					"type" => MENU_CALLBACK,
-					"weight" => 0,
-					);
-
-			}
-
-		}
+		$retval["admin/reg/utils/print/client/ajax/fetch/%/%"] = array(
+			"page callback" => "reg_admin_utils_print_ajax_update",
+			"page arguments" => array(arg(7), arg(8)),
+			"type" => MENU_CALLBACK,
+			"weight" => 0,
+			);
 
 	} // End of get_utilties()
 
@@ -644,28 +490,23 @@ class reg_menus extends reg {
 	/**
 	* Onsite registration.
 	*/
-	function getOnsiteReg(&$retval, $may_cache) {
+	function getOnsiteReg(&$retval) {
 
-		if ($may_cache) {
+		$retval["onsitereg"] = array(
+			"title" => "On-site Registration",
+			"page callback" => "reg_onsitereg",
+			"access arguments" => array($this->get_constant("perm_onsitereg")),
+			"type" => MENU_NORMAL_ITEM,
+			"weight" => 0,
+			);
 
-			$retval[] = array(
-				"path" => "onsitereg",
-				"title" => t("On-site Registration"),
-				"callback" => "reg_onsitereg",
-				"access" => user_access($this->get_constant("perm_onsitereg")),
-				"type" => MENU_NORMAL_ITEM,
-				"weight" => 0,
-				);
-
-			$retval[] = array(
-				"path" => "onsitereg/success",
-				"title" => t("Success!"),
-				"callback" => "reg_onsitereg_success",
-				"access" => user_access($this->get_constant("perm_onsitereg")),
-				"type" => MENU_CALLBACK,
-				"weight" => 0,
-				);
-		}
+		$retval["onsitereg/success"] = array(
+			"title" => "Success!",
+			"page callback" => "reg_onsitereg_success",
+			"access arguments" => array($this->get_constant("perm_onsitereg")),
+			"type" => MENU_CALLBACK,
+			"weight" => 0,
+			);
 
 	} // End of getOnsiteReg()
 
