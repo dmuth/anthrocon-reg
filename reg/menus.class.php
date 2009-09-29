@@ -92,7 +92,7 @@ class reg_menus extends reg {
 			//
 			// Optional argument to resend a receipt.
 			//
-			"page arguments" => array(arg(3)),
+			"page arguments" => array(3),
 			"access arguments" => array($this->get_constant("PERM_REGISTER")),
 			"type" => MENU_NORMAL_ITEM,
 			);
@@ -107,8 +107,8 @@ class reg_menus extends reg {
 
 		$retval["admin/reg/stats"] = array(
 			"title" => "Stats",
-			"access arguments" => array($this->get_constant("perm_admin")),
 			"page callback" => "reg_admin_stats_badge",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_NORMAL_ITEM,
 			"weight" => 2,
 			);
@@ -116,6 +116,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/stats/badge"] = array(
 			"title" => "Badge Breakdown",
 			"page callback" => "reg_admin_stats_badge",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => 0,
 			);
@@ -123,6 +124,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/stats/registration/activity"] = array(
 			"title" => "Registration Activity",
 			"page callback" => "reg_admin_stats_reg",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
@@ -130,6 +132,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/stats/revenue"] = array(
 			"title" => "Revenue",
 			"page callback" => "reg_admin_stats_revenue",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -152,6 +155,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/main"] = array(
 			"title" => "Main",
 			"page callback" => "reg_admin_main",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
@@ -178,6 +182,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/logs/view"] = array(
 			"title" => "Registration Logs",
 			"page callback" => "reg_admin_log",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -185,6 +190,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/logs/transactions"] = array(
 			"title" => "Transactions",
 			"page callback" => "reg_admin_trans",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -192,16 +198,18 @@ class reg_menus extends reg {
 		$retval["admin/reg/logs/view/%/view"] = array(
 			"title" => "Logs Item Detail",
 			"page callback" => "reg_admin_log_detail",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
 			"weight" => 2,
 			);
 
 		$retval["admin/reg/logs/transactions/%/view"] = array(
 			"title" => "Transaction Item Detail",
 			"page callback" => "reg_admin_trans_detail",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
 			"weight" => 2,
 			);
 
@@ -224,6 +232,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/main"] = array(
 			"title" => "Settings",
 			"page callback" => "reg_admin_settings",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => 0,
 			);
@@ -231,6 +240,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/messages"] = array(
 			"title" => "Messages",
 			"page callback" => "reg_admin_settings_messages",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
@@ -238,6 +248,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/watchlist"] = array(
 			"title" => "Watchlist",
 			"page callback" => "reg_admin_utils_watchlist",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
@@ -245,6 +256,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/watchlist/list"] = array(
 			"title" => "List",
 			"page callback" => "reg_admin_utils_watchlist",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
@@ -252,6 +264,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/watchlist/add"] = array(
 			"title" => "Add New Watchlist Entry",
 			"page callback" => "reg_admin_utils_watchlist_edit",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 0,
 			);
@@ -259,18 +272,23 @@ class reg_menus extends reg {
 		//
 		// Used for editing a message
 		//
-		$retval["admin/reg/settings/message/%/edit"] = array(
+		$retval["admin/reg/settings/messages/%/edit"] = array(
 			"title" => "Edit",
 			"page callback" => "reg_admin_settings_messages_edit",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 0,
 			);
 
+		//
+		// Edit a watchlist entry
+		//
 		$retval["admin/reg/settings/watchlist/view/%/edit"] = array(
 			//"title" => t("Edit"),
 			"page callback" => "reg_admin_utils_watchlist_edit",
-			"page arguments" => array(arg(5)),
+			"page arguments" => array(5),
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_CALLBACK,
 			);
 
@@ -285,6 +303,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/levels"] = array(
 			"title" => "Membership Levels",
 			"page callback" => "reg_admin_levels",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -292,6 +311,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/levels/list"] = array(
 			"title" => "List",
 			"page callback" => "reg_admin_levels",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
@@ -299,6 +319,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/levels/add"] = array(
 			"title" => "Add",
 			"page callback" => "reg_admin_levels_edit",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			);
 
@@ -308,7 +329,8 @@ class reg_menus extends reg {
 		$retval["admin/reg/settings/levels/list/%/edit"] = array(
 			"title" => "Edit",
 			"page callback" => "reg_admin_levels_edit",
-			"page arguments" => array(arg(5)),
+			"page arguments" => array(5),
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"weight" => -10,
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 0,
@@ -333,6 +355,7 @@ class reg_menus extends reg {
 
 		$retval["admin/reg/members/search"] = array(
 			"title" => "Search",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"page callback" => "reg_admin_search",
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
@@ -341,6 +364,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/member/search/download"] = array(
 			"title" => "Search",
 			"page callback" => "reg_admin_search_download",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
@@ -348,12 +372,14 @@ class reg_menus extends reg {
 		$retval["admin/reg/members/add"] = array(
 			"title" => "Add",
 			"page callback" => "reg_admin_members_add",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
 
 		$retval["admin/reg/members/view"] = array(
 			"title" => "Recent",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
@@ -363,8 +389,9 @@ class reg_menus extends reg {
 		//
 		$retval["admin/reg/members/view/%/view"] = array(
 			"title" => "View",
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"page callback" => "reg_admin_members_view",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
 			"weight" => -10,
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 0,
@@ -373,7 +400,8 @@ class reg_menus extends reg {
 		$retval["admin/reg/members/view/%/edit"] = array(
 			"title" => "Edit",
 			"page callback" => "reg_admin_members_edit",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
@@ -381,7 +409,8 @@ class reg_menus extends reg {
 		$retval["admin/reg/members/view/%/add_note"] = array(
 			"title" => "Add Note",
 			"page callback" => "reg_admin_members_add_note",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -389,7 +418,8 @@ class reg_menus extends reg {
 		$retval["admin/reg/members/view/%/cancel"] = array(
 			"title" => "Cancel Membership",
 			"page callback" => "reg_admin_members_cancel",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -397,7 +427,8 @@ class reg_menus extends reg {
 		$retval["admin/reg/members/view/%/adjust"] = array(
 			"title" => "Balance Adjustment",
 			"page callback" => "reg_admin_members_adjust",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 3,
 			);
@@ -405,7 +436,8 @@ class reg_menus extends reg {
 		$retval["admin/reg/members/view/%/print"] = array(
 			"title" => "Print Badge",
 			"page callback" => "reg_admin_members_print",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 4,
 			);
@@ -413,7 +445,8 @@ class reg_menus extends reg {
 		$retval["admin/reg/members/view/%/validate"] = array(
 			"title" => "Validate",
 			"page callback" => "reg_admin_members_validate",
-			"page arguments" => array(arg(4)),
+			"page arguments" => array(4),
+			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 5,
 			);
@@ -437,6 +470,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/utils/unused_badge_nums"] = array(
 			"title" => "Unused Badge Nums",
 			"page callback" => "reg_admin_utils_unused_badge_nums",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
@@ -444,6 +478,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/utils/duplicate"] = array(
 			"title" => "Duplicate Membership Search",
 			"page callback" => "reg_admin_utils_duplicate",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
@@ -452,6 +487,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/utils/print"] = array(
 			"title" => "Badge Printing",
 			"page callback" => "reg_admin_utils_print_queue",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -459,6 +495,7 @@ class reg_menus extends reg {
 		$retval["admin/reg/utils/print/queue"] = array(
 			"title" => "Print Queue",
 			"page callback" => "reg_admin_utils_print_queue",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => 0,
 			);
@@ -466,20 +503,23 @@ class reg_menus extends reg {
 		$retval["admin/reg/utils/print/client"] = array(
 			"title" => "Printer Client",
 			"page callback" => "reg_admin_utils_print_client",
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
 
 		$retval["admin/reg/utils/print/client/ajax/fetch/%"] = array(
 			"page callback" => "reg_admin_utils_print_ajax_fetch",
-			"page arguments" => array(arg(7)),
+			"page arguments" => array(7),
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_CALLBACK,
 			"weight" => 0,
 			);
 
 		$retval["admin/reg/utils/print/client/ajax/fetch/%/%"] = array(
 			"page callback" => "reg_admin_utils_print_ajax_update",
-			"page arguments" => array(arg(7), arg(8)),
+			"page arguments" => array(7, 8),
+			"access arguments" => array($this->get_constant("perm_admin")),
 			"type" => MENU_CALLBACK,
 			"weight" => 0,
 			);
