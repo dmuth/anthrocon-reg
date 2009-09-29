@@ -596,7 +596,7 @@ class reg {
 	*/
 	function goto_url($uri) {
 
-		$url = url($uri, null, null, true);
+		$url = url($uri, array("absolute" => true));
 
 		//
 		// If we are currently in SSL mode, change the target URL 

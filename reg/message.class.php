@@ -87,8 +87,9 @@ class reg_message extends reg {
 		//
 		if ($this->is_admin() && $edit_link) {
 			$url = "admin/reg/settings/messages/" . $message["id"] . "/edit";
-			$retval["value"] .= " " . l(t("[Edit this blurb]"), $url, "", 
-				drupal_get_destination());
+			$retval["value"] .= " " . l(t("[Edit this blurb]"), $url, 
+				array("query" => drupal_get_destination()));
+
 		}
 
 		//
