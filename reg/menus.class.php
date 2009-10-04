@@ -361,7 +361,7 @@ class reg_menus extends reg {
 			"weight" => 1,
 			);
 
-		$retval["admin/reg/member/search/download"] = array(
+		$retval["admin/reg/members/search/download"] = array(
 			"title" => "Search",
 			"page callback" => "reg_admin_search_download",
 			"access arguments" => array($this->get_constant("perm_staff")),

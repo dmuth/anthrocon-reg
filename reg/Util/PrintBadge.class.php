@@ -125,14 +125,14 @@ class Reg_Util_PrintBadge {
 	/**
 	* Nothing to do in this step for now...
 	*/
-	function getFormValidate($form_id, &$data) {
+	function getFormValidate(&$data) {
 	}
 
 
 	/**
 	* Called when submitting a form
 	*/
-	function getFormSubmit($form_id, &$data) {
+	function getFormSubmit(&$data) {
 
 		$data_member = $this->admin_member->load_reg($data["id"]);
 

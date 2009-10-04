@@ -1,5 +1,7 @@
 <?php
-
+/**
+* This class is used for viewing and manipulating print jobs.
+*/
 class Reg_Util_Print {
 
 

@@ -160,7 +160,7 @@ class reg_admin_search extends reg {
 	/**
 	* Make sure we have valid search criteria.
 	*/
-	function search_validate($form_id, &$data) {
+	function search_validate(&$data) {
 	} // End of search_validate()
 
 
@@ -170,7 +170,7 @@ class reg_admin_search extends reg {
 	* redirect ourselves to that URL.  That's because Drupal only allows
 	* submit functions to redirect and not display data. :-(
 	*/
-	function search_submit($form_id, &$data) {
+	function search_submit(&$data) {
 
 		$get_data = $this->array_to_get_data($data["search"]);
 

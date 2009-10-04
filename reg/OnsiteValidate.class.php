@@ -172,6 +172,7 @@ class Reg_OnsiteValidate {
 		$retval["save_and_print"] = array(
 			"#type" => "submit",
 			"#value" => t("Validate and Print Badge"),
+			"#submit" => array("reg_admin_members_validate_form_submit_print"),
 			);
 
 		if ($this->reg->isMinor($data["birthdate"])) {
@@ -194,7 +195,7 @@ class Reg_OnsiteValidate {
 	/**
 	* Run our validation.
 	*/
-	function getFormValidate($form_id, $data) {
+	function getFormValidate(&$data) {
 
 		if ($data["badge_cost"] == 0) {
 			form_set_error("badge_cost", t("Amount Paid cannot be zero!"));
@@ -219,11 +220,19 @@ class Reg_OnsiteValidate {
 	} // End of getFormValidate()
 
 
-	function getFormSubmit($form_id, $data) {
+	/**
+	* Our submit handler.
+	*
+	* @param array $data Form data
+	*
+	* @param boolean $print_badge Are we also sending the current badge 
+	*	to the printer?
+	*/
+	function getFormSubmit(&$data, $print_badge = false) {
 
 		$this->updateMember($data);
 		$this->updateLog($data);
-		if (strstr($data["op"], "Validate and Print")) {
+		if ($print_badge) {
 			$this->printBadge($data);
 		}
 

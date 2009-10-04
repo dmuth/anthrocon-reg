@@ -514,14 +514,14 @@ class reg_admin_member extends reg {
 	} // End of add_note_form()
 
 
-	function add_note_form_validate($form_id, &$data) {
+	function add_note_form_validate(&$data) {
 	} // End of add_note_form_validate()
 
 
 	/**
 	* Save the new note.
 	*/ 
-	function add_note_form_submit($form_id, &$data) {
+	function add_note_form_submit(&$data) {
 
 		$reg_id = $data["reg_id"];
 		$message = t("Added Note: ") . $data["notes"];

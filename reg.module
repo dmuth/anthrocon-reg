@@ -145,7 +145,7 @@ function reg_registration() {
 	return($reg->registration());
 }
 
-function reg_registration_form($id = "") {
+function reg_registration_form($form_state, $id= "") {
 
 	$auth_factory = new authorize_net_factory();
 
@@ -156,22 +156,22 @@ function reg_registration_form($id = "") {
 
 }
 
-function reg_registration_form_validate($form_id, &$data) {
+function reg_registration_form_validate($form, &$data) {
 
 	$auth_factory = new authorize_net_factory();
 
 	$cc_gateway = $auth_factory->get_object("authorize_net");
 	$form = $GLOBALS["reg_factory"]->get_object("form");
 
-	$form->reg_validate($form_id, $data, $cc_gateway);
+	$form->reg_validate($data["values"], $cc_gateway);
 
 }
 
-function reg_registration_form_submit($form_id, &$data) {
+function reg_registration_form_submit($form, &$data) {
 
 	$form = $GLOBALS["reg_factory"]->get_object("form");
 
-	return($form->reg_submit($form_id, $data));
+	return($form->reg_submit($data["values"]));
 
 }
 
@@ -333,19 +333,19 @@ function reg_admin_members_add_note($id) {
 	return($member->add_note($id));
 }
 
-function reg_admin_members_add_note_form($id) {
+function reg_admin_members_add_note_form($form_state, $id) {
 	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
 	return($member->add_note_form($id));
 }
 
-function reg_admin_members_add_note_form_validate($form_id, &$data) {
+function reg_admin_members_add_note_form_validate($form, &$form_state) {
 	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
-	return($member->add_note_form_validate($form_id, $data));
+	return($member->add_note_form_validate($form_state["values"]));
 }
 
-function reg_admin_members_add_note_form_submit($form_id, &$data) {
+function reg_admin_members_add_note_form_submit($form, &$form_state) {
 	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
-	return($member->add_note_form_submit($form_id, $data));
+	return($member->add_note_form_submit($form_state["values"]));
 }
 
 
@@ -359,19 +359,19 @@ function reg_admin_members_cancel($id) {
 	return($cancel->cancel($id));
 }
 
-function reg_admin_members_cancel_form($id) {
+function reg_admin_members_cancel_form($form_state, $id) {
 	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
 	return($cancel->form($id));
 }
 
-function reg_admin_members_cancel_form_validate($form_id, $data) {
+function reg_admin_members_cancel_form_validate($form, &$form_state) {
 	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
-	return($cancel->form_validate($form_id, $data));
+	return($cancel->form_validate($form_state["values"]));
 }
 
-function reg_admin_members_cancel_form_submit($form_id, $data) {
+function reg_admin_members_cancel_form_submit($form, &$form_state) {
 	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
-	return($cancel->form_submit($form_id, $data));
+	return($cancel->form_submit($form_state["values"]));
 }
 
 
@@ -385,19 +385,19 @@ function reg_admin_members_adjust($id) {
 	return($adjust->adjust($id));
 }
 
-function reg_admin_members_adjust_form($id) {
+function reg_admin_members_adjust_form($form_state, $id) {
 	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
 	return($adjust->form($id));
 }
 
-function reg_admin_members_adjust_form_validate($form_id, $data) {
+function reg_admin_members_adjust_form_validate($form, &$form_state) {
 	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
-	return($adjust->form_validate($form_id, $data));
+	return($adjust->form_validate($form_state["values"]));
 }
 
-function reg_admin_members_adjust_form_submit($form_id, $data) {
+function reg_admin_members_adjust_form_submit($form, &$form_state) {
 	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
-	return($adjust->form_submit($form_id, $data));
+	return($adjust->form_submit($form_state["values"]));
 }
 
 
@@ -411,19 +411,19 @@ function reg_admin_members_print($id) {
 	return($util->getPage($id));
 }
 
-function reg_admin_members_print_form($id) {
+function reg_admin_members_print_form($form_status, $id) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
 	return($util->getForm($id));
 }
 
-function reg_admin_members_print_form_validate($form_id, $data) {
+function reg_admin_members_print_form_validate($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
-	return($util->getFormValidate($form_id, $data));
+	return($util->getFormValidate($form_state["values"]));
 }
 
-function reg_admin_members_print_form_submit($form_id, $data) {
+function reg_admin_members_print_form_submit($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
-	return($util->getFormSubmit($form_id, $data));
+	return($util->getFormSubmit($form_state["values"]));
 }
 
 
@@ -437,19 +437,27 @@ function reg_admin_members_validate($id) {
 	return($util->getPage($id));
 }
 
-function reg_admin_members_validate_form($id) {
+function reg_admin_members_validate_form($form_state, $id) {
 	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
 	return($util->getForm($id));
 }
 
-function reg_admin_members_validate_form_validate($form_id, $data) {
+function reg_admin_members_validate_form_validate($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
-	return($util->getFormValidate($form_id, $data));
+	return($util->getFormValidate($form_state["values"]));
 }
 
-function reg_admin_members_validate_form_submit($form_id, $data) {
+function reg_admin_members_validate_form_submit($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
-	return($util->getFormSubmit($form_id, $data));
+	return($util->getFormSubmit($form_state["values"]));
+}
+
+//
+// This handler is called when we click "Validate and Print"
+//
+function reg_admin_members_validate_form_submit_print($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getFormSubmit($form_state["values"], true));
 }
 
 
@@ -486,14 +494,14 @@ function reg_admin_search_form() {
 	return($search->search_form());
 }
 
-function reg_admin_search_form_validate($form_id, &$data) {
+function reg_admin_search_form_validate($form, &$form_state) {
 	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
-	$search->search_validate($form_id, $data);
+	$search->search_validate($form_state["values"]);
 }
 
-function reg_admin_search_form_submit($form_id, &$data) {
+function reg_admin_search_form_submit($form, &$form_state) {
 	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
-	return($search->search_submit($form_id, $data));
+	return($search->search_submit($form_state["values"]));
 }
 
 

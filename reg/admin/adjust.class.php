@@ -69,7 +69,7 @@ class reg_admin_adjust extends reg_admin_cancel {
 	} // End of form()
 
 
-	function form_validate($form_id, &$data) {
+	function form_validate(&$data) {
 		//
 		// Check for a valid badge cost number
 		//
@@ -91,7 +91,7 @@ class reg_admin_adjust extends reg_admin_cancel {
 	} // End of form_validate()
 
 
-	function form_submit($form_id, &$data) {
+	function form_submit(&$data) {
 
 		//
 		// Write a transaction record.

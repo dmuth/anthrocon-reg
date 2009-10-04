@@ -148,7 +148,7 @@ class reg_admin_cancel extends reg {
 	} // End of form()
 
 
-	function form_validate($form_id, &$data) {
+	function form_validate(&$data) {
 
 		//
 		// Check for a valid badge cost number
@@ -184,7 +184,7 @@ class reg_admin_cancel extends reg {
 	/**
 	* Save the new note.
 	*/ 
-	function form_submit($form_id, &$data) {
+	function form_submit(&$data) {
 
 		//
 		// Invert the numbers, since we're refunding money here..

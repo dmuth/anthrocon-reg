@@ -49,14 +49,12 @@ class reg_form extends reg {
 	* If there are any issues, form_set_error() should be called so
 	* that form processing does not continue.
 	*
-	* @param string $form_id Our unique form ID
-	*
 	* @param array $data Our form data.
 	*
 	* @param object $cc_gateway Our credit card gateway.
 	*
 	*/
-	function reg_validate(&$form_id, &$data, &$cc_gateway) {
+	function reg_validate(&$data, &$cc_gateway) {
 
 		$log = $this->log;
 
@@ -272,7 +270,7 @@ class reg_form extends reg {
 	/**
 	* All the registration form data checks out.  
 	*/
-	function reg_submit(&$form_id, &$data) {
+	function reg_submit(&$data) {
 
 		//
 		// The URI to send ourselves to
