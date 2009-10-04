@@ -89,11 +89,11 @@ class reg_admin_log_search extends reg_admin_log_view {
 	} // End of search_form()
 
 
-	function search_form_validate($form_id, &$data) {
+	function search_form_validate(&$data) {
 	} // End of search_form_validate()
 
 
-	function search_form_submit($form_id, &$data) {
+	function search_form_submit(&$data) {
 
 		$get_data = $this->array_to_get_data($data["search"]);
 		$url = "admin/reg/logs/" . $get_data;

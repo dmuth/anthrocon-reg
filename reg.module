@@ -532,14 +532,14 @@ function reg_admin_log_search_form() {
 	return($search->search_form());
 }
 
-function reg_admin_log_search_form_validate($form_id, &$data) {
+function reg_admin_log_search_form_validate($form, &$form_state) {
 	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
-	return($search->search_form_validate($form_id, $data));
+	return($search->search_form_validate($form_state["values"]));
 }
 
-function reg_admin_log_search_form_submit($form_id, &$data) {
+function reg_admin_log_search_form_submit($form, &$form_state) {
 	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
-	return($search->search_form_submit($form_id, $data));
+	return($search->search_form_submit($form_state["values"]));
 }
 
 
