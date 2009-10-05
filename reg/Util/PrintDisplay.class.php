@@ -20,12 +20,12 @@ class Reg_Util_PrintDisplay {
 
 		$retval = t("<h2>Pending Print Jobs</h2>");
 
-
 		$form_output .= drupal_get_form("reg_admin_utils_print_queue_form");
 
-		$retval .= theme_pager();
+		//$retval .= theme_pager();
+// TEST
 		$retval .= $form_output;
-		$retval .= theme_pager();
+		//$retval .= theme_pager();
 
 		return($retval);
 
@@ -110,6 +110,11 @@ class Reg_Util_PrintDisplay {
 				);
 		}
 
+		//
+		// Use our theme for printing the print queue.
+		//
+		$retval["#theme"] = "reg_print_queue_form";
+
 		return($retval);
 
 	} // End of getForm()
@@ -193,14 +198,14 @@ class Reg_Util_PrintDisplay {
 	/**
 	* Nothing to validate at the present time.
 	*/
-	function getFormValidate($form_id, &$data) {
+	function getFormValidate(&$data) {
 	}
 
 
 	/**
 	* Cancel anything that was marked marked.
 	*/
-	function getFormSubmit($form_id, &$data) {
+	function getFormSubmit(&$data) {
 
 		foreach ($data["cancel"] as $key => $value) {
 

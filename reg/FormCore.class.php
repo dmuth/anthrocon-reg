@@ -74,7 +74,7 @@ class Reg_FormCore {
 			//
 			// Render elements with our custom theme code
 			//
-			"#theme" => "reg_theme"
+			"#theme" => "reg_form"
 			);
 
 		//
@@ -335,7 +335,7 @@ class Reg_FormCore {
 			//
 			// Render elements with our custom theme code
 			//
-			"#theme" => "reg_theme"
+			"#theme" => "reg_form"
 			);
 
 		$retval["address1"] = array(
@@ -466,7 +466,7 @@ class Reg_FormCore {
 			//
 			// Render elements with our custom theme code
 			//
-			"#theme" => "reg_theme"
+			"#theme" => "reg_form"
 			);
 
 		$retval["shipping_name"] = array(
@@ -577,7 +577,7 @@ class Reg_FormCore {
 			//
 			// Render elements with our custom theme code
 			//
-			"#theme" => "reg_theme"
+			"#theme" => "reg_form"
 			);
 
 		if (!$this->in_admin()) {
@@ -681,7 +681,7 @@ class Reg_FormCore {
 		if (!$this->in_admin() && !$this->no_captcha()) {
 
 			$retval["reg_captcha"] = $this->captcha->create();
-			$retval["reg_captcha"]["#theme"] = "reg_theme";
+			$retval["reg_captcha"]["#theme"] = "reg_form";
 
 		}
 

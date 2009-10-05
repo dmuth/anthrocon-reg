@@ -62,7 +62,7 @@ class reg_verify extends reg {
 			"#tree" => true,
 			//"#collapsible" => true,
 			"#collapsed" => false,
-			"#theme" => "reg_theme",
+			"#theme" => "reg_form",
 			);
 
 		$search["last"] = array(

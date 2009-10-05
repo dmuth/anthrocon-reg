@@ -55,3 +55,9 @@ td .reg-value {
 	display: none;
 }
 
+/**
+* We do this because select elements also have a margin for some reason.
+*/
+.form-text, .form-checkbox {
+	margin-left: 1em;
+}

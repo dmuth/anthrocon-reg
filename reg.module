@@ -145,7 +145,7 @@ function reg_registration() {
 	return($reg->registration());
 }
 
-function reg_registration_form($form_state, $id= "") {
+function reg_registration_form($form_state, $id = "") {
 
 	$auth_factory = new authorize_net_factory();
 
@@ -625,10 +625,10 @@ function reg_admin_utils_unused_badge_nums_form() {
 
 }
 
-function reg_admin_utils_unused_badge_nums_form_submit($form_id, &$data) {
+function reg_admin_utils_unused_badge_nums_form_submit($form, &$form_state) {
 
 	$util = $GLOBALS["reg_factory"]->get_object("Util_UnusedBadgeNumsDisplay");
-	$retval = $util->getFormSubmit($form_id, $data);
+	$retval = $util->getFormSubmit($form_state["values"]);
 	return($retval);
 
 }
@@ -657,10 +657,10 @@ function reg_admin_utils_duplicate_form() {
 
 }
 
-function reg_admin_utils_duplicate_form_submit($form_id, &$data) {
+function reg_admin_utils_duplicate_form_submit($form, $form_state) {
 
 	$util = $GLOBALS["reg_factory"]->get_object("Util_DuplicateDisplay");
-	$retval = $util->getFormSubmit($form_id, $data);
+	$retval = $util->getFormSubmit($form_state["values"]);
 	return($retval);
 
 }
@@ -713,19 +713,14 @@ function reg_admin_utils_print_queue_form() {
 	return($util->getForm());
 }
 
-function theme_reg_admin_utils_print_queue_form($form) {
+function reg_admin_utils_print_queue_form_validate($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
-	return($util->getFormTheme($form));
+	return($util->getFormValidate($form_state["values"]));
 }
 
-function reg_admin_utils_print_queue_form_validate($form_id, &$data) {
+function reg_admin_utils_print_queue_form_submit($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
-	return($util->getFormValidate($form_id, $data));
-}
-
-function reg_admin_utils_print_queue_form_submit($form_id, &$data) {
-	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
-	return($util->getFormSubmit($form_id, $data));
+	return($util->getFormSubmit($form_state["values"]));
 }
 
 
@@ -758,14 +753,51 @@ function reg_admin_utils_print_ajax_update($id, $status) {
 	exit();
 }
 
+
 /**
-* Our theme function for creating form elements in the reg system.
+* Register all of our theme-related functions.
 */
-function theme_reg_theme($form) {
+function reg_theme($existing, $type, $theme, $path) {
+
+	$retval = array();
+
+	$retval["reg_form"] = array(
+		"arguments" => array("arguments" => null),
+		);
+
+	$retval["reg_print_queue_form"] = array(
+		"arguments" => array("arguments" => null),
+		);
+
+	return($retval);
+
+} // End of reg_theme()
+
+
+/**
+* Our theme function for printing up the registration form.
+*
+* @param array $form Form elements.
+*
+* @return string HTML code for the form.
+*/
+function theme_reg_form($form) {
 	$theme = $GLOBALS["reg_factory"]->get_object("theme");
 	$retval = $theme->theme($form);
 	return($retval);
 }
 
+
+/**
+* Our theme function for printing up the registration form.
+*
+* @param array $form Form elements.
+*
+* @return string HTML code for the form.
+*/
+function theme_reg_print_queue_form($form) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getFormTheme($form));
+}
 
 

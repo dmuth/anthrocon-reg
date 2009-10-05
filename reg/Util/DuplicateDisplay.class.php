@@ -72,7 +72,7 @@ class Reg_Util_DuplicateDisplay {
 	/**
 	* This is called on form submission.
 	*/
-	function getFormSubmit(&$form_id, &$data) {
+	function getFormSubmit(&$data) {
 
 		$retval = "";
 
