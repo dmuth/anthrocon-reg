@@ -129,11 +129,11 @@ class Reg_Util_WatchlistDisplay {
 	/**
 	* Our validation function.
 	*/
-	function getFormValidate($form_id, &$data) {
+	function getFormValidate(&$data) {
 	}
 
 
-	function getFormSubmit($form_id, &$data) {
+	function getFormSubmit(&$data) {
 
 		//
 		// Generate our log message, complete with audit log data.

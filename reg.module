@@ -226,14 +226,14 @@ function reg_admin_settings_form() {
 	return($retval);
 }
 
-function reg_admin_settings_form_validate($form_id, $data) {
+function reg_admin_settings_form_validate($form, &$form_state) {
 	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
-	$settings->settings_form_validate($form_id, $data);
+	$settings->settings_form_validate($form_state["values"]);
 }
 
-function reg_admin_settings_form_submit($form_id, $data) {
+function reg_admin_settings_form_submit($form, &$form_state) {
 	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
-	$settings->settings_form_submit($form_id, $data);
+	$settings->settings_form_submit($form_state["values"]);
 }
 
 
@@ -254,19 +254,19 @@ function reg_admin_settings_messages_edit($id = "") {
 	return($settings->edit($id));
 }
 
-function reg_admin_settings_message_form($id) {
+function reg_admin_settings_message_form($form_state, $id) {
 	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
 	return($settings->form($id));
 }
 
-function reg_admin_settings_message_form_validate($form_id, $data) {
+function reg_admin_settings_message_form_validate($form, &$form_state) {
 	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
-	return($settings->form_validate($form_id, $data));
+	return($settings->form_validate($form_state["values"]));
 }
 
-function reg_admin_settings_message_form_submit($form_id, $data) {
+function reg_admin_settings_message_form_submit($form, &$form_state) {
 	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
-	return($settings->form_submit($form_id, $data));
+	return($settings->form_submit($form_state["values"]));
 }
 
 /**
@@ -286,19 +286,19 @@ function reg_admin_levels_edit($id = "") {
 	return($level->levels_edit($id));
 }
 
-function reg_admin_level_form($id) {
+function reg_admin_level_form($form_state, $id) {
 	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
 	return($level->level_form($id));
 }
 
-function reg_admin_level_form_validate($form_id, $data) {
+function reg_admin_level_form_validate($form, &$form_state) {
 	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
-	return($level->level_form_validate($form_id, $data));
+	return($level->level_form_validate($form_state["values"]));
 }
 
-function reg_admin_level_form_submit($form_id, $data) {
+function reg_admin_level_form_submit($ford, &$form_state) {
 	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
-	return($level->level_form_submit($form_id, $data));
+	return($level->level_form_submit($form_state["values"]));
 }
 
 
@@ -683,19 +683,19 @@ function reg_admin_utils_watchlist_edit($id = "") {
 	return($util->getEditPage($id));
 }
 
-function reg_admin_utils_watchlist_form($id) {
+function reg_admin_utils_watchlist_form($form_state, $id) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
 	return($util->getForm($id));
 }
 
-function reg_admin_utils_watchlist_form_validate($form_id, $data) {
+function reg_admin_utils_watchlist_form_validate($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
-	return($util->getFormValidate($form_id, $data));
+	return($util->getFormValidate($form_state["values"]));
 }
 
-function reg_admin_utils_watchlist_form_submit($form_id, $data) {
+function reg_admin_utils_watchlist_form_submit($form, &$form_state) {
 	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
-	return($util->getFormSubmit($form_id, $data));
+	return($util->getFormSubmit($form_state["values"]));
 }
 
 /**

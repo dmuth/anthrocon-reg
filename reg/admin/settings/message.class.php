@@ -184,14 +184,14 @@ class reg_admin_settings_message extends reg {
 	/**
 	* This function validates a submitted form.
 	*/
-	function form_validate($form_id, &$data) {
+	function form_validate(&$data) {
 	} // End of form_validate()
 
 
 	/**
 	* Everything in the form checks out, save the data.
 	*/
-	function form_submit($form_id, $data) {
+	function form_submit(&$data) {
 
 		$message = $this->message;
 		$old_data = $message->load_by_id($data["id"]);

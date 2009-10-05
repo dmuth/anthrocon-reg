@@ -116,7 +116,7 @@ class reg_admin_settings extends reg {
 	* If there are any issues, form_set_error() should be called so
 	* that form processing does not continue.
 	*/
-	function settings_form_validate(&$form_id, &$data) {
+	function settings_form_validate(&$data) {
 
 		//
 		// If a path was entered, make sure it is a valid alias or
@@ -153,7 +153,7 @@ class reg_admin_settings extends reg {
 	* conclusion of this funciton, the user is redirected back to the 
 	* form page.
 	*/
-	function settings_form_submit($form_id, $data) {
+	function settings_form_submit(&$data) {
 
 		$admin = $this->admin;
 		$admin->variable_set($this->get_constant("FORM_ADMIN_FAKE_CC"), 

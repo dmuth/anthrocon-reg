@@ -777,12 +777,14 @@ class Reg_FormCore {
 			//
 			if ($this->reg->is_admin()) {
 				$url = "admin/reg/settings/levels/list/" . $id . "/edit";
-				$string .= " " . l(t("[Edit this blurb]"), $url, "", 
-					$dest);
+				$string .= " " . l(t("[Edit this blurb3]"), $url,
+					array("query" => $dest));
 			}
 
 			$string .= "<br>\n"
+				. "<div class=\"reg-level-desc\">"
 				. nl2br($desc)
+				. "</div>"
 				;
 			$level_options[$key] = $string;
 		}

@@ -235,7 +235,7 @@ class reg_admin_level extends reg {
 	/**
 	* This function validates a submitted level form.
 	*/
-	function level_form_validate($form_id, &$data) {
+	function level_form_validate(&$data) {
 
 		$log = $this->log;
 
@@ -298,7 +298,7 @@ class reg_admin_level extends reg {
 	/**
 	* Everything in the form checks out, save the data.
 	*/
-	function level_form_submit($form_id, $data) {
+	function level_form_submit(&$data) {
 
 		//
 		// Turn the data arrays into strings
