@@ -56,6 +56,10 @@ class authorize_net_settings extends authorize_net {
 		$retval["submit_test_gateway"] = array(
 			"#type" => "submit",
 			"#value" => t("Save and Test Credentials"),
+			//
+			// Different function to be called if this button is clicked.
+			//
+			"#submit" => array("authorize_net_settings_form_submit_test_gateway"),
 			);
 
 		return($retval);
@@ -192,7 +196,7 @@ class authorize_net_settings extends authorize_net {
 	} // End of sanity_check()
 
 
-	function validate($form_id, &$data) {
+	function validate(&$data) {
 
 	} // End of validate()
 
@@ -271,7 +275,14 @@ class authorize_net_settings extends authorize_net {
 	} // End of test_gateway()
 
 
-	function submit($form_id, &$data) {
+	/**
+	* Our submit function.
+	*
+	* @param array $data Associative array of form data.
+	*
+	* @param $test_cred boolean Do we also want to test the gateway?
+	*/
+	function submit(&$data, $test_cred = false) {
 
 		$credentials = $data["credentials"];
 		$test_gateway = $data["test_gateway"];
@@ -293,7 +304,7 @@ class authorize_net_settings extends authorize_net {
 		// Do this AFTER the data is saved in case we updated the
 		// login ID or transaction key.
 		//
-		if ($data["op"] == t("Save and Test Credentials")) {
+		if ($test_cred) {
 			$this->test_gateway($data);
 		}
 

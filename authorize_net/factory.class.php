@@ -49,7 +49,10 @@ class authorize_net_factory {
 
 
 	protected function get_menu() {
-		$retval = new authorize_net_menu();
+		$factory = new reg_factory();
+		$reg = $factory->get_object("reg");
+
+		$retval = new authorize_net_menu($reg);
 		return($retval);
 	}
 
