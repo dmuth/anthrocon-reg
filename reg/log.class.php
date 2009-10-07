@@ -36,7 +36,7 @@ class reg_log extends reg {
 
 		global $user, $base_root;
 
-		watchdog("reg", $message, $severity);
+		watchdog("reg", $message, null, $severity);
 
 		//
 		// Non-apache setups (nginx, SSL accelerators, etc.) cause $base_root
