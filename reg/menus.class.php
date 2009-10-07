@@ -86,7 +86,7 @@ class reg_menus extends reg {
 		//
 		// Verify a registraiton
 		//
-		$retval["reg/verify/%/%"] = array(
+		$retval["reg/verify"] = array(
 			"title" => "Verify an existing registration",
 			"page callback" => "reg_verify",
 			//
@@ -353,6 +353,14 @@ class reg_menus extends reg {
 			"weight" => 1,
 			);
 
+		$retval["admin/reg/members/view"] = array(
+			"title" => "Recent",
+			"page callback" => "reg_admin_members",
+			"access arguments" => array($this->get_constant("perm_staff")),
+			"type" => MENU_DEFAULT_LOCAL_TASK,
+			"weight" => -10,
+			);
+
 		$retval["admin/reg/members/search"] = array(
 			"title" => "Search",
 			"access arguments" => array($this->get_constant("perm_staff")),
@@ -375,14 +383,6 @@ class reg_menus extends reg {
 			"access arguments" => array($this->get_constant("perm_staff")),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
-			);
-
-		$retval["admin/reg/members/view"] = array(
-			"title" => "Recent",
-			"access callback" => "reg_menu_display_member_menu",
-			"access arguments" => array($this->get_constant("perm_staff"), 3),
-			"type" => MENU_DEFAULT_LOCAL_TASK,
-			"weight" => -10,
 			);
 
 		//

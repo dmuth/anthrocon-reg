@@ -27,12 +27,13 @@ class reg_verify extends reg {
 
 		$email = variable_get($this->get_constant("VAR_EMAIL"), "");
 
-		$message = t($this->message->load_display("verify",
-			array(
-				"!email" => $email,
-				)
-			));
-		$retval .= nl2br($message["value"]);
+		$verify_array = $this->message->load_display("verify");
+		$verify_text = $verify_array["value"];
+		$message = t($verify_text,
+			array("!email" => $email)
+			);
+
+		$retval .= nl2br($message);
 		$retval .= drupal_get_form("reg_verify_form");
 		$retval .= $this->results($id_email);
 
@@ -121,7 +122,7 @@ class reg_verify extends reg {
 	} // End of verify_form()
 
 
-	function verify_validate($form_id, &$data) {
+	function verify_validate(&$data) {
 
 		//
 		// Wipe our session array on every form submission.
@@ -148,7 +149,7 @@ class reg_verify extends reg {
 	* the user back to the main search form, at which point the search 
 	* will be performed.
 	*/
-	function verify_submit($form_id, &$data) {
+	function verify_submit(&$data) {
 
 		//
 		// The very first thing we're going to do here is chop off all but
@@ -274,6 +275,7 @@ class reg_verify extends reg {
 			"!cc_name" => $data["cc_name"],
 			"!total_cost" => $data["total_cost"],
 			"!verify_url" => l($url, $url),
+			"!member_type" => $data["member_type"],
 			);
 
 		$email_sent = $this->email->email($data["email"], $message_name, 

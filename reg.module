@@ -106,20 +106,20 @@ function reg_verify($id_email = "") {
 	return($retval);
 } 
 
-function reg_verify_form() {
+function reg_verify_form($form_state) {
 	$verify = $GLOBALS["reg_factory"]->get_object("verify");
 	$retval = $verify->verify_form();
 	return($retval);
 }
 
-function reg_verify_form_validate($form_id, &$data) {
+function reg_verify_form_validate($form, &$form_state) {
 	$verify = $GLOBALS["reg_factory"]->get_object("verify");
-	$verify->verify_validate($form_id, $data);
+	$verify->verify_validate($form_state["values"]);
 }
 
-function reg_verify_form_submit($form_id, &$data) {
+function reg_verify_form_submit($form, &$form_state) {
 	$verify = $GLOBALS["reg_factory"]->get_object("verify");
-	$retval = $verify->verify_submit($form_id, $data);
+	$retval = $verify->verify_submit($form_state["values"]);
 	return($retval);
 }
 
