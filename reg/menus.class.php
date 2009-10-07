@@ -379,7 +379,8 @@ class reg_menus extends reg {
 
 		$retval["admin/reg/members/view"] = array(
 			"title" => "Recent",
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"type" => MENU_DEFAULT_LOCAL_TASK,
 			"weight" => -10,
 			);
@@ -389,7 +390,8 @@ class reg_menus extends reg {
 		//
 		$retval["admin/reg/members/view/%/view"] = array(
 			"title" => "View",
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"page callback" => "reg_admin_members_view",
 			"page arguments" => array(4),
 			"weight" => -10,
@@ -401,7 +403,8 @@ class reg_menus extends reg {
 			"title" => "Edit",
 			"page callback" => "reg_admin_members_edit",
 			"page arguments" => array(4),
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 1,
 			);
@@ -410,7 +413,8 @@ class reg_menus extends reg {
 			"title" => "Add Note",
 			"page callback" => "reg_admin_members_add_note",
 			"page arguments" => array(4),
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -419,7 +423,8 @@ class reg_menus extends reg {
 			"title" => "Cancel Membership",
 			"page callback" => "reg_admin_members_cancel",
 			"page arguments" => array(4),
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 2,
 			);
@@ -428,7 +433,8 @@ class reg_menus extends reg {
 			"title" => "Balance Adjustment",
 			"page callback" => "reg_admin_members_adjust",
 			"page arguments" => array(4),
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 3,
 			);
@@ -437,7 +443,8 @@ class reg_menus extends reg {
 			"title" => "Print Badge",
 			"page callback" => "reg_admin_members_print",
 			"page arguments" => array(4),
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 4,
 			);
@@ -446,7 +453,8 @@ class reg_menus extends reg {
 			"title" => "Validate",
 			"page callback" => "reg_admin_members_validate",
 			"page arguments" => array(4),
-			"access arguments" => array($this->get_constant("perm_staff")),
+			"access callback" => "reg_menu_display_member_menu",
+			"access arguments" => array($this->get_constant("perm_staff"), 3),
 			"type" => MENU_LOCAL_TASK,
 			"weight" => 5,
 			);

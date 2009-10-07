@@ -801,3 +801,30 @@ function theme_reg_print_queue_form($form) {
 }
 
 
+/**
+* This is a callback from our menu system that determines if we're
+*	supposed to display the menu with member options.
+*
+* @param string $access_level The access level required
+*
+* @param string $arg3 The third argument from the URL.
+*
+* @return boolean True if the user show be shown this menu, false otherwise
+*/
+function reg_menu_display_member_menu($access_level, $arg3) {
+
+	//
+	// If the user has the required access level and they're under the "view"
+	// menu, show the submenu.
+	//
+	if (user_access($access_level)
+		&& $arg3 == "view") {
+		return(true);
+	}
+
+	return(false);
+
+} // End of reg_menu_display_member_menu()
+
+
+
