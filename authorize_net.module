@@ -12,6 +12,13 @@
 */
 function authorize_net_autoload($class) {
 
+	//
+	// Only load classes we're responsible for.
+	//
+	if (!preg_match("/^authorize_net/", $class)) {
+		return(null);
+	}
+
 	//print "$class<br>\n"; // Debugging
 	$file = str_replace("_", "/", $class);
 	//print "1: $file<br/>\n";
@@ -19,13 +26,6 @@ function authorize_net_autoload($class) {
 	//print "2: $file<br/>\n";
 	$file .= ".class.php";
 	//print "3: $file<br>\n"; // Debugging
-
-	//
-	// WE're not responsible for views classes.
-	//
-	if (preg_match("/^views_/", $class)) {
-		return(null);
-	}
 
 	include_once($file);
 
