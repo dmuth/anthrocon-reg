@@ -234,6 +234,11 @@ jQuery.fn.printerWidget.printBadge = function(id, badge_name, badge_num,
 	//$("#edit-interval").parent().append(id); // Debugging
 	var url = jQuery.fn.printerWidget.base_url 
 		+ "/admin/reg/utils/print/client/ajax/update/" + id + "/printed";
+	//$("#edit-interval").parent().append(url); // Debugging
+
+	//
+	// No callback because nothing is returned.
+	//
 	$.get(url);
 
 
@@ -312,10 +317,11 @@ jQuery.fn.printerWidget.printLoop = function() {
 	jQuery.fn.printerWidget.setStatus(
 		"Querying for badges in queue for printer '" + printer + "'...");
 
-	//$("#edit-interval").parent().append(); // Debugging
+	//$("#edit-interval").parent().append(""); // Debugging
 
 	var url = jQuery.fn.printerWidget.base_url 
 		+ "/admin/reg/utils/print/client/ajax/fetch/" + printer;
+
 	$.get(url, {}, jQuery.fn.printerWidget.fetchCallback);
 
 } // End of printLoop()
@@ -356,7 +362,6 @@ jQuery.fn.printerWidget.fetchCallback = function(data) {
 	setTimeout(jQuery.fn.printerWidget.printLoop, interval);
 
 } // End of fetchCallback()
-
 
 
 /**

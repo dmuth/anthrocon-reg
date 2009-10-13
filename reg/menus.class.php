@@ -516,7 +516,11 @@ class reg_menus extends reg {
 			"weight" => 1,
 			);
 
-		$retval["admin/reg/utils/print/client/ajax/fetch/%"] = array(
+		//
+		// Extra aguments on the end don't have to be specified here, 
+		// according to the docs.
+		//
+		$retval["admin/reg/utils/print/client/ajax/fetch"] = array(
 			"page callback" => "reg_admin_utils_print_ajax_fetch",
 			"page arguments" => array(7),
 			"access arguments" => array($this->get_constant("perm_admin")),
@@ -524,7 +528,7 @@ class reg_menus extends reg {
 			"weight" => 0,
 			);
 
-		$retval["admin/reg/utils/print/client/ajax/fetch/%/%"] = array(
+		$retval["admin/reg/utils/print/client/ajax/update"] = array(
 			"page callback" => "reg_admin_utils_print_ajax_update",
 			"page arguments" => array(7, 8),
 			"access arguments" => array($this->get_constant("perm_admin")),
