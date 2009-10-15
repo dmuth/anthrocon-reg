@@ -49,6 +49,10 @@ class authorize_net_factory {
 
 
 	protected function get_menu() {
+//
+// TODO: Throw exception if not found?
+// Maybe put exception in autoloader for this module?
+//
 		$factory = new reg_factory();
 		$reg = $factory->get_object("reg");
 

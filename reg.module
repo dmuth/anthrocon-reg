@@ -48,7 +48,19 @@ function reg_perm() {
 }
 
 
+/**
+* hook_boot() will run on every page, even cached pages.
+* hook_init() will only run on non-cached pages.
+*/
 function reg_init() {
+
+	//
+	// Want to test out data schema changes?  Here's the place to do it!
+	//
+	//include("reg.install");
+	//reg_uninstall();
+	//reg_install(true);
+	//reg_install(false);
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->hook_init();
@@ -818,6 +830,5 @@ function reg_menu_display_member_menu($access_level, $arg3) {
 	return(false);
 
 } // End of reg_menu_display_member_menu()
-
 
 

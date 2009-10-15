@@ -9,51 +9,46 @@ include_once("reg.class.php");
 
 
 /**
-* This function is called when the module is installed.
+* Define our schema.
 */
-function reg_install() {
+function reg_schema() {
 
-	$db = $GLOBALS["db_type"];
+	$retval = array();
 
-	if ($db == "mysql" || $db == "mysqli") {
+	//
+	// Reg table.  Holds registrations.
+	// In order for a registration to get in here, the credit card
+	// must have been charged successfully or entered manually by 
+	// an admin.
+	//
+	$retval["reg"] = array(
 
-		//
-		// Reg table.  Holds registrations.
-		// In order for a registration to get in here, the credit card
-		// must have been charged successfully or entered manually by 
-		// an admin.
-		//
-		$query = "CREATE TABLE {reg} ( "
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "created INTEGER NOT NULL DEFAULT '0', "
-			. "modified INTEGER NOT NULL DEFAULT '0', "
-			//
-			// 4-digit year
-			//
-			. "year INTEGER, "
-			. "INDEX reg_year(year), "
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"created" => array("type" => "int", "not null" => true, "default" => "0"),
+			"modified" => array("type" => "int", "not null" => true, "default" => "0"),
+			"year" => array("type" => "int", "not null" => true),
 			//
 			// The membership type.  
 			// Values are stored in the reg_type table.
 			//
-			. "reg_type_id INTEGER NOT NULL, "
+			"reg_type_id" => array("type" => "int", "not null" => true),
 			//
 			// The membership status.
 			// Values are stored in the reg_status
 			//
-			. "reg_status_id INTEGER NOT NULL, "
+			"reg_status_id" => array("type" => "int", "not null" => true),
 			//
 			// Badge number and name.  The badge name can be blank.
 			//
-			. "badge_num INTEGER, "
-			. "UNIQUE INDEX reg_year_badge_num(year, badge_num), "
-			. "badge_name VARCHAR(255), "
+			"badge_num" => array("type" => "int", "not null" => false),
+			"badge_name" => array("type" => "varchar", "length" => 255),
 			//
 			// Basic info on the badge holder
 			//
-			. "first VARCHAR(255), "
-			. "middle VARCHAR(255), "
-			. "last VARCHAR(255), "
+			"first" => array("type" => "varchar", "length" => 255),
+			"middle" => array("type" => "varchar", "length" => 255),
+			"last" => array("type" => "varchar", "length" => 255),
 			//
 			// Timestamp for the member's birthday.
 			// Note that this is NOT a time_t, because negative
@@ -61,77 +56,568 @@ function reg_install() {
 			// We only need resolution to the nearest day anyway,
 			// so timezones are not an issue.
 			//
-			. "birthdate DATE NOT NULL, "
+			"birthdate" => array("type" => "datetime", "not null" => true),
 
-			. "address1 VARCHAR(255), "
-			. "address2 VARCHAR(255), "
-			. "city VARCHAR(255), "
-			. "state VARCHAR(255), "
-			. "zip VARCHAR(255), "
-			. "country VARCHAR(255), "
+			//
+			// Address information (i.e., where the member lives)
+			//
+			"address1" => array("type" => "varchar", "length" => 255),
+			"address2" => array("type" => "varchar", "length" => 255),
+			"city" => array("type" => "varchar", "length" => 255),
+			"state" => array("type" => "varchar", "length" => 255),
+			"zip" => array("type" => "varchar", "length" => 255),
+			"country" => array("type" => "varchar", "length" => 255),
 
 			//
 			// Shipping information.
 			//
-			. "shipping_name VARCHAR(255), "
-			. "shipping_address1 VARCHAR(255), "
-			. "shipping_address2 VARCHAR(255), "
-			. "shipping_city VARCHAR(255), "
-			. "shipping_state VARCHAR(255), "
-			. "shipping_zip VARCHAR(255), "
-			. "shipping_country VARCHAR(255), "
+			"shipping_name" => array("type" => "varchar", "length" => 255),
+			"shipping_address1" => array("type" => "varchar", "length" => 255),
+			"shipping_address2" => array("type" => "varchar", "length" => 255),
+			"shipping_city" => array("type" => "varchar", "length" => 255),
+			"shipping_state" => array("type" => "varchar", "length" => 255),
+			"shipping_zip" => array("type" => "varchar", "length" => 255),
+			"shipping_country" => array("type" => "varchar", "length" => 255),
 
 			//
 			// If true, do not send a physical receipt.
 			//
-			. "no_receipt CHAR(1), "
+			"no_receipt" => array("type" => "varchar", "length" => 1),
 
-			. "email VARCHAR(255), "
-			. "phone VARCHAR(255), "
+			"email" => array("type" => "varchar", "length" => 255),
+			"phone" => array("type" => "varchar", "length" => 255),
+
 			//
 			// Shirt size for Sponsors and Super Sponsors
 			//
-			. "shirt_size_id INTEGER, "
+			"shirt_size_id" => array("type" => "int"),
+
 			//
 			// The user's balance for badge costs, donations, and total costs.
 			// This is updated anytime there is a transaction logged
 			//  in reg_trans.
 			//
-			. "badge_cost DECIMAL(10, 2) DEFAULT 0.00, "
-			. "donation DECIMAL(10, 2) DEFAULT 0.00, "
+			"badge_cost" => array("type" => "float", "default" => "0"),
+			"donation" => array("type" => "float", "default" => "0"),
 
 			//
 			// How much the member "owes" us.  This is only meaningful 
 			// for onsite registrations.
 			//
-			. "badge_cost_due DECIMAL(10, 2) DEFAULT 0.00, "
-			. "donation_due DECIMAL(10, 2) DEFAULT 0.00, "
+			"badge_cost_due" => array("type" => "float", "default" => "0"),
+			"donation_due" => array("type" => "float", "default" => "0"),
 
 			//
 			// The total amount of money that the member has given us.
 			//
-			. "total_cost DECIMAL(10, 2) DEFAULT 0.00 "
+			"total_cost" => array("type" => "float", "default" => "0"),
+			),
 
-			. ")"
-			;
-		db_query($query);
+		"indexes" => array(
+			"reg_year" => array("year"),
+			),
 
-		//
-		// Our different membership types, such as "sponsor", "staff", etc.
-		// This is mainly for what gets printed on the badges and how the
-		// user is referred to.  One of the reasons for this t able is that
-		// the user can have multiple membertype types, such as 
-		// "staff/sponsor", but this doesn't happen often enough (nor are 
-		// there enough combinations) to make it necessary for setting up
-		// a many-to-many relationship.
-		//
-		$query = "CREATE TABLE {reg_type} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "weight INTEGER DEFAULT 0, "
-			. "member_type VARCHAR(255) "
-			. ") "
-			;
-		db_query($query);
+		"unique keys" => array(
+			"reg_year_badge_num" => array("year", "badge_num"),
+			), 
+
+		"primary key" => array("id"),
+
+		);
+
+
+	//
+	// Our different membership types, such as "sponsor", "staff", etc.
+	// This is mainly for what gets printed on the badges and how the
+	// user is referred to.  One of the reasons for this t able is that
+	// the user can have multiple membertype types, such as 
+	// "staff/sponsor", but this doesn't happen often enough (nor are 
+	// there enough combinations) to make it necessary for setting up
+	// a many-to-many relationship.
+	//
+	$retval["reg_type"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"weight" => array("type" => "int", "default" => "0"),
+			"member_type" => array("type" => "varchar", "length" => "255"),
+			),
+		"primary key" => array("id"),
+		
+		);
+
+
+	//
+	// Our different membership statuses.
+	//
+	$retval["reg_status"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"status" => array("type" => "varchar", "length" => "255"),
+			"weight" => array("type" => "int", "default" => "0"),
+			"detail" => array("type" => "varchar", "length" => "255"),
+			),
+		"primary key" => array("id"),
+		);
+
+
+	//
+	// Our different membership levels, such as member, sponsor, etc.
+	// It is consulted when printing up the main registration form.
+	//
+	$retval["reg_level"] = array(
+		"fields" => array(
+
+			"id" => array("type" => "serial"),
+
+			//
+			// The human-readable name 
+			//
+			"name" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// What year the leve is for?  This allows us to have historic 
+			// data.
+			//
+			"year" => array("type" => "int"),
+
+			//
+			// The membership type.  
+			// Values are stored in the reg_type table.
+			//
+			"reg_type_id" => array("type" => "int", "not null" => true),
+
+			//
+			// How much does this cost?
+			//
+			"price" => array("type" => "float"),
+
+			//
+			// How long the membership type is available.
+			//
+			"start" => array("type" => "int", "not null" => true, "default" => "0"),
+			"end" => array("type" => "int", "not null" => true, "default" => "0"),
+
+			//
+			// Description that is shown to the user
+			//
+			"description" => array("type" => "text"),
+
+			//
+			// Internal notes
+			//
+			"notes" => array("type" => "text"),
+
+			),
+		"primary key" => array("id"),
+		);
+
+
+	//
+	// This table holds transactions related to registrations.
+	// Note that if an initial transaction was not successful, it will
+	// not go in here, since the registration would not have gone 
+	// through.  However, there will still be a record in reg_log.
+	//
+	$retval["reg_trans"] = array(
+
+		"fields" => array(
+			"id" => array("type" => "serial"),
+
+			//
+			// Foreign key to the registration table. (optional)
+			//
+			"reg_id" => array("type" => "int", "not null" => true),
+
+			//
+			// Timestamp
+			//
+			"date" => array("type" => "int", "not null" => true, "default" => "0"),
+
+			//
+			// User ID
+			//
+			"uid" => array("type" => "int"),
+
+			//
+			// Foreign key to the reg_trans_gateway_id table
+			//
+			"reg_trans_gateway_id" => array("type" => "int"),
+
+			//
+			// Auth code or other unique value that references a successful
+			// transaction from our gateway.
+			//
+			"gateway_auth_code" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// The unique transaction ID that the gateway returns
+			//
+			"gateway_transaction_id" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// The unique invoice number that we make up to send to the 
+			// gateway.  This may be optional with some gateways, but with
+			// authorize.net, we do this to keep from having multiple
+			// memberships being bought with the same card treated as 
+			// duplicate transactions.
+			//
+			// This number is entirely internal and we probably don't want
+			// to show this to any customers.
+			//
+			"invoice_number" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// What the gateway had to say about the AVS data and CVV codes.
+			// (i.e., the gateway responses)
+			//
+			"gateway_avs" => array("type" => "varchar", "length" => "1"),
+			"gateway_cvv" => array("type" => "varchar", "length" => "1"),
+
+			//
+			// Foreign key to the log table.  This is when linking to log 
+			// entries which may contain more information.
+			//
+			"reg_log_id" => array("type" => "int"),
+
+			//
+			// Is this a purchase, refund, upgrade, etc.?
+			// Full list in reg::get_trans_type()
+			//
+			"reg_trans_type_id" => array("type" => "int", "not null" => true),
+
+			//
+			// How was the membership paid for?
+			// cc, cash, check, comp, volunteer, board, staff, etc.
+			// Full list in reg::get_payment_type()
+			//
+			"reg_payment_type_id" => array("type" => "int", "not null" => true),
+
+			//
+			// Basic info on the badge holder
+			//
+			"first" => array("type" => "varchar", "length" => "255"),
+			"middle" => array("type" => "varchar", "length" => "255"),
+			"last" => array("type" => "varchar", "length" => "255"),
+			"address1" => array("type" => "varchar", "length" => "255"),
+			"address2" => array("type" => "varchar", "length" => "255"),
+			"city" => array("type" => "varchar", "length" => "255"),
+			"state" => array("type" => "varchar", "length" => "255"),
+			"zip" => array("type" => "varchar", "length" => "255"),
+			"country" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// Shipping information.
+			//
+			"shipping_name" => array("type" => "varchar", "length" => "255"),
+			"shipping_address1" => array("type" => "varchar", "length" => "255"),
+			"shipping_address2" => array("type" => "varchar", "length" => "255"),
+			"shipping_city" => array("type" => "varchar", "length" => "255"),
+			"shipping_state" => array("type" => "varchar", "length" => "255"),
+			"shipping_zip" => array("type" => "varchar", "length" => "255"),
+			"shipping_country" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// Credit card info.
+			// The "num" is really the last 4 digits.  We don't want to
+			// store any actual card numbers here.
+			//
+			"reg_cc_type_id" => array("type" => "int"),
+			"cc_num" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// Timestamp for when the card expires.
+			// This will equate to the first day of the month.
+			//
+			"card_expire" => array("type" => "int", "not null" => true, "default" => "0"),
+
+			//
+			// badge_cost is the money that their paid (or were refunded)
+			// for their membership.
+			// donation is any additional amount that was donated.
+			// total_cost is the total of the previous two fields.
+			// Anytime these are updated, the code should be update the same
+			// named fields in the reg table to reflect the new balance.
+			//
+			"badge_cost" => array("type" => "float", "default" => "0.00"),
+			"donation" => array("type" => "float", "default" => "0.00"),
+			"total_cost" => array("type" => "float", "default" => "0.00"),
+
+			),
+
+		"indexes" => array(
+			"reg_trans_reg_id" => array("reg_id"),
+			"reg_log_uid" => array("uid"),
+			),
+
+		"primary key" => array("id"),
+		);
+
+
+	$retval["reg_trans_gateway"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"gateway" => array("type" => "varchar", "length" => "255"),
+			//
+			// URL for the front page of the gateway.  This is just so we
+			// can display something for the user to click on.
+			// If we need a URL code charging credit cards, that should just
+			// go in the code for that gateway.
+			//
+			"url" => array("type" => "varchar", "length" => "255"),
+		),
+
+		"primary key" => array("id"),
+
+	);
+
+
+	//
+	// This table holds the different credit card types
+	//
+	$retval["reg_cc_type"] = array(
+
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"cc_type" => array("type" => "varchar", "length" => "255"),
+		),
+
+		"primary key" => array("id"),
+
+	);
+
+	
+	//
+	// This table holds our different transaction types.
+	//
+	$retval["reg_trans_type"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"trans_type" => array("type" => "varchar", "length" => "255"),
+			),
+
+		"primary key" => array("id"),
+	);
+
+		
+	//
+	// This table holds our different payment types
+	//
+	$retval["reg_payment_type"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"payment_type" => array("type" => "varchar", "length" => "255"),
+			"weight" => array("type" => "int", "default" => "0"),
+		),
+
+		"primary key" => array("id"),
+		);
+
+
+	//
+	// This table is a log of all registration system activity.
+	// All registrations, unsuccessful charges, records of manual 
+	// registrations, manual resending of emails, etc. is all kept here.
+	//
+	$retval["reg_log"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+		
+			//
+			// Foreign key to the registration table. (optional)
+			//
+			"reg_id" => array("type" => "int"),
+
+			//
+			// User ID
+			//
+			"uid" => array("type" => "int"),
+
+			//
+			// Timestamp
+			//
+			"date" => array("type" => "int", "not null" => true, "default" => "0"),
+
+			//
+			// URL info
+			//
+			"url" => array("type" => "varchar", "length" => "255"),
+			"referrer" => array("type" => "varchar", "length" => "255"),
+			"remote_addr" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// Severity.  Same as in the watchdog table.
+			//
+			"severity" => array("type" => "int"),
+
+			//
+			// The message
+			//
+			"message" => array("type" => "text"),
+		),
+
+		"indexes" => array(
+			"reg_log_uid" => array("uid"),
+			"reg_log_reg_id" => array("reg_id"),
+			),
+
+		"primary key" => array("id"),
+		);
+
+	//
+	// Create our table that holds years and the most recent badge 
+	// number.  This table will be accessed by reg::get_badge_num().
+	//
+	$retval["reg_badge_num"] = array(
+		"fields" => array(
+			"year" => array("type" => "int"),
+			"badge_num" => array("type" => "int", "not null" => true),
+		),
+
+		"primary key" => array("year"),
+		);
+
+
+	//
+	// All possible shirt sizes
+	//
+	$retval["reg_shirt_size"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"disabled" => array("type" => "varchar", "length" => "1", "default" => null),
+			"shirt_size" => array("type" => "varchar", "length" => "255"),
+			),
+
+		"primary key" => array("id"),
+		);
+
+
+	//
+	// This table holds separate messages which we will display to the 
+	// user at various points in our registration system.
+	//
+	$retval["reg_message"] = array(
+		"fields" => array(
+			"id" => array("type" => "serial"),
+			"name" => array("type" => "varchar", "length" => "255"),
+			"subject" => array("type" => "varchar", "length" => "255"),
+		
+			//
+			// The type of message.  It can be "message" or "email".
+			// The difference is that emails have subject lines associated
+			// with them.
+			//
+			"type" => array("type" => "varchar", "length" => "255", "default" => "message"),
+			"value" => array("type" => "text"),
+
+			//
+			// Internal notes
+			//
+			"notes" => array("type" => "text"),
+
+		),
+
+		"unique keys" => array(
+			"reg_message_name" => array("name"),
+			),
+
+		"primary key" => array("id"),
+
+		);
+
+
+	//
+	// Our Watchlist.  This contains names of people who owe us money, 
+	// are not welcome at the con, etc.
+	//
+	$retval["reg_watchlist"] = array(
+
+		"fields" => array(
+			"id" => array("type" => "serial"),
+
+			//
+			// Real name of the individual
+			//
+			"first" => array("type" => "varchar", "length" => "255", "not null" => true),
+			"last" => array("type" => "varchar", "length" => "255", "not null" => true),
+
+			//
+			// Aliases for the first name.  This may be a regular expression.
+			// However, it will only be checked if the last name matches a 
+			// particular member, so we don't kill the CPU.
+			//
+			"first_alias" => array("type" => "varchar", "length" => "255"),
+
+			//
+			// Action to take if they try to register.  This will be 
+			// displayed to the user they edit the member's record in 
+			// an error box.
+			//
+			"action" => array("type" => "text", "not null" => true),
+
+			//
+			// Is the current entry disabled?  Empty string means no, 
+			// anything else means yes.
+			//
+			"disabled" => array("type" => "varchar", "length" => "1", 
+				"not null" => true, "default" => ""),
+
+			),
+
+		"primary key" => array("id"),
+		);
+
+
+	$retval["reg_print_jobs"] = array(
+
+		"fields" => array(
+			"id" => array("type" => "serial"),
+
+			//
+			// Reference to the badge that we're printing
+			//
+			"reg_id" => array("type" => "int", "not null" => true),
+
+			//
+			// What printer is this being sent to?  It can be a string
+			// such as "default" for the default printer, or "minor" for the 
+			// minor printer.
+			//
+			"printer" => array("type" => "varchar", "length" => "255", 
+				"not null" => true, "default" => "default"),
+
+			//
+			// The status of the print job, such as "new", "printing", 
+			// or "printed".
+			//
+			"status" => array("type" => "varchar", "length" => "255",
+				"not null" => true, "default" => "new"),
+
+			),
+
+		"primary key" => array("id"),
+		);
+
+	return($retval);
+
+} // End of reg_schema()
+
+/**
+* This function is called when the module is installed.
+*
+* @param boolean $testing If set to true, certain rows are not entered
+*	into the database.  This is for testing/development purposes.
+*/
+function reg_install($testing = false) {
+
+	drupal_install_schema("reg");
+
+	if ($testing) {
+		return(null);
+	}
+
+	$db = $GLOBALS["db_type"];
+
+	if ($db == "mysql" || $db == "mysqli") {
 
 		$query = "INSERT INTO {reg_type} (member_type) "
 			. "VALUES "
@@ -148,18 +634,7 @@ function reg_install() {
 			. "('Saturday'), "
 			. "('Sunday') "
 			;
-		db_query($query);
 
-		//
-		// Our different membership statuses.
-		//
-		$query = "CREATE TABLE {reg_status} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "status VARCHAR(255), "
-			. "weight INTEGER DEFAULT 0, "
-			. "detail VARCHAR(255) "
-			. ")"
-			;
 		db_query($query);
 		
 		$query = "INSERT INTO {reg_status} (status, weight, detail) "
@@ -171,216 +646,9 @@ function reg_install() {
 			;
 		db_query($query);
 
-
-		//
-		// Our different membership levels, such as member, sponsor, etc.
-		// It is consulted when printing up the main registration form.
-		//
-		$query = "CREATE TABLE {reg_level} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-
-			//
-			// The human-readable name 
-			//
-			. "name VARCHAR(255), "
-
-			//
-			// What year the leve is for?  This allows us to have historic 
-			// data.
-			//
-			. "year INTEGER, "
-
-			//
-			// The membership type.  
-			// Values are stored in the reg_type table.
-			//
-			. "reg_type_id INTEGER NOT NULL, "
-
-			//
-			// How much does this cost?
-			//
-			. "price DECIMAL(10,2), "
-
-			//
-			// How long the membership type is available.
-			//
-			. "start INTEGER NOT NULL DEFAULT '0', "
-			. "end INTEGER NOT NULL DEFAULT '0', "
-
-			//
-			// Description that is shown to the user
-			//
-			. "description TEXT, "
-			//
-			// Internal notes
-			//
-			. "notes TEXT "
-
-			. ")"
-			;
-		db_query($query);
-
-		//
-		// This table holds transactions related to registrations.
-		// Note that if an initial transaction was not successful, it will
-		// not go in here, since the registration would not have gone 
-		// through.  However, there will still be a record in reg_log.
-		//
-		$query = "CREATE TABLE {reg_trans} ( "
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			//
-			// Foreign key to the registration table. (optional)
-			//
-			. "reg_id INTEGER NOT NULL, "
-			. "INDEX reg_trans_reg_id(reg_id), "
-
-			//
-			// Timestamp
-			//
-			. "date INTEGER NOT NULL DEFAULT '0', "
-
-			//
-			// User ID
-			//
-			. "uid INTEGER, "
-			. "INDEX reg_log_uid(uid), "
-
-			//
-			// Foreign key to the reg_trans_gateway_id table
-			//
-			. "reg_trans_gateway_id INTEGER, "
-
-			//
-			// Auth code or other unique value that references a successful
-			// transaction from our gateway.
-			//
-			. "gateway_auth_code VARCHAR(255), "
-
-			//
-			// The unique transaction ID that the gateway returns
-			//
-			."gateway_transaction_id VARCHAR(255), "
-
-			//
-			// The unique invoice number that we make up to send to the 
-			// gateway.  This may be optional with some gateways, but with
-			// authorize.net, we do this to keep from having multiple
-			// memberships being bought with the same card treated as 
-			// duplicate transactions.
-			//
-			// This number is entirely internal and we probably don't want
-			// to show this to any customers.
-			//
-			."invoice_number VARCHAR(255), "
-
-			//
-			// What the gateway had to say about the AVS data and CVV codes.
-			// (i.e., the gateway responses)
-			//
-			. "gateway_avs CHAR(1), "
-			. "gateway_cvv CHAR(1), "
-
-			//
-			// Foreign key to the log table.  This is when linking to log 
-			// entries which may contain more information.
-			//
-			. "reg_log_id INTEGER, "
-
-			//
-			// Is this a purchase, refund, upgrade, etc.?
-			// Full list in reg::get_trans_type()
-			//
-			. "reg_trans_type_id INTEGER NOT NULL, "
-			//
-			// How was the membership paid for?
-			// cc, cash, check, comp, volunteer, board, staff, etc.
-			// Full list in reg::get_payment_type()
-			//
-			. "reg_payment_type_id INTEGER NOT NULL, "
-
-			//
-			// Basic info on the badge holder
-			//
-			. "first VARCHAR(255), "
-			. "middle VARCHAR(255), "
-			. "last VARCHAR(255), "
-			. "address1 VARCHAR(255), "
-			. "address2 VARCHAR(255), "
-			. "city VARCHAR(255), "
-			. "state VARCHAR(255), "
-			. "zip VARCHAR(255), "
-			. "country VARCHAR(255), "
-
-			//
-			// Shipping information.
-			//
-			. "shipping_name VARCHAR(255), "
-			. "shipping_address1 VARCHAR(255), "
-			. "shipping_address2 VARCHAR(255), "
-			. "shipping_city VARCHAR(255), "
-			. "shipping_state VARCHAR(255), "
-			. "shipping_zip VARCHAR(255), "
-			. "shipping_country VARCHAR(255), "
-
-			//
-			// Credit card info.
-			// The "num" is really the last 4 digits.  We don't want to
-			// store any actual card numbers here.
-			//
-			. "reg_cc_type_id INTEGER, "
-			. "cc_num VARCHAR(255), "
-
-			//
-			// Timestamp for when the card expires.
-			// This will equate to the first day of the month.
-			//
-			. "card_expire INTEGER NOT NULL DEFAULT '0', "
-
-			//
-			// badge_cost is the money that their paid (or were refunded)
-			// for their membership.
-			// donation is any additional amount that was donated.
-			// total_cost is the total of the previous two fields.
-			// Anytime these are updated, the code should be update the same
-			// named fields in the reg table to reflect the new balance.
-			//
-			. "badge_cost DECIMAL(10, 2) DEFAULT 0.00, "
-			. "donation DECIMAL(10, 2) DEFAULT 0.00, "
-			. "total_cost DECIMAL(10, 2) DEFAULT 0.00 "
-
-			. ")"
-			;
-		db_query($query);
-
-
-		$query = "CREATE TABLE {reg_trans_gateway} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "gateway VARCHAR(255), "
-			//
-			// URL for the front page of the gateway.  This is just so we
-			// can display something for the user to click on.
-			// If we need a URL code charging credit cards, that should just
-			// go in the code for that gateway.
-			//
-			. "url VARCHAR(255) "
-			. ")"
-			;
-		db_query($query);
-
 		$query = "INSERT INTO {reg_trans_gateway} (gateway, url) "
 			. "VALUES "
 			. "('Authorize.net', 'http://www.authorize.net/')"
-			;
-		db_query($query);
-
-
-		//
-		// This table holds the different credit card types
-		//
-		$query = "CREATE TABLE {reg_cc_type} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "cc_type VARCHAR(255) "
-			. ")"
 			;
 		db_query($query);
 
@@ -393,33 +661,12 @@ function reg_install() {
 			;
 		db_query($query);
 
-		//
-		// This table holds our different transaction types.
-		//
-		$query = "CREATE TABLE {reg_trans_type} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "trans_type VARCHAR(255) "
-			. ")"
-			;
-		db_query($query);
-
 		$query = "INSERT INTO {reg_trans_type} (trans_type) "
 			. "VALUES "
 			. "('Purchase'), "
 			. "('Refund'), "
 			. "('Balance Adjustment'), "
 			. "('Upgrade') "
-			;
-		db_query($query);
-
-		//
-		// This table holds our different payment types
-		//
-		$query = "CREATE TABLE {reg_payment_type} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			. "payment_type VARCHAR(255), "
-			. "weight INTEGER DEFAULT 0 "
-			. ")"
 			;
 		db_query($query);
 
@@ -439,76 +686,14 @@ function reg_install() {
 		db_query($query);
 
 		//
-		// This table is a log of all registration system activity.
-		// All registrations, unsuccessful charges, records of manual 
-		// registrations, manual resending of emails, etc. is all kept here.
-		//
-		$query = "CREATE TABLE {reg_log} ( "
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			//
-			// Foreign key to the registration table. (optional)
-			//
-			. "reg_id INTEGER, "
-			. "INDEX reg_log_reg_id(reg_id), "
-			//
-			// User ID
-			//
-			. "uid INTEGER, "
-			. "INDEX reg_log_uid(uid), "
-			//
-			// Timestamp
-			//
-			. "date INTEGER NOT NULL DEFAULT '0', "
-			//
-			// URL info
-			//
-			. "url VARCHAR(255), "
-			. "referrer VARCHAR(255), "
-			. "remote_addr VARCHAR(32), "
-			//
-			// Severity.  Same as in the watchdog table.
-			//
-			. "severity TINYINT(3) UNSIGNED, "
-			//
-			// The message
-			//
-			. "message TEXT "
-			. ")";
-			;
-		db_query($query);
-
-		//
-		// Create our table that holds years and the most recent badge 
-		// number.  This table will be accessed by reg::get_badge_num().
-		//
-		$query = "CREATE TABLE {reg_badge_num} ("
-			. "year INTEGER PRIMARY KEY, "
-			. "badge_num INTEGER NOT NULL "
-			. ")";
-		db_query($query);
-
-		//
 		// Insert our initial badge number.
 		//
-		$year = reg::YEAR;
-		$badge_num = reg::START_BADGE_NUM;
+		$factory = new reg_factory();
+		$reg = $factory->get_object("reg");
+		$year = $reg->get_constant("year");
+		$badge_num = $reg->get_constant("start_badge_num");
 		$query = "INSERT INTO {reg_badge_num} "
 			. "VALUES ($year, $badge_num) "
-			;
-		db_query($query);
-
-
-		//
-		// All possible shirt sizes
-		//
-		$query = "CREATE TABLE {reg_shirt_size} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			//
-			// If non-null, this t-shirt size is disabled.
-			//
-			. "disabled CHAR(1) DEFAULT NULL, "
-			. "shirt_size VARCHAR(255) "
-			. ")"
 			;
 		db_query($query);
 
@@ -520,33 +705,6 @@ function reg_install() {
 			. "('X-Large'), "
 			. "('2X'), "
 			. "('3X') "
-			;
-		db_query($query);
-
-		//
-		// This table holds separate messages which we will display to the 
-		// user at various points in our registration system.
-		// 
-		$query = "CREATE TABLE {reg_message} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			//
-			// A unique "short name" used for identifying our separate mesages.
-			//
-			. "name VARCHAR(255), "
-			. "UNIQUE INDEX reg_message_name(name), "
-			. "subject VARCHAR(255), "
-			//
-			// The type of message.  It can be "message" or "email".
-			// The difference is that emails have subject lines associated
-			// with them.
-			//
-			. "type VARCHAR(255) DEFAULT 'message', "
-			. "value TEXT, "
-			//
-			// Internal notes
-			//
-			. "notes TEXT "
-			. ")"
 			;
 		db_query($query);
 
@@ -626,62 +784,6 @@ function reg_install() {
 
 		db_query($query);
 
-
-		//
-		// Our Watchlist.  This contains names of people who owe us money, 
-		// are not welcome at the con, etc.
-		//
-		$query = "CREATE TABLE {reg_watchlist} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			//
-			// Real name of the individual
-			//
-			. "first VARCHAR(255) NOT NULL, "
-			. "last VARCHAR(255) NOT NULL, "
-			//
-			// Aliases for the first name.  This may be a regular expression.
-			// However, it will only be checked if the last name matches a 
-			// particular member, so we don't kill the CPU.
-			//
-			. "first_alias VARCHAR(255), "
-			//
-			// Action to take if they try to register.  This will be 
-			// displayed to the user they edit the member's record in 
-			// an error box.
-			//
-			. "action TEXT NOT NULL, "
-			//
-			// Is the current entry disabled?  Empty string means no, 
-			// anything else means yes.
-			//
-			. "disabled CHAR(1) NOT NULL DEFAULT ''"
-			. ")"
-			;
-
-		db_query($query);
-
-		$query = "CREATE TABLE {reg_print_jobs} ("
-			. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-			//
-			// Reference to the badge that we're printing
-			//
-			. "reg_id INTEGER NOT NULL, "
-			//
-			// What printer is this being sent to?  It can be a string
-			// such as "default" for the default printer, or "minor" for the 
-			// minor printer.
-			//
-			. "printer VARCHAR(255) NOT NULL DEFAULT 'default', "
-			//
-			// The status of the print job, such as "new", "printing", 
-			// or "printed".
-			//
-			. "status VARCHAR(255) NOT NULL DEFAULT 'new' "
-			. ") "
-			;
-
-		db_query($query);
-
 	} else if ($db == "pgsql") {
 		$error = "We're sorry, but we don't have Postgres support in "
 			. "this module.  ";
@@ -696,62 +798,8 @@ function reg_install() {
 * This function is called when the module is uninstalled after being disabled.
 */
 function reg_uninstall() {
+	drupal_uninstall_schema("reg");
 } // End of reg_uninstall()
-
-
-/**
-* This will remove all registration data from the system, and should only
-* be used for testing.  For the love of Dog, do NOT use this in 
-* production, EVER.
-*/
-function reg_wipe() {
-
-	$query = "DROP TABLE IF EXISTS {reg}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_type}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_status}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_level}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_trans}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_trans_gateway}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_trans_type}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_payment_type}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_cc_type}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_log}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_badge_num}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_shirt_size}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_message}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_watchlist}";
-	db_query($query);
-
-	$query = "DROP TABLE IF EXISTS {reg_print_jobs}";
-	db_query($query);
-
-} // End of reg_wipe()
 
 
 /**
@@ -765,331 +813,11 @@ function reg_wipe() {
 *
 * Please check http://api.drupal.org/api/function/hook_update_N/5
 *	for a handy lits of command SQL queries, and how to use them.
+*
+* Also worth checking is http://drupal.org/node/114774#hook-update-N
+*
 */
-function reg_update_1() {
+//function reg_update_6000() {
+//}
 
-	$retval = array();
-
-	$queries = array();
-	$queries[] = "ALTER TABLE {reg_message} ADD subject VARCHAR(255)";
-	$queries[] = "ALTER TABLE {reg_message} ADD type VARCHAR(255) "
-		. "DEFAULT 'message'";
-	$queries[] = "UPDATE {reg_message} SET type='email' "
-		. "WHERE name like 'email-%'";
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_1()
-
-
-/**
-* Add some new messages for interacting with credit cards.
-*/
-function reg_update_2() {
-
-	$retval = array();
-
-	$query = "INSERT INTO {reg_message} (name, subject, type, value, "
-			. "notes) "
-		. "VALUES "
-		. "('cc-no-amex', "
-			. "'', "
-			. "'message', "
-			. "'At this time, we do not accept American Express.', "
-			. "'') "
-		;
-
-	$retval[] = update_sql($query);
-
-	return($retval);
-
-} // End of reg_update_2()
-
-
-/**
-* Add shipping address fields.
-*/
-function reg_update_3() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "ALTER TABLE {reg} ADD shipping_address1 VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg} ADD shipping_address2 VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg} ADD shipping_city VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg} ADD shipping_state VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg} ADD shipping_zip VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg} ADD shipping_country VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg} ADD no_receipt CHAR(1) ";
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_3()
-
-
-/**
-* Add in a shipping name.
-*/
-function reg_update_4() {
-
-	$retval = array();
-
-	$query = "ALTER TABLE {reg} ADD shipping_name VARCHAR(255) ";
-	$retval[] = update_sql($query);
-
-	return($retval);
-
-} // End of reg_update_4()
-
-
-/**
-* Add shipping fields for transactions.
-*/
-function reg_update_5() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_name VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_address1 VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_address2 VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_city VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_state VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_zip VARCHAR(255) ";
-	$queries[] = "ALTER TABLE {reg_trans} ADD shipping_country VARCHAR(255) ";
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_5()
-
-
-/**
-* Add a new message for a Card Code issue.
-*/
-function reg_update_6() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
-		. "notes)  "
-		. "VALUES "
-		. "('cc-declined-cvv', "
-		. "'', "
-		. "'message', "
-		. "'Sorry, but the Card Code does not appear to be valid.', "
-		. "'Display when a CVV code is invalid.') "
-		;
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_6()
-
-
-/**
-* Add the "footer" message.
-*/
-function reg_update_7() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
-		. "notes)  "
-		. "VALUES "
-		. "('footer', "
-		. "'', "
-		. "'message', "
-		. "'Placeholder for text that goes at the bottom of the "
-			. "Registration page.', "
-		. "'') "
-		;
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_7()
-
-
-/**
-* Add the "cc-declined-avs" message.
-*/
-function reg_update_8() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
-			. "notes) "
-			. "VALUES ("
-			. "'cc-declined-avs', "
-			. "'', "
-			. "'message', "
-			. "'Sorry, but there was an AVS mismatch with your credit card.  "
-				. "Please try again.', "
-			. "'Printed when there is an AVS mismatch' "
-			. ") "
-			;
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_8()
-
-
-/**
-* Change the index on year and badge number to be unique
-*/
-function reg_update_9() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "DROP INDEX reg_year_badge_num ON reg";
-	$queries[] = "CREATE UNIQUE INDEX reg_year_badge_num ON reg(year, badge_num)";
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_9()
-
-
-/**
-* Add the Watchlist table.
-*/
-function reg_update_10() {
-
-	$retval = array();
-
-	$query = "CREATE TABLE {reg_watchlist} ("
-		. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-		. "first VARCHAR(255) NOT NULL, "
-		. "last VARCHAR(255) NOT NULL, "
-		. "first_alias VARCHAR(255), "
-		. "action TEXT NOT NULL, "
-		. "disabled CHAR(1) NOT NULL DEFAULT ''"
-		. ")"
-		;
-
-	$retval[] = update_sql($query);
-
-	return($retval);
-
-} // End of reg_update_10()
-
-
-/**
-* Add the print jobs table.
-*/
-function reg_update_11() {
-
-	$retval = array();
-
-	$query = "CREATE TABLE {reg_print_jobs} ("
-		. "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
-		//
-		// Reference to the badge that we're printing
-		//
-		. "reg_id INTEGER NOT NULL, "
-		//
-		// What printer is this being sent to?  It can be a string
-		// such as "default" for the default printer, or "minor" for the 
-		// minor printer.
-		//
-		. "printer VARCHAR(255) NOT NULL DEFAULT 'default', "
-		//
-		// The status of the print job, such as "new", "printing", 
-		// or "printed".
-		//
-		. "status VARCHAR(255) NOT NULL DEFAULT 'new' "
-		. ") "
-		;
-
-	$retval[] = update_sql($query);
-
-	return($retval);
-
-} // End of reg_update_11()
-
-
-/**
-* Add a new message for a succesful onsite registration.
-*/
-function reg_update_12() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "INSERT INTO {reg_message} (name, subject, type, value, "
-		. "notes)  "
-		. "VALUES "
-		. "('onsite-thankyou', "
-		. "'', "
-		. "'message', "
-		. "'You have registered successfully!  "
-			. "Please wait for the next available agent, "
-			. "and have a form of payment ready..', "
-		. "'Display for a successful onsite registration.') "
-		;
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_12()
-
-
-/**
-* Add new fields to the reg table.
-*/
-function reg_update_13() {
-
-	$retval = array();
-
-	$queries = array();
-
-	$queries[] = "ALTER TABLE {reg} ADD badge_cost_due DECIMAL(10, 2) DEFAULT 0.00";
-	$queries[] = "ALTER TABLE {reg} ADD donation_due DECIMAL(10, 2) DEFAULT 0.00";
-
-	foreach ($queries as $key => $value) {
-		$retval[] = update_sql($value);
-	}
-
-	return($retval);
-
-} // End of reg_update_13()
 
