@@ -70,6 +70,16 @@ function authorize_net_menu() {
 */
 function authorize_net_settings_page() {
 
+	//
+	// If the reg module wasn't loaded, then the factory doesn't exist, 
+	// and we should stop here.
+	//
+	if (!class_exists("reg_factory", false)) {
+		$message = t("Sorry, but the reg module needs to be enabled.");
+		form_set_error("", $message);
+		return("");
+	}
+
 	$reg_factory = new reg_factory();
 	$reg = $reg_factory->get_object("reg");
 	$reg->force_ssl();
