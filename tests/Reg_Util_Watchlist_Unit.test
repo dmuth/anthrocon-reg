@@ -4,9 +4,9 @@
 class Reg_Util_Watchlist_UnitTest extends DrupalTestCase {
 
 	/**
-	* Implementation of get_info() for information
+	* Implementation of getInfo() for information
 	*/
-	function get_info() {
+	function getInfo() {
 		return array(
 			"name" => t("Reg_Util_Watchlist Unit Test"),
 			//"desc" => t("Test out the reg class"),

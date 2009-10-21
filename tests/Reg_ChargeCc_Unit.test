@@ -5,9 +5,9 @@
 class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 
 	/**
-	* Implementation of get_info() for information
+	* Implementation of getInfo() for information
 	*/
-	function get_info() {
+	function getInfo() {
 		return array(
 			"name" => t("reg->charge_cc() Unit Test"),
 			"desc" => t("Test out just the charge_cc() function."),

@@ -5,12 +5,12 @@
 class Reg_UnitTest extends DrupalTestCase {
 
 	/**
-	* Implementation of get_info() for information
+	* Implementation of getInfo() for information
 	*/
-	function get_info() {
+	function getInfo() {
 		return array(
 			"name" => t("reg Unit Test"),
-			//"desc" => t("Test out the reg class"),
+			"desc" => t("Test out the reg class"),
 			"group" => t("Registration System Unit Tests"),
 			);
 	}
@@ -254,6 +254,7 @@ class Reg_UnitTest extends DrupalTestCase {
 
 
 	function setUp() {
+parent::setUp("reg");  // Enable any modules required for the test
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
 		$this->reg_member = $this->factory->get_object("member");

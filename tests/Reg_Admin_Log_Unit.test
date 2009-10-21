@@ -5,9 +5,9 @@
 class Reg_Admin_Log_UnitTest extends DrupalTestCase {
 
 	/**
-	* Implementation of get_info() for information
+	* Implementation of getInfo() for information
 	*/
-	function get_info() {
+	function getInfo() {
 		return array(
 			"name" => t("reg_admin_log Unit Test"),
 			//"desc" => t("Test out the reg_admin_log class"),

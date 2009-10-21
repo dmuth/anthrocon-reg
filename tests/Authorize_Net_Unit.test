@@ -5,9 +5,9 @@
 class Authorize_Net_UnitTest extends DrupalTestCase {
 
 	/**
-	* Implementation of get_info() for information
+	* Implementation of getInfo() for information
 	*/
-	function get_info() {
+	function getInfo() {
 		return array(
 			"name" => t("Authorize_Net Unit Test"),
 			"desc" => t("Note: These tests WILL connect to Authorize.Net to do transactions in test mode. ")
