@@ -69,7 +69,7 @@ class Reg_Admin_Members_Functional_Test extends DrupalTestCase {
 		$this->drupalGet(url($url));
 		$output = $this->drupalGetContent();
 		$this->assertNotNull($output);
-		$this->assertWantedPattern("/" . t("Membership Type") . ".*" 
+		$this->assertPattern("/" . t("Membership Type") . ".*" 
 			. t("Attending") . "/", $output);
 		$this->assertWantedRaw(t("Email receipt sent to "));
 		$this->assertNoUnwantedRaw("Audit log:");
@@ -96,11 +96,11 @@ class Reg_Admin_Members_Functional_Test extends DrupalTestCase {
 		$output = $this->drupalGetContent();
 		$this->assertNotNull($output);
 		$this->assertWantedRaw(t("Registration updated"));
-		$this->assertWantedPattern("/" . t("Badge Name") . ".*" 
+		$this->assertPattern("/" . t("Badge Name") . ".*" 
 			. $edit["badge_name"] . "/", $output);
-		$this->assertWantedPattern("/" . t("Real Name") . ".*" 
+		$this->assertPattern("/" . t("Real Name") . ".*" 
 			. $edit["first"] . "/", $output);
-		$this->assertWantedPattern("/" . t("Updated registration for badge number") . "/", $output);
+		$this->assertPattern("/" . t("Updated registration for badge number") . "/", $output);
 
 	} // End of editMember()
 
@@ -147,10 +147,10 @@ class Reg_Admin_Members_Functional_Test extends DrupalTestCase {
 		$this->assertNotNull($output);
 		$this->assertWantedRaw(t("Balance adjustment successful"));
 		$this->assertWantedRaw(t("Balance adjustment. Notes: ")  . $edit["notes"]);
-		$this->assertWantedPattern(t("/Badge Cost Balance.*1.23/"), $output);
-		$this->assertWantedPattern(t("/Donation Balance.*1.24/"), $output);
-		$this->assertWantedPattern(t("/Total Balance.*2.47/"), $output);
-		$this->assertWantedPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"), $output);
+		$this->assertPattern(t("/Badge Cost Balance.*1.23/"), $output);
+		$this->assertPattern(t("/Donation Balance.*1.24/"), $output);
+		$this->assertPattern(t("/Total Balance.*2.47/"), $output);
+		$this->assertPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"), $output);
 
 		//
 		// Now subtract some money from that user
@@ -165,11 +165,11 @@ class Reg_Admin_Members_Functional_Test extends DrupalTestCase {
 		$this->assertNotNull($output);
 		$this->assertWantedRaw(t("Balance adjustment successful"));
 		$this->assertWantedRaw(t("Balance adjustment. Notes: ")  . $edit["notes"]);
-		$this->assertWantedPattern(t("/Badge Cost Balance.*-18.77/"), $output);
-		$this->assertWantedPattern(t("/Donation Balance.*-8.76/"), $output);
-		$this->assertWantedPattern(t("/Total Balance.*-27.53/"), $output);
-		$this->assertWantedPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"), $output);
-		$this->assertWantedPattern(t("/Credit Card.*Refund.*-20.00.*-10.00.*-30.00/"), $output);
+		$this->assertPattern(t("/Badge Cost Balance.*-18.77/"), $output);
+		$this->assertPattern(t("/Donation Balance.*-8.76/"), $output);
+		$this->assertPattern(t("/Total Balance.*-27.53/"), $output);
+		$this->assertPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"), $output);
+		$this->assertPattern(t("/Credit Card.*Refund.*-20.00.*-10.00.*-30.00/"), $output);
 
 	} // End of adjustBalance()
 
@@ -190,13 +190,13 @@ class Reg_Admin_Members_Functional_Test extends DrupalTestCase {
 		$output = $this->drupalGetContent();
 		$this->assertNotNull($output);
 		$this->assertWantedRaw(t("Registration cancelled. Notes: ")  . $edit["notes"]);
-		$this->assertWantedPattern(t("/Status.*Refund/"), $output);
-		$this->assertWantedPattern(t("/Badge Cost Balance.*-23.33/"), $output);
-		$this->assertWantedPattern(t("/Donation Balance.*-13.33/"), $output);
-		$this->assertWantedPattern(t("/Total Balance.*-36.66/"), $output);
-		$this->assertWantedPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"), $output);
-		$this->assertWantedPattern(t("/Credit Card.*Refund.*-20.00.*-10.00.*-30.00/"), $output);
-		$this->assertWantedPattern(t("/Credit Card.*Refund.*-4.56.*-4.57.*-9.13/"), $output);
+		$this->assertPattern(t("/Status.*Refund/"), $output);
+		$this->assertPattern(t("/Badge Cost Balance.*-23.33/"), $output);
+		$this->assertPattern(t("/Donation Balance.*-13.33/"), $output);
+		$this->assertPattern(t("/Total Balance.*-36.66/"), $output);
+		$this->assertPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"), $output);
+		$this->assertPattern(t("/Credit Card.*Refund.*-20.00.*-10.00.*-30.00/"), $output);
+		$this->assertPattern(t("/Credit Card.*Refund.*-4.56.*-4.57.*-9.13/"), $output);
 
 	} // End of cancel()
 

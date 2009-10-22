@@ -57,12 +57,12 @@ class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 		$output = $this->reg_log_view->trans_detail($trans_log_id);
 		$this->assertNotNull($output);
 		$regexp = "/". t("Amount") . ".*" . $data["badge_cost"] . "/";
-		$this->assertWantedPattern($regexp, $output);
+		$this->assertPattern($regexp, $output);
 		$regexp = "/". t("Donation") . ".*" . $data["donation"] . "/";
-		$this->assertWantedPattern($regexp, $output);
+		$this->assertPattern($regexp, $output);
 		$regexp = "/". t("Total Cost") . ".*" 
 			. ($data["badge_cost"] + $data["donation"]) . "/";
-		$this->assertWantedPattern($regexp, $output);
+		$this->assertPattern($regexp, $output);
 
 	} // End of testChargeCc()
 
@@ -100,12 +100,12 @@ class Reg_ChargeCc_UnitTest extends DrupalTestCase {
 		$output = $this->reg_log_view->trans_detail($trans_log_id);
 		$this->assertNotNull($output);
 		$regexp = "/". t("Amount") . ".*" . $data["badge_cost"] . "/";
-		$this->assertWantedPattern($regexp, $output);
+		$this->assertPattern($regexp, $output);
 		$regexp = "/". t("Donation") . ".*" . $data["donation"] . "/";
-		$this->assertWantedPattern($regexp, $output);
+		$this->assertPattern($regexp, $output);
 		$regexp = "/". t("Total Cost") . ".*" 
 			. ($data["badge_cost"] + $data["donation"]) . "/";
-		$this->assertWantedPattern($regexp, $output);
+		$this->assertPattern($regexp, $output);
 
 		//
 		// Now make the charge fail in all sorts of ways.

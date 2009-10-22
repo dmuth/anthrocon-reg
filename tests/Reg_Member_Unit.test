@@ -213,7 +213,7 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		$this->assertNotNull($output);
 		$this->assertNotNull($output["subject"]);
 		$this->assertNotNull($output["value"]);
-		$this->assertWantedPattern("/$member_type/", $output["value"]);
+		$this->assertPattern("/$member_type/", $output["value"]);
 
 	} // End of testEmailReciept()
 

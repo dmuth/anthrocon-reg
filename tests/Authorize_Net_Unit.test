@@ -2,12 +2,13 @@
 /**
 * This unit test tests the Authorize_net class.
 */
-class Authorize_Net_UnitTest extends DrupalTestCase {
+class Authorize_Net_UnitTest extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information
 	*/
 	function getInfo() {
+
 		return array(
 			"name" => t("Authorize_Net Unit Test"),
 			"desc" => t("Note: These tests WILL connect to Authorize.Net to do transactions in test mode. ")
@@ -33,6 +34,7 @@ class Authorize_Net_UnitTest extends DrupalTestCase {
 	} // End of testNoSSL()
 
 
+
 	/**
 	* Make sure that authorize.net doesn't work at all when there's a bad login ID.
 	*/
@@ -50,9 +52,8 @@ class Authorize_Net_UnitTest extends DrupalTestCase {
 		$output = $this->gateway->charge_cc($data);
 		$this->assertNotNull($output);
 		$this->assertEqual("error", $output["status"]);
-		$this->assertWantedPattern(
-			"/The merchant login ID or password is invalid/", 
-			$output["raw_response"]);
+		$regexp = "/The merchant login ID or password is invalid/";
+		$this->assertTrue(preg_match($regexp, $output["raw_response"]));
 
 		//
 		// Restore the login ID
@@ -146,6 +147,6 @@ class Authorize_Net_UnitTest extends DrupalTestCase {
 	}
 
 
-} // End of RegUnitTest class
+} // End of Authorize_Net_UnitTest class
 
 
