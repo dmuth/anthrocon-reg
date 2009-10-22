@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Permissions_Functional_Test extends DrupalTestCase {
+class Permissions_Functional_Test extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information
@@ -38,11 +38,10 @@ class Permissions_Functional_Test extends DrupalTestCase {
 
 		$perms = array("access content");
 		$this->assertNotNull($perms);
-		$user = $this->drupalCreateUserRolePerm($perms);
+		$user = $this->drupalCreateUser($perms);
 		$this->assertNotNull($user);
 
-		$output = $this->drupalLoginUser($user);
-		$this->assertNotNull($output);
+		$output = $this->drupalLogin($user);
 
 		$output = $this->drupalGet(url("admin/reg"));
 		$this->assertNotNull($output);
@@ -60,11 +59,10 @@ class Permissions_Functional_Test extends DrupalTestCase {
 
 		$perms = array($this->reg->get_constant("perm_staff"));
 		$this->assertNotNull($perms);
-		$user = $this->drupalCreateUserRolePerm($perms);
+		$user = $this->drupalCreateUser($perms);
 		$this->assertNotNull($user);
 
-		$output = $this->drupalLoginUser($user);
-		$this->assertNotNull($output);
+		$output = $this->drupalLogin($user);
 
 		$output = $this->drupalGet(url("admin/reg"));
 		$this->assertNotNull($output);
@@ -105,13 +103,11 @@ class Permissions_Functional_Test extends DrupalTestCase {
 	*/
 	function testAdminPerms() {
 
-		$perms = array($this->reg->get_constant("perm_admin"));
+		$perms = array($this->reg->get_constant("perm_staff"));
 		$this->assertNotNull($perms);
-		$user = $this->drupalCreateUserRolePerm($perms);
+		$user = $this->drupalCreateUser($perms);
 		$this->assertNotNull($user);
-
-		$output = $this->drupalLoginUser($user);
-		$this->assertNotNull($output);
+		$this->drupalLogin($user);
 
 		$output = $this->drupalGet(url("admin/reg"));
 		$this->assertNotNull($output);
@@ -128,6 +124,12 @@ class Permissions_Functional_Test extends DrupalTestCase {
 		$regexp = t("Search Log Entries");
 		$this->assertTrue(ereg($regexp, $output));
 
+		$perms = array($this->reg->get_constant("perm_admin"));
+		$this->assertNotNull($perms);
+		$user = $this->drupalCreateUser($perms);
+		$this->assertNotNull($user);
+		$this->drupalLogin($user);
+
 		$output = $this->drupalGet(url("admin/reg/stats"));
 		$this->assertNotNull($output);
 		$regexp = t("Badge Breakdown");
@@ -143,7 +145,7 @@ class Permissions_Functional_Test extends DrupalTestCase {
 		$regexp = t("Badge Printing");
 		$this->assertTrue(ereg($regexp, $output));
 
-	} // End of testAdminPerms()
+} // End of testAdminPerms()
 
 
 	function setUp() {
