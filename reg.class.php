@@ -87,6 +87,13 @@ class reg {
 
 		);
 
+	/**
+	* @var Place to store our gateway results for later retrieval by 
+	*	unit tests.
+	*/
+	private $gateway_results = array();
+
+
 	function __construct(&$message, &$fake, &$log) {
 		$this->message = $message;
 		$this->fake = $fake;
@@ -381,6 +388,7 @@ class reg {
 				// Try charging the card.
 				//
 				$gateway_results = $cc_gateway->charge_cc($data);
+				$this->gateway_results = $gateway_results;
 
 				//
 				// If the card was declined or there was an error, complain
@@ -464,6 +472,17 @@ class reg {
 		return($reg_trans_id);
 
 	} // End of charge_cc()
+
+
+	/**
+	* This returns our gateway results from the most recent transaction.
+	* Mostly this is for testing/debugging purposes.
+	*
+	* @return array Associative array of details on the transaction
+	*/
+	function getGatewayResults() {
+		return($this->gateway_results);
+	} // End of getGatewayResults()
 
 
 	/**

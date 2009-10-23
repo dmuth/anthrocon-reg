@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Reg_Admin_Log_View_UnitTest extends DrupalTestCase {
+class Reg_Admin_Log_View_UnitTest extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information

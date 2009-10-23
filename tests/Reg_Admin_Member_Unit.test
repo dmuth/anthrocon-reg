@@ -61,7 +61,6 @@ class Reg_Admin_Member_UnitTest extends DrupalTestCase {
 		$query_args = array($this->reg->get_constant("YEAR"), 
 			"test UpdateMemberNoBadgeNumber");
 		$cursor = db_query($query, $query_args);
-		$this->assertNotNull($cursor);
 		$id = $this->reg->get_insert_id();
 		$this->assertNotNull($id);
 
