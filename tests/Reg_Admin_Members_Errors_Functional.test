@@ -5,7 +5,7 @@
 include_once("Reg_Admin_Members_Functional.test");
 
 class Reg_Admin_Members_Errors_Functional_Test 
-	extends DrupalTestCase {
+	extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information
@@ -29,31 +29,31 @@ class Reg_Admin_Members_Errors_Functional_Test
 		//
 		// Log in as a user with admin privs to the reg system
 		//
-		$web_user = $this->drupalCreateUserRolePerm($this->reg->perm());
+		$web_user = $this->drupalCreateUser($this->reg->perm());
 
-		$output = $this->drupalLoginUser($web_user);
+		$this->drupalLogin($web_user);
 
 		//
 		// Test nothing filled in
 		//
 		$url = "admin/reg/members/add";
 		$edit = array();
-		$this->drupalPostRequest($url, $edit, t("Register"));
-		$this->assertWantedRaw(t("Membership Information"));
-		$this->assertWantedRaw(t("Billing Information"));
-		$this->assertWantedRaw(t("Payment Information"));
+		$this->drupalPost($url, $edit, t("Register"));
+		$this->assertRaw(t("Membership Information"));
+		$this->assertRaw(t("Billing Information"));
+		$this->assertRaw(t("Payment Information"));
 
-		$this->assertWantedRaw(t("First Name field is required."));
-		$this->assertWantedRaw(t("Last Name field is required."));
-		$this->assertWantedRaw(t("Your email address field is required."));
-		$this->assertWantedRaw(t("Confirm email address field is required."));
-		$this->assertWantedRaw(t("Billing Address Line 1 field is required."));
-		$this->assertWantedRaw(t("City field is required."));
-		$this->assertWantedRaw(t("State field is required."));
-		$this->assertWantedRaw(t("Zip Code field is required."));
-		$this->assertWantedRaw(t("Your phone number field is required."));
-		$this->assertWantedRaw(t("Date of birth is set to today. Did you forget to enter it?"));
-		$this->assertWantedRaw(t("Payment Type field is required."));
+		$this->assertRaw(t("First Name field is required."));
+		$this->assertRaw(t("Last Name field is required."));
+		$this->assertRaw(t("Your email address field is required."));
+		$this->assertRaw(t("Confirm email address field is required."));
+		$this->assertRaw(t("Billing Address Line 1 field is required."));
+		$this->assertRaw(t("City field is required."));
+		$this->assertRaw(t("State field is required."));
+		$this->assertRaw(t("Zip Code field is required."));
+		$this->assertRaw(t("Your phone number field is required."));
+		$this->assertRaw(t("Date of birth is set to today. Did you forget to enter it?"));
+		$this->assertRaw(t("Payment Type field is required."));
 
 		//
 		// Test everything filled in, but the email address is mismatched.
@@ -69,48 +69,57 @@ class Reg_Admin_Members_Errors_Functional_Test
 		$edit["zip"] = "Test Zip";
 		$edit["phone"] = "Test Phone";
 		$edit["cc_num"] = "Test credit card num";
-		$edit["birthdate-year"] = "2000";
-		$edit["reg-payment-type-id"] = "Credit Card";
-		$this->drupalPostRequest($url, $edit, t("Register"));
-		$this->assertWantedRaw(t("Membership Information"));
-		$this->assertWantedRaw(t("Billing Information"));
-		$this->assertWantedRaw(t("Payment Information"));
+		$edit["birthdate[year]"] = "2000";
+		$edit["reg_payment_type_id"] = "1";
+		$this->drupalPost($url, $edit, t("Register"));
+		$this->assertRaw(t("Membership Information"));
+		$this->assertRaw(t("Billing Information"));
+		$this->assertRaw(t("Payment Information"));
+		$this->assertRaw(t("Email addresses do not match!"));
 
-		$this->assertNoUnwantedRaw(t("First Name field is required."));
-		$this->assertNoUnwantedRaw(t("Last Name field is required."));
-		$this->assertNoUnwantedRaw(t("Your email address field is required."));
-		$this->assertNoUnwantedRaw(t("Confirm email address field is required."));
-		$this->assertNoUnwantedRaw(t("Billing Address Line 1 field is required."));
-		$this->assertNoUnwantedRaw(t("City field is required."));
-		$this->assertNoUnwantedRaw(t("State field is required."));
-		$this->assertNoUnwantedRaw(t("Zip Code field is required."));
-		$this->assertNoUnwantedRaw(t("Your phone number field is required."));
-		$this->assertNoUnwantedRaw(t("Credit Card Number field is required."));
-		$this->assertNoUnwantedRaw(t("Security Code field is required."));
-		$this->assertNoUnwantedRaw(t("Date of birth is set to today. Did you forget to enter it?"));
-		$this->assertNoUnwantedRaw(t("Payment Type field is required."));
+		$this->assertNoRaw(t("First Name field is required."));
+		$this->assertNoRaw(t("Last Name field is required."));
+		$this->assertNoRaw(t("Your email address field is required."));
+		$this->assertNoRaw(t("Confirm email address field is required."));
+		$this->assertNoRaw(t("Billing Address Line 1 field is required."));
+		$this->assertNoRaw(t("City field is required."));
+		$this->assertNoRaw(t("State field is required."));
+		$this->assertNoRaw(t("Zip Code field is required."));
+		$this->assertNoRaw(t("Your phone number field is required."));
+		$this->assertNoRaw(t("Credit Card Number field is required."));
+		$this->assertNoRaw(t("Security Code field is required."));
+		$this->assertNoRaw(t("Date of birth is set to today. Did you forget to enter it?"));
+		$this->assertNoRaw(t("Payment Type field is required."));
 
-		unset($edit["birthdate-year"]);
+		unset($edit["birthdate[year]"]);
 		$edit["email2"] = $edit["email"];
-		$this->drupalPostRequest($url, $edit, t("Register"));
-		$this->assertWantedRaw(t("Membership Information"));
-		$this->assertWantedRaw(t("Billing Information"));
-		$this->assertWantedRaw(t("Payment Information"));
+		$this->drupalPost($url, $edit, t("Register"));
+		$this->assertRaw(t("Membership Information"));
+		$this->assertRaw(t("Billing Information"));
+		$this->assertRaw(t("Payment Information"));
 
-		$this->assertNoUnwantedRaw(t("Confirm email address field is required."));
-		$this->assertWantedRaw(t("Date of birth is set to today. Did you forget to enter it?"));
+		$this->assertNoRaw(t("Confirm email address field is required."));
+		$this->assertRaw(t("Date of birth is set to today. Did you forget to enter it?"));
 
 		unset($edit["email"]);
 		unset($edit["email2"]);
-		$this->drupalPostRequest($url, $edit, t("Register"));
-		$this->assertWantedRaw(t("Membership Information"));
-		$this->assertWantedRaw(t("Billing Information"));
-		$this->assertWantedRaw(t("Payment Information"));
+		$this->drupalPost($url, $edit, t("Register"));
+		$this->assertRaw(t("Membership Information"));
+		$this->assertRaw(t("Billing Information"));
+		$this->assertRaw(t("Payment Information"));
 
-		$this->assertWantedRaw(t("Your email address field is required."));
-		$this->assertWantedRaw(t("Confirm email address field is required."));
+		$this->assertRaw(t("Your email address field is required."));
+		$this->assertRaw(t("Confirm email address field is required."));
 
 	} // End of testErrors()
+
+
+	/**
+	* Local wrapper for assertEqual, since it's a protected function. :-/
+	*/
+	function localAssertEqual($first, $second, $message= '%s',
+		$group= 'Other') {
+	}
 
 
 	function setUp() {

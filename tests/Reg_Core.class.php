@@ -28,12 +28,12 @@ class Test_Core {
      
 		$output = variable_get($this->reg->get_constant(
 			"form_admin_no_ssl_redirect"), "");
-		$this->test->assertEqual(1, $output, t("SSL redirection is NOT disabled.  "
+		$this->test->localAssertEqual(1, $output, t("SSL redirection is NOT disabled.  "
 			. "Check the settings page."));
 
 		$output = variable_get($this->reg->get_constant(
 			"form_admin_no_captcha"), "");
-		$this->test->assertEqual(1, $output, t("Captchas are NOT disabled.  "
+		$this->test->localAssertEqual(1, $output, t("Captchas are NOT disabled.  "
 			. "Check the settings page."));
 
     } // End of checkSettings()

@@ -6,6 +6,9 @@ Done
 TODO
 ====
 
+- All numbers in transactions should now be displayed with number_format() or printf().
+	- This appears to be a byproduct of switching the database type from NUMBER(10,2) to FLOAT :-/
+
 - Add "reason on watchlist" to Watchlist
 
 - Port to Drupal 6
