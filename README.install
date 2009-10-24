@@ -2,10 +2,6 @@
 Installation Instructions
 =========================
 
-This is a module for Drupal 5.  If it works on 6, that's great, but I make
-no guarantees at this time.  (If you want to write a port to work on 6, 
-feel free to do so. :-)
-
 This directory should be deployed under sites/all/modules/reg/.  Once that 
 is done, go into admin/build/modules and enable the module.
 
@@ -19,6 +15,6 @@ this writing) home for this project on the web:
 http://code.google.com/p/anthrocon-reg/
 
 If you can't find the solution to your problem there, please file an issue
-and I'll look into it.
+(or contact me directly) and I'll look into it.
 
 
