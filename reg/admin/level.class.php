@@ -13,6 +13,8 @@ class reg_admin_level extends reg {
 
 	/**
 	* List membership levels.
+	*
+	* @return string HTML code with the levels.
 	*/
 	function levels() {
 
@@ -179,13 +181,16 @@ class reg_admin_level extends reg {
 		if (!empty($id)) {
 			$start = explode("-", $row["start"]);
 			$start_date = array(
-				"year" => format_date($row["start"], "custom", "Y"),
-				"month" => format_date($row["start"], "custom", "n"),
-				"day" => format_date($row["start"], "custom", "j"),
+				//
+				// Be sure to use an offset of 0, so we get 12:00 AM
+				// and not 8 PM the night before.
+				//
+				"year" => format_date($row["start"], "custom", "Y", 0),
+				"month" => format_date($row["start"], "custom", "n", 0),
+				"day" => format_date($row["start"], "custom", "j", 0),
 				);
 			$retval["start"]["#default_value"] = $start_date;
 		}
-
 
 		$retval["end"] = array(
 			"#title" => "End Date",
@@ -197,9 +202,9 @@ class reg_admin_level extends reg {
 		if (!empty($id)) {
 			$end = explode("-", $row["end"]);
 			$end_date = array(
-				"year" => format_date($row["end"], "custom", "Y"),
-				"month" => format_date($row["end"], "custom", "n"),
-				"day" => format_date($row["end"], "custom", "j"),
+				"year" => format_date($row["end"], "custom", "Y", 0),
+				"month" => format_date($row["end"], "custom", "n", 0),
+				"day" => format_date($row["end"], "custom", "j", 0),
 				);
 			$retval["end"]["#default_value"] = $end_date;
 		}
@@ -301,8 +306,55 @@ class reg_admin_level extends reg {
 	function level_form_submit(&$data) {
 
 		//
-		// Turn the data arrays into strings
+		// Turn the date arrays into strings
 		//
+		$this->datesToStrings($data);
+
+		//
+		// Save our current data if we're updating.  This will be for a 
+		// log entry later.
+		//
+		if (!empty($data["id"])) {
+			$old_data = $this->load($data["id"]);
+		}
+
+		$this->updateLevel($data);
+
+		$message = t("Membership Level ID '%id' saved!",
+			array("%id" => $data["id"]));
+		drupal_set_message($message);
+
+		//
+		// Create an audit log entry and write it out.
+		//
+		
+		if (!empty($old_data)) {
+			//$message_log = $message . " " . $this->get_changed_data(
+			//	$data, $old_data);
+			$message .= " " . $this->get_changed_data(
+				$data, $old_data);
+		}
+
+		$this->log->log($message);
+
+		//
+		// Send us back to the list of levels.
+		//
+		$uri = "admin/reg/settings/levels";
+		$this->goto_url($uri);
+
+	} // End of level_form_submit()
+
+
+	/**
+	* Convert our start and end date arrays into time_t values.
+	*
+	* @param array $data Associative array of level data.
+	*
+	* @return null
+	*/
+	function datesToStrings(&$data) {
+
 		$start = $data["start"];
 		$data["start"] = $this->get_time_t($start["year"], 
 			$start["month"], $start["day"]);
@@ -317,6 +369,19 @@ class reg_admin_level extends reg {
 		//
 		$data["end"] += 86399;
 
+	} // End of datesToStrings()
+
+
+	/**
+	* Insert a new level or update an existing one.
+	*
+	* @param array $data Associative array of level data.
+	*
+	* @return mixed If we inserted a level, return the ID.
+	*/
+	function updateLevel(&$data) {
+
+		$retval = "";
 
 		//
 		// Create an insert or an update, depending on if we have an ID
@@ -334,11 +399,6 @@ class reg_admin_level extends reg {
 				$data["description"], $data["notes"]);
 
 		} else {
-			//
-			// Load our old data for later use.
-			//
-			$old_data = $this->load($data["id"]);
-
 			$query = "UPDATE {reg_level} "
 				. "SET "
 				. "name='%s', year='%s', reg_type_id='%s', price='%s', "
@@ -357,36 +417,18 @@ class reg_admin_level extends reg {
 		db_query($query, $args);
 
 		//
-		// If we just inserted a row, fetch the ID.  Also prepare a message,
-		// then go back to the main list of levels.
+		// If we inserted a row, grab greb the ID
 		//
 		if (empty($data["id"])) {
 			$cursor = db_query("SELECT LAST_INSERT_ID() AS id");
 			$row = db_fetch_array($cursor);
-			$id = $row["id"];
-
-			$message = "Membership Level ID '${id}' saved!";
-
-		} else {
-			$id = $data["id"];
-			$message = "Membership Level ID '${id}' updated!";
+			$data["id"] = $row["id"];
+			$retval = $row["id"];
 		}
 
-		drupal_set_message($message);
+		return($retval);
 
-		//
-		// Create an audit log entry and write it out.
-		//
-		if (!empty($old_data)) {
-			$message_log = $message . " " . $this->get_changed_data(
-				$data, $old_data);
-			$this->log->log($message_log);
-		}
-
-		$uri = "admin/reg/settings/levels";
-		$this->goto_url($uri);
-
-	} // End of level_form_submit()
+	} // End of updateLevel()
 
 
 } // End of reg_level class
