@@ -1,0 +1,196 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_year_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("reg Unit Test (year functions)"),
+			"desc" => t("Test out the year-related functions in the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function testGetYears() {
+
+		$this->createLevels();
+
+		$output = $this->reg->getYears();
+		$this->assertNotNull($output);
+		$this->assertTrue(array_key_exists("1900", $output));
+		$this->assertTrue(array_key_exists("1901", $output));
+		$this->assertTrue(array_key_exists("1902", $output));
+		$this->assertTrue(array_key_exists("1903", $output));
+		$this->assertFalse(array_key_exists("1904", $output));
+
+	} // End of testGetYears()
+
+
+	function testInitBadgeNum() {
+
+		$this->createLevels();
+
+		//
+		// Get our badge numbers by year.  We shouldn't have any matches.
+		//
+		$output = $this->getBadgeNums();
+		$this->assertNotNull($output);
+		$this->assertFalse(array_key_exists("1900", $output));
+		$this->assertFalse(array_key_exists("1901", $output));
+		$this->assertFalse(array_key_exists("1902", $output));
+		$this->assertFalse(array_key_exists("1903", $output));
+		$this->assertFalse(array_key_exists("1904", $output));
+
+		//
+		// Init all badge number.  This should be successful.
+		//
+		$output = $this->reg->initBadgeNum("1900");
+		$this->assertTrue($output);
+		$output = $this->reg->initBadgeNum("1901");
+		$this->assertTrue($output);
+		$output = $this->reg->initBadgeNum("1902");
+		$this->assertTrue($output);
+		$output = $this->reg->initBadgeNum("1903");
+		$this->assertTrue($output);
+
+		//
+		// Try again.  This should work.
+		//
+		$output = $this->getBadgeNums();
+		$this->assertNotNull($output);
+		$this->assertTrue(array_key_exists("1900", $output));
+		$this->assertTrue(array_key_exists("1901", $output));
+		$this->assertTrue(array_key_exists("1902", $output));
+		$this->assertTrue(array_key_exists("1903", $output));
+		$this->assertFalse(array_key_exists("1904", $output));
+
+		//
+		// Badge numbers already exist at this point.
+		//
+		$output = $this->reg->initBadgeNum("1900");
+		$this->assertFalse($output);
+		$output = $this->reg->initBadgeNum("1901");
+		$this->assertFalse($output);
+		$output = $this->reg->initBadgeNum("1902");
+		$this->assertFalse($output);
+		$output = $this->reg->initBadgeNum("1903");
+		$this->assertFalse($output);
+
+
+		//
+		// Make sure we can use get_badge_num() for specific years.
+		//
+		$badge_num = $this->reg->get_constant("start_badge_num");
+		$badge_num++;
+		$output = $this->reg->get_badge_num(1900);
+		$this->assertEqual($badge_num, $output);
+		$output = $this->reg->get_badge_num(1901);
+		$this->assertEqual($badge_num, $output);
+		$output = $this->reg->get_badge_num(1901);
+		$badge_num++;
+		$this->assertEqual($badge_num, $output);
+
+	} // End of testInitBadgeNum()
+
+
+	/**
+	* Helper function to create some arbitrary levels.
+	*/
+	function createLevels() {
+
+		$data = array();
+		$data["name"] = "test " . __CLASS__;
+		$data["year"] = 1900;
+		$data["reg_type_id"] = 1;
+		$data["price"] = 1;
+		$data["start"] = time();
+		$data["end"] = time();
+		$data["description"] = "automatically created for testing";
+		$output = $this->level->updateLevel($data);
+		$this->assertNotNull($output);
+
+		unset($data["id"]);
+		$data["year"] = 1901;
+		$output = $this->level->updateLevel($data);
+		$this->assertNotNull($output);
+
+		unset($data["id"]);
+		$data["year"] = 1902;
+		$output = $this->level->updateLevel($data);
+		$this->assertNotNull($output);
+
+		unset($data["id"]);
+		$data["year"] = 1903;
+		$output = $this->level->updateLevel($data);
+		$this->assertNotNull($output);
+
+	} // End of createLevels()
+
+
+	/**
+	* Helper function to get all of our badge numbers from the badge_num table.
+	*
+	* @return array Associative array where the key is the year and the 
+	*	value is the badge number.
+	*/
+	function getBadgeNums() {
+
+		$retval = array();
+
+		$query = "SELECT * from {reg_badge_num} "
+			. "ORDER BY year "
+			;
+		$cursor = db_query($query);
+		while ($row = db_fetch_array($cursor)) {
+			$year = $row["year"];
+			$badge_num = $row["badge_num"];
+			$retval[$year] = $badge_num;
+		}
+
+		return($retval);
+
+	} // End of getBadgeNums()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_member = $this->factory->get_object("member");
+		$this->level = $this->factory->get_object("admin_level");
+
+		//
+		// Turn off display of errors while testing
+		//
+		$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+
+		//
+		// Clean up our sample levels
+		//
+		$query = "DELETE from {reg_level} "
+			. "WHERE "
+			. "year >= 1900 AND year <= 2000 "
+			;
+		db_query($query);
+
+		$query = "DELETE from {reg_badge_num} "
+			. "WHERE "
+			. "year >= 1900 AND year <= 2000 "
+			;
+		db_query($query);
+
+	} // End of tearDown()
+
+
+} // End of RegUnitTest class
+
+

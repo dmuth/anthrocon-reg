@@ -735,9 +735,12 @@ class reg {
 	* @return integer The badge number.  This number can be assigned
 	*	to a specific user.
 	*/
-	function get_badge_num() {
+	function get_badge_num($year = "") {
 
-		$year = $this->get_constant("YEAR");
+		if (empty($year)) {
+			$year = $this->get_constant("YEAR");
+		}
+
 		$query = "UPDATE {reg_badge_num} "
 			. "SET badge_num = @val := badge_num+1 "
 			. "WHERE year=%s ";
@@ -1478,8 +1481,70 @@ class reg {
 
 		}
 
-
 	} // End of isMinor()
+
+
+	/**
+	* Get all possible years for levels.
+	*
+	* @return array Associative array where the keys and values 
+	*	are valid years.
+	*/
+	function getYears() {
+
+		$retval = array();
+
+		$query = "SELECT DISTINCT year "
+			. "FROM {reg_level} "
+			. "ORDER BY year";
+		$cursor = db_query($query);
+
+		while ($row = db_fetch_array($cursor)) {
+			$year = $row["year"];
+			$retval[$year] = $year;
+		}
+
+		return($retval);
+
+	} // End of getYears()
+
+
+	/**
+	* Set our starting badge number for a specified con year.
+	* This funciton is usually called after a new level is created.
+	*
+	* @return boolean True if an entry was made into the badge table, 
+	*	false otherwise.
+	*/
+	function initBadgeNum($year) {
+
+		$query = "SELECT * FROM {reg_badge_num} "
+			. "WHERE year=%s";
+		$query_args = array($year);
+		$cursor = db_query($query, $query_args);
+		$row = db_fetch_array($cursor);
+
+		//
+		// We already have a row for this year.  Stop.
+		//
+		if (!empty($row)) {
+			return(false);
+		}
+
+		//
+		// No row found.  Add a new one.
+		//
+		$badge_num = $this->get_constant("start_badge_num");
+		$query = "INSERT INTO {reg_badge_num} "
+			. "(year, badge_num) "
+			. "VALUES (%s, %s) "
+			;
+		$query_args = array($year, $badge_num);
+		db_query($query, $query_args);
+
+		return(true);
+
+	} // End of initBadgeNum()
 
 
 } // End of reg class

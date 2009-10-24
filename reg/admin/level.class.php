@@ -327,10 +327,7 @@ class reg_admin_level extends reg {
 		//
 		// Create an audit log entry and write it out.
 		//
-		
 		if (!empty($old_data)) {
-			//$message_log = $message . " " . $this->get_changed_data(
-			//	$data, $old_data);
 			$message .= " " . $this->get_changed_data(
 				$data, $old_data);
 		}
