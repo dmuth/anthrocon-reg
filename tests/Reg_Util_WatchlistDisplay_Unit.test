@@ -27,7 +27,7 @@ class Reg_Util_WatchlistDisplay_UnitTest extends DrupalTestCase {
 		$this->assertNotNull($output);
 
 		$data = array();
-		$this->util->getFormValidate("test", $data);
+		$this->util->getFormValidate($data);
 
 	}
 
