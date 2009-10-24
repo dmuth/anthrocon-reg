@@ -77,7 +77,8 @@ class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
 		db_query($query, $value);
 
 
-		$query = "INSERT INTO {reg} (badge_name) VALUES ('%s') ";
+		$query = "INSERT INTO {reg} (badge_name, reg_type_id, reg_status_id) "
+			. "VALUES ('%s', 1, 1) ";
 		$value = "testDuplicate " . time();
 		db_query($query, $value);
 		db_query($query, $value);

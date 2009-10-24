@@ -33,13 +33,9 @@ class reg_member extends reg {
 		// public interface, automatically generate a badge number.
 		// Otherwise, we'll accept the admin-specified one.
 		//
-		if (
-			(	empty($data["badge_num"])
-				&& $data["badge_num"] != "0"
-			)
-			|| !$this->form_core->in_admin()) {
+		if (empty($data["badge_num"])
+			&& $data["badge_num"] != "0") {
 			$data["badge_num"] = $this->get_badge_num();
-
 		}
 
 		$query = "INSERT INTO {reg} "

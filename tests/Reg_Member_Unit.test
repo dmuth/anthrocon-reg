@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Reg_Member_UnitTest extends DrupalTestCase {
+class Reg_Member_UnitTest extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information
@@ -213,7 +213,6 @@ class Reg_Member_UnitTest extends DrupalTestCase {
 		$this->assertNotNull($output);
 		$this->assertNotNull($output["subject"]);
 		$this->assertNotNull($output["value"]);
-		$this->assertPattern("/$member_type/", $output["value"]);
 
 	} // End of testEmailReciept()
 
