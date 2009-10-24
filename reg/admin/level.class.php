@@ -6,7 +6,8 @@
 class reg_admin_level extends reg {
 
 	
-	function __construct(&$log) {
+	function __construct(&$reg, &$log) {
+		$this->reg = $reg;
 		$this->log = $log;
 	}
 
@@ -323,6 +324,11 @@ class reg_admin_level extends reg {
 		$message = t("Membership Level ID '%id' saved!",
 			array("%id" => $data["id"]));
 		drupal_set_message($message);
+
+		//
+		// Initialize the badge number for this year.
+		//
+		$this->reg->initBadgeNum($data["year"]);
 
 		//
 		// Create an audit log entry and write it out.

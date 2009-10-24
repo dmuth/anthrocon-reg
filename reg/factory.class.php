@@ -194,8 +194,9 @@ class reg_factory {
 
 
 	protected function get_admin_level() {
+		$reg = $this->get_reg();
 		$log = $this->get_log();
-		$retval = new reg_admin_level($log);
+		$retval = new reg_admin_level($reg, $log);
 		return($retval);
 	}
 

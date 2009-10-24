@@ -685,18 +685,6 @@ function reg_install($testing = false) {
 			;
 		db_query($query);
 
-		//
-		// Insert our initial badge number.
-		//
-		$factory = new reg_factory();
-		$reg = $factory->get_object("reg");
-		$year = $reg->get_constant("year");
-		$badge_num = $reg->get_constant("start_badge_num");
-		$query = "INSERT INTO {reg_badge_num} "
-			. "VALUES ($year, $badge_num) "
-			;
-		db_query($query);
-
 		$query = "INSERT INTO {reg_shirt_size} (shirt_size) "
 			. "VALUES "
 			. "('Small'), "
