@@ -11,7 +11,7 @@ class Reg_Admin_Log_UnitTest extends DrupalWebTestCase {
 		return array(
 			"name" => t("reg_admin_log Unit Test"),
 			//"desc" => t("Test out the reg_admin_log class"),
-			"group" => t("Registration System Unit Tests"),
+			"group" => t("reg-unit-tests"),
 			);
 	}
 

@@ -14,7 +14,7 @@ class Reg_Admin_Members_Errors_Functional_Test
 		return array(
 			"name" => t("/reg/admin/members Error Function Test"),
 			//"desc" => t("Test out the reg class"),
-			"group" => t("Registration System Functional Tests"),
+			"group" => t("reg-functional-tests"),
 			);
 	}
 

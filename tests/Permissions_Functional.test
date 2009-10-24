@@ -11,7 +11,7 @@ class Permissions_Functional_Test extends DrupalWebTestCase {
 		return array(
 			"name" => t("Permissions Function Test"),
 			"desc" => t("Test different permission levels for reg."),
-			"group" => t("Registration System Functional Tests"),
+			"group" => t("reg-functional-tests"),
 			);
 	}
 

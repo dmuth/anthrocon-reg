@@ -11,7 +11,7 @@ class Reg_Util_PrintDisplay_Test extends DrupalTestCase {
 		return array(
 			"name" => t("Reg_Util_PrintDisplay Unit Test"),
 			//"desc" => t("Test out the reg class"),
-			"group" => t("Registration System Unit Tests"),
+			"group" => t("reg-unit-tests"),
 			);
 	}
 

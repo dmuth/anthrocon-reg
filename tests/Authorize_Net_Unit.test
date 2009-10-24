@@ -13,7 +13,7 @@ class Authorize_Net_UnitTest extends DrupalWebTestCase {
 			"name" => t("Authorize_Net Unit Test"),
 			"desc" => t("Note: These tests WILL connect to Authorize.Net to do transactions in test mode. ")
 				. t("You MAY also get emailed \"receipts\" for the sample transactions."),
-			"group" => t("Registration System - Authorize.net Unit Tests"),
+			"group" => t("reg-authorize-net"),
 			);
 	}
 
