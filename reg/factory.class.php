@@ -248,11 +248,10 @@ class reg_factory {
 
 
 	protected function get_admin_stats() {
-		$message = $this->get_message();
-		$fake = $this->get_fake();
+		$reg = $this->get_reg();
 		$log = $this->get_log();
 		$search = $this->get_admin_search();
-		$retval = new reg_admin_stats($message, $fake, $log, $search);
+		$retval = new reg_admin_stats($reg, $log, $search);
 		return($retval);
 	}
 

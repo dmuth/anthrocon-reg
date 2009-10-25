@@ -6,13 +6,13 @@
 * @todo Split this up into seperate classes for each report.
 *
 */
-class reg_admin_stats extends reg {
+class reg_admin_stats {
 
 
-	function __construct(&$message, &$fake, &$log, &$search) {
-		$this->admin_member = $admin_member;
+	function __construct(&$reg, &$log, &$search) {
+		$this->reg = $reg;
+		$this->log = $log;
 		$this->search = $search;
-		parent::__construct($message, $fake, $log);
 	}
 
 
@@ -21,10 +21,26 @@ class reg_admin_stats extends reg {
 	*/
 	function get_stats_badge() {
 
-		$message = t("Audit log: Stats: Viewed badge breakdown report.");
-		$this->log->log($message);
+		$retval = "";
 
-		$year = $this->get_constant("year");
+		//
+		// Grab the current year, then get a list of all years.
+		//
+		$year = arg(3);
+		$url = "admin/reg/stats";
+		$retval .= $this->getYearHtml($url, $year);
+
+		//
+		// If a year wasn't passed in, stop here.
+		//
+		if (empty($year)) {
+			return($retval);
+		}
+
+		$message = t("Audit log: Stats: Viewed badge breakdown report for year %year.",
+			array("%year" => $year)
+			);
+		$this->log->log($message);
 
 		$retval .= t("<h2>Badge Breakdown for Convention Year %year</h2>",
 			array(
@@ -32,7 +48,7 @@ class reg_admin_stats extends reg {
 			));
 
 		$data_reg = $this->get_badge_data($year);
-		$retval .= $this->get_badge_report($data_reg);
+		$retval .= $this->get_badge_report($data_reg, $year);
 
 		return($retval);
 
@@ -44,10 +60,22 @@ class reg_admin_stats extends reg {
 	*/
 	function get_stats_reg() {
 
+		//
+		// Grab the current year, then get a list of all years.
+		//
+		$year = arg(5);
+		$url = "admin/reg/stats/registration/activity";
+		$retval .= $this->getYearHtml($url, $year);
+
+		//
+		// If a year wasn't passed in, stop here.
+		//
+		if (empty($year)) {
+			return($retval);
+		}
+
 		$message = t("Audit log: Stats: Viewed registration activity report.");
 		$this->log->log($message);
-
-		$year = $this->get_constant("year");
 
 		$retval .= t("<h2>Registration Activity for Convention Year %year</h2>",
 			array(
@@ -67,10 +95,23 @@ class reg_admin_stats extends reg {
 	*/
 	function get_stats_revenue() {
 
+		//
+		// Grab the current year, then get a list of all years.
+		//
+		$year = arg(4);
+		$url = "admin/reg/stats/revenue";
+		$retval .= $this->getYearHtml($url, $year);
+
+		//
+		// If a year wasn't passed in, stop here.
+		//
+		if (empty($year)) {
+			return($retval);
+		}
+
+
 		$message = t("Audit log: Stats: Viewed revenue breakdown report.");
 		$this->log->log($message);
-
-		$year = $this->get_constant("year");
 
 		$retval .= t("<h2>Revenue Breakdown for Convention Year %year</h2>",
 			array(
@@ -100,7 +141,7 @@ class reg_admin_stats extends reg {
 		$total_status = array();
 		$total_status["total"] = 0;
 
-		$types = $this->get_types();
+		$types = $this->reg->get_types();
 
 		//
 		// Loop through our types (rows in the report)
@@ -179,14 +220,16 @@ class reg_admin_stats extends reg {
 	*
 	* @param array $data Our data structure returned from get_badge_data().
 	*
+	* @param integer $year The year we are sarching on.
+	*
 	* @return string HTML code for the report.
 	*/
-	function get_badge_report($data) {
+	function get_badge_report($data, $year) {
 
 		$retval = "";
 
-		$statuses = $this->get_statuses();
-		$types = $this->get_types();
+		$statuses = $this->reg->get_statuses();
+		$types = $this->reg->get_types();
 
 		//
 		// Create our header, which corresponds to the statuses.
@@ -235,9 +278,10 @@ class reg_admin_stats extends reg {
 					$search = array();
 					$search["reg_status_id"] = $status_id;
 					$search["reg_type_id"] = $type_id;
+					$search["year"] = $year;
 
 					$url = "admin/reg/members/search/";
-					$get_data = $this->array_to_get_data($search);
+					$get_data = $this->reg->array_to_get_data($search);
 					$url .= $get_data;
 
 					$link = l($num, $url);
@@ -275,6 +319,11 @@ class reg_admin_stats extends reg {
 			. "FROM {reg} "
 			. "WHERE "
 			. "year='%s' "
+			//
+			// Empty reg_type_id values are mainly found in 
+			// devlopement/testing systems.
+			//
+			. "AND reg_type_id != '' "
 			. "GROUP BY date "
 			. "ORDER BY date";
 		$query_args = array($year);
@@ -567,6 +616,46 @@ class reg_admin_stats extends reg {
 		return($retval);
 
 	} // End of get_rev_report()
+
+
+	/**
+	* Create a dialog to display a dialog to select a year, based on all years.
+	*/
+	function getYearHtml($url, $year) {
+
+		$retval = t("<h2>Select a year:</h2>");
+
+		$years = $this->reg->getYears();
+
+		if (empty($years)) {
+			$retval .= t("No years found in system. Go !link!",
+				array("!link" => l(t("Create some"), "admin/reg/settings/levels"))
+				);
+
+		} else {
+			//
+			// Loop through our years, generating a link for each except
+			// the year we are on.
+			//
+			foreach ($years as $key => $value) {
+				$path = $url . "/" . $key;
+
+				$link = l($key, $path);
+				if ($key == $year) {
+					$link = $key;
+				}
+
+				$retval .= "<li>$link</li>\n";
+			}
+
+		}
+
+		$retval = "<ul>\n" . $retval . "\n</ul>\n";
+
+		return($retval);
+
+	} // End of getYearHtml()
+
 
 } // End of class reg_admin_stats
 
