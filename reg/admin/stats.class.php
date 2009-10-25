@@ -620,37 +620,17 @@ class reg_admin_stats {
 
 	/**
 	* Create a dialog to display a dialog to select a year, based on all years.
+	* 
+	* @param string $url The URL to link to.  The year will be appended after 
+	*	it in the links.
+	*
+	* @param integer $year The currently selected year
+	*
+	* @return string HTML code that lists all of the available years.
 	*/
 	function getYearHtml($url, $year) {
 
-		$retval = t("<h2>Select a year:</h2>");
-
-		$years = $this->reg->getYears();
-
-		if (empty($years)) {
-			$retval .= t("No years found in system. Go !link!",
-				array("!link" => l(t("Create some"), "admin/reg/settings/levels"))
-				);
-
-		} else {
-			//
-			// Loop through our years, generating a link for each except
-			// the year we are on.
-			//
-			foreach ($years as $key => $value) {
-				$path = $url . "/" . $key;
-
-				$link = l($key, $path);
-				if ($key == $year) {
-					$link = $key;
-				}
-
-				$retval .= "<li>$link</li>\n";
-			}
-
-		}
-
-		$retval = "<ul>\n" . $retval . "\n</ul>\n";
+		$retval = $this->reg->getYearHtml($url, $year);
 
 		return($retval);
 

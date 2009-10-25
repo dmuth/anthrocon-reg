@@ -1548,5 +1548,43 @@ class reg {
 	} // End of initBadgeNum()
 
 
+	function getYearHtml($url, $year) {
+
+		$retval = "";
+
+		$retval = t("<h2>Select a year:</h2>");
+
+		$years = $this->getYears();
+
+		if (empty($years)) {
+			$retval .= t("No years found in system. Go !link!",
+				array("!link" => l(t("Create some"), "admin/reg/settings/levels"))
+				);
+
+		} else {
+			//
+			// Loop through our years, generating a link for each except
+			// the year we are on.
+			//
+			foreach ($years as $key => $value) {
+				$path = $url . "/" . $key;
+
+				$link = l($key, $path);
+				if ($key == $year) {
+					$link = $key;
+				}
+
+				$retval .= "<li>$link</li>\n";
+			}
+
+		}
+
+		$retval = "<ul>\n" . $retval . "\n</ul>\n";
+
+		return($retval);
+
+	} // End of getYearHtml()
+
+
 } // End of reg class
 
