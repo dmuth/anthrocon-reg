@@ -134,10 +134,19 @@ class Reg_FormCore {
 			$retval["badge_num"] = array(
 				"#title" => t("Badge Number"),
 				"#type" => "textfield",
-				"#description" => t("This must be UNIQUE.  If unsure, leave blank and "
-					. "one will be assigned."),
+				"#description" => t("This must be UNIQUE for the badge year. ")
+					. t("If unsure, leave blank and one will be assigned."),
 				"#size" => $this->reg->get_constant("FORM_TEXT_SIZE_SMALL"),
 				"#default_value" => $data["badge_num"],
+				);
+
+			$years = $this->reg->getYears();
+			$retval["year"] = array(
+				"#title" => t("Badge Year"),
+				"#type" => "select",
+				"#description" => t("The year of the badge."),
+				"#options" => $years,
+				"#default_value" => $data["year"],
 				);
 
 			$retval["reg_type_id"] = array(

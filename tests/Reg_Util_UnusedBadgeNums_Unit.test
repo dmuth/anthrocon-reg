@@ -58,6 +58,7 @@ class Reg_Util_UnusedBadgeNums_Test extends DrupalTestCase {
 		// Add a member and note his badge number
 		//
 		$data = array();
+		$data["year"] = date("Y");
 		$output = $this->reg_member->add_member($data);
 		$this->assertNotNull($output);
 		$this->assertNotNull($data["badge_num"]);
@@ -65,7 +66,7 @@ class Reg_Util_UnusedBadgeNums_Test extends DrupalTestCase {
 
 		//
 		// Get current list of unused badge numbers and make sure the badge 
-		// we just craated isn't there.
+		// we just created isn't there.
 		//
 		$output = $this->util->getBadgeNums();
 		$this->assertNotNull($output);

@@ -365,7 +365,6 @@ class reg_admin_member extends reg {
 		unset($old_data["id"]);
 		unset($old_data["created"]);
 		unset($old_data["modified"]);
-		unset($old_data["year"]);
 		unset($old_data["badge_cost"]);
 		unset($old_data["donation"]);
 		unset($old_data["total_cost"]);
@@ -377,6 +376,7 @@ class reg_admin_member extends reg {
 
 		$query = "UPDATE {reg} "
 			. "SET "
+			. "year='%s', "
 			. "modified=UNIX_TIMESTAMP(), reg_type_id='%s', reg_status_id='%s', "
 			. "badge_num='%s', badge_name='%s', "
 			. "first='%s', middle='%s', last='%s', "
@@ -391,13 +391,15 @@ class reg_admin_member extends reg {
 
 			. "email='%s', phone='%s', "
 			. "shirt_size_id='%s' "
-			."WHERE id=%d ";
+			. "WHERE "
+			. "id=%d ";
 
 		$birth = $data["birthdate"];
 		$data["birthdate_string"] = $this->get_date($birth["year"], 
 			$birth["month"], $birth["day"]);
 
 		$query_args = array(
+			$data["year"],
 			$data["reg_type_id"], $data["reg_status_id"],
 			$data["badge_num"], $data["badge_name"],
 			$data["first"], $data["middle"], $data["last"], 

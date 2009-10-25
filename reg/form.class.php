@@ -192,7 +192,7 @@ class reg_form extends reg {
 			//
 			$this->is_badge_num_valid($data["badge_num"]);
 			$this->is_badge_num_available($data["reg_id"], 
-				$data["badge_num"]);
+				$data["badge_num"], $data["year"]);
 
 			//
 			// Log the transaction.  Note that wer are NOT charging
@@ -368,10 +368,6 @@ class reg_form extends reg {
 		drupal_set_message($message);
 
 	} // End of reg_submit_update()
-
-
-
-
 
 
 } // End of reg_form class

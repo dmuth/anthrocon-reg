@@ -341,11 +341,12 @@ class reg_factory {
 		$log = $this->get_log();
 		$email = $this->get_email();
 		$form_core = $this->get_FormCore();
+		$level = $this->get_admin_level();
 		//$form = $this->get_form();
 		//
 		// Don't include the reg_form class due to circular dependencies.	
 		//
-		$retval = new reg_member($log, $email, $form_core);
+		$retval = new reg_member($log, $email, $form_core, $level);
 		return($retval);
 	}
 

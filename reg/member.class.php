@@ -7,11 +7,12 @@
 class reg_member extends reg {
 
 
-	function __construct(&$log, &$email, &$form_core) {
+	function __construct(&$log, &$email, &$form_core, &$level) {
 
 		$this->log = $log;
 		$this->email = $email;
 		$this->form_core = $form_core;
+		$this->level = $level;
 
 	}
 
@@ -29,13 +30,27 @@ class reg_member extends reg {
 	function add_member(&$data, $reg_trans_id = "") {
 
 		//
+		// If there's a level ID, grab the year from that.
+		// Otherwise, an admin added it, get the year from the data.
+		//
+		if (!empty($data["reg_level_id"])) {
+			$level_id = $data["reg_level_id"];
+			$level_data = $this->level->load($data["reg_level_id"]);
+			$year = $level_data["year"];
+
+		} else {
+			$year = $data["year"];
+
+		}
+
+		//
 		// If there is no badge number specififed OR we are in the
 		// public interface, automatically generate a badge number.
 		// Otherwise, we'll accept the admin-specified one.
 		//
 		if (empty($data["badge_num"])
 			&& $data["badge_num"] != "0") {
-			$data["badge_num"] = $this->get_badge_num();
+			$data["badge_num"] = $this->get_badge_num($year);
 		}
 
 		$query = "INSERT INTO {reg} "
@@ -74,7 +89,7 @@ class reg_member extends reg {
 				$data["reg_level_id"]);
 		}
 
-		$query_args = array($this->get_constant("YEAR"), 
+		$query_args = array($year, 
 			$data["reg_type_id"], 1, $data["badge_num"], 
 			$data["badge_name"], $data["first"], $data["middle"], 
 			$data["last"], $date_string, 

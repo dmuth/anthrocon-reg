@@ -160,21 +160,29 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 
 	function testIsBadgeNumAvailable() {
 
+		$year = date("Y");
 		$data = array();
-		$data["badge_name"] = "Fluffy Samplefur";
+		$data["badge_name"] = "test " . __CLASS__;
+		$data["year"] = $year;
+		$output = $this->reg_member->add_member($data);
+		$data["badge_name"] .= "2";
+		unset($data["id"]);
+		unset($data["badge_num"]);
 		$output = $this->reg_member->add_member($data);
 		$this->assertNotNull($output);
 		$badge_num = $output;
 
 		$output = $this->reg->is_badge_num_available($data["id"], 
-			$badge_num);
+			$badge_num, $year);
 		$this->assertTrue($output);
 
 		//
 		// Try using this badge number on another badge.
 		//
-		$output = $this->reg->is_badge_num_available(($data["id"] + 1), 
-			$badge_num);
+		//$output = $this->reg->is_badge_num_available(($data["id"] + 1), 
+		$output = $this->reg->is_badge_num_available(($data["id"] - 1), 
+			$badge_num, $year);
+
 		$this->assertFalse($output);
 		$output = $this->reg->getLastError();
 		$this->assertNotNull($output);
@@ -185,7 +193,7 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 		// Now try a badge number that is WAY too high.
 		//
 		$output = $this->reg->is_badge_num_available($data["id"], 
-			($badge_num + 100));
+			($badge_num + 100), $year);
 		$this->assertTrue($output);
 		$output = $this->reg->getLastError();
 		$this->assertNotNull($output);

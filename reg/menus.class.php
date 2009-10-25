@@ -66,8 +66,7 @@ class reg_menus extends reg {
 		// Public link
 		//
 		$retval["reg"] = array(
-			"title" => $this->get_constant("YEAR") ." " 
-				. "Pre-Registration",
+			"title" => t("Pre-Registration"),
 			"page callback" => "reg_registration",
 			"access arguments" => array($this->get_constant("PERM_REGISTER")),
 			"type" => MENU_NORMAL_ITEM,

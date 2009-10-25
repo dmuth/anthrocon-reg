@@ -98,14 +98,14 @@ class Reg_Admin_Member_UnitTest extends DrupalTestCase {
 
 		$data = array();
 		$data["badge_name"] = "testRecent ". time();
+		$data["year"] = date("Y");
 		$output = $this->reg_member->add_member($data);
 		$this->assertNotNull($output);
 		$badge_num = $output;
 
 		$output = $this->reg_admin_member->recent();
 		$this->assertNotNull($output, "Recent page works");
-		$year = $this->reg->get_constant("YEAR");
-		$regexp = $year . "-" . 
+		$regexp = $data["year"] . "-" . 
 			$this->reg->format_badge_num($badge_num)
 			. ".*" . $data["badge_name"]
 			. ".*" . "</tr>"

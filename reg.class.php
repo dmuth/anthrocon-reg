@@ -232,6 +232,8 @@ class reg {
 	*
 	* @param integer $badge_num The badge number to check for.
 	*
+	* @param integer $year The year of the badge number
+	*
 	* Note that this only works for the CURRENT year.  We should NOT
 	*	be updating memberships for previous years EVER.
 	*
@@ -239,7 +241,7 @@ class reg {
 	*	False if it is in use elsewhere.
 	* 
 	*/
-	function is_badge_num_available($reg_id, $badge_num) {
+	function is_badge_num_available($reg_id, $badge_num, $year) {
 
 		//
 		// If no badge number was entered, one will be assigned automatically.
@@ -251,11 +253,10 @@ class reg {
 		//
 		// Create a query to check and see if the badge number is in use.
 		//
-		$year = $this->get_constant("YEAR");
 		$query = "SELECT id "
 			. "FROM reg "
 			. "WHERE "
-			. "year='%s%' "
+			. "year='%s' "
 			. "AND badge_num='%s' "
 			. "AND id!='%s'"
 			;
@@ -265,7 +266,7 @@ class reg {
 
 		if (!empty($row)) {
 			$error = t("Badge number '%num%' is already in use!",
-				array("%num%" => $badge_num)
+				array("%num%" => $year . "-" . $badge_num)
 				);
 			$this->setError("badge_num", $error);
 			return(false);
@@ -275,8 +276,7 @@ class reg {
 		// Now, check to see if we have exceeded the highest assigned number.
 		// We don't want this to happen, because said number will eventually
 		// get stomped on sooner or later.
-		//
-		$year = $this->get_constant("YEAR");
+		
 		$query = "SELECT * "
 			. "FROM {reg_badge_num} "
 			. "WHERE "
@@ -287,10 +287,11 @@ class reg {
 
 		if ($badge_num > $row["badge_num"]) {
 			$error = t("Badge number '%num%' exceeds highest assigned "
-				. "number of '%assigned%'.  Please pick a lower number "
+				. "number of '%assigned%' for year '%year%'.  Please pick a lower number "
 				. "or leave blank to automatically assign a number.",
 				array(
 					"%num%" => $badge_num,
+					"%year%" => $year,
 					"%assigned%" => $row["badge_num"],
 				)
 				);
