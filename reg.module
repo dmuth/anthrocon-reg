@@ -196,14 +196,14 @@ function reg_onsitereg_form() {
 	return($onsite->getForm());
 }
 
-function reg_onsitereg_form_validate($form_id, &$data) {
+function reg_onsitereg_form_validate($form, &$data) {
 	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
-	return($onsite->getFormValidate($form_id, $data));
+	return($onsite->getFormValidate($data["values"]));
 }
 
-function reg_onsitereg_form_submit($form_id, &$data) {
+function reg_onsitereg_form_submit($form, &$data) {
 	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
-	return($onsite->getFormSubmit($form_id, $data));
+	return($onsite->getFormSubmit($data["values"]));
 }
 
 function reg_onsitereg_success() {

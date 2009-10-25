@@ -7,13 +7,14 @@ class Reg_OnsiteDisplay {
 
 
 	function __construct(&$reg, &$form_core, &$cc_gateway, &$log, &$message,
-		&$captcha) {
+		&$captcha, &$level) {
 		$this->reg = $reg;
 		$this->form_core = $form_core;
 		$this->cc_gateway = $cc_gateway;
 		$this->log = $log;
 		$this->message = $message;
 		$this->captcha = $captcha;
+		$this->level = $level;
 	}
 
 
@@ -72,7 +73,7 @@ class Reg_OnsiteDisplay {
 	* This function validates our form submission, making sure that all is 
 	* well with email addresses and such.
 	*/
-	function getFormValidate($form_id, &$data) {
+	function getFormValidate(&$data) {
 
 		$this->form_core->checkCaptcha($data["reg_captcha"]);
 
@@ -112,7 +113,7 @@ class Reg_OnsiteDisplay {
 	/**
 	* Everything's good.  Save the new membership and redirect to the success page.
 	*/
-	function getFormSubmit($form_id, &$data) {
+	function getFormSubmit(&$data) {
 
 		$this->addMember($data);
 
@@ -131,6 +132,16 @@ class Reg_OnsiteDisplay {
 	* are no finances involved.
 	*/
 	function addMember(&$data) {
+
+		//
+		// If there's a level ID, grab the year from that.
+		// Otherwise, an admin added it, get the year from the data.
+		//
+		if (!empty($data["reg_level_id"])) {
+			$level_id = $data["reg_level_id"];
+			$level_data = $this->level->load($data["reg_level_id"]);
+			$year = $level_data["year"];
+		}
 
 		$levels = $this->reg->get_valid_levels();
 		$reg_level_id = $data["reg_level_id"];
@@ -165,7 +176,7 @@ class Reg_OnsiteDisplay {
 		$data["reg_type_id"] = $this->reg->get_reg_type_id(
 			$data["reg_level_id"]);
 
-		$query_args = array($this->reg->get_constant("YEAR"),
+		$query_args = array($year,
 			$data["reg_type_id"], 
 			//
 			// Badge status of "new"

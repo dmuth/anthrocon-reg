@@ -378,8 +378,9 @@ class reg_factory {
 		$log = $this->get_log();
 		$message = $this->get_message();
 		$captcha = $this->get_captcha();
+		$level = $this->get_admin_level();
 		$retval = new reg_OnsiteDisplay($reg, $form_core, $cc_gateway, 
-			$log, $message, $captcha);
+			$log, $message, $captcha, $level);
 		return($retval);
 	}
 
