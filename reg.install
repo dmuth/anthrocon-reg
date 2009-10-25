@@ -642,7 +642,8 @@ function reg_install($testing = false) {
 			. "('Complete', 0, 'Badge is paid'), "
 			. "('Defer', 0, 'Badge is deferred until next year'), "
 			. "('Refund', 0, 'Badge was refunded'), "
-			. "('New', -1, 'Badge has been entered, but not yet paid for') "
+			. "('New', -1, 'Badge has been entered, but not yet paid for'), "
+			. "('Invalid', 1, 'This badge should have never happened. (testing, etc.)') "
 			;
 		db_query($query);
 

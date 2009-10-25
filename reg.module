@@ -57,10 +57,10 @@ function reg_init() {
 	//
 	// Want to test out data schema changes?  Here's the place to do it!
 	//
-	//include("reg.install");
-	//reg_uninstall();
-	//reg_install(true);
-	//reg_install(false);
+	//include("reg.install"); // Debugging
+	//reg_uninstall(); // Debugging
+	//reg_install(false); // Debugging
+	//reg_install(true); // Debugging
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->hook_init();
