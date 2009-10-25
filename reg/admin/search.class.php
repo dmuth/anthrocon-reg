@@ -6,10 +6,11 @@
 class reg_admin_search extends reg {
 
 
-	function __construct(&$message, &$fake, &$log, &$admin_member) {
+	function __construct(&$message, &$fake, &$log, &$admin_member, $reg) {
 		$this->log = $log;
 		$this->admin_member = $admin_member;
 		parent::__construct($message, $fake, $log);
+		$this->reg = $reg;
 	}
 
 
@@ -55,33 +56,50 @@ class reg_admin_search extends reg {
 			. t("Ranges are acceptable, such as '1-500', '30-40', '-500', '501-', etc.")		
 			;
 		$search["badge_num"] = array(
-			"#title" => "Badge Number",
+			"#title" => t("Badge Number"),
 			"#type" => "textfield",
 			"#description" => $description,
 			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["badge_num"],
 			);
 
+		//
+		// Load our years and append them onto an array.
+		//
+		$years = array();
+		$years[""] = t("Any");
+		$tmp = $this->reg->getYears();
+		foreach ($tmp as $key => $value) {
+			$years[$key] = $value;
+		}
+
+		$search["year"] = array(
+			"#title" => t("Year"),
+			"#type" => "select",
+			"#options" => $years,
+			"#default_value" => $search_data["year"],
+			);
+
 		$search["name"] = array(
-			"#title" => "Name",
+			"#title" => t("Name"),
 			"#type" => "textfield",
-			"#description" => "Badge name or real name.",
+			"#description" => t("Badge name or real name."),
 			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["name"],
 			);
 
 		$search["address"] = array(
-			"#title" => "Address",
+			"#title" => t("Address"),
 			"#type" => "textfield",
-			"#description" => "Address, city, state, or country.",
+			"#description" => t("Address, city, state, or country."),
 			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["address"],
 			);
 
 		$search["email"] = array(
-			"#title" => "Email",
+			"#title" => t("Email"),
 			"#type" => "textfield",
-			"#description" => "Email address.",
+			"#description" => t("Email address."),
 			"#size" => $this->get_constant("FORM_TEXT_SIZE_SMALL"),
 			"#default_value" => $search_data["email"],
 			);
@@ -90,10 +108,10 @@ class reg_admin_search extends reg {
 		$types[""] = "Select";
 		ksort($types);
 		$search["reg_type_id"] = array(
-			"#title" => "Badge Type",
+			"#title" => t("Badge Type"),
 			"#type" => "select",
 			"#options" => $types,
-			"#description" => "The registration type.",
+			"#description" => t("The badge type."),
 			"#default_value" => $search_data["reg_type_id"],
 			);
 
@@ -101,10 +119,10 @@ class reg_admin_search extends reg {
 		$statuses[""] = "Select";
 		ksort($statuses);
 		$search["reg_status_id"] = array(
-			"#title" => "Status",
+			"#title" => t("Status"),
 			"#type" => "select",
 			"#options" => $statuses,
-			"#description" => "The member's status.",
+			"#description" => t("The member's status."),
 			"#default_value" => $search_data["reg_status_id"],
 			);
 
@@ -300,6 +318,11 @@ class reg_admin_search extends reg {
 
 			}
 
+		}
+
+		if (!empty($search["year"])) {
+			$where[] = "year='%s' ";
+			$args[] = $search["year"];
 		}
 
 		if (!empty($search["name"])) {

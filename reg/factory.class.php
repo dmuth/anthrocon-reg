@@ -241,7 +241,8 @@ class reg_factory {
 		$message = $this->get_message();
 		$fake = $this->get_fake();
 		$log = $this->get_log();
-		$retval = new reg_admin_search($message, $fake, $log, $admin_member);
+		$reg = $this->get_reg();
+		$retval = new reg_admin_search($message, $fake, $log, $admin_member, $reg);
 		return($retval);
 	}
 
