@@ -18,6 +18,21 @@ class Reg_Util_UnusedBadgeNumsDisplay {
         $retval = "";
 
 		//
+		// Grab the current year, then get a list of all years.
+		//
+		$year = arg(3);
+		$url = "admin/reg/utils";
+		$retval .= $this->reg->getYearHtml($url, $year);
+
+		//
+		// If a year wasn't passed in, stop here.
+		//
+		if (empty($year)) {
+			return($retval);
+		}
+
+		//$_SESSION["reg"]["util"]["unused_badge_nums"] = $year; // Debugging
+		//
 		// If our session variable is set, run the report, get the results,
 		// and unset the variable.
 		//
@@ -26,7 +41,7 @@ class Reg_Util_UnusedBadgeNumsDisplay {
 			$message = t("Audit log: Viewed unused badge number report.");
 			$this->log->log($message);
 
-			$retval .= $this->getResults();
+			$retval .= $this->getResults($year);
 			unset($_SESSION["reg"]["util"]["unused_badge_nums"]);
 		}
 
@@ -47,13 +62,20 @@ class Reg_Util_UnusedBadgeNumsDisplay {
 
 		$retval = array();
 
+		$year = arg(3);
+
 		$retval["description"] = array(
 			"#type" => "item",
 			"#value" => t("Do you want to run a search for all unused badge "
 				. "numbers for the convention year %year?",
 				array(
-					"%year" => $this->reg->get_constant("year"),
+					"%year" => $year,
 				)),
+			);
+
+		$retval["year"] = array(
+			"#type" => "hidden",
+			"#value" => $year,
 			);
 
 		$retval["submit"] = array(
@@ -73,9 +95,11 @@ class Reg_Util_UnusedBadgeNumsDisplay {
 
 		$retval = "";
 
-		$_SESSION["reg"]["util"]["unused_badge_nums"] = true;
+		$year = $data["year"];
 
-		$url = "admin/reg/utils/unused_badge_nums";
+		$_SESSION["reg"]["util"]["unused_badge_nums"] = $year;
+
+		$url = "admin/reg/utils/" . $year;
         $this->reg->goto_url($url);
 
 		return($retval);
@@ -86,19 +110,21 @@ class Reg_Util_UnusedBadgeNumsDisplay {
 	/**
 	* Calculate what badge numbers have not been assigned.
 	*
+	* @param intger $year The convention year to search
+	*
 	* @return string A report of unassigned badge numbers
 	*/
-	function getResults() {
+	function getResults($year) {
 
 		$retval = "";
 
-		$nums = $this->util->getBadgeNums();
+		$nums = $this->util->getBadgeNums($year);
 
 		$retval .= t("The following badge numbers are not currently assigned:<p/>");
 		$retval .= join(", ", $nums);
 		$retval .= "<p/>\n";
 
-		$max = $this->util->getMaxBadgeNum();
+		$max = $this->util->getMaxBadgeNum($year);
 		$retval .= t("Highest Badge Number: %num", array(
 			"%num" => $max,
 			));

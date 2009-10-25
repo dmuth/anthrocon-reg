@@ -16,31 +16,6 @@ class Reg_Util_UnusedBadgeNumsDisplay_Test extends DrupalTestCase {
 	}
 
 
-	function testGo() {
-
-		$output = $this->util->go();
-		$this->assertNotNull($output);
-
-		//
-		// Test to make sure our session is reset
-		//
-		$_SESSION["reg"]["util"]["unused_badge_nums"] = true;
-		$this->assertNotNull($_SESSION["reg"]["util"]["unused_badge_nums"]);
-
-		$output = $this->util->go();
-		$this->assertNotNull($output);
-		$regexp = t("following badge numbers");
-		$this->assertTrue(ereg($regexp, $output));
-		$this->assertNull($_SESSION["reg"]["util"]["unused_badge_nums"]);
-
-		$output = $this->util->go();
-		$this->assertNotNull($output);
-		$this->assertFalse(ereg($regexp, $output));
-		$this->assertNull($_SESSION["reg"]["util"]["unused_badge_nums"]);
-
-	} // End of testGo()
-
-
 	function testGetForm() {
 
 		$output = $this->util->getForm();
@@ -58,8 +33,20 @@ class Reg_Util_UnusedBadgeNumsDisplay_Test extends DrupalTestCase {
 
 
 	function testGetResults() {
-		$output = $this->util->getResults();
+
+		$years = $this->reg->getYears();
+		$year = array_shift($years);
+
+		//$years = array(); // Debugging
+		if (empty($years)) {
+			$message = "No membership levels defined.  Skipping these tests.";
+			$this->pass($message);
+			return(null);
+		}
+
+		$output = $this->util->getResults($year);
 		$this->assertNotNull($output);
+
 	}
 
 

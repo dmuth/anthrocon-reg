@@ -12,19 +12,20 @@ class Reg_Util_UnusedBadgeNums {
 	* Figure out what badge numbers are unused for the current year.
 	* Badge numbers from 0 to the current highest badge number are checked.
 	*
+	* @param intger $year The convention year to search
+	*
 	* @return array An associative array where the key and values are 
 	*	available badge numbers.
 	*/
-	function getBadgeNums() {
+	function getBadgeNums($year) {
 
 		$retval = array();
 
-		$max_badge_num = $this->getMaxBadgeNum();
+		$max_badge_num = $this->getMaxBadgeNum($year);
 		
 		//
 		// Get all badge numbers for this year
 		//
-		$year = $this->reg->get_constant("year");
 		$query = "SELECT badge_num FROM {reg} "
 			. "WHERE "
 			. "year='%s' "
@@ -107,11 +108,12 @@ class Reg_Util_UnusedBadgeNums {
 	/**
 	* Get our current maximm badge number.
 	*
+	* @param intger $year The convention year to search
+	*
 	* @return integer Our current maximum badge number.
 	*/
-	function getMaxBadgeNum() {
+	function getMaxBadgeNum($year) {
 
-		$year = $this->reg->get_constant("year");
 		$query = "SELECT badge_num FROM {reg_badge_num} WHERE year='%s'";
 		$cursor = db_query($query, $year);
 		$row = db_fetch_array($cursor);

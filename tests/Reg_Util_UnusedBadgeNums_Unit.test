@@ -18,13 +18,26 @@ class Reg_Util_UnusedBadgeNums_Test extends DrupalTestCase {
 
 	function testGetMaxBadgeNum() {
 
-		$output = $this->util->getMaxBadgeNum();
+		//
+		// Grab our first registration year
+		//
+		$years = $this->reg->getYears();
+		$year = array_shift($years);
+
+		//$years = array(); // Debugging
+		if (empty($years)) {
+			$message = "No membership levels defined.  Skipping these tests.";
+			$this->pass($message);
+			return(null);
+		}
+
+		$output = $this->util->getMaxBadgeNum($year);
 		$this->assertNotNull($output);
 		$expected = $output + 1;
 
-		$output = $this->reg->get_badge_num();
+		$output = $this->reg->get_badge_num($year);
 		$this->assertNotNull($output);
-		$output = $this->util->getMaxBadgeNum();
+		$output = $this->util->getMaxBadgeNum($year);
 		$this->assertNotNull($output);
 		$this->assertEqual($expected, $output);
 
@@ -55,10 +68,23 @@ class Reg_Util_UnusedBadgeNums_Test extends DrupalTestCase {
 	function testGetBadgeNums() {
 
 		//
+		// Grab our first registration year
+		//
+		$years = $this->reg->getYears();
+		$year = array_shift($years);
+
+		//$years = array(); // Debugging
+		if (empty($years)) {
+			$message = "No membership levels defined.  Skipping these tests.";
+			$this->pass($message);
+			return(null);
+		}
+
+		//
 		// Add a member and note his badge number
 		//
 		$data = array();
-		$data["year"] = date("Y");
+		$data["year"] = $year;
 		$output = $this->reg_member->add_member($data);
 		$this->assertNotNull($output);
 		$this->assertNotNull($data["badge_num"]);
@@ -68,7 +94,7 @@ class Reg_Util_UnusedBadgeNums_Test extends DrupalTestCase {
 		// Get current list of unused badge numbers and make sure the badge 
 		// we just created isn't there.
 		//
-		$output = $this->util->getBadgeNums();
+		$output = $this->util->getBadgeNums($year);
 		$this->assertNotNull($output);
 		$this->assertNull($output[$badge_num]);
 		$output_count = count($output);
@@ -79,16 +105,16 @@ class Reg_Util_UnusedBadgeNums_Test extends DrupalTestCase {
 		// Add a new badge number, get the list of missing badge numbers again, 
 		// and make sure that this badge number is found in it
 		//
-		$output = $this->reg->get_badge_num();
+		$output = $this->reg->get_badge_num($year);
 		$this->assertNotNull($output);
 		$badge_num = $output;
-		$output = $this->util->getBadgeNums();
+		$output = $this->util->getBadgeNums($year);
 		$this->assertNotNull($output);
 		$this->assertNotNull($output[$badge_num]);
 
-		$output = $this->reg->get_badge_num();
+		$output = $this->reg->get_badge_num($year);
 		$this->assertNotNull($output);
-		$output = $this->util->getBadgeNums();
+		$output = $this->util->getBadgeNums($year);
 		$this->assertNotNull($output);
 		$this->assertNotNull($output[$badge_num]);
 		$this->assertNotNull($output[($badge_num + 1)]);

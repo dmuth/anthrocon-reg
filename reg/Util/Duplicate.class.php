@@ -14,13 +14,13 @@ class Reg_Util_Duplicate {
 	*
 	* @return array Every membership with duplicate last names.
 	*/
-	function getLastNames() {
+	function getLastNames($year) {
 
 		$retval = array();
 
 		$field = "last";
 		$query = $this->getQuery($field);
-		$retval = $this->getRows($query, $field);
+		$retval = $this->getRows($query, $field, $year);
 
 		return($retval);
 
@@ -32,13 +32,13 @@ class Reg_Util_Duplicate {
 	*
 	* @return array Every membership with duplicate phone numbers.
 	*/
-	function getPhoneNumbers() {
+	function getPhoneNumbers($year) {
 
 		$retval = array();
 
 		$field = "phone";
 		$query = $this->getQuery($field);
-		$retval = $this->getRows($query, $field);
+		$retval = $this->getRows($query, $field, $year);
 
 		return($retval);
 
@@ -50,13 +50,13 @@ class Reg_Util_Duplicate {
 	*
 	* @return array Every membership with duplicate email addresses.
 	*/
-	function getEmailAddresses() {
+	function getEmailAddresses($year) {
 
 		$retval = array();
 
 		$field = "email";
 		$query = $this->getQuery($field);
-		$retval = $this->getRows($query, $field);
+		$retval = $this->getRows($query, $field, $year);
 
 		return($retval);
 
@@ -68,13 +68,13 @@ class Reg_Util_Duplicate {
 	*
 	* @return array Every membership with duplicate postal addresses.
 	*/
-	function getAddresses() {
+	function getAddresses($year) {
 
 		$retval = array();
 
 		$field = "address1";
 		$query = $this->getQuery($field);
-		$retval = $this->getRows($query, $field);
+		$retval = $this->getRows($query, $field, $year);
 
 		return($retval);
 
@@ -86,13 +86,13 @@ class Reg_Util_Duplicate {
 	*
 	* @return array Every membership with duplicate badge names.
 	*/
-	function getBadgeNames() {
+	function getBadgeNames($year) {
 
 		$retval = array();
 
 		$field = "badge_name";
 		$query = $this->getQuery($field);
-		$retval = $this->getRows($query, $field);
+		$retval = $this->getRows($query, $field, $year);
 
 		return($retval);
 
@@ -116,9 +116,14 @@ class Reg_Util_Duplicate {
 			. "JOIN {reg_type} ON reg.reg_type_id = reg_type.id "
 			. "JOIN {reg_status} ON reg.reg_status_id = reg_status.id "
 			. "WHERE "
-			. "${field} IN "
-			. "(select ${field} FROM "
-			. "(select ${field}, count(id) AS num FROM {reg} GROUP BY ${field} HAVING num > 1) "
+			. "year='%s' "
+			. "AND ${field} IN "
+			. "(SELECT ${field} FROM "
+			. "(SELECT ${field}, count(id) AS num "
+				. "FROM {reg} "
+				. "WHERE year='%s' "
+				. "GROUP BY ${field} "
+				. "HAVING num > 1) "
 			. "AS tbl1) "
 			. "AND ${field} != '' "
 			. "AND ${field} IS NOT NULL "
@@ -131,17 +136,22 @@ class Reg_Util_Duplicate {
 
 
 	/**
-	* Query the database and get our matching membreships.
+	* Query the database and get our matching memberships.
 	*
 	* @param string $query The query to run.
 	*
 	* @param string $field The name of the field to check for duplicates.
+	*
+	* @param integer $year The year to pass into the query
+	*
+	* @return array Array of possible matching memberships
 	*/
-	function getRows($query, $field) {
+	function getRows($query, $field, $year) {
 
 		$retval = array();
 
-		$cursor = db_query($query);
+		$query_args = array($year, $year);
+		$cursor = db_query($query, $query_args);
 
 		while ($row = db_fetch_array($cursor)) {
 			$row["match"] = $row[$field];

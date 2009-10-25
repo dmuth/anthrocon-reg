@@ -21,16 +21,35 @@ class Reg_Util_DuplicateDisplay {
         $retval = "";
 
 		//
+		// Grab the current year, then get a list of all years.
+		//
+		$year = arg(4);
+		$url = "admin/reg/utils/duplicate";
+		$retval .= $this->reg->getYearHtml($url, $year);
+
+		//
+		// If a year wasn't passed in, stop here.
+		//
+		if (empty($year)) {
+			return($retval);
+		}
+
+		//$_SESSION["reg"]["util"]["duplicate"] = $year; // Debugging
+
+		//
 		// If our session variable is set, run the report, get the results,
 		// and unset the variable.
 		//
 		if (!empty($_SESSION["reg"]["util"]["duplicate"])) {
 
+			$year = $_SESSION["reg"]["util"]["duplicate"];
+
+			$retval .= $this->getResults($year);
+			unset($_SESSION["reg"]["util"]["duplicate"]);
+
 			$message = t("Audit log: Viewed duplicate membership report.");
 			$this->log->log($message);
 
-			$retval .= $this->getResults();
-			unset($_SESSION["reg"]["util"]["duplicate"]);
 		}
 
 		$retval .= drupal_get_form("reg_admin_utils_duplicate_form");
@@ -50,13 +69,20 @@ class Reg_Util_DuplicateDisplay {
 
 		$retval = array();
 
+		$year = arg(4);
+
 		$retval["description"] = array(
 			"#type" => "item",
 			"#value" => t("Do you want to run a search for all possible "
 					. "duplicate memberships for the convetion year %year?",
 				array(
-					"%year" => $this->reg->get_constant("year"),
+					"%year" => $year,
 				)),
+			);
+
+		$retval["year"] = array(
+			"#type" => "hidden",
+			"#value" => $year,
 			);
 
 		$retval["submit"] = array(
@@ -76,9 +102,11 @@ class Reg_Util_DuplicateDisplay {
 
 		$retval = "";
 
-		$_SESSION["reg"]["util"]["duplicate"] = true;
+		$year = $data["year"];
 
-		$url = "admin/reg/utils/duplicate";
+		$_SESSION["reg"]["util"]["duplicate"] = $year;
+
+		$url = "admin/reg/utils/duplicate/" . $year;
         $this->reg->goto_url($url);
 
 		return($retval);
@@ -119,6 +147,7 @@ class Reg_Util_DuplicateDisplay {
 				array("#title" => check_plain($title),
 					"#children" => $content,
 					"#collapsible" => true,
+					"#collapsed" => true,
 				))
 			."</div>"
 			;
@@ -195,9 +224,11 @@ class Reg_Util_DuplicateDisplay {
 	/**
 	* Run our searches
 	*
+	* @param intger $year The convention year to search
+	*
 	* @return string A report of possible duplicate memberships.
 	*/
-	function getResults() {
+	function getResults($year) {
 
 		$retval = "";
 
@@ -205,35 +236,35 @@ class Reg_Util_DuplicateDisplay {
 		// Run searches for each of our search criteria, put them into a
 		// table, and glue the table onto our return value.
 		//
-		$rows = $this->util->GetLastNames();
+		$rows = $this->util->GetLastNames($year);
 		$title = t("!count Possible Duplicate Memberships By Matching Last Names",
 			array("!count" => count($rows))
 			);
 		$content = $this->getTable($rows, t("Last Name"));
 		$retval .= $this->getFieldset($title, $content);
 
-		$rows = $this->util->getPhoneNumbers();
+		$rows = $this->util->getPhoneNumbers($year);
 		$title = t("!count Possible Duplicate Memberships By Matching Phone Numbers",
 			array("!count" => count($rows))
 			);
 		$content = $this->getTable($rows, t("Phone Number"));
 		$retval .= $this->getFieldset($title, $content);
 
-		$rows = $this->util->getEmailAddresses();
+		$rows = $this->util->getEmailAddresses($year);
 		$title = t("!count Possible Duplicate Memberships By Matching Email Addresses",
 			array("!count" => count($rows))
 			);
 		$content = $this->getTable($rows, t("Email Address"));
 		$retval .= $this->getFieldset($title, $content);
 
-		$rows = $this->util->getAddresses();
+		$rows = $this->util->getAddresses($year);
 		$title = t("!count Possible Duplicate Memberships By Matching Addresses",
 			array("!count" => count($rows))
 			);
 		$content = $this->getTable($rows, t("Address Line #1"));
 		$retval .= $this->getFieldset($title, $content);
 
-		$rows = $this->util->getBadgeNames();
+		$rows = $this->util->getBadgeNames($year);
 		$title = t("!count Possible Duplicate Memberships By Matching Badge Names",
 			array("!count" => count($rows))
 			);

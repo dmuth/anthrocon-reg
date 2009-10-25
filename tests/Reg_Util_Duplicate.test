@@ -17,12 +17,25 @@ class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
 
 	function test() {
 
+		//
+		// Grab our first registration year
+		//
+		$years = $this->reg->getYears();
+		$year = array_shift($years);
+
+		//$years = array(); // Debugging
+		if (empty($years)) {
+			$message = "No membership levels defined.  Skipping these tests.";
+			$this->pass($message);
+			return(null);
+		}
+
 		$query = "INSERT INTO {reg} (last) VALUES ('%s') ";
 		$value = "testDuplicate " . time();
 		db_query($query, $value);
 		db_query($query, $value);
 
-		$output = $this->util->getLastNames();
+		$output = $this->util->getLastNames($year);
 		$this->assertNotNull($output);
 		$this->assertNotNull($output[0]);
 		$this->assertNotNull($output[1]);
@@ -37,7 +50,7 @@ class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
 		db_query($query, $value);
 		db_query($query, $value);
 
-		$output = $this->util->getPhoneNumbers();
+		$output = $this->util->getPhoneNumbers($year);
 		$this->assertNotNull($output);
 		$this->assertNotNull($output[0]);
 		$this->assertNotNull($output[1]);
@@ -52,7 +65,7 @@ class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
 		db_query($query, $value);
 		db_query($query, $value);
 
-		$output = $this->util->getEmailAddresses();
+		$output = $this->util->getEmailAddresses($year);
 		$this->assertNotNull($output);
 		$this->assertNotNull($output[0]);
 		$this->assertNotNull($output[1]);
@@ -67,7 +80,7 @@ class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
 		db_query($query, $value);
 		db_query($query, $value);
 
-		$output = $this->util->getAddresses();
+		$output = $this->util->getAddresses($year);
 		$this->assertNotNull($output);
 		$this->assertNotNull($output[0]);
 		$this->assertNotNull($output[1]);
@@ -83,7 +96,7 @@ class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
 		db_query($query, $value);
 		db_query($query, $value);
 
-		$output = $this->util->getBadgeNames();
+		$output = $this->util->getBadgeNames($year);
 		$this->assertNotNull($output);
 		$this->assertNotNull($output[0]);
 		$this->assertNotNull($output[1]);
@@ -113,6 +126,6 @@ class Reg_Util_Duplicate_UnitTest extends DrupalTestCase {
 	}
 
 
-} // End of RegUnitTest class
+} // End of Reg_Util_Duplicate_UnitTest class
 
 
