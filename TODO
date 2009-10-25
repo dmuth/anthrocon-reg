@@ -11,19 +11,19 @@ TODO
 
 - Add "reason on watchlist" to Watchlist
 
-- Port to Drupal 6
-	- http://drupal.org/node/114774
-	- Info file
-	- Change install()
-	- Change uninstall()
-	- Change update_N()
-	- New menu system: http://drupal.org/node/103114
-	- reg_init() will now become reg_boot()	
-	- watchdog(): Do NOT call t() on messages
-	- Unit test fun!
-
-- Store and encrypt credit card numbers
-	- Retrieve credit card numbers via an AJAX-powered button that will log the access
+- Credit card number storage
+	- Encrypt card numbers in database
+		- Still store last 4 digits in usual location?
+		- Write Reg_Encrypt funciton and unit test for this
+			- getKey()
+				- Store variable with variable_set() on first call
+			- encrypt($string)
+			- decrypt($string)
+			- isEncrytped()?
+	- Store encrypted number in new field: cc_num_encrypted?
+		
+	- Display only via an AJAX widget on the transaction log viewing page
+		- Access to the full card number should be audited
 
 - curl_init() missing
 	- In WAMP, curl_init() is not installed
@@ -62,6 +62,15 @@ TODO
 	- Function to send confirmation email for a specific registration
 		- Store this confirmation email as a variable?
 
+- Onsite reg
+	- Should do something sane when no levels are available
+		- Borrow code/message from reg page
+	- Maybe have a flag on the levels table if it only applies to onsite registration
+
+- Theme
+	- Work on the theme code at some point
+	- Create hidden test page that shows all sorts of different form elements in a demo
+
 Long Term
 =========
 
@@ -70,31 +79,4 @@ Long Term
 
 - Do distance calculations
 	- http://jan.ucc.nau.edu/~cvm/latlon_formula.html
-
-- 2010 reg
-	- Onsite reg
-		- Should do something sane when no levels are available
-			- Borrow code/message from reg page
-		- Maybe have a flag on the levels table if it only applies to onsite registration
-
-	- Theme
-		- Work on the theme code at some point
-		- Create hidden test page that shows all sorts of different form elements in a demo
-
-- Multi-year code
-	- Have a config value for the year, defaulting to the current year
-		- Modify badge number assignment code to first check the 
-			reg_badge_num table
-			- Write a unit test for this!
-	- At signup, display a year field for the admin
-		- Default to the current year
-	- Add year to member search page
-	- For /reg, get year from from the level offering
-	- Modify badge number assignment code to take a year argument
-
-- Credit card number storage
-	- Encrypt card numbers in database
-		- Still store last 4 digits in usual location?
-	- Display only via an AJAX widget on the transaction log viewing page
-		- Access to the full card number should be audited
 
