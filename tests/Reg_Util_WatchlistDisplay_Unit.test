@@ -1,0 +1,106 @@
+<?php
+/**
+*/
+class Reg_Util_WatchlistDisplay_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_Util_WatchlistDisplay Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function test() {
+
+		$output = $this->util->getAll();
+		$this->assertNotNull($output);
+
+		$output = $this->util->getEditPage(1);
+		$this->assertNotNull($output);
+
+		$output = $this->util->getForm(1);
+		$this->assertNotNull($output);
+
+		$data = array();
+		$this->util->getFormValidate($data);
+
+	}
+
+
+	/**
+	* Test our search wrapper.
+	*/
+	function testSearch() {
+
+		//
+		// Make sure there's no match.
+		//
+		$data = array();
+		$data["first"] = "testWatchlistFirst " . time();
+		$data["last"] = "testWatchlistLast " . time();
+		$output = $this->util->search($data);
+		$this->assertFalse($output);
+
+		//
+		// insert this user and make sure he matches
+		//
+		$query = "INSERT INTO {reg_watchlist} (first, last, action) "
+			. "VALUES "
+			. "('%s', '%s', '%s') "
+			;
+		$query_args = array($data["first"], $data["last"], "Test action");
+		db_query($query, $query_args);
+
+		$output = $this->util->search($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["first"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertNotNull($output["last"]);
+		$this->assertEqual($data["last"], $output["last"]);
+
+		//
+		// Now check for an innocent user
+		//
+		$data["first"] = "John";
+		$data["last"] = "Smith";
+		$output = $this->util->search($data);
+		$this->assertFalse($output);
+
+
+
+	} // End of testSearch()
+
+
+	function setUp() {
+
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->util = $factory->get_object("Util_WatchlistDisplay");
+
+		//
+		// Turn off display of errors while testing
+		//
+		//$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+		$query = "DELETE FROM {reg_watchlist} "
+			. "WHERE "
+			. "first LIKE 'testWatchlistFirst%' "
+			. "OR last LIKE 'testWatchlistLast%' "
+			;
+		db_query($query);
+
+	} // End of tearDown()
+
+
+} // End of Reg_Util_Watchlist_Test class
+
+

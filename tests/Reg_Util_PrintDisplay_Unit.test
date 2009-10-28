@@ -1,0 +1,48 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Util_PrintDisplay_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_Util_PrintDisplay Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function test() {
+
+		$output = $this->util->getPage();
+		$this->assertNotNull($output);
+
+		$output = $this->util->getForm();
+		$this->assertNotNull($output);
+
+		//
+		// We cannot test the validate and submit functions, but they
+		// are really only wrappers for other functions that already 
+		// have tests written.
+		//
+
+	} // End of test()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->util = $this->factory->get_object("Util_PrintDisplay");
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

@@ -1,0 +1,25 @@
+
+Notes For Developers
+====================
+
+- Registration "levels" are our business term for "offerings" that we make,
+	of certain memberships at certain prices, during a specific timeframe.
+	the "Attending", "Sponsor", etc. types of membership are referred to
+	as "membership types".
+
+- Try to keep specific functionality in separate class files
+	- Example: reg/theme.class.php for theme functions
+
+- For separate subsystems that may require access by different people
+	or have completely different functionality, try to place them in
+	separate modules.
+	- Examples: Dealer registration, watchlist, onsite registration
+
+- Try to keep names in the database singular, not plural.
+
+- To build a distribution tarball:
+	pushd ..
+	tar cfvz anthrocon-reg.tgz reg/* --exclude "RCS"  --exclude ".svn"
+	popd
+
+

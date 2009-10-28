@@ -1,0 +1,106 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_OnsiteDisplay_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_OnsiteDisplay Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function test() {
+
+		$output = $this->onsite->getPage();
+		$this->assertNotNull($output);
+
+		$output = $this->onsite->getForm();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["member"]);
+
+		$output = $this->onsite->getSuccessPage();
+		$this->assertNotNull($output);
+
+	} // End of test()
+
+
+	function testAddMember() {
+
+		//
+		// Test adding a member with some random data.
+		//
+		$data = array();
+		$data["badge_name"] = $this->name;
+		$data["first"] = "Test first name";
+		$data["last"] = "Test last name";
+		$data["address1"] = "Test address1";
+		$data["address2"] = "Test address2";
+		$data["city"] = "Test city";
+		$data["state"] = "Test state";
+		$data["zip"] = "Test Zip/Postal code";
+		$data["country"] = "Test Country";
+		$data["email"] = "Test Email";
+		$data["phone"] = "Test Phone";
+
+		$this->onsite->addMember($data);
+		$this->assertNull($data["badge_num"]);
+	
+		$query = "SELECT MAX(id) AS id FROM {reg}";
+		$cursor = db_query($query);
+		$row = db_fetch_array($cursor);
+		$id = $row["id"];
+
+		//
+		// Check all of our fields
+		//
+		$badge_num = $output;
+		$query = "SELECT * FROM {reg} WHERE id = '%s'";
+		$query_args = array($id);
+		$cursor = db_query($query, $query_args);
+		$output = db_fetch_array($cursor);
+		$this->assertEqual($this->name, $output["badge_name"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["last"], $output["last"]);
+		$this->assertEqual($data["address1"], $output["address1"]);
+		$this->assertEqual($data["address2"], $output["address2"]);
+		$this->assertEqual($data["city"], $output["city"]);
+		$this->assertEqual($data["state"], $output["state"]);
+		$this->assertEqual($data["zip"], $output["zip"]);
+		$this->assertEqual($data["country"], $output["country"]);
+		$this->assertEqual($data["email"], $output["email"]);
+		$this->assertEqual($data["phone"], $output["phone"]);
+
+	} // End of testAddMember()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->name = "test Reg_OnsiteDisplay " . time();
+		$this->reg = $this->factory->get_object("reg");
+		$this->onsite = $this->factory->get_object("OnsiteDisplay");
+
+		//
+		// Turn off display of errors while testing
+		//
+		$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+		$query = "DELETE FROM {reg} WHERE badge_name LIKE '%s'";
+		$query_args = array($this->name);
+		db_query($query, $query_args);
+	}
+
+
+} // End of RegUnitTest class
+
+

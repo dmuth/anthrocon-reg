@@ -1,0 +1,90 @@
+
+
+Done
+====
+
+TODO
+====
+
+- There are a few issues when no levels are defined
+	- Creating the second new membership causes issues
+	- Issues with year dropdowns
+	- Stats probably have issues, too
+	- I should write a function that returns true if there are no years,
+		sets an error telling the user to create some membership levels,
+		and short-circuit the rest of the page
+
+- All numbers in transactions should now be displayed with number_format() or printf().
+	- This appears to be a byproduct of switching the database type from NUMBER(10,2) to FLOAT :-/
+
+- Add "reason on watchlist" to Watchlist
+
+- Credit card number storage
+	- Encrypt card numbers in database
+		- Still store last 4 digits in usual location?
+		- Write Reg_Encrypt funciton and unit test for this
+			- getKey()
+				- Store variable with variable_set() on first call
+			- encrypt($string)
+			- decrypt($string)
+			- isEncrytped()?
+	- Store encrypted number in new field: cc_num_encrypted?
+		
+	- Display only via an AJAX widget on the transaction log viewing page
+		- Access to the full card number should be audited
+
+- curl_init() missing
+	- In WAMP, curl_init() is not installed
+	- I should write a check for that function, 
+
+- reg/
+	autocomplete="off" in the input tag for the credit card number
+
+- I guess reg_admin_log_view isn't needed since we deprecated those other
+	log viewing functions.
+	- Let's go back and move that code back into reg_admin_log, and update
+		child classes and the factory accordingly.
+
+- If watchlist is empty, display a single row in the watchlist indicating that.
+
+- Timezones when editing levels.  Do we want to do anything there?  
+	- Maybe allow an hour field?
+
+- admin/reg/settings/mesages/1234/edit
+	- Prevent editing of non-existant message IDs
+	- Throw an error and log it
+
+- Messages
+	- When editing, instead of "ID 'id'", say "name 'name'"
+	- When a message is saved, redirect to the list of messages
+
+- reg-wide email on settings page
+	- Remove variable_get() to email addresses
+	- Add a box on the settings page that defaults to the site-wide email
+	- Write reg_data::get_contact_email()
+
+- Admin
+	- Resend confirmation email
+
+- Class architecture
+	- Function to send confirmation email for a specific registration
+		- Store this confirmation email as a variable?
+
+- Onsite reg
+	- Should do something sane when no levels are available
+		- Borrow code/message from reg page
+	- Maybe have a flag on the levels table if it only applies to onsite registration
+
+- Theme
+	- Work on the theme code at some point
+	- Create hidden test page that shows all sorts of different form elements in a demo
+
+Long Term
+=========
+
+- Can we have an upgrade type?
+	- Upgrade table that has a membership type, upgrade options, price, description, etc.
+
+- Do distance calculations
+	- http://jan.ucc.nau.edu/~cvm/latlon_formula.html
+

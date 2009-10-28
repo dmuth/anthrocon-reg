@@ -1,0 +1,129 @@
+<?php
+/**
+* Anthrocon's authorize.net integration module.
+*
+* This code is copyright 2008 by Douglas Muth.  Permission is granted
+*	to redistribute under the Gnu Public License.
+*
+*/
+
+/**
+* Define our autoloader, and register it.
+*/
+function authorize_net_autoload($class) {
+
+	//
+	// Only load classes we're responsible for.
+	//
+	if (!preg_match("/^authorize_net/", $class)) {
+		return(null);
+	}
+
+	//print "$class<br>\n"; // Debugging
+	$file = str_replace("_", "/", $class);
+	//print "1: $file<br/>\n";
+	$file = str_replace("authorize/net", "authorize_net", $file);
+	//print "2: $file<br/>\n";
+	$file .= ".class.php";
+	//print "3: $file<br>\n"; // Debugging
+
+	include_once($file);
+
+} // End of authorload_net_autoload()
+
+
+spl_autoload_register("authorize_net_autoload");
+
+
+function authorize_net_init() {
+
+	//
+	// Load our Javascript
+	//
+	$path = drupal_get_path("module", "authorize_net");
+	drupal_add_js($path . "/authorize_net.js", "module");
+
+} // End of authorize_net_init()
+
+
+/**
+* Create our menu items.
+*/
+function authorize_net_menu() {
+
+	$factory = new authorize_net_factory();
+	$menu = $factory->get_object("menu");
+
+	$items = $menu->get_menu();
+
+	return($items);
+
+} // End of authorize_net_menu()
+
+
+/**
+* Our settings page.
+* 
+* DO NOT name this authorize_net_settings.  If this function is named
+* the same as a the class, it completely breaks under PHP 5.2.4.  I learned 
+*	this the hard way.
+*/
+function authorize_net_settings_page() {
+
+	//
+	// If the reg module wasn't loaded, then the factory doesn't exist, 
+	// and we should stop here.
+	//
+	if (!class_exists("reg_factory", false)) {
+		$message = t("Sorry, but the reg module needs to be enabled.");
+		form_set_error("", $message);
+		return("");
+	}
+
+	$reg_factory = new reg_factory();
+	$reg = $reg_factory->get_object("reg");
+	$reg->force_ssl();
+
+	$factory = new authorize_net_factory();
+	$settings = $factory->get_object("settings");
+
+	return($settings->settings());
+
+} // End of authorize_net_settings()
+
+
+function authorize_net_settings_form() {
+
+	$factory = new authorize_net_factory();
+	$settings = $factory->get_object("settings");
+
+	return($settings->form());
+}
+
+function authorize_net_settings_form_validate($form, &$form_state) {
+
+	$factory = new authorize_net_factory();
+	$settings = $factory->get_object("settings");
+
+	$settings->validate($form_state["values"]);
+}
+
+function authorize_net_settings_form_submit($form, &$form_state) {
+
+	$factory = new authorize_net_factory();
+	$settings = $factory->get_object("settings");
+
+	$settings->submit($form_state["values"]);
+}
+
+function authorize_net_settings_form_submit_test_gateway($form, &$form_state) {
+
+	$factory = new authorize_net_factory();
+	$settings = $factory->get_object("settings");
+
+	$settings->submit($form_state["values"], true);
+
+}
+
+
+

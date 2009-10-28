@@ -1,0 +1,834 @@
+<?php
+/**
+* Anthrocon's registration module.
+*
+* This code is copyright 2008 by Douglas Muth.  Permission is granted
+*	to redistribute under the Gnu Public License.
+*
+*/
+
+/**
+* Define our autoloader, and register it.
+*/
+function reg_autoload($class) {
+
+	//
+	// Only load classes we're responsible for.
+	//
+	if (!preg_match("/^reg/", $class)) {
+		return(null);
+	}
+
+	//print "$class<br>\n"; // Debugging
+	$file = str_replace("_", "/", $class);
+	//print __FUNCTION__ . "(): $class<br>\n"; // Debugging
+	$file = $file . ".class.php";
+	//print "$file<br>\n"; // Debugging
+
+	include_once($file);
+
+} // End of reg_autoload()
+
+
+spl_autoload_register("reg_autoload");
+
+
+/**
+* Create our factory instance.
+*/
+$GLOBALS["reg_factory"] = new reg_factory();
+
+
+/**
+* Our list of permissions
+*/
+function reg_perm() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	return($reg->perm());
+}
+
+
+/**
+* hook_boot() will run on every page, even cached pages.
+* hook_init() will only run on non-cached pages.
+*/
+function reg_init() {
+
+	//
+	// Want to test out data schema changes?  Here's the place to do it!
+	//
+	//include("reg.install"); // Debugging
+	//reg_uninstall(); // Debugging
+	//reg_install(false); // Debugging
+	//reg_install(true); // Debugging
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->hook_init();
+
+}
+
+
+function reg_exit() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->hook_exit();
+}
+
+
+
+/**
+* Create our menu items.
+*
+* Do NOT name the underlying class reg_menu!  If a function and class
+*	share identical names in PHP 5.2.4, all sorts of bad things happen!
+*	I learned this the hard way. :-(
+*
+* Though on second thought, I've since considered that maybe my PHP 
+*	cache (APC) was caching non-existant files when I moved the one
+*	reg/ directory out of the way to make way for a new installation,
+*	AND restarting the php-cgi process seemed to fix the problem.  This
+*	will require more investigation in the future.
+*/
+function reg_menu() {
+
+	$menu = $GLOBALS["reg_factory"]->get_object("menu");
+	$items = $menu->menu();
+	return($items);
+
+} // End of reg_menu()
+
+
+/**
+* Our public verification page.
+*/
+function reg_verify($id_email = "") {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
+	$retval = $verify->verify($id_email);
+
+	return($retval);
+} 
+
+function reg_verify_form($form_state) {
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
+	$retval = $verify->verify_form();
+	return($retval);
+}
+
+function reg_verify_form_validate($form, &$form_state) {
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
+	$verify->verify_validate($form_state["values"]);
+}
+
+function reg_verify_form_submit($form, &$form_state) {
+	$verify = $GLOBALS["reg_factory"]->get_object("verify");
+	$retval = $verify->verify_submit($form_state["values"]);
+	return($retval);
+}
+
+
+/**
+* Our "success" page.
+*/
+function reg_success() {
+	$success = $GLOBALS["reg_factory"]->get_object("success");
+	$retval = $success->success();
+	return($retval);
+}
+
+
+/**
+* Our public registration page.
+*/
+function reg_registration() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+
+	$reg->force_ssl();
+	return($reg->registration());
+}
+
+function reg_registration_form($form_state, $id = "") {
+
+	$auth_factory = new authorize_net_factory();
+
+	$cc_gateway = $auth_factory->get_object("authorize_net");
+	$form = $GLOBALS["reg_factory"]->get_object("form");
+
+	return($form->reg($id, $cc_gateway));
+
+}
+
+function reg_registration_form_validate($form, &$data) {
+
+	$auth_factory = new authorize_net_factory();
+
+	$cc_gateway = $auth_factory->get_object("authorize_net");
+	$form = $GLOBALS["reg_factory"]->get_object("form");
+
+	$form->reg_validate($data["values"], $cc_gateway);
+
+}
+
+function reg_registration_form_submit($form, &$data) {
+
+	$form = $GLOBALS["reg_factory"]->get_object("form");
+
+	return($form->reg_submit($data["values"]));
+
+}
+
+
+/**
+* Our onsite registration form.
+*/
+function reg_onsitereg() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getPage());
+}
+
+function reg_onsitereg_form() {
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getForm());
+}
+
+function reg_onsitereg_form_validate($form, &$data) {
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getFormValidate($data["values"]));
+}
+
+function reg_onsitereg_form_submit($form, &$data) {
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getFormSubmit($data["values"]));
+}
+
+function reg_onsitereg_success() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$onsite = $GLOBALS["reg_factory"]->get_object("OnsiteDisplay");
+	return($onsite->getSuccessPage());
+}
+
+
+/**
+* Our settings form.
+*/
+function reg_admin_settings() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
+	$retval = $settings->settings();
+	return($retval);
+}
+
+function reg_admin_settings_form() {
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
+	$retval = $settings->settings_form();
+	return($retval);
+}
+
+function reg_admin_settings_form_validate($form, &$form_state) {
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
+	$settings->settings_form_validate($form_state["values"]);
+}
+
+function reg_admin_settings_form_submit($form, &$form_state) {
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings");
+	$settings->settings_form_submit($form_state["values"]);
+}
+
+
+/**
+* Messages admin.
+*/
+function reg_admin_settings_messages() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
+	return($settings->messages());
+}
+
+function reg_admin_settings_messages_edit($id = "") {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
+	return($settings->edit($id));
+}
+
+function reg_admin_settings_message_form($form_state, $id) {
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
+	return($settings->form($id));
+}
+
+function reg_admin_settings_message_form_validate($form, &$form_state) {
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
+	return($settings->form_validate($form_state["values"]));
+}
+
+function reg_admin_settings_message_form_submit($form, &$form_state) {
+	$settings = $GLOBALS["reg_factory"]->get_object("admin_settings_message");
+	return($settings->form_submit($form_state["values"]));
+}
+
+/**
+* Membership level editing stuff.
+*/
+function reg_admin_levels() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
+	return($level->levels());
+}
+
+function reg_admin_levels_edit($id = "") {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
+	return($level->levels_edit($id));
+}
+
+function reg_admin_level_form($form_state, $id) {
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
+	return($level->level_form($id));
+}
+
+function reg_admin_level_form_validate($form, &$form_state) {
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
+	return($level->level_form_validate($form_state["values"]));
+}
+
+function reg_admin_level_form_submit($ford, &$form_state) {
+	$level = $GLOBALS["reg_factory"]->get_object("admin_level");
+	return($level->level_form_submit($form_state["values"]));
+}
+
+
+/**
+* Viewing recent registrations.
+*/
+function reg_admin_members() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->recent());
+}
+
+function reg_admin_members_view($id) {
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->view_reg($id));
+}
+
+function reg_admin_members_edit($id) {
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->edit_reg($id));
+}
+
+
+/**
+* Our "Add a note" form.
+*/
+function reg_admin_members_add_note($id) {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->add_note($id));
+}
+
+function reg_admin_members_add_note_form($form_state, $id) {
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->add_note_form($id));
+}
+
+function reg_admin_members_add_note_form_validate($form, &$form_state) {
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->add_note_form_validate($form_state["values"]));
+}
+
+function reg_admin_members_add_note_form_submit($form, &$form_state) {
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->add_note_form_submit($form_state["values"]));
+}
+
+
+/**
+* Cancellation form for admins.
+*/
+function reg_admin_members_cancel($id) {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
+	return($cancel->cancel($id));
+}
+
+function reg_admin_members_cancel_form($form_state, $id) {
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
+	return($cancel->form($id));
+}
+
+function reg_admin_members_cancel_form_validate($form, &$form_state) {
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
+	return($cancel->form_validate($form_state["values"]));
+}
+
+function reg_admin_members_cancel_form_submit($form, &$form_state) {
+	$cancel = $GLOBALS["reg_factory"]->get_object("admin_cancel");
+	return($cancel->form_submit($form_state["values"]));
+}
+
+
+/**
+* Balance adjustments
+*/
+function reg_admin_members_adjust($id) {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
+	return($adjust->adjust($id));
+}
+
+function reg_admin_members_adjust_form($form_state, $id) {
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
+	return($adjust->form($id));
+}
+
+function reg_admin_members_adjust_form_validate($form, &$form_state) {
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
+	return($adjust->form_validate($form_state["values"]));
+}
+
+function reg_admin_members_adjust_form_submit($form, &$form_state) {
+	$adjust = $GLOBALS["reg_factory"]->get_object("admin_adjust");
+	return($adjust->form_submit($form_state["values"]));
+}
+
+
+/**
+* Printing individual badges.
+*/
+function reg_admin_members_print($id) {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getPage($id));
+}
+
+function reg_admin_members_print_form($form_status, $id) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getForm($id));
+}
+
+function reg_admin_members_print_form_validate($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getFormValidate($form_state["values"]));
+}
+
+function reg_admin_members_print_form_submit($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintBadge");
+	return($util->getFormSubmit($form_state["values"]));
+}
+
+
+/**
+* Validating onsite registrations.
+*/
+function reg_admin_members_validate($id) {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getPage($id));
+}
+
+function reg_admin_members_validate_form($form_state, $id) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getForm($id));
+}
+
+function reg_admin_members_validate_form_validate($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getFormValidate($form_state["values"]));
+}
+
+function reg_admin_members_validate_form_submit($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getFormSubmit($form_state["values"]));
+}
+
+//
+// This handler is called when we click "Validate and Print"
+//
+function reg_admin_members_validate_form_submit_print($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("OnsiteValidate");
+	return($util->getFormSubmit($form_state["values"], true));
+}
+
+
+/**
+* Searching registrations.
+*/
+function reg_admin_search() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
+	$retval = $search->search();
+	$retval .= $search->results();
+	return($retval);
+}
+
+function reg_admin_search_download() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search_download");
+
+	//
+	// We'll exit after printing the results of this function, as we
+	// want to allow the user to download the data.
+	//
+	$retval = $search->download();
+	print $retval;
+	exit();
+} 
+
+function reg_admin_search_form() {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
+	return($search->search_form());
+}
+
+function reg_admin_search_form_validate($form, &$form_state) {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
+	$search->search_validate($form_state["values"]);
+}
+
+function reg_admin_search_form_submit($form, &$form_state) {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_search");
+	return($search->search_submit($form_state["values"]));
+}
+
+
+/**
+* Adding a new registration.
+*/
+function reg_admin_members_add() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$member = $GLOBALS["reg_factory"]->get_object("admin_member");
+	return($member->add_reg());
+}
+
+/**
+* Viewing logs.
+*/
+function reg_admin_log() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_search");
+	return($log->log_recent());
+}
+
+function reg_admin_log_search_form() {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
+	return($search->search_form());
+}
+
+function reg_admin_log_search_form_validate($form, &$form_state) {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
+	return($search->search_form_validate($form_state["values"]));
+}
+
+function reg_admin_log_search_form_submit($form, &$form_state) {
+	$search = $GLOBALS["reg_factory"]->get_object("admin_log_search");
+	return($search->search_form_submit($form_state["values"]));
+}
+
+
+function reg_admin_log_detail($id) {
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_view");
+	return($log->log_detail($id));
+}
+
+function reg_admin_trans() {
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_view");
+	return($log->trans_recent());
+}
+
+function reg_admin_trans_detail($id) {
+	$log = $GLOBALS["reg_factory"]->get_object("admin_log_view");
+	return($log->trans_detail($id));
+}
+
+function reg_admin_main() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$admin = $GLOBALS["reg_factory"]->get_object("admin");
+	return($admin->main());
+
+}
+
+/**
+* Viewing registration stats.
+*/
+function reg_admin_stats_reg() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$stats = $GLOBALS["reg_factory"]->get_object("admin_stats");
+	return($stats->get_stats_reg());
+
+}
+
+function reg_admin_stats_badge() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$stats = $GLOBALS["reg_factory"]->get_object("admin_stats");
+	return($stats->get_stats_badge());
+
+}
+
+function reg_admin_stats_revenue() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$stats = $GLOBALS["reg_factory"]->get_object("admin_stats");
+	return($stats->get_stats_revenue());
+
+}
+
+
+/**
+* Unused badge numbers.
+*/
+function reg_admin_utils_unused_badge_nums() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_UnusedBadgeNumsDisplay");
+	$retval = $util->go($id_email);
+
+	return($retval);
+
+}
+
+function reg_admin_utils_unused_badge_nums_form() {
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_UnusedBadgeNumsDisplay");
+	$retval = $util->getForm();
+	return($retval);
+
+}
+
+function reg_admin_utils_unused_badge_nums_form_submit($form, &$form_state) {
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_UnusedBadgeNumsDisplay");
+	$retval = $util->getFormSubmit($form_state["values"]);
+	return($retval);
+
+}
+
+
+/**
+* Duplicate membership reports.
+*/
+function reg_admin_utils_duplicate() {
+
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_DuplicateDisplay");
+	$retval = $util->go($id_email);
+
+	return($retval);
+
+}
+
+function reg_admin_utils_duplicate_form() {
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_DuplicateDisplay");
+	$retval = $util->getForm();
+	return($retval);
+
+}
+
+function reg_admin_utils_duplicate_form_submit($form, $form_state) {
+
+	$util = $GLOBALS["reg_factory"]->get_object("Util_DuplicateDisplay");
+	$retval = $util->getFormSubmit($form_state["values"]);
+	return($retval);
+
+}
+
+
+/**
+* Functions for viewing and editing the watchlist.
+*/
+function reg_admin_utils_watchlist() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getAll());
+}
+
+function reg_admin_utils_watchlist_edit($id = "") {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getEditPage($id));
+}
+
+function reg_admin_utils_watchlist_form($form_state, $id) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getForm($id));
+}
+
+function reg_admin_utils_watchlist_form_validate($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getFormValidate($form_state["values"]));
+}
+
+function reg_admin_utils_watchlist_form_submit($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_WatchlistDisplay");
+	return($util->getFormSubmit($form_state["values"]));
+}
+
+/**
+* Display the current print queue.
+*/
+function reg_admin_utils_print_queue() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getPage());
+}
+
+function reg_admin_utils_print_queue_form() {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getForm());
+}
+
+function reg_admin_utils_print_queue_form_validate($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getFormValidate($form_state["values"]));
+}
+
+function reg_admin_utils_print_queue_form_submit($form, &$form_state) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getFormSubmit($form_state["values"]));
+}
+
+
+/**
+* Monitor the print queue for jobs and print them.
+*/
+function reg_admin_utils_print_client() {
+	$reg = $GLOBALS["reg_factory"]->get_object("reg");
+	$reg->force_ssl();
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintClient");
+	return($util->getPage());
+}
+
+function reg_admin_utils_print_client_form() {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintClient");
+	return($util->getForm());
+}
+
+/**
+* AJAX calls for interacting with print jobs.
+*/
+function reg_admin_utils_print_ajax_fetch($printer = "") {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintAjax");
+	print $util->fetch($printer);
+}
+
+function reg_admin_utils_print_ajax_update($id, $status) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintAjax");
+	$util->update($id, $status);
+	exit();
+}
+
+
+/**
+* Register all of our theme-related functions.
+*/
+function reg_theme($existing, $type, $theme, $path) {
+
+	$retval = array();
+
+	$retval["reg_form"] = array(
+		"arguments" => array("arguments" => null),
+		);
+
+	$retval["reg_print_queue_form"] = array(
+		"arguments" => array("arguments" => null),
+		);
+
+	return($retval);
+
+} // End of reg_theme()
+
+
+/**
+* Our theme function for printing up the registration form.
+*
+* @param array $form Form elements.
+*
+* @return string HTML code for the form.
+*/
+function theme_reg_form($form) {
+	$theme = $GLOBALS["reg_factory"]->get_object("theme");
+	$retval = $theme->theme($form);
+	return($retval);
+}
+
+
+/**
+* Our theme function for printing up the registration form.
+*
+* @param array $form Form elements.
+*
+* @return string HTML code for the form.
+*/
+function theme_reg_print_queue_form($form) {
+	$util = $GLOBALS["reg_factory"]->get_object("Util_PrintDisplay");
+	return($util->getFormTheme($form));
+}
+
+
+/**
+* This is a callback from our menu system that determines if we're
+*	supposed to display the menu with member options.
+*
+* @param string $access_level The access level required
+*
+* @param string $arg3 The third argument from the URL.
+*
+* @return boolean True if the user show be shown this menu, false otherwise
+*/
+function reg_menu_display_member_menu($access_level, $arg3) {
+
+	//
+	// If the user has the required access level and they're under the "view"
+	// menu, show the submenu.
+	//
+	if (user_access($access_level)
+		&& $arg3 == "view") {
+		return(true);
+	}
+
+	return(false);
+
+} // End of reg_menu_display_member_menu()
+
+

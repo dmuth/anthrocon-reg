@@ -1,0 +1,66 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Util_UnusedBadgeNumsDisplay_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_Util_UnusedBadgeNumsDisplay Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function testGetForm() {
+
+		$output = $this->util->getForm();
+		$this->assertNotNull($output);
+
+	} // End of testGetForm()
+
+
+	function testGetFormSubmit() {
+		//
+		// Just kidding!  I can't test the submit funciton here since it 
+		// does redirection.
+		//
+	} // End of testGetFormSubmit()
+
+
+	function testGetResults() {
+
+		$years = $this->reg->getYears();
+		$year = array_shift($years);
+
+		//$years = array(); // Debugging
+		if (empty($years)) {
+			$message = "No membership levels defined.  Skipping these tests.";
+			$this->pass($message);
+			return(null);
+		}
+
+		$output = $this->util->getResults($year);
+		$this->assertNotNull($output);
+
+	}
+
+
+	function setUp() {
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->util = $factory->get_object("Util_UnusedBadgeNumsDisplay");
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

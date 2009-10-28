@@ -1,0 +1,132 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Admin_Member_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("reg_admin_member Unit Test"),
+			//"desc" => t("Test out the reg_admin_member class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	/**
+	* Create a member, then update it.
+	*/
+	function testUpdateMember() {
+
+		$data = array();
+		$data["badge_name"] = "Fluffy Samplefur";
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$badge_num = $output;
+
+		//
+		// Copy id to reg_id because the functions take different arguments.
+		// I could have thought that through a little better. :-/
+		//
+		$data["reg_id"] = $data["id"];
+		$data["badge_name"] = "new badge name";
+		$output = $this->reg_admin_member->update_member($data);
+		$this->assertNotNull($output);
+		$this->assertEqual($badge_num, $output);
+
+		$output = $this->reg_admin_member->load_reg($data["id"]);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["badge_name"]);
+		$this->assertEqual($data["badge_name"], $output["badge_name"]);
+
+	} // End of testUpdateMember()
+
+
+	/**
+	* Update a member that had no prior badge number set.
+	*/ 
+	function testUpdateMemberNoBadgeNumber() {
+
+		//
+		// This probably won't happen in real life, but it's worth
+		// testing anyway.
+		//
+		$query = "INSERT INTO {reg} "
+			. "(year, badge_name) "
+			. "VALUES "
+			. "('%s', '%s') ";
+		$query_args = array($this->reg->get_constant("YEAR"), 
+			"test UpdateMemberNoBadgeNumber");
+		$cursor = db_query($query, $query_args);
+		$id = $this->reg->get_insert_id();
+		$this->assertNotNull($id);
+
+		$output = $this->reg_admin_member->load_reg($id);
+		$this->assertNotNull($output);
+		$this->assertNull($output["badge_num"]);
+		$data = $output;
+
+		//
+		// Flush any existing messages from Simpletest.
+		//
+		$output = drupal_get_messages();
+
+		//
+		// Copy id to reg_id because the functions take different arguments.
+		// I could have thought that through a little better. :-/
+		//
+		$data["reg_id"] = $data["id"];
+
+		$output = $this->reg_admin_member->update_member($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["badge_num"]);
+		$output = drupal_get_messages();
+		$this->assertNotNull($output["status"][0]);
+		$regexp = t("New badge number generated");
+		$this->assertTrue(ereg($regexp, $output["status"][0]));
+		$output = $this->reg_admin_member->load_reg($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["badge_num"]);
+
+	} // End of testUpdateMemberNoBadgeNumber()
+
+
+	function testRecent() {
+
+		$data = array();
+		$data["badge_name"] = "testRecent ". time();
+		$data["year"] = date("Y");
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$badge_num = $output;
+
+		$output = $this->reg_admin_member->recent();
+		$this->assertNotNull($output, "Recent page works");
+		$regexp = $data["year"] . "-" . 
+			$this->reg->format_badge_num($badge_num)
+			. ".*" . $data["badge_name"]
+			. ".*" . "</tr>"
+			;
+		$this->assertTrue(ereg($regexp, $output), "Recent badge shows up");
+
+	} // End of testRecent()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_member = $this->factory->get_object("member");
+		$this->reg_admin_member = $this->factory->get_object("admin_member");
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of Reg_Admin_Member_UnitTest class
+
+

@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Wrapper for calling MySQL
+#
+
+#
+# Make errors fatal
+#
+set -e
+
+#
+# Get the current directory
+#
+DIR=`dirname $0`
+
+#
+# Change into this directory because Cygwin has some issues with
+# absolute paths...
+#
+cd ${DIR}
+
+. ./core.sh
+
+USER=`${PHP} ./mysql-reg-data ${WAMP} user`
+PASS=`${PHP} ./mysql-reg-data ${WAMP} pass`
+HOST=`${PHP} ./mysql-reg-data ${WAMP} host`
+DATABASE=`${PHP} ./mysql-reg-data ${WAMP} database`
+
+${MYSQL} -u ${USER} -p${PASS} ${DATABASE} $@
+
+

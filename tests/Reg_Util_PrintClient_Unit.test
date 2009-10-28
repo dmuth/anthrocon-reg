@@ -1,0 +1,44 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Util_PrintClient_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_Util_PrintClient Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function test() {
+
+		$output = $this->util->getPage();
+		$this->assertNotNull($output);
+
+		$output = $this->util->getForm();
+		$this->assertNotNull($output);
+
+	}
+
+
+	function setUp() {
+
+		$this->factory = new reg_factory();
+		$this->util = $this->factory->get_object("Util_PrintClient");
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

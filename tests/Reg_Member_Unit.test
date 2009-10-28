@@ -1,0 +1,250 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Member_UnitTest extends DrupalWebTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("reg_member Unit Test"),
+			//"desc" => t("Test out the reg_member class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	/**
+	* Make sure that faking emails is turned on.
+	*/
+	function testFakeEmail() {
+
+        $output = variable_get(
+            $this->reg->get_constant("FORM_ADMIN_FAKE_EMAIL"), "");
+		$this->assertEqual(1, $output, t("Faking emails is not set. ") 
+			. t("Please do so on the settings page."));
+
+	} // End of testNoSSL()
+
+
+
+	function testAddMember() {
+
+		//
+		// Test adding a member with some random data.
+		//
+		$data = array();
+		$data["badge_name"] = "Fluffy Samplefur";
+		$data["first"] = "Test first name";
+		$data["last"] = "Test last name";
+		$data["address1"] = "Test address1";
+		$data["address2"] = "Test address2";
+		$data["city"] = "Test city";
+		$data["state"] = "Test state";
+		$data["zip"] = "Test Zip/Postal code";
+		$data["country"] = "Test Country";
+		$data["email"] = "Test Email";
+		$data["phone"] = "Test Phone";
+
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($data["badge_num"]);
+		
+		//
+		// Make sure our badge number is incremented on the next member 
+		// that is added.
+		//
+		$expected = $output + 1;
+		unset($data["badge_num"]);
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertEqual($expected, $output);
+		
+		//
+		// Check all of our fields
+		//
+		$badge_num = $output;
+		$query = "SELECT * FROM reg WHERE badge_num = '%s'";
+		$query_args = array($badge_num);
+		$cursor = db_query($query, $query_args);
+		$output = db_fetch_array($cursor);
+		$this->assertEqual($badge_num, $output["badge_num"]);
+		$this->assertEqual($data["badge_name"], $output["badge_name"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["last"], $output["last"]);
+		$this->assertEqual($data["address1"], $output["address1"]);
+		$this->assertEqual($data["address2"], $output["address2"]);
+		$this->assertEqual($data["city"], $output["city"]);
+		$this->assertEqual($data["state"], $output["state"]);
+		$this->assertEqual($data["zip"], $output["zip"]);
+		$this->assertEqual($data["country"], $output["country"]);
+		$this->assertEqual($data["email"], $output["email"]);
+		$this->assertEqual($data["phone"], $output["phone"]);
+
+	} // End of testAddMember()
+
+
+	/**
+	* Add a member, but create a transaction first.
+	*/
+	function testAddMemberWithTranasction() {
+
+		$data = array();
+		$output = $this->reg_log->log_trans($data);
+		$this->assertNotNull($output);
+		$transaction_id = $output;
+		
+		$badge_name = "testAddMemberWithTransaction " . time();
+		$regexp = t("Badge Name") . ".*" . $badge_name;
+
+		//
+		// Make sure there's no trace of a badge name.
+		//
+		$output = $this->reg_admin_log_view->trans_detail($transaction_id);
+		$this->assertNotNull($output);
+		$this->assertFalse(ereg("Badge Name", $output));
+		$this->assertFalse(ereg($regexp, $output));
+
+		$data = array();
+		$badge_name = "testAddMemberWithTransaction " . time();
+		$data["badge_name"] = $badge_name;
+		$output = $this->reg_member->add_member($data, $transaction_id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($data["badge_num"]);
+		$this->assertEqual($badge_name, $data["badge_name"]);
+		
+		//
+		// Now that we've added a member, see if the transaction was 
+		// updated with the badge name.
+		//
+		$output = $this->reg_admin_log_view->trans_detail($transaction_id);
+		$this->assertNotNull($output);
+		$this->assertTrue(ereg("Badge Name", $output));
+		$this->assertTrue(ereg($regexp, $output));
+
+	} // End of testAddMemberWithTransaction()
+
+
+	/**
+	* Add a member with a specific set badge number.
+	*/
+	function testAddMemberSetBadgeNumber() {
+
+		//
+		// Fetch the next available badge number, then use it in a 
+		// new membership.
+		//
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$badge_num = $output;
+
+		$data = array();
+		$data["badge_name"] = "Fluffy Samplefur";
+		$data["badge_num"] = $badge_num;
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$this->assertEqual($badge_num, $output);
+		
+		$query = "SELECT * FROM reg WHERE badge_num = '%s'";
+		$query_args = array($badge_num);
+		$cursor = db_query($query, $query_args);
+		$output = db_fetch_array($cursor);
+		$this->assertEqual($badge_num, $output["badge_num"]);
+		$this->assertNotNull($output["badge_name"]);
+		$this->assertEqual($data["badge_name"], $output["badge_name"]);
+
+	} // End of testAddMemberSetBadgeNumber()
+
+
+	function testIsBadgeNumAvailable() {
+
+		$year = date("Y");
+		$data = array();
+		$data["badge_name"] = "test " . __CLASS__;
+		$data["year"] = $year;
+		$output = $this->reg_member->add_member($data);
+		$data["badge_name"] .= "2";
+		unset($data["id"]);
+		unset($data["badge_num"]);
+		$output = $this->reg_member->add_member($data);
+		$this->assertNotNull($output);
+		$badge_num = $output;
+
+		$output = $this->reg->is_badge_num_available($data["id"], 
+			$badge_num, $year);
+		$this->assertTrue($output);
+
+		//
+		// Try using this badge number on another badge.
+		//
+		//$output = $this->reg->is_badge_num_available(($data["id"] + 1), 
+		$output = $this->reg->is_badge_num_available(($data["id"] - 1), 
+			$badge_num, $year);
+
+		$this->assertFalse($output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "already in use";
+		$this->assertTrue(ereg($regexp, $output));
+
+		//
+		// Now try a badge number that is WAY too high.
+		//
+		$output = $this->reg->is_badge_num_available($data["id"], 
+			($badge_num + 100), $year);
+		$this->assertTrue($output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "exceeds highest assigned number";
+		$this->assertTrue(ereg($regexp, $output));
+		
+	} // End of testIsBadgeNumAvailable()
+
+
+	/**
+	* Test emailing a receipt, and make sure the membership type is in 
+	*	the receipt.
+	*/
+	function testEmailReceipt() {
+
+		$data = array();
+		$data["reg_type_id"] = 1;
+		$data["total_cost"] = 1.25;
+
+		$types = $this->reg->get_types();
+		$member_type = $types[$data["reg_type_id"]];
+		$this->assertNotNull($member_type);
+
+		$output = $this->reg_member->email_receipt($data);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["subject"]);
+		$this->assertNotNull($output["value"]);
+
+	} // End of testEmailReciept()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_member = $this->factory->get_object("member");
+		$this->reg_log = $this->factory->get_object("log");
+		$this->reg_admin_log_view = $this->factory->get_object("admin_log_view");
+
+		//
+		// Turn off display of errors while testing
+		//
+		$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+
+} // End of Reg_Member_UnitTest class
+
+

@@ -1,0 +1,20 @@
+
+Installation Instructions
+=========================
+
+This directory should be deployed under sites/all/modules/reg/.  Once that 
+is done, go into admin/build/modules and enable the module.
+
+Then go into admin/user/access and grant permissions to whatever groups
+should be able to admin the reg system (i.e., trusted users) and whatever
+groups should be able to register for memberships (i.e., anonymous users).
+
+If you have any difficulties, feel free to check out the official (as of
+this writing) home for this project on the web:
+
+http://code.google.com/p/anthrocon-reg/
+
+If you can't find the solution to your problem there, please file an issue
+(or contact me directly) and I'll look into it.
+
+

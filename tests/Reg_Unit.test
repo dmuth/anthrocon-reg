@@ -1,0 +1,275 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("reg Unit Test"),
+			"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	/**
+	* Make sure that SSL is disabled.
+	*/
+	function TestNoSSL() {
+
+		$output = variable_get($this->reg->get_constant(
+			"form_admin_no_ssl_redirect"), "");
+		$this->assertEqual(1, $output, t("SSL redirection is NOT disabled.  "
+			. "Check the settings page."));
+
+	} // End of testNoSSL()
+
+
+	function testGetBadgeNum() {
+
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$expected = $output + 1;
+
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$this->assertEqual($expected, $output);
+
+	} // End of testGetBadgeNum()
+
+
+	function testIsBadgeNumValid() {
+
+		$output = $this->reg->is_badge_num_valid("");
+		$this->assertNotNull($output);
+
+		$output = $this->reg->is_badge_num_valid(-1);
+		$this->assertEqual(false, $output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "negative";
+		$this->assertTrue(ereg($regexp, $output));
+
+		$output = $this->reg->is_badge_num_valid(0);
+		$this->assertEqual(true, $output);
+
+		$output = $this->reg->is_badge_num_valid(1);
+		$this->assertEqual(true, $output);
+
+		$output = $this->reg->is_badge_num_valid("Foobar");
+		$this->assertEqual(false, $output);
+		$output = $this->reg->getLastError();
+		$this->assertNotNull($output);
+		$regexp = "is not a number";
+		$this->assertTrue(ereg($regexp, $output));
+
+	} // End of testIsBadgeNumValid()
+
+
+	function testFormatBadgeNum() {
+
+		$output = $this->reg->format_badge_num(0);
+		$this->assertNotNull($output);
+		$this->assertEqual("0000", $output);
+
+		$output = $this->reg->format_badge_num(1);
+		$this->assertNotNull($output);
+		$this->assertEqual("0001", $output);
+
+		$output = $this->reg->format_badge_num(12);
+		$this->assertNotNull($output);
+		$this->assertEqual("0012", $output);
+
+		$output = $this->reg->format_badge_num(123);
+		$this->assertNotNull($output);
+		$this->assertEqual("0123", $output);
+
+		$output = $this->reg->format_badge_num(1234);
+		$this->assertNotNull($output);
+		$this->assertEqual("1234", $output);
+
+		$output = $this->reg->format_badge_num(12345);
+		$this->assertNotNull($output);
+		$this->assertEqual("12345", $output);
+
+		//
+		// Empty/null badge numbers
+		//
+		$output = $this->reg->format_badge_num("");
+		$this->assertNotNull($output);
+		$this->assertEqual(t("(Empty)"), $output);
+
+		$output = $this->reg->format_badge_num(null);
+		$this->assertNotNull($output);
+		$this->assertEqual(t("(Empty)"), $output);
+
+	} // End of testFormatBadgeNum()
+
+
+	/**
+	* Test our credit card year expiration dates.
+	*/
+	function testGetCcExpYears() {
+
+		$output = $this->reg->get_cc_exp_years();
+		$this->assertNotNull($output);
+		$this->assertEqual(7, count($output));
+		$key = key($output);
+		$this->assertEqual(date("Y"), $output[$key]);
+
+		$output = $this->reg->get_cc_exp_years(1);
+		$this->assertNotNull($output);
+		$this->assertEqual(8, count($output));
+		$key = key($output);
+		$this->assertEqual((date("Y") - 1), $output[$key]);
+		$this->assertEqual(date("Y"), $output[($key + 1)]);
+
+	} // End of testGetCcExpYears()
+
+
+	function testDuplicateBadgeNumber() {
+
+		//
+		// Get the latest badge number and insert it.
+		//
+		$output = $this->reg->get_badge_num();
+		$this->assertNotNull($output);
+		$badge_num = $output;
+		$year = $this->reg->get_constant("year");
+		$this->assertNotNull($year);
+
+		$query = "INSERT INTO {reg} "
+			. "(year, badge_num) "
+			. "VALUES "
+			. "('%s', '%s') ";
+		$query_args = array($year, $badge_num);
+		$cursor = db_query($query, $query_args);
+		$this->assertNotNull($cursor);
+
+		//
+		// Insert a duplicate badge number
+		//
+		// 22 May 2009: I have this commented out, since Simpletest 
+		// can't seem to catch exceptions. :-(
+		//
+		//$cursor = db_query($query, $query_args);
+		//$this->assertFalse($cursor);
+
+	} // End of testDuplicateBadgeNumber()
+
+
+	function testIsMinor() {
+
+		$time_t = mktime(0, 0, 0, date("n"), date("j"), (date("Y") - 18));
+		$birthdate = date("Y-n-j", $time_t);
+
+		//
+		// Test with today's date
+		//
+		$output = $this->reg->isMinor($birthdate);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t - 86400));
+		$output = $this->reg->isMinor($input);
+		$this->assertFalse($output);
+		
+		$input = date("Y-n-j", ($time_t + 86400));
+		$output = $this->reg->isMinor($input);
+		$this->assertTrue($output);
+		
+		//
+		// Test past and future dates
+		//
+		$input = date("Y-n-j", ($time_t) - 86400);
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) - (86400 * 2));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) + 86400);
+		$now = date("Y-n-j", (time() + 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) + (86400 * 2));
+		$now = date("Y-n-j", (time() + 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertTrue($output);
+
+		//
+		// 17 years old.
+		//
+		$input = date("Y-n-j", ($time_t) + (86400 * 370));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertTrue($output);
+
+		$input = date("Y-n-j", ($time_t) + (86400 * 40));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertTrue($output);
+
+		//
+		// 19 years old.
+		//
+		$input = date("Y-n-j", ($time_t) - (86400 * 370));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		$input = date("Y-n-j", ($time_t) - (86400 * 40));
+		$now = date("Y-n-j", (time() - 86400));
+		$output = $this->reg->isMinor($input, $now);
+		$this->assertFalse($output);
+
+		//
+		// Try out some invalid dates.
+		//
+		try {
+			$output = $this->reg->isMinor("foobar", $now);
+		} catch (Exception $e) {
+		}
+		$this->assertNotNull($e);
+		$regexp = "Invalid";
+		$this->assertTrue(ereg($regexp, $e->getMessage()));
+
+		try {
+			$output = $this->reg->isMinor($input, "foorbar");
+		} catch (Exception $e) {
+		}
+		$this->assertNotNull($e);
+		$regexp = "Invalid";
+		$this->assertTrue(ereg($regexp, $e->getMessage()));
+		
+
+	} // End of testIsMinor()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_member = $this->factory->get_object("member");
+
+		//
+		// Turn off display of errors while testing
+		//
+		$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

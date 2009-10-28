@@ -1,0 +1,233 @@
+<?php
+/**
+* This unit test tests out adding members via the admin system.
+*/
+class Reg_Admin_Members_Functional_Test extends DrupalWebTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("/reg/admin/members Function Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-functional-tests"),
+			);
+	}
+
+
+	/**
+	* Add a member, and then interact with him.
+	*/
+	function testAdd() {
+
+		$this->core->checkSettings();
+
+		//
+		// Log in as a user with admin privs to the reg system
+		//
+		$web_user = $this->drupalCreateUser($this->reg->perm());
+		$this->drupalLogin($web_user);
+
+		$url = "admin/reg/members/add";
+
+		$edit = array();
+		$edit["first"] = "Test first name";
+		$edit["last"] = "Test last name";
+		$edit["email"] = "Test email";
+		$edit["email2"] = $edit["email"];
+		$edit["address1"] = "Test address";
+		$edit["city"] = "Test City";
+		$edit["state"] = "Test State";
+		$edit["zip"] = "Test Zip";
+		$edit["phone"] = "Test Phone";
+		$edit["cc_num"] = "Test credit card num";
+		$edit["birthdate[year]"] = "2000";
+		$edit["reg_payment_type_id"] = "1";
+		$edit["badge_name"] = "Test Reg Function " . time();
+		$this->drupalPost($url, $edit, t("Register"));
+
+		$this->assertRaw(t("successfully"));
+
+		$this->drupalGet(url("admin/reg/members"));
+		$this->assertRaw($edit["badge_name"]);
+
+		//
+		// Get our most recent member ID
+		//
+		$query = "SELECT id FROM {reg} ORDER BY id DESC LIMIT 1";
+		$cursor = db_query($query);
+		$row = db_fetch_array($cursor);
+		$this->assertNotNull($row["id"]);
+		$id = $row["id"];
+
+		//
+		// Load our membership viewing page and check it out.
+		//
+		$url = "admin/reg/members/view/" . $id . "/view";
+		$this->drupalGet(url($url));
+		$output = $this->drupalGetContent();
+		$this->assertNotNull($output);
+		$this->assertPattern("/" . t("Membership Type") . ".*" 
+			. t("Attending") . "/");
+		$this->assertRaw(t("Email receipt sent to "));
+		$this->assertNoRaw("Audit log:");
+
+		$this->editMember($id);
+		$this->addNote($id);
+		$this->adjustBalance($id);
+		$this->cancel($id);
+
+	} // End of testAdd()
+
+
+	/**
+	* Edit our member.
+	*/
+	function editMember($id) {
+
+		$url = "admin/reg/members/view/" . $id . "/edit";
+		$edit = array();
+		$edit["badge_name"] = "Test changed " . time();
+		$edit["first"] = "New first " . time();
+
+		$this->drupalPost($url, $edit, t("Save"));
+		$output = $this->drupalGetContent();
+		$this->assertNotNull($output);
+		$this->assertRaw(t("Registration updated"));
+		$this->assertPattern("/" . t("Badge Name") . ".*" 
+			. $edit["badge_name"] . "/");
+		$this->assertPattern("/" . t("Real Name") . ".*" 
+			. $edit["first"] . "/");
+		$this->assertPattern("/" . t("Updated registration for badge number") . "/");
+
+	} // End of editMember()
+
+
+	/**
+	* Add a note to a specific member ID
+	*/
+	function addNote($id) {
+
+		$url = "admin/reg/members/view/" . $id . "/add_note";
+		$edit = array();
+		$edit["notes"] = t("test note ") . time();
+
+		$this->drupalPost($url, $edit, t("Save Note"));
+
+		//$output = $this->drupalGetContent(); // Debugging
+		$this->assertRaw(t("Added Note: ")  . $edit["notes"]);
+
+	} // End of addNote()
+
+
+	/**
+	* Adjust the balance of the user we created.
+	*/
+	function adjustBalance($id) {
+
+		$url = "admin/reg/members/view/" . $id . "/adjust";
+		$edit = array();
+		$this->drupalPost($url, $edit, t("Perform Balance Adjustment"));
+		$this->assertRaw(t("This user's badge cost is currently ZERO. Be careful with that badge cost number!"));
+		$this->assertRaw(t("Transaction Type field is required"));
+		$this->assertRaw(t("Payment Type field is required"));
+
+		//
+		// Make one balance adjustment
+		//
+		$edit["reg_trans_type_id"] = "1";
+		$edit["reg_payment_type_id"] = "2";
+		$edit["badge_cost"] = 1.23;
+		$edit["donation"] = 1.24;
+		$edit["notes"] = t("test balance note ") . time();
+		$this->drupalPost($url, $edit, t("Perform Balance Adjustment"));
+		$output = $this->drupalGetContent();
+		$this->assertNotNull($output);
+		$this->assertRaw(t("Balance adjustment successful"));
+		$this->assertRaw(t("Balance adjustment. Notes: ")  . $edit["notes"]);
+		$this->assertPattern(t("/Badge Cost Balance.*1.23/"));
+		$this->assertPattern(t("/Donation Balance.*1.24/"));
+		$this->assertPattern(t("/Total Balance.*2.47/"));
+		$this->assertPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"));
+
+		//
+		// Now subtract some money from that user
+		//
+		$edit["reg_trans_type_id"] = 2;
+		$edit["reg_payment_type_id"] = 1;
+		$edit["badge_cost"] = -20.00;
+		$edit["donation"] = -10.00;
+		$edit["notes"] = t("test refund note ") . time();
+		$this->drupalPost($url, $edit, t("Perform Balance Adjustment"));
+		$output = $this->drupalGetContent();
+		$this->assertNotNull($output);
+		$this->assertRaw(t("Balance adjustment successful"));
+		$this->assertRaw(t("Balance adjustment. Notes: ")  . $edit["notes"]);
+		$this->assertPattern(t("/Badge Cost Balance.*-18.77/"));
+		$this->assertPattern(t("/Donation Balance.*-8.76/"));
+		$this->assertPattern(t("/Total Balance.*-27.53/"));
+		$this->assertPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"));
+		$this->assertPattern(t("/Credit Card.*Refund.*-20.*-10.*-30/"));
+
+	} // End of adjustBalance()
+
+
+	/**
+	* Cancel a membership.
+	*/
+	function cancel($id) {
+
+		$url = "admin/reg/members/view/" . $id . "/cancel";
+		$edit = array();
+		$edit["notes"] = t("test cancel note ") . time();
+		$edit["badge_cost"] = 4.56;
+		$edit["donation"] = 4.57;
+		$edit["reg_payment_type_id"] = 1;
+
+		$this->drupalPost($url, $edit, t("Cancel Membership"));
+		$output = $this->drupalGetContent();
+		$this->assertNotNull($output);
+		$this->assertRaw(t("Registration cancelled. Notes: ")  . $edit["notes"]);
+		$this->assertPattern(t("/Status.*Refund/"));
+		$this->assertPattern(t("/Badge Cost Balance.*-23.33/"));
+		$this->assertPattern(t("/Donation Balance.*-13.33/"));
+		$this->assertPattern(t("/Total Balance.*-36.66/"));
+		$this->assertPattern(t("/Cash.*Purchase.*1.23.*1.24.*2.47/"));
+		$this->assertPattern(t("/Credit Card.*Refund.*-20.*-10.*-30/"));
+		$this->assertPattern(t("/Credit Card.*Refund.*-4.56.*-4.57.*-9.13/"));
+
+	} // End of cancel()
+
+
+	/**
+	* Local wrapper for assertEqual, since it's a protected function. :-/
+	*/
+	function localAssertEqual($first, $second, $message= '%s',
+		$group= 'Other') {
+	}
+
+
+	function setUp() {
+
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+
+		//
+		// @todo
+		// I eventually need to put this into our Factory class...
+		//
+		include_once("Reg_Core.class.php");
+		$this->core = new Test_Core($this, $this->reg);
+
+	}
+
+
+	function tearDown() {
+		$this->core->deleteSimpletestRoles();
+	}
+
+
+} // End of RegUnitTest class
+
+

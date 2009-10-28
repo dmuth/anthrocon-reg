@@ -1,0 +1,288 @@
+<?php
+/**
+*/
+class Reg_Util_Watchlist_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_Util_Watchlist Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function testInsertLoadUpdate() {
+
+		$output = $this->util->getAll();
+		$this->assertNotNull($output);
+		$output_count = count($output);
+
+		$data = array();
+		$data["first"] = "testWatchlistFirst " . time();
+		$data["last"] = "testWatchlistLast " . time();
+		$data["action"] = "testWatchlistAction " . time();
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+		$id = $output;
+
+		$output = $this->util->load($id);
+		$this->assertNotNull($output);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["last"], $output["last"]);
+		$this->assertEqual($data["action"], $output["action"]);
+		$this->assertEqual("", $output["disabled"]);
+
+		$this->util->update($id, $data);
+
+		$output = $this->util->load($id);
+		$this->assertNotNull($output);
+		$this->assertEqual($id, $output["id"]);
+
+		$data["first"] .= " updated";
+		$data["disabled"] = "1";
+		$this->util->update($id, $data);
+
+		$output = $this->util->load($id);
+		$this->assertNotNull($output);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["disabled"], $output["disabled"]);
+
+		$data["disabled"] = "";
+		$this->util->update($id, $data);
+
+		$output = $this->util->load($id);
+		$this->assertNotNull($output);
+		$this->assertEqual($data["disabled"], $output["disabled"]);
+
+		$output = $this->util->getAll();
+		$this->assertNotNull($output);
+		$this->assertNotNull($output[0]["id"]);
+		$expected = $output_count + 1;
+		$this->assertEqual($expected, count($output));
+
+	} // End of testInsertLoadUpdate()
+
+
+	function testSearch() {
+
+		//
+		// Insert our main watchlist record
+		//
+		$time_t = time();
+		$data = array();
+		$data["first"] = "Charles";
+		$data["last"] = "Manson " . $time_t;
+		$data["action"] = "testSearch action " . time();
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+		$id = $output;
+
+		//
+		// Insert a record that should never match
+		//
+		$data_decoy = array();
+		$data_decoy["first"] = "Charles";
+		$data_decoy["last"] = "Manson " . time() . "decoy";
+		$output = $this->util->insert($data_decoy);
+		$this->assertNotNull($output);
+	
+		//
+		// Test an exact name match
+		//
+		$search = array();
+		$search["first"] = $data["first"];
+		$search["last"] = $data["last"];
+		$output = $this->util->search($search);
+		$this->assertNotNull($output);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["action"], $output["action"]);
+
+		//
+		// Test a partial match on the first name
+		//
+		$search = array();
+		$search["first"] = $data["first"] . "foobar";
+		$search["last"] = $data["last"];
+		$output = $this->util->search($search);
+		$this->assertNotNull($output);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["action"], $output["action"]);
+		
+
+		//
+		// Test a match on the alias
+		//
+		$data["first_alias"] = "charlie";
+		$this->util->update($id, $data);
+
+		$search = array();
+		$search["first"] = "Charlie";
+		$search["last"] = $data["last"];
+		$search["first_alias"] = "Charlie";
+		$output = $this->util->search($search);
+		$this->assertNotNull($output);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["action"], $output["action"]);
+
+		//
+		// Test using a regex as the alias
+		//
+		$data["first_alias"] = "charlie|chuck";
+		$this->util->update($id, $data);
+
+		$search = array();
+		$search["first"] = "Charlie";
+		$search["last"] = $data["last"];
+		$search["first_alias"] = "chuck";
+		$output = $this->util->search($search);
+		$this->assertNotNull($output);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertEqual($data["first"], $output["first"]);
+		$this->assertEqual($data["action"], $output["action"]);
+
+
+		//
+		// Make sure we can disable this record and it won't show 
+		// up in the search results.
+		//
+		$data["disabled"] = "1";
+		$this->util->update($id, $data);
+
+		$search = array();
+		$search["first"] = $data["first"];
+		$search["last"] = $data["last"];
+		$output = $this->util->search($search);
+		$this->assertFalse($output);
+
+		//
+		// Now toggle off disabled and make sure we have a match again
+		//
+		$data["disabled"] = "";
+		$this->util->update($id, $data);
+
+		$search = array();
+		$search["first"] = $data["first"];
+		$search["last"] = $data["last"];
+		$output = $this->util->search($search);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+
+		//
+		// Test an innocent member
+		//
+		$search = array();
+		$search["first"] = "John";
+		$search["last"] = "Smith";
+		$output = $this->util->search($search);
+		$this->assertFalse($output);
+
+		//
+		// Test with spaces in the first name
+		//
+		$search = array();
+		$search["first"] = "Char l es";
+		$search["last"] = "Manson " . $time_t;
+		$output = $this->util->search($search);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+
+		//
+		// Test with spaces AND numerics in the first name
+		//
+		$search = array();
+		$search["first"] = "Char l e3s";
+		$search["last"] = "Manson " . $time_t;
+		$output = $this->util->search($search);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+
+	} // End of testSearch()
+
+
+	/**
+	* Test sorting in our get function
+	*/
+	function testGetAllSortBy() {
+
+		$data = array();
+		$data["first"] = "testWatchlistFirst " . time();
+		$data["last"] = "testWatchlistLast " . time();
+		$data["action"] = "testWatchlistAction " . time();
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+
+		$data["first"] = "testWatchlistFirst " . time() . "A";
+		$data["last"] = "testWatchlistLast " . time() . "A";
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+
+		$data["first"] = "testWatchlistFirst " . time() . "B";
+		$data["last"] = "testWatchlistLast " . time() . "B";
+		$output = $this->util->insert($data);
+		$this->assertNotNull($output);
+
+		$output = $this->util->getAll();
+		$this->assertNotNull($output);
+		$first_row = $output[0];
+
+		$output = $this->util->getAll("ORDER BY last");
+		$this->assertNotNull($output);
+		$this->assertEqual($first_row["first"], $output[0]["first"]);
+		$this->assertEqual($first_row["last"], $output[0]["last"]);
+
+		$output = $this->util->getAll("ORDER BY last desc");
+		$this->assertNotNull($output);
+		$this->assertNotEqual($first_row["first"], $output[0]["first"]);
+		$this->assertNotEqual($first_row["last"], $output[0]["last"]);
+
+		$output = $this->util->getAll("ORDER BY first");
+		$this->assertNotNull($output);
+		$first_row = $output[0];
+
+		$output = $this->util->getAll("ORDER BY first desc");
+		$this->assertNotNull($output);
+		$this->assertNotEqual($first_row["first"], $output[0]["first"]);
+		$this->assertNotEqual($first_row["last"], $output[0]["last"]);
+
+	} // End of testGetAllSortBy()
+
+
+	function setUp() {
+
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->util = $factory->get_object("Util_Watchlist");
+
+		//
+		// Turn off display of errors while testing
+		//
+		//$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+
+		$query = "DELETE FROM {reg_watchlist} "
+			. "WHERE "
+			. "first LIKE 'testWatchlistFirst%' "
+			. "OR last LIKE 'testWatchlistLast%' "
+			. "OR (first LIKE 'Charles%' AND last LIKE 'Manson%') "
+			;
+		db_query($query);
+
+	} // End of tearDown()
+
+
+} // End of Reg_Util_Watchlist_Test class
+
+

@@ -1,0 +1,69 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Admin_Log_View_UnitTest extends DrupalWebTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("reg_admin_log_view Unit Test"),
+			//"desc" => t("Test out the reg_admin_log_view class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function testLogTrans() {
+
+		$data = array();
+		$data["badge_cost"] = 12;
+		$data["donation"] = 34;
+		$data["cc_num"] = "4222222222222";
+		$data["cc_exp"] = array();
+		$data["cc_exp"]["month"] = 1;
+		$data["cc_exp"]["year"] = (date("Y") + 1);
+		$data["reg_payment_type_id"] = 1;
+		$data["cc_type_id"] = 1;
+
+		$output = $this->reg_log->log_trans($data);
+		$this->assertNotNull($output);
+		$log_id = $output;
+		$total = $data["badge_cost"] + $data["donation"];
+		$this->assertEqual($total, $data["total_cost"]);
+
+		//
+		// Test the credit card expiration dates.
+		//
+		$output = $this->reg_admin_log_view->trans_detail_data($log_id);
+		$this->assertEqual($data["cc_exp"]["month"], $output["card_expire_month"]);
+		$this->assertEqual($data["cc_exp"]["year"], $output["card_expire_year"]);
+
+		$output = $this->reg_admin_log_view->trans_detail($log_id);
+		$this->assertNotNull($output);
+
+		$output = $this->reg_admin_log_view->trans_recent();
+		$this->assertNotNull($output);
+
+	} // End of testLogTrans()
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_member = $this->factory->get_object("member");
+		$this->reg_admin_member = $this->factory->get_object("admin_member");
+		$this->reg_log = $this->factory->get_object("log");
+		$this->reg_admin_log_view = $this->factory->get_object("admin_log_view");
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of Reg_Admin_Member_UnitTest class
+
+

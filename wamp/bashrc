@@ -1,0 +1,19 @@
+#
+# This file should be included by our main bashrc file
+#
+# To use this file:
+# cd path/to/this/directory
+# . bashrc 
+#
+
+#
+# Add our binary directory into the path
+#
+DIR=`pwd`/bin
+PATH=$PATH:$DIR
+
+#
+# Set an editor for SVN
+#
+export SVN_EDITOR=nano
+

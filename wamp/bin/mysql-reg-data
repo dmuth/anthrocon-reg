@@ -1,0 +1,48 @@
+<?php
+//
+// This script grabs various database credentials from the settings.php file.
+//
+// This way, the database credentials are only kept in one place on the system.
+//
+
+
+if (empty($argv[2])) {
+	$error = "Syntax: " 
+		. $argv[0] . " c:/path/to/wamp/ host|user|pass|database";
+	throw new Exception($error);
+}
+
+$wamp = $argv[1];
+$request = $argv[2];
+$settings = $wamp . "/www/sites/default/settings.php";
+include($settings);
+
+$data = parse_url($db_url);
+
+//print_r($data);
+
+$retval = "";
+if ($request == "host") {
+	$retval = $data["host"];
+
+} else if ($request == "user") {
+	$retval = $data["user"];
+
+} else if ($request == "pass") {
+	$retval = $data["pass"];
+
+} else if ($request == "database") {
+	$retval = $data["path"];
+	if ($retval[0] == "/") {
+		$retval = ltrim($retval, "/");
+	}
+
+} else {
+	$error = "Unknown request: $request";
+	throw new Exception($error);
+
+}
+
+print $retval;
+
+

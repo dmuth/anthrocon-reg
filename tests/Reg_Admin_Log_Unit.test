@@ -1,0 +1,34 @@
+<?php
+/**
+* This unit test tests out the main reg class.
+*/
+class Reg_Admin_Log_UnitTest extends DrupalWebTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("reg_admin_log Unit Test"),
+			//"desc" => t("Test out the reg_admin_log class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function setUp() {
+		$this->factory = new reg_factory();
+		$this->reg = $this->factory->get_object("reg");
+		$this->reg_member = $this->factory->get_object("member");
+		$this->reg_admin_member = $this->factory->get_object("admin_member");
+		$this->reg_admin_log = $this->factory->get_object("admin_log");
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of Reg_Admin_Member_UnitTest class
+
+

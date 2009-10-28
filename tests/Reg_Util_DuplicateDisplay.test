@@ -1,0 +1,64 @@
+<?php
+/**
+*/
+class Reg_Util_Duplicate_Display_UnitTest extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_Util_DuplicateDisplay Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	function testGetForm() {
+
+		$output = $this->util->getForm();
+		$this->assertNotNull($output);
+
+	} // End of testGetForm()
+
+
+	function testGetResults() {
+
+		$years = $this->reg->getYears();
+		$year = array_shift($years);
+
+		//$years = array(); // Debugging
+		if (empty($years)) {
+			$message = "No membership levels defined.  Skipping these tests.";
+			$this->pass($message);
+			return(null);
+		}
+
+		$output = $this->util->getResults($year);
+		$this->assertNotNull($output);
+
+	} // End of testGetResults()
+
+
+	function setUp() {
+
+		$factory = new reg_factory();
+		$this->reg = $factory->get_object("reg");
+		$this->util = $factory->get_object("Util_DuplicateDisplay");
+
+		//
+		// Turn off display of errors while testing
+		//
+		//$this->reg->setErrorDisplay(false);
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+

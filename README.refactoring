@@ -1,0 +1,14 @@
+
+Refactoring Ideas, DTM 5 Apr 2009
+=================================
+
+In hindsight, mixing inheritance with a factory class really wasn't such a 
+good idea.
+
+As development progresses (and as I write more unit tests), I should see 
+about cutting down on inheritance and use dependency injection instead.
+
+I might want to switch to camelCase function names at some point, too.  I'm
+going to use them for unit tests right now, and maybe I'll do the same
+in the main classes in the future.
+

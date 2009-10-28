@@ -1,0 +1,74 @@
+/**
+* These classes have been copied from system.css.
+* These copies allow us a little more control over our registration form.
+*/
+.reg-form-item {
+	margin-bottom: 1em;
+	margin-left: 5px;
+}
+
+tr.odd .reg-form-item, tr.even .reg-form-item {
+  margin-top: 0;
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+.reg-form-item input.error, .reg-form-item textarea.error, .reg-form-item select.error {
+  border: 2px solid red;
+}
+.reg-form-item .description {
+  font-size: 0.85em;
+}
+.reg-form-item label {
+  font-weight: bold;
+}
+.reg-form-item label.option {
+  display: inline;
+  font-weight: normal;
+}
+
+td .reg-name {
+	width: 200px;
+}
+
+td .reg-value {
+	width: 200px;
+}
+
+.reg-form-required {
+  color: #f00;
+  font-weight: bold;
+}
+
+.reg-warning td {
+	background-color: #ffffcc;
+}
+
+.reg-error td {
+	background-color: #ffcccc;
+}
+
+.reg-hover {
+	background-color: #eeeeee;
+	cursor: pointer;
+}
+
+.reg-hidden {
+	display: none;
+}
+
+/**
+* We do this because select elements also have a margin for some reason.
+*/
+.form-select {
+	margin-left: 0;
+}
+
+/**
+* Put some badly needed padding around our membership level descriptions.
+*/
+.reg-level-desc {
+	padding: 5px;
+}
+
+
+

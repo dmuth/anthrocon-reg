@@ -1,0 +1,133 @@
+<?php
+/**
+*/
+class Reg_Util_PrintAjax_Test extends DrupalTestCase {
+
+	/**
+	* Implementation of getInfo() for information
+	*/
+	function getInfo() {
+		return array(
+			"name" => t("Reg_Util_PrintAjax Unit Test"),
+			//"desc" => t("Test out the reg class"),
+			"group" => t("reg-unit-tests"),
+			);
+	}
+
+
+	
+	function test() {
+
+		$output = $this->util->addJob(1);
+		$this->assertNotNull($output);
+
+		while ($tmp = $this->ajax->fetch()) {
+			$output_raw = $tmp;
+		}
+		$this->assertNotNull($output_raw);
+		parse_str($output_raw, $output);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertNotNull($output["reg_id"]);
+		$this->assertNotNull($output["printer"]);
+		$this->assertNotNull($output["badge_name"]);
+		$this->assertNotNull($output["badge_num"]);
+		$this->assertNotNull($output["badge_num_full"]);
+		$this->assertNotNull($output["year"]);
+		$this->assertNotNull($output["member_type"]);
+		$id = $output["id"];
+
+		$output = $this->util->getJob($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["status"]);
+		$this->assertEqual("printing", $output["status"]);
+
+		$status = "Reg_Util_PrintAjax " . time();
+		$this->ajax->update($id, $status);
+
+		$output = $this->util->getJob($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["status"]);
+		$this->assertEqual($status, $output["status"]);
+	
+		$query = "DELETE FROM {reg_print_jobs} WHERE status LIKE '%s%'";
+		$query_args = array("Reg_Util_PrintAjax");
+		db_query($query, $query_args);
+
+	} // End of test()
+
+
+	function testMultiplePrinters() {
+
+		$output = $this->util->addJob(1);
+		$this->assertNotNull($output);
+
+		$output = $this->util->addJob(3, "minor");
+		$this->assertNotNull($output);
+		$id_minor = $output;
+
+		$output = $this->util->addJob(1);
+		$this->assertNotNull($output);
+		$id = $output;
+
+		while ($tmp = $this->ajax->fetch("minor")) {
+			$output_raw = $tmp;
+		}
+		$this->assertNotNull($output_raw);
+		parse_str($output_raw, $output);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertNotNull($output["reg_id"]);
+		$this->assertNotNull($output["printer"]);
+		$this->assertNotNull($output["badge_name"]);
+		$this->assertNotNull($output["badge_num"]);
+		$this->assertNotNull($output["badge_num_full"]);
+		$this->assertNotNull($output["year"]);
+		$this->assertNotNull($output["member_type"]);
+		$this->assertEqual($id_minor, $output["id"]);
+		$this->assertEqual("minor", $output["printer"]);
+
+		while ($tmp = $this->ajax->fetch()) {
+			$output_raw = $tmp;
+		}
+		parse_str($output_raw, $output);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["id"]);
+		$this->assertNotNull($output["reg_id"]);
+		$this->assertNotNull($output["printer"]);
+		$this->assertNotNull($output["badge_name"]);
+		$this->assertNotNull($output["badge_num"]);
+		$this->assertNotNull($output["badge_num_full"]);
+		$this->assertNotNull($output["year"]);
+		$this->assertNotNull($output["member_type"]);
+		$this->assertEqual($id, $output["id"]);
+		$this->assertEqual("default", $output["printer"]);
+
+		$status = "Reg_Util_PrintAjax " . time();
+		$this->ajax->update($id, $status);
+
+		$output = $this->util->getJob($id);
+		$this->assertNotNull($output);
+		$this->assertNotNull($output["status"]);
+		$this->assertEqual($status, $output["status"]);
+	
+	} // End of testMultiplePrinters()
+
+
+	function setUp() {
+
+		$factory = new reg_factory();
+		$this->ajax = $factory->get_object("Util_PrintAjax");
+		$this->util = $factory->get_object("Util_Print");
+
+	}
+
+
+	function tearDown() {
+	}
+
+
+} // End of RegUnitTest class
+
+
+
