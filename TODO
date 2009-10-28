@@ -6,6 +6,14 @@ Done
 TODO
 ====
 
+- There are a few issues when no levels are defined
+	- Creating the second new membership causes issues
+	- Issues with year dropdowns
+	- Stats probably have issues, too
+	- I should write a function that returns true if there are no years,
+		sets an error telling the user to create some membership levels,
+		and short-circuit the rest of the page
+
 - All numbers in transactions should now be displayed with number_format() or printf().
 	- This appears to be a byproduct of switching the database type from NUMBER(10,2) to FLOAT :-/
 
