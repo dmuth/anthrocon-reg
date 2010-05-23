@@ -21,6 +21,6 @@ cd ${DIR}
 
 . ./core.sh
 
-${MYSQL} $@
+${MYSQL} -u ${MYSQL_USER} $@
 
 

@@ -29,6 +29,14 @@ WAMP:
 
 - Drupal on WAMP:
 	- Make sure that the settings.php file is readable
+		- Be careful of $base_url!  
+			- If you get "403 permission denied" on pages, this is why
+	- If you get errors about "MySQL server has gone away, tweak max_allowed_packet:
+		max_allowed_packet = 1M
+	- If you get garbage coming up, Windows doesn't understand symlinks
+		- Run bin/deploy.sh anthrocon copy
+	- If you get errors about "Call-time pass-by-reference has been deprecated", put this in settings.php
+		- ini_set("error_reporting", 4096)
 	- Get database credentials from settings.php and create that user in phpMyAdmin
 	- Create the database in phpMyAdmin
 	- Import the data
