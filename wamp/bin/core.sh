@@ -4,8 +4,9 @@
 #
 
 WAMP="c:/wamp"
-PHP=${WAMP}/bin/php/php5.2.9-2/php.exe
-MYSQL=${WAMP}/bin/mysql/mysql5.1.33/bin/mysql.exe
-MYSQLDUMP=${WAMP}/bin/mysql/mysql5.1.33/bin/mysqldump.exe
+PHP=${WAMP}/bin/php/php5.3.0/php.exe
+MYSQL=${WAMP}/bin/mysql/mysql5.1.36/bin/mysql.exe
+MYSQLDUMP=${WAMP}/bin/mysql/mysql5.1.36/bin/mysqldump.exe
 
+MYSQL_USER="root"
 
