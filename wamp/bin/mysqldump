@@ -21,6 +21,10 @@ cd ${DIR}
 
 . ./core.sh
 
-${MYSQLDUMP} $@
+USER=`${PHP} ./mysql-reg-data ${WAMP} user`
+PASS=`${PHP} ./mysql-reg-data ${WAMP} pass`
+HOST=`${PHP} ./mysql-reg-data ${WAMP} host`
+
+${MYSQLDUMP} -u ${USER} -p${PASS} $@
 
 
