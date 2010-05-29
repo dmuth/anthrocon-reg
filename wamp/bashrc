@@ -11,6 +11,7 @@
 #
 DIR=`pwd`/bin
 PATH=$PATH:$DIR
+PATH=$PATH:/cygdrive/c/wamp/bin/php/php5.3.0/
 
 #
 # Set an editor for SVN
