@@ -8,16 +8,16 @@ Cygwin:
 	- devel/subversion
 	- editors/vim
 	- editors/nano
-	- archive/zip
+	- archive/zipx
 	- archive/unzip
 	- net/openssh
 	- utils/screen
+
  - If you run into problems about missing cygz.dll, do a full reinstall, but from the local directory of packages
 
-Optional:
 - Download gvim for editing files under Cygwin
 
-Printing:
+Badge Printing:
 - Problems with MSIE?
 	- Set "Initialize and script ActiveX controls not marked as safe" to "Enable"
 
@@ -29,23 +29,19 @@ WAMP:
 
 - Drupal on WAMP:
 	- Make sure that the settings.php file is readable
-		- Be careful of $base_url!  
-			- If you get "403 permission denied" on pages, this is why
-	- If you get errors about "MySQL server has gone away, tweak max_allowed_packet:
-		max_allowed_packet = 1M
-	- If you get garbage coming up, Windows doesn't understand symlinks
-		- Run bin/deploy.sh anthrocon copy
-	- If you get errors about "Call-time pass-by-reference has been deprecated", put this in settings.php
-		- ini_set("error_reporting", 4096)
 	- Get database credentials from settings.php and create that user in phpMyAdmin
 	- Create the database in phpMyAdmin
 	- Import the data
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
-	- Disable key modules:
-		- UPDATE system SET status=0 WHERE name='aggregator'
-		- UPDATE system SET status=0 WHERE name LIKE 'xmlsitemap%'
+	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 	- If seeing the main page over and over, make sure the rewrite module is enabled
 	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
+	- KNOWN ISSUES:
+		- Screens with garbled data:
+			- Make sure the theme doesn't have smylinks
+			- Run bin/deploy.sh anthrocon copy
+		- If turning on CSS aggregation causes Apache to crash, a preg_replace() in drupal_load_stylesheet() in common.php is the culprit.  Your best bet to carefully check the comments in your theme's style.css file, or else just not use aggregation
+
 
 - MySQL replication:
 	- Set log-bin and server-id on Master server
@@ -68,10 +64,3 @@ WAMP:
 			- STOP SLAVE
 			- UNLOCK TABLES
 			- SHOW SLAVE STATUS
-
-TODO:
-- SQL scripts to config Drupal
-    - Turn off various modules
-        - Turn off poormanscron?
-        - Definitely turn off the aggregation module
-
