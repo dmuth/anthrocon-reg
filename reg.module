@@ -49,6 +49,23 @@ function reg_perm() {
 
 
 /**
+* The first function to ever be run.  This turns off
+* caching for our public-facing registration pages.
+*/
+function reg_boot() {
+
+	//
+	// Don't restrict this to anonymous users, since I might
+	// eventually use authcache.
+	//
+	if (preg_match("/^(reg|onsitereg)/", $_GET["q"])) {
+		$GLOBALS["conf"]["cache"] = false;
+	}
+
+} // End of reg_boot()
+
+
+/**
 * hook_boot() will run on every page, even cached pages.
 * hook_init() will only run on non-cached pages.
 */

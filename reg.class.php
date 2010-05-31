@@ -697,6 +697,10 @@ class reg {
 		// If we are in any of the public pages AND an anonymous user, 
 		// clear out the cache for this page.  
 		//
+		/*
+		// Disabled for now, due to me disabling the cache in 
+		// hook_boot().
+		//
 		if ($_GET["q"] == "reg"
 			|| $_GET["q"] == "reg/fake"
 			|| $_GET["q"] == "reg/verify"
@@ -710,6 +714,7 @@ class reg {
 				cache_clear_all($url, "cache_page");
 			}
 		}
+		*/
 
 	} // End of exit()
 
