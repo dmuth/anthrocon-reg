@@ -18,3 +18,5 @@ PATH=$PATH:/cygdrive/c/wamp/bin/php/php5.3.0/
 #
 export SVN_EDITOR=nano
 
+alias gvim=gvim.bat
+
