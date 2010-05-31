@@ -12,14 +12,8 @@ Cygwin:
 	- archive/unzip
 	- net/openssh
 	- utils/screen
-
- - If you run into problems about missing cygz.dll, do a full reinstall, but from the local directory of packages
-
-- Download gvim for editing files under Cygwin
-
-Badge Printing:
-- Problems with MSIE?
-	- Set "Initialize and script ActiveX controls not marked as safe" to "Enable"
+- If you run into problems about missing cygz.dll, do a full reinstall, but from the local directory of packages
+- Download gvim separately for editing files under Cygwin
 
 WAMP:
 - Download WAMP
@@ -36,12 +30,19 @@ WAMP:
 	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 	- If seeing the main page over and over, make sure the rewrite module is enabled
 	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
-	- KNOWN ISSUES:
+	- SSL:
+		- When testing, go into c:\wamp\bin\apache\Apache2.2.11\bin and run "httpd -t" to test the config file
+		- If mod_ssl isn't being loaded, edit httpd.conf itself and uncomment the line to load mod_ssl
+
+	- TROUBLESHOOTING:
 		- Screens with garbled data:
 			- Make sure the theme doesn't have smylinks
 			- Run bin/deploy.sh anthrocon copy
 		- If turning on CSS aggregation causes Apache to crash, a preg_replace() in drupal_load_stylesheet() in common.php is the culprit.  Your best bet to carefully check the comments in your theme's style.css file, or else just not use aggregation
 
+Badge Printing:
+- Problems with MSIE?
+	- Set "Initialize and script ActiveX controls not marked as safe" to "Enable"
 
 - MySQL replication:
 	- Set log-bin and server-id on Master server
