@@ -12,6 +12,7 @@ Cygwin:
 	- archive/unzip
 	- net/openssh
 	- utils/screen
+	- web/wget
 - If you run into problems about missing cygz.dll, do a full reinstall, but from the local directory of packages
 - Download gvim separately for editing files under Cygwin
 
@@ -33,7 +34,16 @@ WAMP:
 	- SSL:
 		- When testing, go into c:\wamp\bin\apache\Apache2.2.11\bin and run "httpd -t" to test the config file
 		- If mod_ssl isn't being loaded, edit httpd.conf itself and uncomment the line to load mod_ssl
-
+	- Xcache:
+		- Loading this give me at least a 50% speedbost.  You should, too!
+		- http://xcache.lighttpd.net/
+			- If unsure of VC6 or VC9, check the output of phpinfo()
+			- http://xcache.lighttpd.net/pub/Releases/1.3.0/XCache-1.3.0-php-5.3.0-Win32-VC6-x86.zip
+		- Put the following in php.ini:
+			extension=php_xcache.dll	; Required
+			[xcache]			; Required
+			xcache.cacher=On		; Required
+			xcache.size = 64M		; Required
 	- TROUBLESHOOTING:
 		- Screens with garbled data:
 			- Make sure the theme doesn't have smylinks
