@@ -173,6 +173,7 @@ jQuery.fn.printerWidget.startWord = function() {
 	jQuery.fn.printerWidget.app.visible = true;
 
 	var file = jQuery.fn.printerWidget.base_path + "/files/badge.doc";
+	//$("#edit-interval").parent().append(file); // Debugging
 	jQuery.fn.printerWidget.doc = jQuery.fn.printerWidget.app.Documents.Open(file);
 
 } // End of startWord()
