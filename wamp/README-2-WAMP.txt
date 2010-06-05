@@ -17,13 +17,4 @@ WAMP:
 	- SSL:
 		- When testing, go into c:\wamp\bin\apache\Apache2.2.11\bin and run "httpd -t" to test the config file
 		- If mod_ssl isn't being loaded, edit httpd.conf itself and uncomment the line to load mod_ssl
-	- TROUBLESHOOTING:
-		- Screens with garbled data:
-			- Make sure the theme doesn't have smylinks
-			- Run bin/deploy.sh anthrocon copy
-		- If turning on CSS aggregation causes Apache to crash, a preg_replace() in drupal_load_stylesheet() in common.php is the culprit.  Your best bet to carefully check the comments in your theme's style.css file, or else just not use aggregation
-
-Badge Printing:
-- Problems with MSIE?
-	- Set "Initialize and script ActiveX controls not marked as safe" to "Enable"
 
