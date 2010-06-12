@@ -6,7 +6,6 @@ Web server:
 	- Screens with garbled data:
 		- Make sure the theme doesn't have symlinks
 		- Run bin/deploy.sh anthrocon copy
-
 	- If turning on CSS aggregation causes Apache to crash, a preg_replace() in drupal_load_stylesheet() in common.php is the culprit.  Your best bet to carefully check the comments in your theme's style.css file, or else just not use aggregation
 
 MySQL:
