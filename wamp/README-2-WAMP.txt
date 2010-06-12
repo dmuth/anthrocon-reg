@@ -11,12 +11,19 @@ WAMP:
 	- Create the database in phpMyAdmin
 	- Import the data
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
+		- Getting errors about primary keys?
+			- Run mysql-reg with "-f" parameter to force
 	- Create filecache/ directory if necessary
+	- If seeing the main page over and over, make sure the rewrite module is enabled
 	- Optionally replace sites/all/modules/reg/ directory with checked out version
 	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
-	- If seeing the main page over and over, make sure the rewrite module is enabled
 	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
 	- SSL:
+		- Run generate-ssl-key
+		- Add the following to the end of httpd.conf:
+			Include "c:/wamp/www/sites/all/modules/reg/wamp/httpd-ssl.conf"
 		- When testing, go into c:\wamp\bin\apache\Apache2.2.11\bin and run "httpd -t" to test the config file
 		- If mod_ssl isn't being loaded, edit httpd.conf itself and uncomment the line to load mod_ssl
+	- Onsite reg:
+		- Permissions for onsite reg
 
