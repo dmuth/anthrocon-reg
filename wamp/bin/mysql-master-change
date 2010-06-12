@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# Wrapper for calling MySQL
+#
+
+#
+# Make errors fatal
+#
+set -e
+
+#set -x # Debugging
+
+#
+# Check our arguments
+#
+if test ! "$5"
+then
+	echo "Syntax: $0 hostname user pass logfile_name logfile_pos"
+	exit 1;
+fi
+
+#
+# Save our arguments
+#
+HOSTNAME=$1
+USER=$2
+PASS=$3
+LOGNAME=$4
+LOGPOS=$5
+shift 5
+
+
+#
+# Get the current directory
+#
+DIR=`dirname $0`
+
+#
+# Change into this directory because Cygwin has some issues with
+# absolute paths...
+#
+cd ${DIR}
+
+. ./core.sh
+
+CMD="CHANGE MASTER TO MASTER_HOST='$HOSTNAME', MASTER_USER='$USER', MASTER_PASSWORD='$PASS', MASTER_LOG_FILE='$LOGNAME', MASTER_LOG_POS='$LOGPOS';"
+
+echo $CMD |${MYSQL} -u ${MYSQL_USER} $@
+
+
