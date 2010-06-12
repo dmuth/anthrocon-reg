@@ -2,8 +2,11 @@
 MySQL Replication setup
 =======================
 
-- Set log-bin and server-id on Master server in my.ini
-- Set server-id on Slave server
+my.ini:
+	- Turn off skip-networking
+	- Set log-bin and server-id on Master server in my.ini
+	- Set server-id on Slave server
+
 - Open up the Windows firewall on the Slave and Master
 
 - User commands
