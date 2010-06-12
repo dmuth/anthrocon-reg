@@ -10,6 +10,16 @@ set -e
 
 #set -x # Debugging
 
+if test ! "$2"
+then
+	echo "Syntax: $0 host database"
+	exit 1
+fi
+
+HOST=$1
+DATABASE=$2
+shift 2
+
 #
 # Get the current directory
 #
@@ -25,9 +35,7 @@ cd ${DIR}
 
 USER=`${PHP} ./mysql-reg-data ${WAMP} user`
 PASS=`${PHP} ./mysql-reg-data ${WAMP} pass`
-HOST=`${PHP} ./mysql-reg-data ${WAMP} host`
-DATABASE=`${PHP} ./mysql-reg-data ${WAMP} database`
 
-${MYSQL} -u ${USER} -p${PASS} ${DATABASE} $@
+${MYSQLDUMP} -u ${USER} -p${PASS} -h ${HOST} ${DATABASE} $@
 
 
