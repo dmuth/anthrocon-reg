@@ -9,6 +9,10 @@ Web server:
 
 	- If turning on CSS aggregation causes Apache to crash, a preg_replace() in drupal_load_stylesheet() in common.php is the culprit.  Your best bet to carefully check the comments in your theme's style.css file, or else just not use aggregation
 
+MySQL:
+	- Error that says "MySQL Server has gone away"?
+		- Edit my.ini and change max_alowed_packet to a large (32M+) value
+
 Self-signed SSL certs in MSIE:
 	- Go into Tools->Internet Options->Security->Trusted Sites
 	- Click "Sites", and add the current site
