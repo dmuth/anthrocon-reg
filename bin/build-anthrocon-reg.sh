@@ -13,6 +13,18 @@ set -e
 #
 #set -x
 
+if test "$1" == "-h"
+then
+	echo "Syntax: $0 [git]"
+	exit 1
+fi
+
+GIT=""
+if test "$1" == "git"
+then
+	GIT=1
+fi
+
 #
 # Grab our highest version, so we can get a uniquely named file.
 #
@@ -22,16 +34,25 @@ VERSION=`git svn info |grep "Revision" |cut -d: -f2 |sed -e s/[^0-9]//`
 
 PWD=`pwd`
 DIR=`basename $PWD`
-TARBALL=${DIR}/anthrocon-reg-build_${VERSION}.tgz
 
 #
 # We don't want any revision control files included in the atrball.
 #
-OPTIONS='--exclude RCS --exclude .svn --exclude .git'
+OPTIONS="--exclude RCS --exclude .svn "
+
+if test ! "$GIT"
+then
+	TARBALL=${DIR}/anthrocon-reg-build_${VERSION}.tgz
+	OPTIONS="$OPTIONS --exclude .git"
+	FILES="${DIR}/*"
+else 
+	TARBALL=${DIR}/anthrocon-reg-build_${VERSION}-git.tgz
+	FILES="${DIR}/* ${DIR}/.git"
+fi
 
 cd ..
 
-tar cfzv ${TARBALL} ${DIR}/* ${OPTIONS}
+tar cfzv ${TARBALL} ${FILES} ${OPTIONS}
 
 echo "Distfile created in '${TARBALL}'"
 
