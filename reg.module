@@ -58,8 +58,15 @@ function reg_boot() {
 	// Don't restrict this to anonymous users, since I might
 	// eventually use authcache.
 	//
-	if (preg_match("/^(reg|onsitereg)/", $_GET["q"])) {
-		$GLOBALS["conf"]["cache"] = false;
+
+	//
+	// We have the empty() call in here, because WAMP 2.0i 
+	// prints an error, and that causes all sorts of issues
+	//
+	if (!empty($_GET["q"])) {
+		if (preg_match("/^(reg|onsitereg)/", $_GET["q"])) {
+			$GLOBALS["conf"]["cache"] = false;
+		}
 	}
 
 } // End of reg_boot()
