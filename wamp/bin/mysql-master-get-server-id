@@ -21,6 +21,6 @@ cd ${DIR}
 
 . ./core.sh
 
-echo "SHOW VARIABLES LIKE 'server%'" |${MYSQL} -u ${MYSQL_USER} $@
+echo "SHOW VARIABLES LIKE 'server%' \G" |${MYSQL} -u ${MYSQL_USER} $@
 
 

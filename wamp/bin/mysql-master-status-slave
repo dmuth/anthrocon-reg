@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Wrapper for calling MySQL
+# Show the status of a slave MySQL server
 #
 
 #
@@ -21,6 +21,6 @@ cd ${DIR}
 
 . ./core.sh
 
-echo "SHOW SLAVE STATUS" |${MYSQL} -u ${MYSQL_USER} $@
+echo "SHOW SLAVE STATUS \G" |${MYSQL} -u ${MYSQL_USER} $@
 
 

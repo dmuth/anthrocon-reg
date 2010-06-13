@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Wrapper for calling MySQL
+# Show the status of a master MySQL server
 #
 
 #
@@ -21,6 +21,6 @@ cd ${DIR}
 
 . ./core.sh
 
-echo "SHOW MASTER STATUS" |${MYSQL} -u ${MYSQL_USER} $@
+echo "SHOW MASTER STATUS \G" |${MYSQL} -u ${MYSQL_USER} $@
 
 
