@@ -30,10 +30,13 @@ DATABASE=`${PHP} ./mysql-reg-data ${WAMP} database`
 cd $OLD_DIR
 
 #
-# Get our list of registration tables
+# Name the file in YYYYMMDDHHMMSS format.
 #
-CMD="${MYSQL} -u ${USER} -p${PASS} ${DATABASE} $@"
+FILE=reg-dump-`date +%Y%m%d%H%M%S`.txt
 
-${MYSQLDUMP} -u ${USER} -p${PASS} ${DATABASE} 
+#${MYSQLDUMP} -u ${USER} -p${PASS} ${DATABASE} 
+${MYSQLDUMP} -u ${USER} -p${PASS} ${DATABASE} > ${FILE}
+
+echo "File '${FILE}' written."
 
 
