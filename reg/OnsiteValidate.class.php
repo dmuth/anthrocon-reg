@@ -155,7 +155,7 @@ class Reg_OnsiteValidate {
 			"#title" => "Payment Type",
 			"#type" => "select",
 			"#options" => $types,
-			"#description" => "How are we issuing the refund?",
+			"#description" => "What is our method of payment?",
 			"#required" => true,
 			);
 
