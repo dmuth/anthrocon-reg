@@ -187,6 +187,12 @@ jQuery.fn.printerWidget.startWord = function() {
 jQuery.fn.printerWidget.printBadge = function(id, badge_name, badge_num, 
 	membership_type) {
 
+	if (badge_num == undefined) {
+		var message = "Badge number is undefined. Aborting!<br/>";
+		$("#edit-interval").parent().append(message); // Debugging
+		return(null);
+	}
+
 	//	
 	//	Debging while not in MSIE?
 	//	
@@ -335,7 +341,8 @@ jQuery.fn.printerWidget.printLoop = function() {
 */
 jQuery.fn.printerWidget.fetchCallback = function(data) {
 
-	// TEST
+	//data = "foobar"; // Set to force undefined badges
+
 	if (data) {
 		//
 		// Parse our values
@@ -379,6 +386,7 @@ jQuery.fn.printerWidget.parseGetData = function(data) {
 
 	var retval = {};
 
+// TEST
 var tmp = "";
 	var items = data.split("&");
 	for (key in items) {
@@ -403,7 +411,7 @@ tmp += ", " + key + ": " + key + ": " + value2;
 	}
 //alert(tmp);
 // TEST
-$("#edit-interval").parent().append(tmp + "<br/>"); // Debugging
+//$("#edit-interval").parent().append(tmp + "<br/>"); // Debugging
 
 	return(retval);
 
