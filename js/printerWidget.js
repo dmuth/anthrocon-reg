@@ -386,8 +386,6 @@ jQuery.fn.printerWidget.parseGetData = function(data) {
 
 	var retval = {};
 
-// TEST
-var tmp = "";
 	var items = data.split("&");
 	for (key in items) {
 		var item = items[key];
@@ -406,12 +404,7 @@ var tmp = "";
 		value2 = value2.replace(/\+/g, " ");
 
 		retval[key2] = value2;
-tmp += ", " + key + ": " + key + ": " + value2;
-//alert(key + ": " + key2 + ": " + value2);
 	}
-//alert(tmp);
-// TEST
-//$("#edit-interval").parent().append(tmp + "<br/>"); // Debugging
 
 	return(retval);
 
