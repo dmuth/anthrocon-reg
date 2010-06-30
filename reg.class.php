@@ -42,7 +42,8 @@ class reg {
 		// The current year and the lowest possible badge number.
 		// At some point, I should store these values externally.
 		//
-		"year" => 2009,
+		//"year" => 2009,
+		"year" => 2010,
 		"start_badge_num" => 250,
 		//
 		// Define constants for our permission names.
