@@ -145,7 +145,7 @@ jQuery.fn.printerWidget.messageScan = function() {
 	if (jQuery.fn.printerWidget.messages.length > 0) {
 
 		var message = jQuery.fn.printerWidget.messages.shift();
-		//$("#edit-interval").parent().append("Message: " + message);
+		//$("#edit-interval").parent().append("Message: " + message); // Debugging
 		$("#edit-current").val(message);
 
 	}
@@ -322,6 +322,7 @@ jQuery.fn.printerWidget.printLoop = function() {
 
 	var url = jQuery.fn.printerWidget.base_url 
 		+ "/admin/reg/utils/print/client/ajax/fetch/" + printer;
+	//$("#edit-interval").parent().append(url); // Debugging
 
 	$.get(url, {}, jQuery.fn.printerWidget.fetchCallback);
 
@@ -334,6 +335,7 @@ jQuery.fn.printerWidget.printLoop = function() {
 */
 jQuery.fn.printerWidget.fetchCallback = function(data) {
 
+	// TEST
 	if (data) {
 		//
 		// Parse our values
@@ -377,6 +379,7 @@ jQuery.fn.printerWidget.parseGetData = function(data) {
 
 	var retval = {};
 
+var tmp = "";
 	var items = data.split("&");
 	for (key in items) {
 		var item = items[key];
@@ -395,7 +398,12 @@ jQuery.fn.printerWidget.parseGetData = function(data) {
 		value2 = value2.replace(/\+/g, " ");
 
 		retval[key2] = value2;
+tmp += ", " + key + ": " + key + ": " + value2;
+//alert(key + ": " + key2 + ": " + value2);
 	}
+//alert(tmp);
+// TEST
+$("#edit-interval").parent().append(tmp + "<br/>"); // Debugging
 
 	return(retval);
 
