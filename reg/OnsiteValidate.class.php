@@ -254,7 +254,8 @@ class Reg_OnsiteValidate {
 		//
 		// Get the next available badge number.
 		//
-		$data["badge_num"] = $this->reg->get_badge_num();
+		//$data["badge_num"] = $this->reg->get_badge_num();
+		$data["badge_num"] = $this->reg->get_badge_num(2010);
 
 		$query = "UPDATE {reg} "
 			. "SET "
