@@ -1,27 +1,31 @@
 
-Testing notes
-=============
+How to test our code
+====================
 
-Major things to test for:
-	- All screens (recent memberships, stats, settings, etc.)
-	- Level editing system
+- Set up the Simpletest module
+	- Install php5-curl
+	- Patch Drupal 6 Core
 
-	- Creating new memberships
-		- From the public interface
-		- From the admin interface
-		- From the dealer interface
+- Tests are in the tests/ directory
 
-	- Different ways of creating badge numbers from the admin interface
-		- Automatic assignment
-		- Setting a number to 0
-		- Setting a number to a postitive integer
-		- Setting a number to a postitive integer higher than the max 
-			assigned number
-		- A negative number (should show an error)
-		- A string (should show an error)
+- Anything that ends with "Unit.test" is a unit test
+	- Anything that ends with "Functional.test" is a functionality test
 
-		- Try this on both membership creation and membership updates
+- Copy the file sites/all/modules/simpletest/run-tests.sh into the root scripts/ directory
 
+- You should now be able to run the unit tests.  Here are some sample command lines:
+
+./bin/run-reg-tests.sh reg-authorize-net
+./bin/run-reg-tests.sh --verbose reg-authorize-net
+./bin/run-reg-tests.sh --list 
+./bin/run-reg-tests.sh --class Reg_Util_PrintBadge_Test
+./bin/run-reg-tests.sh --verbose --class Reg_Util_PrintBadge_Test
 
 
+Troubleshooting
+===============
+
+Use --verbose
+
+Go to /admin/reg/settings and make sure that all of the test boxes are checked
 
