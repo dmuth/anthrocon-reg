@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Permissions_Functional_Test extends DrupalWebTestCase {
+class Reg_Permissions_Functional_Test extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information
@@ -15,6 +15,10 @@ class Permissions_Functional_Test extends DrupalWebTestCase {
 			);
 	}
 
+	/**
+	* @var Only set if we are debugging a problem test.
+	*/
+	protected $debug = 0;
 
 	/**
 	* Don't log in and test the admin.
@@ -22,13 +26,14 @@ class Permissions_Functional_Test extends DrupalWebTestCase {
 	*/
 	function testAnonymousPerms() {
 
+		if ($this->debug) { return(null); }
+
 		$output = $this->drupalGet(url("admin/reg"));
 		$this->assertNotNull($output);
 		$regexp = t("Quick Links");
 		$this->assertFalse(ereg($regexp, $output));
 
 	} // End of testAnonymousPerms()
- 
 
 	/**
 	* Log in as a user and test the admin.
@@ -36,11 +41,17 @@ class Permissions_Functional_Test extends DrupalWebTestCase {
 	*/
 	function testUserPerms() {
 
+		if ($this->debug) { return(null); }
+
 		$perms = array("access content");
 		$this->assertNotNull($perms);
 		$user = $this->drupalCreateUser($perms);
 		$this->assertNotNull($user);
 
+		//
+		// If this fails for some reason, make sure that the "Log out" link
+		// is the proper case.
+		//
 		$output = $this->drupalLogin($user);
 
 		$output = $this->drupalGet(url("admin/reg"));
@@ -56,6 +67,8 @@ class Permissions_Functional_Test extends DrupalWebTestCase {
 	* (Some should fail due to permissions
 	*/
 	function testStaffPerms() {
+
+		if ($this->debug) { return(null); }
 
 		$perms = array($this->reg->get_constant("perm_staff"));
 		$this->assertNotNull($perms);
@@ -103,6 +116,8 @@ class Permissions_Functional_Test extends DrupalWebTestCase {
 	*/
 	function testAdminPerms() {
 
+		if ($this->debug) { return(null); }
+
 		$perms = array($this->reg->get_constant("perm_staff"));
 		$this->assertNotNull($perms);
 		$user = $this->drupalCreateUser($perms);
@@ -145,12 +160,15 @@ class Permissions_Functional_Test extends DrupalWebTestCase {
 		$regexp = t("Badge Printing");
 		$this->assertTrue(ereg($regexp, $output));
 
-} // End of testAdminPerms()
+	} // End of testAdminPerms()
 
 
 	function setUp() {
+
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
+
+		//$this->debug = 1; // Debugging
 
 		//
 		// @todo
