@@ -16,9 +16,16 @@ class Reg_Functional_Test extends DrupalWebTestCase {
 	}
 
 	/**
+	* @var Only set if we are debugging a problem test.
+	*/
+	protected $debug = 0;
+
+	/**
 	* Test all errors on the registration form.
 	*/
 	function testErrors() {
+
+		if ($this->debug) { return(null); } // Debugging
 
 		$this->core->checkSettings();
 
@@ -31,7 +38,6 @@ class Reg_Functional_Test extends DrupalWebTestCase {
 		$this->assertRaw(t("Membership Information"));
 		$this->assertRaw(t("Billing Information"));
 		$this->assertRaw(t("Payment Information"));
-
 		$this->assertRaw(t("First Name field is required."));
 		$this->assertRaw(t("Last Name field is required."));
 		$this->assertRaw(t("Your email address field is required."));
@@ -48,6 +54,7 @@ class Reg_Functional_Test extends DrupalWebTestCase {
 		//
 		// Test everything filled in, but the email address is mismatched.
 		//
+		//return(null); // Debugging
 		$url = "reg";
 		$edit = array();
 		$edit["first"] = "Test first name";
@@ -131,12 +138,15 @@ class Reg_Functional_Test extends DrupalWebTestCase {
 	*/
 	function localAssertEqual($first, $second, $message= '%s',
 		$group= 'Other') {
+		parent::assertEqual($first, $second, $message, $group);
 	}
 
 
 	function setUp() {
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
+
+		//$this->debug = 1; // Debugging
 
 		//
 		// @todo
