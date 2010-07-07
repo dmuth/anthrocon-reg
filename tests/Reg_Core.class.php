@@ -36,6 +36,10 @@ class Test_Core {
 		$this->test->localAssertEqual(1, $output, t("Captchas are NOT disabled.  "
 			. "Check the settings page."));
 
+		$levels = $this->reg->get_valid_levels();
+		$this->test->localAssertEqual(0, !count($levels), 
+			t("You need to specificy at least 1 current membership level."));
+
     } // End of checkSettings()
         
 
