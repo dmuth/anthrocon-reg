@@ -51,6 +51,7 @@ class Reg_Admin_Search_Unit_Test extends DrupalTestCase {
 		// Now try some searches
 		//
 		$search = array();
+		$search["year"] = $year;
 		$order_by = "ORDER BY reg.id DESC";
 		$cursor = $this->search->get_cursor($search, $order_by);
 		$this->assertNotNull($cursor);
