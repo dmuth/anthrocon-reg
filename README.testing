@@ -29,3 +29,7 @@ Use --verbose
 
 Go to /admin/reg/settings and make sure that all of the test boxes are checked
 
+Errors about a default timezone not set?
+	- Run "php -i" to get the path to your php.ini file
+	- Add the following: date.timezone = America/New_York
+
