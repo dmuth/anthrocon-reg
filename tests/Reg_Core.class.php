@@ -25,7 +25,7 @@ class Test_Core {
 	* if certain settings are set properly for testing.
 	*/  
 	function checkSettings() {
-     
+ 
 		$output = variable_get($this->reg->get_constant(
 			"form_admin_no_ssl_redirect"), "");
 		$this->test->localAssertEqual(1, $output, t("SSL redirection is NOT disabled.  "
@@ -39,6 +39,10 @@ class Test_Core {
 		$levels = $this->reg->get_valid_levels();
 		$this->test->localAssertEqual(0, !count($levels), 
 			t("You need to specificy at least 1 current membership level."));
+
+		$output = module_exists("rpx");
+		$this->test->localAssertEqual("", $output,
+			t("Please turn OFF the 'rpx' module before running these tests."));
 
     } // End of checkSettings()
         
