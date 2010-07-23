@@ -17,9 +17,18 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 
 
 	/**
+	* @var Only set if we are debugging a problem test.
+	*/
+	protected $debug = 0;
+	//protected $debug = 1;
+
+
+	/**
 	* Make sure that faking emails is turned on.
 	*/
 	function testFakeEmail() {
+
+		if ($this->debug) { return(null); } // Debugging
 
         $output = variable_get(
             $this->reg->get_constant("FORM_ADMIN_FAKE_EMAIL"), "");
@@ -32,11 +41,15 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 
 	function testAddMember() {
 
+		if ($this->debug) { return(null); } // Debugging
+
 		//
 		// Test adding a member with some random data.
 		//
 		$data = array();
-		$data["badge_name"] = "Fluffy Samplefur";
+		$data["badge_name"] = "Fluffy Samplefur " . time();
+		$year = $this->reg->get_constant("year");
+		$data["year"] = $year;
 		$data["first"] = "Test first name";
 		$data["last"] = "Test last name";
 		$data["address1"] = "Test address1";
@@ -66,12 +79,13 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 		// Check all of our fields
 		//
 		$badge_num = $output;
-		$query = "SELECT * FROM reg WHERE badge_num = '%s'";
-		$query_args = array($badge_num);
+		$query = "SELECT * FROM reg WHERE badge_num = '%s' AND year='%s'";
+		$query_args = array($badge_num, $year);
 		$cursor = db_query($query, $query_args);
 		$output = db_fetch_array($cursor);
 		$this->assertEqual($badge_num, $output["badge_num"]);
 		$this->assertEqual($data["badge_name"], $output["badge_name"]);
+
 		$this->assertEqual($data["first"], $output["first"]);
 		$this->assertEqual($data["last"], $output["last"]);
 		$this->assertEqual($data["address1"], $output["address1"]);
@@ -90,6 +104,8 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 	* Add a member, but create a transaction first.
 	*/
 	function testAddMemberWithTranasction() {
+
+		if ($this->debug) { return(null); } // Debugging
 
 		$data = array();
 		$output = $this->reg_log->log_trans($data);
@@ -132,6 +148,8 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 	*/
 	function testAddMemberSetBadgeNumber() {
 
+		if ($this->debug) { return(null); } // Debugging
+
 		//
 		// Fetch the next available badge number, then use it in a 
 		// new membership.
@@ -141,14 +159,16 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 		$badge_num = $output;
 
 		$data = array();
-		$data["badge_name"] = "Fluffy Samplefur";
+		$data["badge_name"] = "Fluffy Samplefur " . time();
 		$data["badge_num"] = $badge_num;
+		$year = $this->reg->get_constant("year");
+		$data["year"] = $year;
 		$output = $this->reg_member->add_member($data);
 		$this->assertNotNull($output);
 		$this->assertEqual($badge_num, $output);
 		
-		$query = "SELECT * FROM reg WHERE badge_num = '%s'";
-		$query_args = array($badge_num);
+		$query = "SELECT * FROM reg WHERE badge_num = '%s' AND year='%s' ";
+		$query_args = array($badge_num, $year);
 		$cursor = db_query($query, $query_args);
 		$output = db_fetch_array($cursor);
 		$this->assertEqual($badge_num, $output["badge_num"]);
@@ -159,6 +179,8 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 
 
 	function testIsBadgeNumAvailable() {
+
+		if ($this->debug) { return(null); } // Debugging
 
 		$year = date("Y");
 		$data = array();
@@ -208,6 +230,8 @@ class Reg_Member_UnitTest extends DrupalWebTestCase {
 	*	the receipt.
 	*/
 	function testEmailReceipt() {
+
+		if ($this->debug) { return(null); } // Debugging
 
 		$data = array();
 		$data["reg_type_id"] = 1;
