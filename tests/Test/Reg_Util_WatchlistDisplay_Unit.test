@@ -1,7 +1,7 @@
 <?php
 /**
 */
-class Reg_Util_WatchlistDisplay_UnitTest extends DrupalTestCase {
+class Reg_Test_Util_WatchlistDisplay extends DrupalTestCase {
 
 	/**
 	* Implementation of getInfo() for information
