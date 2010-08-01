@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Reg_Permissions_Functional_Test extends DrupalWebTestCase {
+class Reg_Functiona_Permissions extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information

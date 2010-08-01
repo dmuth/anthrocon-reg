@@ -2,9 +2,8 @@
 /**
 * These tests test the errors on our admin adding form.
 */
-include_once("Reg_Admin_Members_Functional.test");
 
-class Reg_Admin_Members_Errors_Functional_Test 
+class Reg_Functional_Admin_Members_Errors
 	extends DrupalWebTestCase {
 
 	/**
