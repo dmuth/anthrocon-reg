@@ -2,7 +2,11 @@
 /**
 * This is a core class which will provide some functions for the other 
 *	test classes.
+*
+* The reason this file has a .test extension is so that it will be
+*	automatically included by Simpletest.
 */
+
 class Test_Core {
 
 
