@@ -8,8 +8,11 @@ How to test our code
 
 - Tests are in the tests/ directory
 
-- Anything that ends with "Unit.test" is a unit test
-	- Anything that ends with "Functional.test" is a functionality test
+- Anything that ends in .test is automatically included by Simpletest
+
+- Naming scheme for test classes:
+	- Reg_Test_(class to test)
+	- Reg_Functional_(class to test)
 
 - Copy the file sites/all/modules/simpletest/run-tests.sh into the root scripts/ directory
 
