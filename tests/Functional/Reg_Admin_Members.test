@@ -2,7 +2,7 @@
 /**
 * This unit test tests out adding members via the admin system.
 */
-class Reg_Admin_Members_Functional_Test extends DrupalWebTestCase {
+class Reg_Functional_Admin_Members extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information
