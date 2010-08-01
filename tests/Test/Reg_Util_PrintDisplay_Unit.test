@@ -2,7 +2,7 @@
 /**
 * This unit test tests out the main reg class.
 */
-class Reg_Util_PrintDisplay_Test extends DrupalTestCase {
+class Reg_Test_Util_PrintDisplay extends DrupalTestCase {
 
 	/**
 	* Implementation of getInfo() for information

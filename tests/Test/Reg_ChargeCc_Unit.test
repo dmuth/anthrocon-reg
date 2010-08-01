@@ -2,7 +2,7 @@
 /**
 * This test tests the main charge_cc() function in the reg system.
 */
-class Reg_ChargeCc_UnitTest extends DrupalWebTestCase {
+class Reg_Test_ChargeCc extends DrupalWebTestCase {
 
 
 	/**

@@ -2,7 +2,7 @@
 /**
 * This unit test tests the Authorize_net class.
 */
-class Authorize_Net_UnitTest extends DrupalWebTestCase {
+class Authorize_Net_Test extends DrupalWebTestCase {
 
 	/**
 	* Implementation of getInfo() for information

@@ -1,7 +1,7 @@
 <?php
 /**
 */
-class Reg_Util_PrintAjax_Test extends DrupalTestCase {
+class Reg_Test_Util_PrintAjax extends DrupalTestCase {
 
 	/**
 	* Implementation of getInfo() for information
