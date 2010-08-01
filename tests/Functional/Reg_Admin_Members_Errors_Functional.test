@@ -127,11 +127,6 @@ class Reg_Admin_Members_Errors_Functional_Test
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
 
-		//
-		// @todo
-		// I eventually need to put this into our Factory class...
-		//
-		include_once("Reg_Core.class.php");
 		$this->core = new Test_Core($this, $this->reg);
 
 	}
