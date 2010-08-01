@@ -7,7 +7,7 @@
 *	automatically included by Simpletest.
 */
 
-class Test_Core {
+class Reg_Test_Core {
 
 
 	/**
