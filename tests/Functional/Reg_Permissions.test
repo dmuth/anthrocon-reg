@@ -174,7 +174,7 @@ class Reg_Functiona_Permissions extends DrupalWebTestCase {
 		// @todo
 		// I eventually need to put this into our Factory class...
 		//
-		$this->core = new Test_Core($this, $this->reg);
+		$this->core = new Reg_Test_Core($this, $this->reg);
 
 	}
 

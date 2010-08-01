@@ -126,7 +126,7 @@ class Reg_Functional_Admin_Members_Errors
 		$this->factory = new reg_factory();
 		$this->reg = $this->factory->get_object("reg");
 
-		$this->core = new Test_Core($this, $this->reg);
+		$this->core = new Reg_Test_Core($this, $this->reg);
 
 	}
 
