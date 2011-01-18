@@ -140,13 +140,25 @@ class Reg_FormCore {
 				"#default_value" => $data["badge_num"],
 				);
 
+			//
+			// Get our years, and if no default year is specified, make it be
+			// the last one on the list, since that is most likely to be the
+			// year we want for entering data.
+			//
 			$years = $this->reg->getYears();
+			$default_year = $data["year"];
+			if (empty($default_year)) {
+				$index = (count($years) - 1);
+				$year_keys = array_keys($years);
+				$default_year = $year_keys[$index];
+			}
+
 			$retval["year"] = array(
 				"#title" => t("Badge Year"),
 				"#type" => "select",
 				"#description" => t("The year of the badge."),
 				"#options" => $years,
-				"#default_value" => $data["year"],
+				"#default_value" => $default_year,
 				);
 
 			$retval["reg_type_id"] = array(
