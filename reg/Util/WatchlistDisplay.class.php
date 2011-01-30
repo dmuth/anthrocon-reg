@@ -98,8 +98,15 @@ class Reg_Util_WatchlistDisplay {
 			"#default_value" => $data["first_alias"],
 			);
 
+		$retval["reason"] = array(
+			"#type" => "textarea",
+			"#title" => t("Reason for being on watchlist"),
+			"#default_value" => $data["reason"],
+			"#required" => true,
+			);
+
 		$retval["action"] = array(
-			"#type" => "textfield",
+			"#type" => "textarea",
 			"#title" => t("Action To Take"),
 			"#default_value" => $data["action"],
 			"#description" => t("Action that should be taken if this "

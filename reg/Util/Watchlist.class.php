@@ -20,12 +20,12 @@ class Reg_Util_Watchlist {
 	function insert(&$data) {
 
 		$query = "INSERT INTO {reg_watchlist} "
-			. "(first, last, first_alias, action, disabled) "
-			. "VALUES ('%s', '%s', '%s', '%s', '%s') "
+			. "(first, last, first_alias, reason, action, disabled) "
+			. "VALUES ('%s', '%s', '%s', '%s', '%s', '%s') "
 			;
 		$query_args = array(
 			$data["first"], $data["last"], $data["first_alias"], 
-			$data["action"], $data["disabled"]
+			$data["reason"], $data["action"], $data["disabled"]
 			);
 		db_query($query, $query_args);
 
@@ -68,13 +68,16 @@ class Reg_Util_Watchlist {
 
 		$query = "UPDATE {reg_watchlist} "
 			. "SET "
-			. "first='%s', last='%s', first_alias='%s', action='%s', "
+			. "first='%s', last='%s', first_alias='%s', "
+			. "reason='%s', action='%s', "
 			. "disabled='%s' "
 			. "WHERE "
 			. "id='%s' "
 			;
 		$query_args = array($data["first"], $data["last"], 
-			$data["first_alias"], $data["action"], $data["disabled"],
+			$data["first_alias"], 
+			$data["reason"], $data["action"], 
+			$data["disabled"],
 			$id);
 		db_query($query, $query_args);
 
