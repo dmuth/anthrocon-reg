@@ -555,6 +555,12 @@ function reg_schema() {
 			"action" => array("type" => "text", "not null" => true),
 
 			//
+			// The reason why someone is on the watchlist.
+			//
+			"reason" => array("type" => "text", "not null" => true,
+				"default" => ""),
+
+			//
 			// Is the current entry disabled?  Empty string means no, 
 			// anything else means yes.
 			//
@@ -800,13 +806,25 @@ function reg_uninstall() {
 *
 * UPDATE system SET schema_version=1 WHERE name='reg';
 *
-* Please check http://api.drupal.org/api/function/hook_update_N/5
+* Please check http://api.drupal.org/api/drupal/modules--system--system.api.php/function/hook_update_N/7
 *	for a handy lits of command SQL queries, and how to use them.
 *
 * Also worth checking is http://drupal.org/node/114774#hook-update-N
 *
 */
-//function reg_update_6000() {
-//}
+function reg_update_6000() {
+
+	$retval = array();
+	db_add_field($retval, "reg_watchlist", "reason", array(
+		"type" => "text",
+		"not null" => true,
+		"default" => "",
+		));
+
+	return($retval);
+
+} // End of reg_update_6000()
+
+
 
 
