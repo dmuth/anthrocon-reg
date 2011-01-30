@@ -182,10 +182,10 @@ class Reg_Util_WatchlistDisplay {
 
 		$retval = array();
 		$retval[] = array("data" => t("First Name"), "field" => "first");
-		$retval[] = array("data" => t("Last Name"), "field" => "last"
-			, "sort" => "asc");
+		$retval[] = array("data" => t("Last Name"), "field" => "last", 
+			"sort" => "asc");
 		$retval[] = array("data" => t("Disabled?"), "field" => "disabled");
-		$retval[] = array("data" => t("Action"), "field" => "action");
+		$retval[] = array("data" => t("Notes"));
 
 		return($retval);
 
@@ -203,21 +203,41 @@ class Reg_Util_WatchlistDisplay {
 
 			$id = $value["id"];
 			$url = "admin/reg/settings/watchlist/view/" . $id . "/edit";
-			$first = l($value["first"], $url);
-			$last = l($value["last"], $url);
+			$first = array(
+				"data" => l($value["first"], $url), 
+				"valign" => "top"
+				);
+			$last = array(
+				"data" => l($value["last"], $url),
+				"valign" => "top"
+				);
 
 			$disabled = "";
 			if (!empty($value["disabled"])) {
-				$disabled = t("YES");
+				$disabled = array(
+					"data" => t("YES"),
+					"valign" => "top"
+					);
+			}
+
+			$notes = "";
+			if (!empty($value["reason"])) {
+				$notes .= t("Reason: %reason<br/>", 
+					array("%reason" => $value["reason"]));
+			}
+
+			if (!empty($value["action"])) {
+				$notes .= t("Action: %action<br/>",
+					array("%action" => $value["action"]));
 			}
 
 			$action = $value["action"];
 
 			$row = array();
-			$row[] = array("data" => $first);
-			$row[] = array("data" => $last);
-			$row[] = array("data" => $disabled);
-			$row[] = array("data" => $action);
+			$row[] = $first;
+			$row[] = $last;
+			$row[] = $disabled;
+			$row[] = $notes;
 
 			$retval[] = $row;
 
