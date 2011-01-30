@@ -273,11 +273,22 @@ class Reg_Util_WatchlistDisplay {
 				. "until they are removed from the watchlist.");
 			drupal_set_message($error, "error");
 
-			$error = t("Recommended action: %action",
-				array(
-					"%action" => $match["action"]
-					));
-			drupal_set_message($error, "error");
+			//
+			// Display our reason and recommended action fields.
+			//
+			if (!empty($match["reason"])) {
+				$error = t("Reason: %reason",
+					array("%reason" => $match["reason"])
+					);
+				drupal_set_message($error, "error");
+			}
+
+			if (!empty($match["action"])) {
+				$error = t("<b>Recommended Action: %action</b>",
+					array("%action" => $match["action"])
+					);
+				drupal_set_message($error, "error");
+			}
 
         }
 
