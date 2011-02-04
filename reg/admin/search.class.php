@@ -68,16 +68,32 @@ class reg_admin_search extends reg {
 		//
 		$years = array();
 		$years[""] = t("Any");
+		//
+		// Get our years, and if no default year is specified, make it be
+		// the last one on the list, since that is most likely to be the
+		// year we want for entering data.
+		//
 		$tmp = $this->reg->getYears();
+
+		//
+		// Add the years into our main years array.
+		//
 		foreach ($tmp as $key => $value) {
 			$years[$key] = $value;
+		}
+
+		$default_year = $search_data["year"];
+		if (empty($default_year)) {
+			$index = (count($years) - 1);
+			$year_keys = array_keys($years);
+			$default_year = $year_keys[$index];
 		}
 
 		$search["year"] = array(
 			"#title" => t("Year"),
 			"#type" => "select",
 			"#options" => $years,
-			"#default_value" => $search_data["year"],
+			"#default_value" => $default_year,
 			);
 
 		$search["name"] = array(
