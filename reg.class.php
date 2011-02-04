@@ -1149,10 +1149,15 @@ class reg {
 		$retval = array();
 
 		$start = date("Y");
-		$end = $start + 7;
+		//
+		// Let's go 10 years in the future, since I've learned that some 
+		// members really DO have credit cards that go that far into 
+		// the future.
+		//
+		$end = $start + 10;
 		$start += ($backwards * -1);
 
-		for ($i = $start; $i<$end; $i++) {
+		for ($i = $start; $i <= $end; $i++) {
 			$retval[$i] = $i;
 		}
 
