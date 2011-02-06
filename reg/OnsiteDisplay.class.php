@@ -192,9 +192,9 @@ class Reg_OnsiteDisplay {
 			);
         db_query($query, $query_args);
 
-		$message = t("Received onsite registration for '!name'",
+		$message = t("Received onsite registration for '%name'",
 			array(
-			"!name" => $data["first"] . " " . $data["middle"] 
+			"%name" => $data["first"] . " " . $data["middle"] 
 				. " " . $data["last"]
 			));
 
