@@ -186,25 +186,28 @@ class reg_admin_member extends reg {
 
 		$rows[] = array(
 			array("data" => "Badge Name", "header" => true),
-			$row["badge_name"]
+			check_plain($row["badge_name"])
 			);
 
 		$rows[] = array(
 			array("data" => "Real Name", "header" => true),
-			$row["first"] . " " . $row["middle"] . " " . $row["last"]
+			check_plain($row["first"] . " " . $row["middle"] . " " . $row["last"])
 			);
 
 		$rows[] = array(
 			array("data" => "Birthdate", "header" => true),
-			$this->get_date_string($row["birthdate"])
+			check_plain($this->get_date_string($row["birthdate"]))
 			);
 
 		$rows[] = array(
 			array("data" => "Address", "header" => true, "valign" => "top"),
-			$row["address1"] . " " . $row["address2"] . "<br/>\n"
-				. $row["city"] . ", " . $row["state"] . " " . $row["zip"] 
+				check_plain($row["address1"]) . " " 
+				. check_plain($row["address2"]) . "<br/>\n"
+				. check_plain($row["city"]) . ", " 
+				. check_plain($row["state"]) . " " 
+				. check_plain($row["zip"] )
 					. "<br/>\n"
-				. $row["country"]
+				. check_plain($row["country"])
 			);
 
 
@@ -222,12 +225,13 @@ class reg_admin_member extends reg {
 			$rows[] = array(
 				array("data" => "Shipping Address", "header" => true, 
 					"valign" => "top"),
-				$row["shipping_name"] . "<br/>\n"
-				. $row["shipping_address1"] . " " 
-				. $row["shipping_address2"] . "<br/>\n"
-				. $row["shipping_city"] . ", " . $row["shipping_state"] 
-				. " " . $row["shipping_zip"] . "<br/>\n"
-				. $row["shipping_country"]
+				check_plain($row["shipping_name"]) . "<br/>\n"
+				. check_plain($row["shipping_address1"]) . " " 
+				. check_plain($row["shipping_address2"]) . "<br/>\n"
+				. check_plain($row["shipping_city"]) . ", " 
+				. check_plain($row["shipping_state"]) . " " 
+				. check_plain($row["shipping_zip"]) . "<br/>\n"
+				. check_plain($row["shipping_country"])
 			);
 
 		}
@@ -240,28 +244,28 @@ class reg_admin_member extends reg {
 
 		$rows[] = array(
 			array("data" => "No paper receipt?", "header" => false),
-			$no_receipt
+			check_plain($no_receipt)
 			);
 
 		$rows[] = array(
 			array("data" => "Email", "header" => false),
-			$row["email"]
+			check_plain($row["email"])
 			);
 
 		$rows[] = array(
 			array("data" => "Phone", "header" => true),
-			$row["phone"]
+			check_plain($row["phone"])
 			);
 
 		$shirt_sizes = $this->get_shirt_sizes();
 		$rows[] = array(
 			array("data" => "Shirt Size", "header" => true),
-			$shirt_sizes[$row["shirt_size_id"]]
+			check_plain($shirt_sizes[$row["shirt_size_id"]])
 			);
 
 		$rows[] = array(
 			array("data" => "Membership Type", "header" => true),
-			$row["member_type"]
+			check_plain($row["member_type"])
 			);
 
 		$rows[] = array(
