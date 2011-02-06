@@ -43,7 +43,8 @@ class reg {
 		// At some point, I should store these values externally.
 		//
 		//"year" => 2009,
-		"year" => 2010,
+		//"year" => 2010,
+		"year" => 2011,
 		"start_badge_num" => 250,
 		//
 		// Define constants for our permission names.
