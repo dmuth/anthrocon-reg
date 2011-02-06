@@ -75,20 +75,20 @@ class reg_email extends reg {
 		//
 		if (empty($result)) {
 			$message = t("An error occured when attempting to send an "
-				. "email to '!email'.",
+				. "email to '%email'.",
 				array(
-					"!email" => $address,
+					"%email" => $address,
 				));
 			$this->log->log($message, $reg_id, WATCHDOG_ERROR);
 
 			return(false);
 		} 
 
-		$message = t("Email receipt sent to '!email'.<br/><br/>"
+		$message = t("Email receipt sent to '%email'.<br/><br/>"
 			. "Subject: !subject<br/><br/>"
 			. "!message",
 			array(
-				"!email" => $address,
+				"%email" => $address,
 				"!subject" => $retval["subject"],
 				"!message" => $retval["value"],
 			));
