@@ -292,8 +292,8 @@ class Reg_OnsiteValidate {
 
 		$message = t("Validated onsite registration.");
 		if (!empty($data["notes"])) {
-			$message .= " " . t("Notes: !notes", 
-				array("!notes" => $data["notes"]));
+			$message .= " " . t("Notes: %notes", 
+				array("%notes" => $data["notes"]));
 		}
 		$this->log->log($message, $data["reg_id"]);
 
