@@ -530,7 +530,13 @@ class reg_admin_member extends reg {
 	function add_note_form_submit(&$data) {
 
 		$reg_id = $data["reg_id"];
-		$message = t("Added Note: ") . $data["notes"];
+		//
+		// Convert the note into plaintext to prevent any XSS issues down 
+		// the road.  Note that any HTML entered will get double-encoded when
+		// view the table-list of log entries.  Not a huge deal, but just
+		// an FYI.
+		//
+		$message = t("Added Note: ") . check_plain($data["notes"]);
 
 		$this->log->log($message, $reg_id);
 
