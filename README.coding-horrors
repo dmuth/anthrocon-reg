@@ -1,0 +1,32 @@
+
+
+Coding horrors in this software, 20 Feb 2011, DTM
+=================================================
+
+Since I know I'll be judged on this code in the future, I figured I should
+take a few minutes to explain why this code is in the state it is.
+
+First, when I started building this module, it was the biggest Drupal
+project I ever built, and I wasn't sure how to approach it at the time.
+I did some research first, and read one approach from someone that
+suggested building a bunch of classes with static functions, to emulate
+Drupal's "have a bunch of functions" approach, but with classes ating
+as namespaces.  So I tried that.
+
+It turned out to be a terrible idea.  I had awful circular dependencies 
+between classes and other horrors.
+
+After a few thousand lines of such code was written, I began retrofitting
+it into non-static OO code, and added in a Factory class along with the
+"dependency injection" pattern to try and keep dependencies from getting
+out of hand.  The end result is somewhat more palettable, but not perfect.
+
+Hindsight being 20/20, if I could build this app again from scratch, I'd
+take the approach that Ubercart used, and put everything into a bunch of 
+Drupal modules. (reg_user, reg_levels, reg_template, etc.)
+
+Oh well, at this point most of the code works.  And I got experience building
+a large Drupal module, which will be invaluable to my career.
+
+-- Doug
+
