@@ -14,6 +14,7 @@ class reg_admin_search_download extends reg_admin_search {
 		"first" => "", "middle" => "", "last" => "", "birthdate" => "", 
 		"address1" => "", "address2" => "", "city" => "", "state" => "", 
 		"zip" => "", "country" => "",
+		"shipping_name" => "",
 		"shipping_address1" => "", "shipping_address2" => "", 
 		"shipping_city" => "", "shipping_state" => "", 
 		"shipping_zip" => "", "shipping_country" => "",
