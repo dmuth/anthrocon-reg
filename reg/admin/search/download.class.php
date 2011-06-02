@@ -23,7 +23,12 @@ class reg_admin_search_download extends reg_admin_search {
 
 	function __construct(&$message, &$fake, &$log, &$admin_member) {
 		$this->log = $log;
-		parent::__construct($message, $fake, $log, $admin_member);
+
+		$factory = new reg_factory();
+		$reg = $factory->get_object("reg");
+
+		parent::__construct($message, $fake, $log, $admin_member, $reg);
+
 	}
 
 
