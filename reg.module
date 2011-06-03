@@ -7,6 +7,11 @@
 *
 */
 
+
+require_once("debug.inc.php");
+require_once("devel.inc.php");
+
+
 /**
 * Define our autoloader, and register it.
 */
@@ -85,6 +90,11 @@ function reg_init() {
 	//reg_uninstall(); // Debugging
 	//reg_install(false); // Debugging
 	//reg_install(true); // Debugging
+
+	//
+	// Some development stuff.
+	//
+	reg_devel();
 
 	$reg = $GLOBALS["reg_factory"]->get_object("reg");
 	$reg->hook_init();
