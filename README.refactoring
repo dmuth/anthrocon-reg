@@ -1,4 +1,50 @@
 
+
+Even More Refactoring Ideas, DTM 4 June 2011
+============================================
+
+Ya know, doing OO inside of Drupal just wasn't such a hot idea either. 
+Drupal's module system can be used to split apart functionality just fine.
+
+Nor was creating a separate menu entry for every single menu item, when 
+a "router" function would have worked just fine. Oh well.
+
+I think v2 of the reg system will consist of me copying existing core 
+classes into Drupal modules such as these (roughly in order I should implement):
+
+reg/includes - (directory for holding includes from main reg module)
+
+reg_fake: get_data()
+reg_log: reg_log()
+reg_email: reg_email()
+reg_message: reg_message_load()
+
+reg_form_success 
+reg_form_verify
+reg_form
+reg_captcha - (maybe I can replace this with the latest CATPCHA module?)
+reg_onsite: reg_onsite_main(), reg_onsite_form()
+reg_validate: reg_validate_main(), reg_validate_form()
+
+reg_util  - Unsed badge numbers and duplicate membership search
+reg_util_print - Badge printing
+
+reg_admin - Main admin module
+reg_cancel - Admin screen
+reg_level - Admin screen with functions for main form
+reg_member - Admin screen
+reg_search - Admin screen
+reg_settings - Admin screen
+reg_stats - Admin screen
+
+...now, will I ever actually write all of this?  Right now, the registration
+ system is mature, and it WORKS.  I don't think it's such a hot idea to 
+rewrite a bunch of existing code that works just to "make it more modular".  
+Changes are greater than not that I won't ever do a rewrite of this 
+magnitude, but time will tell.
+
+
+
 Refactoring Ideas, DTM 5 Apr 2009
 =================================
 
