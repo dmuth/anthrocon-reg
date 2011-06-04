@@ -14,7 +14,14 @@ WAMP:
 		- Getting errors about primary keys?
 			- Run mysql-reg with "-f" parameter to force
 	- Create filecache/ directory if necessary
+
 	- If seeing the main page over and over, make sure the rewrite module is enabled
+
+	- Disable a bunch of modules that we don't need:
+		- xmlsitemap, search, update
+	
+	- TRUNCATE huge tables that we don't need: sessions, accesslog, watchdog
+
 	- Optionally replace sites/all/modules/reg/ directory with checked out version
 	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
@@ -26,4 +33,6 @@ WAMP:
 		- If mod_ssl isn't being loaded, edit httpd.conf itself and uncomment the line to load mod_ssl
 	- Onsite reg:
 		- Permissions for onsite reg
+
+
 
