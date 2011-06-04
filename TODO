@@ -19,20 +19,6 @@ TODO
 
 - Add "reason on watchlist" to Watchlist
 
-- Credit card number storage
-	- Encrypt card numbers in database
-		- Still store last 4 digits in usual location?
-		- Write Reg_Encrypt funciton and unit test for this
-			- getKey()
-				- Store variable with variable_set() on first call
-			- encrypt($string)
-			- decrypt($string)
-			- isEncrytped()?
-	- Store encrypted number in new field: cc_num_encrypted?
-		
-	- Display only via an AJAX widget on the transaction log viewing page
-		- Access to the full card number should be audited
-
 - curl_init() missing
 	- In WAMP, curl_init() is not installed
 	- I should write a check for that function, 
