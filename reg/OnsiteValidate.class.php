@@ -197,8 +197,22 @@ class Reg_OnsiteValidate {
 	*/
 	function getFormValidate(&$data) {
 
-		if ($data["badge_cost"] == 0) {
-			form_set_error("badge_cost", t("Amount Paid cannot be zero!"));
+		//
+		// Exempty "Comp" and "Guest" badges from payment.
+		//
+		if (
+			$data["reg_payment_type_id"] == 4
+			|| $data["reg_payment_type_id"] == 9
+			) {
+			$message = t("Badge payment type is a 'free' type, so let's not "
+				. "require any money from this member.");
+			$this->log->log($message, $data["reg_id"]);
+
+		} else {
+			if ($data["badge_cost"] == 0) {
+				form_set_error("badge_cost", t("Amount Paid cannot be zero!"));
+			}
+
 		}
 
 		if (!$this->reg->is_valid_float($data["badge_cost"])) {
