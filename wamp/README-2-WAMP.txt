@@ -4,6 +4,10 @@ WAMP:
 - Run installer
 - docroot is in c:\wamp\www\ or /cygdrive/c/wamp/www/
 - Copy in the latest backup of the website
+- Helpful symlinks to set up from $HOME:
+	www -> /cygdrive/c/wamp/www
+	reg -> www/sites/all/modules/reg
+	wamp -> reg/wamp
 
 - Drupal on WAMP:
 	- Back up live site with bin/backup.php
