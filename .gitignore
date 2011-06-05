@@ -1,0 +1,9 @@
+
+#
+# Key files
+#
+wamp/myserver.crt
+wamp/myserver.csr
+wamp/myserver.key
+wamp/myserver.pem
+
