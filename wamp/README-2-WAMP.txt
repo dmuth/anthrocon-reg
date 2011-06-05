@@ -8,6 +8,7 @@ WAMP:
 - Drupal on WAMP:
 	- Back up live site with bin/backup.php
 	- Make sure that the settings.php file is readable
+		- Comment out $base_url if it's set
 	- Get database credentials from settings.php and create that user in phpMyAdmin
 	- Create the database in phpMyAdmin
 	- Import the data
