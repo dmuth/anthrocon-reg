@@ -9,6 +9,7 @@ Xcache setup and install
 	- http://xcache.lighttpd.net/pub/Releases/1.3.0/XCache-1.3.0-php-5.3.0-Win32-VC6-x86.zip
 
 - Copy php_xcache.dll to C:\wamp\bin\php\php5.3.0\ext
+	More details at http://xcache.lighttpd.net/wiki/InstallFromBinary
 
 - Put the following in php.ini:
 	extension=php_xcache.dll	; Required
