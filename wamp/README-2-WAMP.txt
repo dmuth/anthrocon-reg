@@ -24,13 +24,12 @@ WAMP:
 
 	- If seeing the main page over and over, make sure the rewrite module is enabled
 
-	- Disable a bunch of modules that we don't need:
-		- xmlsitemap, search, update
-	
+	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 
 	- Optionally replace sites/all/modules/reg/ directory with checked out version
-	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
+
 	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
+
 	- SSL:
 		- Run generate-ssl-key
 		- Add the following to the end of httpd.conf:
