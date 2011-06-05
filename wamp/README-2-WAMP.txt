@@ -6,6 +6,7 @@ WAMP:
 - Copy in the latest backup of the website
 
 - Drupal on WAMP:
+	- Back up live site with bin/backup.php
 	- Make sure that the settings.php file is readable
 	- Get database credentials from settings.php and create that user in phpMyAdmin
 	- Create the database in phpMyAdmin
@@ -13,6 +14,7 @@ WAMP:
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
 		- Getting errors about primary keys?
 			- Run mysql-reg with "-f" parameter to force
+		- TRUNCATE huge tables that we don't need: sessions, accesslog, watchdog
 	- Create filecache/ directory if necessary
 
 	- If seeing the main page over and over, make sure the rewrite module is enabled
@@ -20,7 +22,6 @@ WAMP:
 	- Disable a bunch of modules that we don't need:
 		- xmlsitemap, search, update
 	
-	- TRUNCATE huge tables that we don't need: sessions, accesslog, watchdog
 
 	- Optionally replace sites/all/modules/reg/ directory with checked out version
 	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
