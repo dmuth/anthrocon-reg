@@ -2,6 +2,10 @@
 Troubleshooting
 ===============
 
+Webserver won't start?
+	- Go into C:/wamp/bin/apache/Apache2.2.11/bin/ and run httpd.exe from the command line
+		- If there are any errors (such as bad config), they will be reported here
+
 Web server:
 	- Screens with garbled data:
 		- Make sure the theme doesn't have symlinks
