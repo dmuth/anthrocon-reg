@@ -19,12 +19,12 @@ WAMP:
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
 		- Getting errors about primary keys?
 			- Run mysql-reg with "-f" parameter to force
+		- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 		- TRUNCATE huge tables that we don't need: sessions, accesslog, watchdog
 	- Create filecache/ directory if necessary
 
 	- If seeing the main page over and over, make sure the rewrite module is enabled
 
-	- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 
 	- Optionally replace sites/all/modules/reg/ directory with checked out version
 
