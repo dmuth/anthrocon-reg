@@ -18,6 +18,21 @@ my.ini:
 	- GRANT REPLICATION SLAVE ON *.* TO 'user'@'host'
 		- Cannot be granted on a specific database
 
+- Scripts to run:
+	- mysql-master-1-lock-tables
+	- mysql-slave-1-dump-from-host (IP) drupal_ac | mysql-reg
+		(takes about 6 minutes as of AC 2011's reg system)
+	- mysql-master-2-status
+	- mysql-slave-2-change-master
+		(get database credentials from "drush sql-connect"
+	- mysql-slave-3-start
+	- mysql-slave-4-status
+		(it's okay if there is an error, that may be from before)
+	- (break table lock on master)
+	- reload page from the reg system
+	- mysql-slave-5-tail-accesslog
+		- Should show identical entries on master and slave
+
 - Replication commands
 	- FLUSH TABLES WITH READ LOCK
 	- SHOW MASTER STATUS
