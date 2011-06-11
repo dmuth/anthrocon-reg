@@ -7,7 +7,9 @@ my.ini:
 	- Set log-bin and server-id on Master server in my.ini
 	- Set server-id on Slave server
 
-- Open up the Windows firewall on the Slave and Master
+- Turn the Windows firewall off on the Slave and Master
+	(You ARE running this on a physically secured network 
+		and not over wireless, right? RIGHT?)
 
 - User commands
 	- CREATE USER 'user'@'host' IDENTIFIED BY 'password'
