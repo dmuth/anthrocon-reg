@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# First step of replication: lock the database tables.
+# This script will block.
+#
+
+#
+# Make errors fatal
+#
+set -e
+
+#
+# Get the current directory
+#
+DIR=`dirname $0`
+
+#
+# Change into this directory because Cygwin has some issues with
+# absolute paths...
+#
+cd ${DIR}
+
+. ./core.sh
+
+echo ""
+echo "Locking database... press ^C to break lock."
+echo ""
+
+echo "FLUSH TABLES WITH READ LOCK; SELECT SLEEP(86400) " |${MYSQL} -u ${MYSQL_USER} $@
+
