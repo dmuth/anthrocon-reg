@@ -10,14 +10,20 @@ Features
 - Convention pre-registration with any valid credit card number. 
 	(you'll need an authorize.net account)
 - Multiple levels of membership can be offered, with different date ranges 
-	for each level. Lets you do things like offer $5 off for registrations before a certain date.
-- Full statistics and reporting including a membership breakdown and a **revenue report**.
-- A verification page for members who want to make sure they registered and have email confirmation re-sent.
+	for each level. Lets you do things like offer $5 off for registrations 
+	before a certain date.
+- Full statistics and reporting including a membership breakdown and 
+	a **revenue report**.
+- A verification page for members who want to make sure they registered 
+	and have email confirmation re-sent.
 - Multiple test modes for local testing/development.
-- Onsite registration support, and printer client support for **printing of physical badges** from 1 or more client machines.
-- Watchlist support for individuals who owe the organization money before a registration is allowed.
+- Onsite registration support, and printer client support for **printing 
+	of physical badges** from 1 or more client machines.
+- Watchlist support for individuals who owe the organization money before 
+	a registration is allowed.
 - **Template support** for automated emails, error messages, etc.
-- **Full auditing/logging** to track which staff accessed what records, what fields were changed and by whom, when badges were printed, etc.
+- **Full auditing/logging** to track which staff accessed what records, what 
+	fields were changed and by whom, when badges were printed, etc.
 
 
 Details
@@ -58,6 +64,5 @@ More Tools
 
 ...looking for a way to audit administrator actions on your community website? 
 Check out my Drupal Tools: http://code.google.com/p/dougs-drupal-tools/
-
 
 
