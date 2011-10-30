@@ -184,8 +184,7 @@ class reg_log extends reg {
 
 		}
 
-
-		$id = $this->get_insert_id();
+		$id = reg_get_insert_id();
 
 		return($id);
 
