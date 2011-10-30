@@ -9,7 +9,6 @@
 function reg_log_devel() {
 
 	//reg_log_devel_1();
-
 	//reg_log_devel_trans();
 
 } // End of reg_log_devel()
@@ -18,11 +17,12 @@ function reg_log_devel_1() {
 	reg_log_devel_2();
 }
 function reg_log_devel_2() {
-	reg_log_devel_3();
+	$arg1 = new Stdclass();
+	reg_log_devel_3($arg1);
 }
 
 
-function reg_log_devel_3() {
+function reg_log_devel_3($arg1) {
 
 	$message = "test message " . time();
 	reg_log($message, 122, "notice");

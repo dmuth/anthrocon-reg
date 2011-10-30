@@ -62,7 +62,7 @@ function reg_log($message, $reg_id, $severity = "notice", $backtrace = false) {
 	if ($backtrace) {
 		$trace = reg_log_get_backtrace();
 		//reg_debug($trace); // Debugging
-		$watchdog_message .= "<br/><br/>Traceback: ${trace}";
+		$watchdog_message .= "<br/><br/>Traceback:<br/>${trace}";
 	}
 
 	watchdog("reg", $watchdog_message, null, $severity);
@@ -243,15 +243,28 @@ function reg_log_get_backtrace() {
 		$func = $value["function"];
 		//$line = $value["line"];
 		$args = $value["args"];
-		$args = join(", ", $args);
+
+		//
+		// Convert any non-strings and non-numbers into a string for 
+		// debugging purposes.
+		//
+		$args2 = array();
+		foreach ($args as $key2 => $value2) {
+			if (!is_int($value2) && !is_string($value2)) {
+				$args2[$key2] = gettype($value2);
+			}
+		}
+		$args2 = join(", ", $args2);
 
 		if ($retval) {
-			$retval .= " -> ";
+			$retval .= "<br/>-> ";
 		}
 
-		$retval .= "${func}(${args})";
+		$retval .= "${func}(${args2})";
 
 	}
+
+	//reg_debug($retval); // Debugging
 
 	return($retval);
 
