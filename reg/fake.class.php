@@ -40,14 +40,6 @@ class reg_fake extends reg {
 
 		return(reg_fake_get_string($max));
 
-		$retval = "";
-
-		for ($i=0; $i<$max; $i++) {
-			$retval .= chr(mt_rand(65, 122));
-		}
-
-		return($retval);
-
 	} // End of get_string()
 
 	
@@ -60,10 +52,6 @@ class reg_fake extends reg {
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_number($min, $max));
-
-		$retval = mt_rand($min, $max);
-
-		return($retval);
 
 	} // End of get_number()
 
@@ -78,16 +66,6 @@ class reg_fake extends reg {
 
 		return(reg_fake_get_cc_num());
 
-		$retval = "";
-		$retval .=
-			sprintf("%04d", $this->get_number(0, 9999))
-			. " " . sprintf("%04d", $this->get_number(0, 9999))
-			. " " . sprintf("%04d", $this->get_number(0, 9999))
-			. " " . sprintf("%04d", $this->get_number(0, 9999))
-			;
-
-		return($retval);
-
 	} // End of get_cc_num()
 
 
@@ -100,12 +78,6 @@ class reg_fake extends reg {
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_random_from_set($items));
-
-		$len = count($items) - 1;
-		$index = mt_rand(0, $len);
-		$retval = $items[$index];
-
-		return($retval);
 
 	} // End of get_random_from_set()
 
@@ -120,14 +92,6 @@ class reg_fake extends reg {
 
 		return(reg_fake_get_badge_name());
 
-		$names = array("Fluffy", "Wolfy", "Skunky", "Lion", "Leopard",
-			"Chewtoy", "Catnip", "Mouse", "Paws");
-
-		$retval = $this->get_random_from_set($names) 
-			. $this->get_number(0, 99);
-
-		return($retval);
-
 	} // End of get_badge_name()
 
 
@@ -141,13 +105,6 @@ class reg_fake extends reg {
 
 		return(reg_fake_get_first_name());
 
-		$names = array("Sam", "Doug", "Dave", "John", "Mark", "Dan", "Phil", 
-			"Joe");
-
-		$retval = $this->get_random_from_set($names);
-
-		return($retval);
-		
 	} // End of get_first_name()
 
 
@@ -160,13 +117,6 @@ class reg_fake extends reg {
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_last_name());
-
-		$names = array("Conway", "Muth", "Smith", "Johnson", "Phillips", 
-			"Stevensen");
-
-		$retval = $this->get_random_from_set($names);
-
-		return($retval);
 
 	} // End of get_last_name()
 
@@ -185,14 +135,6 @@ class reg_fake extends reg {
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_item($list));
-
-		$index = $this->get_number(0, (count($list) - 1));
-		$list_keys = array_keys($list);
-		$list_index = $list_keys[$index];
-
-		$retval = $list[$list_index];
-
-		return($retval);
 
 	} // End of get_item()
 
