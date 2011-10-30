@@ -942,3 +942,36 @@ function reg_get_cc_last_4($cc_num) {
 } // End of reg_get_last_4()
 
 
+/**
+* Return a list of currently valid registration levels.
+*
+* @return array The key is the membersip ID and the value is
+*	an associative array of member data.
+*/
+function reg_get_valid_levels() {
+	
+	static $retval = array();
+
+	if (!empty($retval)) {
+		return($retval);
+	}
+
+	$timestamp = gmmktime();
+	$query = "SELECT * FROM {reg_level} "
+		. "WHERE "
+		. "start <= '%s' AND end >= '%s' "
+		. "ORDER BY price "
+		;
+	$query_args = array($timestamp, $timestamp);
+	$cursor = db_query($query, $query_args);
+
+	while ($row = db_fetch_array($cursor)) {
+		$id = $row["id"];
+		$retval[$id] = $row;
+	}
+
+	return($retval);
+
+} // End of reg_get_valid_levels()
+
+

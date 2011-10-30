@@ -832,27 +832,10 @@ class reg {
 	*/
 	function get_valid_levels() {
 
-		static $retval = array();
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
 
-		if (!empty($retval)) {
-			return($retval);
-		}
-
-		$timestamp = gmmktime();
-		$query = "SELECT * FROM {reg_level} "
-			. "WHERE "
-			. "start <= '%s' AND end >= '%s' "
-			. "ORDER BY price "
-			;
-		$query_args = array($timestamp, $timestamp);
-		$cursor = db_query($query, $query_args);
-
-		while ($row = db_fetch_array($cursor)) {
-			$id = $row["id"];
-			$retval[$id] = $row;
-		}
-
-		return($retval);
+		return(reg_get_valid_levels());
 
 	} // End of get_valid_levels()
 
