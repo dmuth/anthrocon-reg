@@ -319,7 +319,7 @@ class reg {
 	*	if successful, null otherwise.
 	*
 	*/
-	function charge_cc($data, $cc_gateway, $log_only = false) {
+	function charge_cc(&$data, $cc_gateway, $log_only = false) {
 
 		//
 		// Eventually I should make this passed into the constructor.
@@ -766,10 +766,16 @@ class reg {
 	*/
 	function get_insert_id() {
 
+		//
+		// Call this first, since calling reg_log() first will cause this to
+		// return a WAY different value.
+		//
+		$retval = reg_get_insert_id();
+
 		$message = "This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
-		return(reg_get_insert_id());
+		return($retval);
 
 	} // End of get_insert_id()
 
