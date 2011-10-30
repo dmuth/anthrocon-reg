@@ -5,6 +5,7 @@ package = Anthrocon
 core = 6.x
 
 dependencies[] = authorize_net
+dependencies[] = reg_log
 version = 1.1
 
 
