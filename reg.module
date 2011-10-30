@@ -866,3 +866,35 @@ function reg_menu_display_member_menu($access_level, $arg3) {
 } // End of reg_menu_display_member_menu()
 
 
+/**
+* Are we currently in SSL?
+*
+* @return boolean True if we are.  False otherwise.
+*/
+function reg_is_ssl() {
+	if ($_SERVER["SERVER_PORT"] == 443
+		|| $_SERVER["SERVER_PORT"] == 8443
+		) {
+		return(true);
+	}
+
+	return(false);
+
+} // End of is_ssl()
+
+
+/**
+* Retrieve the most recent insert ID from a database insert.
+*
+* @return integer The most recent insert ID.
+*/
+function reg_get_insert_id() {
+
+	$cursor = db_query("SELECT LAST_INSERT_ID() AS id");
+	$row = db_fetch_array($cursor);
+	$retval = $row["id"];
+	return($retval);
+
+} // End of get_insert_id()
+
+
