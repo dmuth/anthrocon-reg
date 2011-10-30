@@ -1,0 +1,22 @@
+<?php
+/**
+* Our module to create fake registration data for testing/development purposes.
+*
+* @author Douglas Muth <http://www.dmuth.org/>
+*
+*/
+
+
+require_once("devel.inc.php");
+
+
+/**
+* Our init hook.
+*/
+function reg_fake_init() {
+	reg_fake_devel();
+} // End of reg_log_init()
+
+
+
+
