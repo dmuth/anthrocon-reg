@@ -880,7 +880,7 @@ function reg_is_ssl() {
 
 	return(false);
 
-} // End of is_ssl()
+} // End of reg_is_ssl()
 
 
 /**
@@ -895,6 +895,50 @@ function reg_get_insert_id() {
 	$retval = $row["id"];
 	return($retval);
 
-} // End of get_insert_id()
+} // End of reg_get_insert_id()
+
+
+/**
+* This function will calculate a UNIX timestamp based on the year, 
+*	month, and day. 
+*/
+function reg_get_time_t($year, $month, $day) {
+
+	$retval = gmmktime(0, 0, 0, $month, $day, $year);
+
+	//
+	// Do NOT adjust this timestamp by any GMT offset if you are 
+	// storing it.  If you do (like I used to), it WILL throw off
+	//  your times when you switch timezones. 
+	//
+	// time_ts are absolute values.  The only time you should apply
+	// a timezone/GMT offset to them is when displaying them.
+	//
+	// If you are displaying something like a credit card expiration
+	// date, which requires a time of midnight, use a GMT offset
+	// of *0* in Drupal's format_date() function.
+	//
+
+	return($retval);
+
+} // End of reg_get_time_t()
+
+
+/**
+* Get the last 4 digits of a credit card number.
+*
+* We do NOT want to store the entire crediit card number in our system.
+* That way, it limits exposure in case of a security comprismise and 
+* it lowers my blood pressure. :-)
+*
+* @return string The last 4 digits from our credit card number.
+*/
+function reg_get_cc_last_4($cc_num) {
+
+	$retval = substr($cc_num, -4);
+
+	return($retval);
+
+} // End of reg_get_last_4()
 
 
