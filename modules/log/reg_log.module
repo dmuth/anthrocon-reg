@@ -222,18 +222,21 @@ function reg_log_trans(&$data) {
 
 /**
 * Get our backtrace, and return a string of the contents.
+*
+* @param integer $skip How many function calls should we skip?
 */
-function reg_log_get_backtrace() {
+function reg_log_get_backtrace($skip = 2) {
 
 	$retval = "";
 
 	$trace = debug_backtrace();
 
 	//
-	// Remove the last two calls to here
+	// Skip some of our calls.
 	//
-	array_shift($trace);
-	array_shift($trace);
+	for ($i = 0; $i < $skip; $i++) {
+		array_shift($trace);
+	}
 
 	//
 	// Now reverse the array, then loop through it and create our string.
