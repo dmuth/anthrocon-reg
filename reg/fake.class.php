@@ -22,84 +22,10 @@ class reg_fake extends reg {
 	*/
 	function get_data(&$data) {
 
-		$data["badge_name"] = $this->get_badge_name();
-		$data["first"] = $this->get_first_name();
-		$data["middle"] = $this->get_first_name();
-		$data["last"] = $this->get_last_name();
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
 
-		//
-		// Yes, I know this might give us an invalid date like February 31st.
-		//
-		$data["birthdate"] = $this->get_number(1900, 2005)
-			. "-" . $this->get_number(1, 12)
-			. "-" . $this->get_number(1, 31)
-			;
-
-		$data["address1"] = $this->get_number(1, 1000) . " " 
-			. $this->get_string();
-		$data["address2"] = $this->get_string();
-		$data["city"] = $this->get_string() . " " . $this->get_string();
-		$data["state"] = $this->get_string();
-		$data["zip"] = $this->get_number(10000, 99999) . "-" 
-			. sprintf("%04d", $this->get_number(0, 9999));
-		$data["country"] = $this->get_string();
-
-		$data["shipping_checkbox"] = true;
-		$data["shipping_name"] = $this->get_first_name() . " " 
-			. $this->get_last_name();
-		$data["shipping_address1"] = $this->get_number(1, 1000) . " " 
-			. $this->get_string();
-		$data["shipping_address2"] = $this->get_string();
-		$data["shipping_city"] = $this->get_string() . " " 
-			. $this->get_string();
-		$data["shipping_state"] = $this->get_string();
-		$data["shipping_zip"] = $this->get_number(10000, 99999) . "-" 
-			. sprintf("%04d", $this->get_number(0, 9999));
-		$data["shipping_country"] = $this->get_string();
-		$data["no_receipt"] = $this->get_random_from_set(array(true, false));
-
-		$data["email"] = $this->get_string() . "@" . $this->get_string()
-			. "." . $this->get_string(3)
-			;
-		$data["email2"] = $data["email"];
-		$data["phone"] = 
-			$this->get_number(0, 999)
-			. "-"
-			. $this->get_number(0, 99999)
-			. "-"
-			. sprintf("%04d", $this->get_number(1, 9999))
-			;
-		$data["shirt_size_id"] = $this->get_number(1, 5);
-		$data["conduct"] = 1;
-		$data["cc_type_id"] = $this->get_number(1, 4);
-		$data["cc_num"] = $this->get_cc_num();
-		$data["cvv"] = $this->get_number(100, 999);
-		$data["cc_exp"]["month"] = $this->get_number(1, 12);
-		$data["cc_exp"]["year"] = date("Y") + $this->get_number(1, 5);
-		$data["donation"] = $this->get_number(0, 250)
-			. "." . sprintf("%02d", $this->get_number(0, 99))
-			;
-		$data["badge_cost"] = $this->get_number(0, 250)
-			. "." . sprintf("%02d", $this->get_number(0, 99))
-			;
-		$data["reg_payment_type_id"] = $this->get_number(1, 10);
-		$data["reg_type_id"] = $this->get_number(1, 12);
-
-		//
-		// What we're going to do here is get a list of valid levels,
-		// then get a random value somewhere between zero and the number
-		// of levels.
-		//
-		// From there, we'll get a list of all keys from that aray in a
-		// separate array with sequential keys, index that array based on 
-		// the random value, and have the final reg_level_id to set in 
-		// the form.
-		//
-		$levels = $this->get_valid_levels();
-		$index = $this->get_number(0, (count($levels) - 1));
-		$level_keys = array_keys($levels);
-		$level_index = $level_keys[$index];
-		$data["reg_level_id"] = $level_index;
+		reg_fake_get_data(&$data);
 
 	} // End of fake_data()
 
@@ -108,6 +34,11 @@ class reg_fake extends reg {
 	* Generate a random string.
 	*/
 	public function get_string($max = 8) {
+
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_string($max));
 
 		$retval = "";
 
@@ -125,6 +56,11 @@ class reg_fake extends reg {
 	*/
 	public function get_number($min = 0, $max = 100) {
 
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_number($min, $max));
+
 		$retval = mt_rand($min, $max);
 
 		return($retval);
@@ -136,6 +72,11 @@ class reg_fake extends reg {
 	* Generate a random credit card number.
 	*/
 	public function get_cc_num() {
+
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_cc_num());
 
 		$retval = "";
 		$retval .=
@@ -155,6 +96,11 @@ class reg_fake extends reg {
 	*/
 	public function get_random_from_set($items) {
 
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_random_from_set($items));
+
 		$len = count($items) - 1;
 		$index = mt_rand(0, $len);
 		$retval = $items[$index];
@@ -168,6 +114,11 @@ class reg_fake extends reg {
 	* Create a fake badge name.
 	*/
 	public function get_badge_name() {
+
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_badge_name());
 
 		$names = array("Fluffy", "Wolfy", "Skunky", "Lion", "Leopard",
 			"Chewtoy", "Catnip", "Mouse", "Paws");
@@ -185,6 +136,11 @@ class reg_fake extends reg {
 	*/
 	public function get_first_name() {
 
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_first_name());
+
 		$names = array("Sam", "Doug", "Dave", "John", "Mark", "Dan", "Phil", 
 			"Joe");
 
@@ -199,6 +155,11 @@ class reg_fake extends reg {
 	* Create a fake last name.
 	*/
 	public function get_last_name() {
+
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_last_name());
 
 		$names = array("Conway", "Muth", "Smith", "Johnson", "Phillips", 
 			"Stevensen");
@@ -219,6 +180,11 @@ class reg_fake extends reg {
 	* @return mixed A random item from the list.
 	*/
 	public function get_item($list) {
+
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_fake_get_item($list));
 
 		$index = $this->get_number(0, (count($list) - 1));
 		$list_keys = array_keys($list);

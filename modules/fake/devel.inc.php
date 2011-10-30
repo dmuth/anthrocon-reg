@@ -8,7 +8,7 @@
 
 function reg_fake_devel() {
 
-	reg_debug("foobar");
+	//reg_debug("foobar");
 
 } // End of reg_fake_devel()
 
