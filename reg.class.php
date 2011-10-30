@@ -557,13 +557,11 @@ class reg {
 	* @return boolean True if we are.  False otherwise.
 	*/
 	function is_ssl() {
-		if ($_SERVER["SERVER_PORT"] == 443
-			|| $_SERVER["SERVER_PORT"] == 8443
-			) {
-			return(true);
-		}
 
-		return(false);
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_is_ssl());
 
 	} // End of is_ssl()
 
@@ -768,10 +766,10 @@ class reg {
 	*/
 	function get_insert_id() {
 
-		$cursor = db_query("SELECT LAST_INSERT_ID() AS id");
-		$row = db_fetch_array($cursor);
-		$retval = $row["id"];
-		return($retval);
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_get_insert_id());
 
 	} // End of get_insert_id()
 
@@ -818,9 +816,10 @@ class reg {
 	*/
 	function get_cc_last_4($cc_num) {
 
-		$retval = substr($cc_num, -4);
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
 
-		return($retval);
+		return(reg_get_cc_last_4($cc_num));
 
 	} // End of get_last_4()
 
@@ -1173,22 +1172,10 @@ class reg {
 	*/
 	function get_time_t($year, $month, $day) {
 
-		$retval = gmmktime(0, 0, 0, $month, $day, $year);
+		$message = "This function is deprecated!";
+		reg_log($message, "", "notice", true);
 
-		//
-		// Do NOT adjust this timestamp by any GMT offset if you are 
-		// storing it.  If you do (like I used to), it WILL throw off
-		//  your times when you switch timezones. 
-		//
-		// time_ts are absolute values.  The only time you should apply
-		// a timezone/GMT offset to them is when displaying them.
-		//
-		// If you are displaying something like a credit card expiration
-		// date, which requires a time of midnight, use a GMT offset
-		// of *0* in Drupal's format_date() function.
-		//
-
-		return($retval);
+		return(reg_get_time_t($year, $month, $day));
 
 	} // End of get_time_t()
 
