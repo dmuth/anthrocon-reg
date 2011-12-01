@@ -14,7 +14,7 @@
 function reg_debug($message) {
 
 	if (is_array($message)) {
-		$message = print_r($message, true);
+		$message = "<pre>" . print_r($message, true) . "</pre>";
 	}
 
 	drupal_set_message("Reg Debug: " . $message);
