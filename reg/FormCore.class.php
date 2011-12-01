@@ -105,7 +105,7 @@ class Reg_FormCore {
 		if ($this->in_fake_form()
 			&& empty($id)
 			) {
-			$this->fake->get_data($data);
+			reg_fake_get_data($data);
 		}
 
 		$retval["badge_name"] = array(
@@ -781,7 +781,7 @@ class Reg_FormCore {
 	*/
 	function get_level_options(&$data) {
 
-		$levels = $this->reg->get_valid_levels();
+		$levels = reg_get_valid_levels();
 		$level_options = array();
 
 		$dest = drupal_get_destination();

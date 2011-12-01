@@ -22,7 +22,7 @@ class reg_fake extends reg {
 	*/
 	function get_data(&$data) {
 
-		$message = "This function is deprecated!";
+		$message = "get_data(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		reg_fake_get_data(&$data);
@@ -35,7 +35,7 @@ class reg_fake extends reg {
 	*/
 	public function get_string($max = 8) {
 
-		$message = "This function is deprecated!";
+		$message = "get_string(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_string($max));
@@ -48,7 +48,7 @@ class reg_fake extends reg {
 	*/
 	public function get_number($min = 0, $max = 100) {
 
-		$message = "This function is deprecated!";
+		$message = "get_number(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_number($min, $max));
@@ -61,7 +61,7 @@ class reg_fake extends reg {
 	*/
 	public function get_cc_num() {
 
-		$message = "This function is deprecated!";
+		$message = "get_cc_num(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_cc_num());
@@ -74,7 +74,7 @@ class reg_fake extends reg {
 	*/
 	public function get_random_from_set($items) {
 
-		$message = "This function is deprecated!";
+		$message = "get_random_from_set(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_random_from_set($items));
@@ -87,7 +87,7 @@ class reg_fake extends reg {
 	*/
 	public function get_badge_name() {
 
-		$message = "This function is deprecated!";
+		$message = "get_badge_name(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_badge_name());
@@ -100,7 +100,7 @@ class reg_fake extends reg {
 	*/
 	public function get_first_name() {
 
-		$message = "This function is deprecated!";
+		$message = "get_first_name(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_first_name());
@@ -113,7 +113,7 @@ class reg_fake extends reg {
 	*/
 	public function get_last_name() {
 
-		$message = "This function is deprecated!";
+		$message = "get_last_name(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_last_name());
@@ -131,7 +131,7 @@ class reg_fake extends reg {
 	*/
 	public function get_item($list) {
 
-		$message = "This function is deprecated!";
+		$message = "get_item(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_fake_get_item($list));

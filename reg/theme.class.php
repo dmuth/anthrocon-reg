@@ -194,7 +194,7 @@ class reg_theme extends reg {
 		//
 		// Get a list of our current membership levels for later use.
 		//
-		$levels = $this->get_valid_levels();
+		$levels = reg_get_valid_levels();
 
 		$class = 'form-radios';
 		if (isset($item['#attributes']['class'])) {

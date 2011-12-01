@@ -514,7 +514,7 @@ class reg {
 		//
 		// Get our current membership levels and make sure that we
 		//
-		$levels = $this->get_valid_levels();
+		$levels = reg_get_valid_levels();
 
 		$reg_message = $this->message;
 		$log = $this->log;
@@ -558,7 +558,7 @@ class reg {
 	*/
 	function is_ssl() {
 
-		$message = "This function is deprecated!";
+		$message = "is_ssl(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_is_ssl());
@@ -571,7 +571,7 @@ class reg {
 	*/
 	function force_ssl() {
 
-		if (!$this->is_ssl()) {
+		if (!reg_is_ssl()) {
 
 			$no_ssl = variable_get($this->get_constant(
 				"form_admin_no_ssl_redirect"), "");
@@ -772,7 +772,7 @@ class reg {
 		//
 		$retval = reg_get_insert_id();
 
-		$message = "This function is deprecated!";
+		$message = "get_insert_id(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return($retval);
@@ -822,7 +822,7 @@ class reg {
 	*/
 	function get_cc_last_4($cc_num) {
 
-		$message = "This function is deprecated!";
+		$message = "get_cc_last_4(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_get_cc_last_4($cc_num));
@@ -838,7 +838,7 @@ class reg {
 	*/
 	function get_valid_levels() {
 
-		$message = "This function is deprecated!";
+		$message = "get_valid_levels(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_get_valid_levels());
@@ -1161,7 +1161,7 @@ class reg {
 	*/
 	function get_time_t($year, $month, $day) {
 
-		$message = "This function is deprecated!";
+		$message = "get_time_t(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
 		return(reg_get_time_t($year, $month, $day));
