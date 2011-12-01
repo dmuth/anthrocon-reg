@@ -24,7 +24,7 @@ function reg_fake_init() {
 *
 * @param array $data The associative array of data from our form.
 */
-function reg_fake_get_data($data) {
+function reg_fake_get_data(&$data) {
 
 	$data["badge_name"] = reg_fake_get_badge_name();
 	$data["first"] = reg_fake_get_first_name();
