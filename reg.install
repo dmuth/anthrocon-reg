@@ -826,5 +826,87 @@ function reg_update_6000() {
 } // End of reg_update_6000()
 
 
+/**
+* This hook is run to check for our requirements.
+*
+* @param string $phase What phase we're in: install or runtime
+*
+* @return array An array of requirements and their statuses.
+*/
+function reg_requirements($phase) {
+
+	$retval = array();
+
+	$retval[] = reg_requirements_curl();
+	$retval[] = reg_requirements_date_format();
+
+	return($retval);
+
+} // End of reg_requirements()
+
+
+/**
+* Check our cURL requirement
+*
+* @return array An array of curl requirements.
+*/
+function reg_requirements_curl() {
+
+	$retval = array();
+
+	//
+	// Check for cURL
+	//
+	$retval["title"] = "Anthrocon Reg";
+	$retval["description"] = "cURL support found";
+
+	if (function_exists("curl_init")) {
+		$retval["severity"] = REQUIREMENT_OK;
+
+	} else {
+		$retval["description"] = "cURL support is required in order to use this module. "
+			. "Please read " . l("http://www.php.net/manual/en/book.curl.php", 
+				"http://www.php.net/manual/en/book.curl.php") 
+			. " for more info."
+			;
+		$retval["severity"] = REQUIREMENT_ERROR;
+
+	}
+
+	return($retval);
+
+} // End of reg_requirements_curl()
+
+
+/**
+* Check our date forms.
+*/
+function reg_requirements_date_format() {
+
+	$retval = array();
+
+	//
+	// Check our date format for sanity.
+	//
+	$retval["title"] = "Anthrocon Reg";
+	$retval["description"] = "A format is properly set for the 'short' date format.";
+	$retval["severity"] = REQUIREMENT_OK;
+	$date_format_short = variable_get("date_format_short", "");
+	$date_format_short_custom = variable_get("date_format_short_custom", "");
+	if ($date_format_short == "" && $date_format_short_custom == "") {
+
+			$retval["description"] = "The 'short' date format is set to custom "
+				. "and is currently blank.  This MAY cause issues when "
+				. "viewing the logs. Please go to the "
+				. l("Date and time settings page", "admin/settings/date-time")
+				. " and set a short date format."
+				;
+			$retval["severity"] = REQUIREMENT_WARNING;
+
+	}
+
+	return($retval);
+
+} // End of reg_requirements_date_format()
 
 
