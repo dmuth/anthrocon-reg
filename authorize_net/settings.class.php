@@ -232,7 +232,7 @@ class authorize_net_settings extends authorize_net {
 		$cust_data["zip"] = "zipcode";
 		$cust_data["country"] = "USA";
 		$cust_data["phone"] = "123-456-7890";
-		$cust_data["email"] = "doug.muth@gmail.com";
+		$cust_data["email"] = variable_get("site_mail", "");
 
 		$status = $this->charge_cc($cust_data);
 

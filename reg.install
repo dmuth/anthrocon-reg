@@ -826,5 +826,156 @@ function reg_update_6000() {
 } // End of reg_update_6000()
 
 
+/**
+* This hook is run to check for our requirements.
+*
+* @param string $phase What phase we're in: install or runtime
+*
+* @return array An array of requirements and their statuses.
+*/
+function reg_requirements($phase) {
+
+	$retval = array();
+
+	$retval[] = reg_requirements_curl();
+	$retval[] = reg_requirements_date_format();
+	$retval[] = reg_requirements_ssl();
+
+	return($retval);
+
+} // End of reg_requirements()
+
+
+/**
+* Check our cURL requirement
+*
+* @return array An array of curl requirements.
+*/
+function reg_requirements_curl() {
+
+	$retval = array();
+
+	//
+	// Check for cURL
+	//
+	$retval["title"] = "Anthrocon Reg - cURL support";
+	$retval["description"] = "cURL support found";
+
+	if (function_exists("curl_init")) {
+		$retval["severity"] = REQUIREMENT_OK;
+
+	} else {
+		$retval["description"] = "cURL support is required in order to use this module. "
+			. "Please read " . l("http://www.php.net/manual/en/book.curl.php", 
+				"http://www.php.net/manual/en/book.curl.php") 
+			. " for more info."
+			;
+		$retval["severity"] = REQUIREMENT_ERROR;
+
+	}
+
+	return($retval);
+
+} // End of reg_requirements_curl()
+
+
+/**
+* Check our date forms.
+*
+* @return array An array of curl requirements.
+*/
+function reg_requirements_date_format() {
+
+	$retval = array();
+
+	//
+	// Check our date format for sanity.
+	//
+	$retval["title"] = "Anthrocon Reg - date format";
+	$retval["description"] = "A format is properly set for the 'short' date format.";
+	$retval["severity"] = REQUIREMENT_OK;
+	$date_format_short = variable_get("date_format_short", "");
+	$date_format_short_custom = variable_get("date_format_short_custom", "");
+	if ($date_format_short == "" && $date_format_short_custom == "") {
+
+			$retval["description"] = "The 'short' date format is set to custom "
+				. "and is currently blank.  This MAY cause issues when "
+				. "viewing the logs. Please go to the "
+				. l("Date and time settings page", "admin/settings/date-time")
+				. " and set a short date format."
+				;
+			$retval["severity"] = REQUIREMENT_WARNING;
+
+	}
+
+	return($retval);
+
+} // End of reg_requirements_date_format()
+
+
+/**
+* Check to see if the site supports SSL.
+*
+* @return array An array of curl requirements.
+*/
+function reg_requirements_ssl() {
+
+	$retval = array();
+
+	$retval["title"] = "Anthrocon Reg - HTTPS support";
+
+	if (!function_exists("curl_init")) {
+		$retval["description"] = "Unable to check for HTTPS since cURL is not instaled. "
+			. "HTTPS is needed in order to access the admin pages of this module. "
+			;
+		$retval["severity"] = REQUIREMENT_WARNING;
+		return($retval);
+	}
+
+	$base_url = $GLOBALS["base_url"];
+	if (!$base_url) {
+		$retval["description"] = "\$base_url not defined. Unable to check for HTTPS support."
+			. "HTTPS is needed in order to access the admin pages of this module. "
+			;
+		$retval["severity"] = REQUIREMENT_WARNING;
+		return($retval);
+	}
+
+	//
+	// Make sure the URL is in HTTPS format, and try to load it with cUrl.
+	//
+	$url = preg_replace("/^http:/", "https:", $base_url);
+	//$url = "foobar"; // Debugging
+	//$url = "10.0.0.2"; // Debugging
+	//$url = "http://www.google.com/"; // Debugging
+
+	$timeout = 5;
+
+	$fp = curl_init($url);
+	curl_setopt($fp, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($fp, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($fp, CURLOPT_TIMEOUT, $timeout);
+
+	$result = curl_exec($fp);
+	//reg_debug($result); // Debugging
+	$error = curl_error($fp);
+
+	if ($result) {
+		$retval["description"] = "I was able to retrieve " . l($url, $url) . " via HTTPS.";
+		$retval["severity"] = REQUIREMENT_OK;
+
+	} else {
+		$retval["description"] = "I was NOT able to retrieve the contents of " 
+				. l($url, $url) . "! "
+			. "I got this error: <b>$error</b>.<br/> "
+			. "HTTPS is needed in order to access the admin pages of this module. "
+			;
+		$retval["severity"] = REQUIREMENT_ERROR;
+
+	}
+
+	return($retval);
+
+} // End of reg_requirements_ssl()
 
 

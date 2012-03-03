@@ -866,3 +866,112 @@ function reg_menu_display_member_menu($access_level, $arg3) {
 } // End of reg_menu_display_member_menu()
 
 
+/**
+* Are we currently in SSL?
+*
+* @return boolean True if we are.  False otherwise.
+*/
+function reg_is_ssl() {
+	if ($_SERVER["SERVER_PORT"] == 443
+		|| $_SERVER["SERVER_PORT"] == 8443
+		) {
+		return(true);
+	}
+
+	return(false);
+
+} // End of reg_is_ssl()
+
+
+/**
+* Retrieve the most recent insert ID from a database insert.
+*
+* @return integer The most recent insert ID.
+*/
+function reg_get_insert_id() {
+
+	$cursor = db_query("SELECT LAST_INSERT_ID() AS id");
+	$row = db_fetch_array($cursor);
+	$retval = $row["id"];
+	return($retval);
+
+} // End of reg_get_insert_id()
+
+
+/**
+* This function will calculate a UNIX timestamp based on the year, 
+*	month, and day. 
+*/
+function reg_get_time_t($year, $month, $day) {
+
+	$retval = gmmktime(0, 0, 0, $month, $day, $year);
+
+	//
+	// Do NOT adjust this timestamp by any GMT offset if you are 
+	// storing it.  If you do (like I used to), it WILL throw off
+	//  your times when you switch timezones. 
+	//
+	// time_ts are absolute values.  The only time you should apply
+	// a timezone/GMT offset to them is when displaying them.
+	//
+	// If you are displaying something like a credit card expiration
+	// date, which requires a time of midnight, use a GMT offset
+	// of *0* in Drupal's format_date() function.
+	//
+
+	return($retval);
+
+} // End of reg_get_time_t()
+
+
+/**
+* Get the last 4 digits of a credit card number.
+*
+* We do NOT want to store the entire crediit card number in our system.
+* That way, it limits exposure in case of a security comprismise and 
+* it lowers my blood pressure. :-)
+*
+* @return string The last 4 digits from our credit card number.
+*/
+function reg_get_cc_last_4($cc_num) {
+
+	$retval = substr($cc_num, -4);
+
+	return($retval);
+
+} // End of reg_get_last_4()
+
+
+/**
+* Return a list of currently valid registration levels.
+*
+* @return array The key is the membersip ID and the value is
+*	an associative array of member data.
+*/
+function reg_get_valid_levels() {
+	
+	static $retval = array();
+
+	if (!empty($retval)) {
+		return($retval);
+	}
+
+	$timestamp = gmmktime();
+	$query = "SELECT * FROM {reg_level} "
+		. "WHERE "
+		. "start <= '%s' AND end >= '%s' "
+		. "ORDER BY price "
+		;
+	$query_args = array($timestamp, $timestamp);
+	$cursor = db_query($query, $query_args);
+
+	while ($row = db_fetch_array($cursor)) {
+		$id = $row["id"];
+		$retval[$id] = $row;
+	}
+
+	return($retval);
+
+} // End of reg_get_valid_levels()
+
+

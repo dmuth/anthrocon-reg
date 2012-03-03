@@ -319,7 +319,7 @@ class reg {
 	*	if successful, null otherwise.
 	*
 	*/
-	function charge_cc($data, $cc_gateway, $log_only = false) {
+	function charge_cc(&$data, $cc_gateway, $log_only = false) {
 
 		//
 		// Eventually I should make this passed into the constructor.
@@ -514,7 +514,7 @@ class reg {
 		//
 		// Get our current membership levels and make sure that we
 		//
-		$levels = $this->get_valid_levels();
+		$levels = reg_get_valid_levels();
 
 		$reg_message = $this->message;
 		$log = $this->log;
@@ -557,13 +557,11 @@ class reg {
 	* @return boolean True if we are.  False otherwise.
 	*/
 	function is_ssl() {
-		if ($_SERVER["SERVER_PORT"] == 443
-			|| $_SERVER["SERVER_PORT"] == 8443
-			) {
-			return(true);
-		}
 
-		return(false);
+		$message = "is_ssl(): This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
+		return(reg_is_ssl());
 
 	} // End of is_ssl()
 
@@ -573,7 +571,7 @@ class reg {
 	*/
 	function force_ssl() {
 
-		if (!$this->is_ssl()) {
+		if (!reg_is_ssl()) {
 
 			$no_ssl = variable_get($this->get_constant(
 				"form_admin_no_ssl_redirect"), "");
@@ -768,9 +766,15 @@ class reg {
 	*/
 	function get_insert_id() {
 
-		$cursor = db_query("SELECT LAST_INSERT_ID() AS id");
-		$row = db_fetch_array($cursor);
-		$retval = $row["id"];
+		//
+		// Call this first, since calling reg_log() first will cause this to
+		// return a WAY different value.
+		//
+		$retval = reg_get_insert_id();
+
+		$message = "get_insert_id(): This function is deprecated!";
+		reg_log($message, "", "notice", true);
+
 		return($retval);
 
 	} // End of get_insert_id()
@@ -818,9 +822,10 @@ class reg {
 	*/
 	function get_cc_last_4($cc_num) {
 
-		$retval = substr($cc_num, -4);
+		$message = "get_cc_last_4(): This function is deprecated!";
+		reg_log($message, "", "notice", true);
 
-		return($retval);
+		return(reg_get_cc_last_4($cc_num));
 
 	} // End of get_last_4()
 
@@ -833,27 +838,10 @@ class reg {
 	*/
 	function get_valid_levels() {
 
-		static $retval = array();
+		$message = "get_valid_levels(): This function is deprecated!";
+		reg_log($message, "", "notice", true);
 
-		if (!empty($retval)) {
-			return($retval);
-		}
-
-		$timestamp = gmmktime();
-		$query = "SELECT * FROM {reg_level} "
-			. "WHERE "
-			. "start <= '%s' AND end >= '%s' "
-			. "ORDER BY price "
-			;
-		$query_args = array($timestamp, $timestamp);
-		$cursor = db_query($query, $query_args);
-
-		while ($row = db_fetch_array($cursor)) {
-			$id = $row["id"];
-			$retval[$id] = $row;
-		}
-
-		return($retval);
+		return(reg_get_valid_levels());
 
 	} // End of get_valid_levels()
 
@@ -1173,22 +1161,10 @@ class reg {
 	*/
 	function get_time_t($year, $month, $day) {
 
-		$retval = gmmktime(0, 0, 0, $month, $day, $year);
+		$message = "get_time_t(): This function is deprecated!";
+		reg_log($message, "", "notice", true);
 
-		//
-		// Do NOT adjust this timestamp by any GMT offset if you are 
-		// storing it.  If you do (like I used to), it WILL throw off
-		//  your times when you switch timezones. 
-		//
-		// time_ts are absolute values.  The only time you should apply
-		// a timezone/GMT offset to them is when displaying them.
-		//
-		// If you are displaying something like a credit card expiration
-		// date, which requires a time of midnight, use a GMT offset
-		// of *0* in Drupal's format_date() function.
-		//
-
-		return($retval);
+		return(reg_get_time_t($year, $month, $day));
 
 	} // End of get_time_t()
 

@@ -1,0 +1,10 @@
+
+name = Reg Log
+description = "This contains our logging functions"
+package = Anthrocon
+core = 6.x
+
+;dependencies[] =
+version = 1.1
+
+
