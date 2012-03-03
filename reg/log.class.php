@@ -43,7 +43,7 @@ class reg_log extends reg {
 		// to not include SSL.  So we're going to do an additional check
 		// and fix there here.
 		//
-		if ($this->is_ssl()) {
+		if (reg_is_ssl()) {
 			$base_root = eregi_replace("^http://", "https://", $base_root);
 		}
 
@@ -62,7 +62,7 @@ class reg_log extends reg {
 			);
 		db_query($query, $query_args);
 
-		$id = $this->get_insert_id();
+		$id = reg_get_insert_id();
 
 		return($id);
 

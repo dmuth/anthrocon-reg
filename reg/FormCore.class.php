@@ -1041,7 +1041,7 @@ class Reg_FormCore {
 			return(false);
 		}
 
-		$levels = $this->reg->get_valid_levels();
+		$levels = reg_get_valid_levels();
 		if (empty($levels[$reg_level_id])) {
 			$error = t("Registration level ID '%level%' is invalid.",
 				array("%level%" => $reg_level_id)
