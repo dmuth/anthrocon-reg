@@ -7,5 +7,6 @@ core = 6.x
 
 version = 1.1
 
+dependencies[] = reg
 
 

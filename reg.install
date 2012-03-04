@@ -837,6 +837,7 @@ function reg_requirements($phase) {
 
 	$retval = array();
 
+	$retval[] = reg_requirements_authorize_net();
 	$retval[] = reg_requirements_curl();
 	$retval[] = reg_requirements_date_format();
 	$retval[] = reg_requirements_ssl();
@@ -977,5 +978,40 @@ function reg_requirements_ssl() {
 	return($retval);
 
 } // End of reg_requirements_ssl()
+
+
+/**
+* Check our date forms.
+*
+* @return array An array of curl requirements.
+*/
+function reg_requirements_authorize_net() {
+
+	$retval = array();
+
+	//
+	// Check for the authorize_net module.
+	// I would normally do a dependency, but that would cause a circular 
+	// dependency.  This is due partly to me not thinking ahead as well 
+	// as I could have when first designing this module.
+	//
+	// I'll try to resolve this in a sane manner in the future.
+	//
+	$retval["title"] = "Anthrocon Reg - authorize_net module";
+	$retval["description"] = "The authorize_net module is enabled.";
+	$retval["severity"] = REQUIREMENT_OK;
+	if (!module_exists("authorize_net")) {
+
+			$retval["description"] = "The authorize_net module is not enabled. "
+				. "Please enable it in order to use this module."
+				;
+			$retval["severity"] = REQUIREMENT_ERROR;
+
+	}
+
+	return($retval);
+
+} // End of reg_requirements_authorize_net()
+
 
 
