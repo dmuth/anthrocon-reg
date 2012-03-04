@@ -451,15 +451,15 @@ class reg {
 				//
 				// Generate random gateway data.
 				//
-				$data["gateway_auth_code"] = $this->fake->get_string(6);
-				$data["gateway_transaction_id"] = $this->fake->get_number(
+				$data["gateway_auth_code"] = reg_fake_get_string(6);
+				$data["gateway_transaction_id"] = reg_fake_get_number(
 					0, (pow(10, 9)));
 
 				$avs_codes = array("Y", "N", "D", "X", "Z");
-				$data["gateway_avs"] = $this->fake->get_item($avs_codes);
+				$data["gateway_avs"] = reg_fake_get_item($avs_codes);
 
 				$cvv_codes = array("Y", "N", "X", "F");
-				$data["gateway_cvv"] = $this->fake->get_item($cvv_codes);
+				$data["gateway_cvv"] = reg_fake_get_item($cvv_codes);
 
 			}
 	
@@ -630,7 +630,7 @@ class reg {
 		// breaks drupal_goto().  So we get rid of any instances of "//"
 		// here.
 		//
-		if ($this->is_ssl()) {
+		if (reg_is_ssl()) {
 			$url = eregi_replace("//", "/", $url);
 
 			//
@@ -804,7 +804,7 @@ class reg {
 		}
 
 		$retval = "${cc_type} ending in '" 
-			. $this->get_cc_last_4($cc_num) . "'";
+			. reg_get_cc_last_4($cc_num) . "'";
 
 		return($retval);
 

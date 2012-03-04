@@ -105,7 +105,7 @@ class reg_member extends reg {
 			);
 		db_query($query, $query_args);
 
-		$data["id"] = $this->get_insert_id();
+		$data["id"] = reg_get_insert_id();
 
 		$message = t("Added registration for badge number '!num'",
 			array("!num" => $data["badge_num"])

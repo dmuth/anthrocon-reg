@@ -91,7 +91,7 @@ class reg_log extends reg {
 		//
 		$exp_string = 0;
 		if (!empty($exp)) {
-			$exp_string = $this->get_time_t($exp["year"], $exp["month"], 1);
+			$exp_string = reg_get_time_t($exp["year"], $exp["month"], 1);
 			$exp_string += 86400;
 		}
 
@@ -111,7 +111,7 @@ class reg_log extends reg {
 		// bunch of security concerns.
 		//
 		if (!empty($data["cc_num"])) {
-			$data["cc_num"] = $this->get_cc_last_4($data["cc_num"]);
+			$data["cc_num"] = reg_get_cc_last_4($data["cc_num"]);
 		}
 
 		$data["total_cost"] = $data["badge_cost"] + $data["donation"];
