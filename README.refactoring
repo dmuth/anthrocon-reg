@@ -9,13 +9,12 @@ Drupal's module system can be used to split apart functionality just fine.
 Nor was creating a separate menu entry for every single menu item, when 
 a "router" function would have worked just fine. Oh well.
 
-I think v2 of the reg system will consist of me copying existing core 
-classes into Drupal modules such as these (roughly in order I should implement):
+First, I should probably split out some of the code from reg.module into:
 
-reg/includes - (directory for holding includes from main reg module)
+includes/ - (directory for holding includes from main reg module)
 
-reg_fake: get_data()
-reg_log: reg_log()
+Then I should move code from existing core classes into into these Drupal modules:
+
 reg_email: reg_email()
 reg_message: reg_message_load()
 
