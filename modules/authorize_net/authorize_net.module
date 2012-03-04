@@ -19,19 +19,40 @@ function authorize_net_autoload($class) {
 		return(null);
 	}
 
-	//print "$class<br>\n"; // Debugging
-	$file = str_replace("_", "/", $class);
-	//print "1: $file<br/>\n";
-	$file = str_replace("authorize/net", "authorize_net", $file);
-	//print "2: $file<br/>\n";
-	$file .= ".class.php";
-	//print "3: $file<br>\n"; // Debugging
+	//print "Class: $class<br>\n"; // Debugging
+
+	$dir = drupal_get_path("module", "authorize_net");
+	//print "DIR: $dir<br/>\n"; // Debugging
+
+	//
+	// It seems a bit silly that I'm not using a generic system, but 
+	// we're only dealing with these 4 classes, and I'm going to phase 
+	// them back into functions at some point anyway for my general sanity.
+	//
+	if ($class == "authorize_net") {
+		$file = $dir . "/" . "authorize_net.class.php";
+
+	} else if ($class == "authorize_net_factory") {
+		$file = $dir . "/" . "factory.class.php";
+
+	} else if ($class == "authorize_net_menu") {
+		$file = $dir . "/" . "menu.class.php";
+
+	} else if ($class == "authorize_net_settings") {
+		$file = $dir . "/" . "settings.class.php";
+
+	}
+
+	//print "FILE: $file<br/>\n"; // Debugging
 
 	include_once($file);
 
 } // End of authorload_net_autoload()
 
 
+//
+// Register our autoloader.
+//
 spl_autoload_register("authorize_net_autoload");
 
 
