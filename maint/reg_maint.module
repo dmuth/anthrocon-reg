@@ -69,7 +69,8 @@ function reg_maint_enabled() {
 			. "Admin Message:<p/>"
 			. "</div>"
 			. "<div style=\"font-family: arial; padding: 20px; background-color: #eeeeee; \">"
-			. $message
+			. nl2br($message)
+			//. rawurlencode($message) // Debugging
 			. "</div>"
 			;
 	}
