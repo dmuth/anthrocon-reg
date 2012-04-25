@@ -14,13 +14,69 @@ require("settings.inc.php");
 
 
 /**
+* Our main hook.  It runs on every page load.
 */
-function reg_maint_boot() {
+function reg_maint_init() {
 
-//print "TEST: " . time();
-//exit();
+	//
+	// Stop here if the module isn't enabled.
+	// 
+	if (!variable_get("reg_maint_enabled", false)) {
+		return(null);
+	}
+
+	if (empty($_GET["q"])) {
+		$_GET["q"] = "";
+	}
+
+	if (preg_match("|^reg|", $_GET["q"])
+		|| (
+			preg_match("|^admin/reg|", $_GET["q"])
+			&& !preg_match("|^admin/reg/maint|", $_GET["q"])
+			)
+		) {
+		print reg_maint_enabled();
+		watchdog("reg_maint", "User was shown reg maintenance page.");
+		exit();
+
+	}
 
 } // End of reg_autoload()
+
+
+/**
+* This function returns HTML to display when the registration system is in 
+* maintenance mode.
+*/
+function reg_maint_enabled() {
+
+	$retval = ""
+		. "<div style=\"font-family: arial; font-size: large;\">"
+		. $GLOBALS["conf"]["site_name"]
+		. "</div>"
+		. "<p/>"
+		. "<div style=\"font-family: arial; \">"
+		. "If you're seeing this message, the Registration system is in maintenace mode. It will be back shortly!"
+		. "</div>"
+		. "<p/>"
+		;
+
+	$message = variable_get("reg_maint_message", "");
+
+	if ($message) {
+		$retval .= ""
+			. "<div style=\"font-family: arial; \">"
+			. "Admin Message:<p/>"
+			. "</div>"
+			. "<div style=\"font-family: arial; padding: 20px; background-color: #eeeeee; \">"
+			. $message
+			. "</div>"
+			;
+	}
+
+	return ($retval);
+
+} // End of reg_maint_enabled()
 
 
 /**
@@ -33,6 +89,9 @@ function reg_maint_enable() {
 	// act of enabling it does NOT take down the registration system.
 	//
 	variable_set("reg_maint_enabled", false);
+
+	$message = "Reg Maintenance module enabled. Settings page is at /admin/reg/maint";
+	drupal_set_message($message);
 
 } // End of reg_maint_enable()
 
