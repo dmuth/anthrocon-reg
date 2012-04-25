@@ -1,0 +1,59 @@
+<?php
+/**
+* The Anthrocon Registration "maintenance" module.
+* 
+* This module can place the registration system into "maintenance" mode so 
+* that any attempts to access it give a nice error message.  This is useful 
+* for upgrades and deployments.
+*
+* @author Douglas Muth <http://www.dmuth.org/>
+*/
+
+
+require("settings.inc.php");
+
+
+/**
+*/
+function reg_maint_boot() {
+
+//print "TEST: " . time();
+//exit();
+
+} // End of reg_autoload()
+
+
+/**
+* This hook is fired when the module is turned on.
+*/
+function reg_maint_enable() {
+
+	//
+	// Disable this module when we enable it, so that the (relatively passive)
+	// act of enabling it does NOT take down the registration system.
+	//
+	variable_set("reg_maint_enabled", false);
+
+} // End of reg_maint_enable()
+
+
+/**
+* Create our menu items.
+*
+*/
+function reg_maint_menu() {
+
+	$retval = array();
+
+	$retval["admin/reg/maint"] = array(
+		"title" => "Reg Maintenance",
+		"type" => MENU_NORMAL_ITEM,
+		"page callback" => "reg_maint_settings", 
+		"access arguments" => array("administer nodes"), 
+		);
+
+	return($retval);
+
+} // End of reg_menu()
+
+

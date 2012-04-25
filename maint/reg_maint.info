@@ -1,0 +1,10 @@
+
+name = Registration Maintenance
+description = This module places the registration system into "Maintenance Mode" so that deployments can be done.
+package = Anthrocon
+core = 6.x
+
+;dependencies[] = reg
+version = 1.0
+
+
