@@ -189,6 +189,7 @@ class reg_verify extends reg {
 		$cursor = $this->get_cursor($search);
 
 		$header = array(
+			array("data" => t("Year")),
 			array("data" => t("Badge Number")),
 			array("data" => t("Badge Name")),
 			array("data" => t("Membership Type")),
@@ -214,9 +215,10 @@ class reg_verify extends reg {
 			$resend = l("Resend Receipt Email", $url);
 
 			$rows[] = array(
-				array("data" => $row["year"] . "-" . 
+				array("data" => $row["year"]),
+				array("data" => 
 					$this->format_badge_num($row["badge_num"]),
-					//"align" => "right"
+					"align" => "center"
 					),
 				array("data" => $row["badge_name"]),
 				array("data" => $row["member_type"]),
