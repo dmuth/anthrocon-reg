@@ -359,6 +359,15 @@ class Reg_FormCore {
 			"#theme" => "reg_form"
 			);
 
+		$retval["billing_name"] = array(
+			"#type" => "textfield",
+			"#title" => t("Billing Name"),
+			"#description" => t("If the same as member name, leave blank."),
+			"#size" => $this->reg->get_constant("FORM_TEXT_SIZE_SMALL"),
+			"#required" => false,
+			"#default_value" => $data["billing_name"],
+			);
+
 		$retval["address1"] = array(
 			"#type" => "textfield",
 			"#title" => t("Billing Address Line 1"),

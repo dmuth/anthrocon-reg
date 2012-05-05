@@ -58,6 +58,7 @@ class reg_member extends reg {
 				. "badge_num, "
 				. "badge_name, first, middle, last, "
 				. "birthdate, "
+				. "billing_name, "
 				. "address1, address2, city, state, zip, country, "
 				. "shipping_name, shipping_address1, shipping_address2, "
 				. "shipping_city, shipping_state, shipping_zip, "
@@ -71,6 +72,7 @@ class reg_member extends reg {
 				. "'%s', '%s', "
 				. "'%s', "
 				. "'%s', '%s', '%s', '%s', "
+				. "'%s', "
 				. "'%s', "
 				. "'%s', '%s', '%s', '%s', '%s', '%s', "
 				. "'%s', '%s', '%s', "
@@ -89,10 +91,13 @@ class reg_member extends reg {
 				$data["reg_level_id"]);
 		}
 
-		$query_args = array($year, 
-			$data["reg_type_id"], 1, $data["badge_num"], 
-			$data["badge_name"], $data["first"], $data["middle"], 
-			$data["last"], $date_string, 
+		$query_args = array(
+			$year, 
+			$data["reg_type_id"], 1, 
+			$data["badge_num"], 
+			$data["badge_name"], $data["first"], $data["middle"], $data["last"], 
+			$date_string, 
+			$data["billing_name"], 
 			$data["address1"], $data["address2"], $data["city"], 
 			$data["state"], $data["zip"], $data["country"], 
 			$data["shipping_name"],

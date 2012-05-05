@@ -200,8 +200,9 @@ class reg_admin_member extends reg {
 			);
 
 		$rows[] = array(
-			array("data" => "Address", "header" => true, "valign" => "top"),
-				check_plain($row["address1"]) . " " 
+			array("data" => "Billing Address", "header" => true, "valign" => "top"),
+				check_plain($row["billing_name"]) . "<br/>\n" 
+				. check_plain($row["address1"]) . " " 
 				. check_plain($row["address2"]) . "<br/>\n"
 				. check_plain($row["city"]) . ", " 
 				. check_plain($row["state"]) . " " 
@@ -383,6 +384,7 @@ class reg_admin_member extends reg {
 			. "year='%s', "
 			. "modified=UNIX_TIMESTAMP(), reg_type_id='%s', reg_status_id='%s', "
 			. "badge_num='%s', badge_name='%s', "
+			. "billing_name = '%s', "
 			. "first='%s', middle='%s', last='%s', "
 				. "birthdate='%s', "
 			. "address1='%s', address2='%s', city='%s', state='%s', "
@@ -406,6 +408,7 @@ class reg_admin_member extends reg {
 			$data["year"],
 			$data["reg_type_id"], $data["reg_status_id"],
 			$data["badge_num"], $data["badge_name"],
+			$data["billing_name"],
 			$data["first"], $data["middle"], $data["last"], 
 				$data["birthdate_string"],
 			$data["address1"], $data["address2"], $data["city"], 

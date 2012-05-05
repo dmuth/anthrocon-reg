@@ -61,6 +61,7 @@ function reg_schema() {
 			//
 			// Address information (i.e., where the member lives)
 			//
+			"billing_name" => array("type" => "varchar", "length" => 255),
 			"address1" => array("type" => "varchar", "length" => 255),
 			"address2" => array("type" => "varchar", "length" => 255),
 			"city" => array("type" => "varchar", "length" => 255),
@@ -824,6 +825,29 @@ function reg_update_6000() {
 	return($retval);
 
 } // End of reg_update_6000()
+
+
+/**
+* Add our "billing_name" field.
+*
+* To force the module back to an older version for testing of these update
+*	functions, run this SQL command:
+*
+* UPDATE system SET schema_version=6000 WHERE name='reg';
+*
+*/
+function reg_update_6001() {
+
+	$retval = array();
+	db_add_field($retval, "reg", "billing_name", array(
+		"type" => "varchar",
+		"length" => 255,
+		"default" => "",
+		));
+
+	return($retval);
+
+} // End of reg_update_6001()
 
 
 /**

@@ -39,6 +39,8 @@ function reg_fake_get_data(&$data) {
 		. "-" . reg_fake_get_number(1, 31)
 		;
 
+	$data["billing_name"] = reg_fake_get_first_name() . " "
+		. reg_fake_get_last_name();
 	$data["address1"] = reg_fake_get_number(1, 1000) . " " 
 		. reg_fake_get_string();
 	$data["address2"] = reg_fake_get_string();

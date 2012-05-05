@@ -151,6 +151,7 @@ class Reg_OnsiteDisplay {
 			. "(created, modified, year, reg_type_id, reg_status_id, "
 			. "badge_name, first, middle, last, "
 			. "birthdate, "
+			. "billing_name, "
 			. "address1, address2, city, state, zip, country, "
 			. "email, "
 			. "phone, shirt_size_id, "
@@ -160,6 +161,7 @@ class Reg_OnsiteDisplay {
 			. "( "
 			. "UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '%s', '%s', '%s', "
 			. "'%s', '%s', '%s', '%s', "
+			. "'%s', "
 			. "'%s', "
 			. "'%s', '%s', '%s', '%s', '%s', '%s', "
 			. "'%s', "
@@ -184,6 +186,7 @@ class Reg_OnsiteDisplay {
 			4,
 			$data["badge_name"], $data["first"], $data["middle"],
 			$data["last"], $date_string,
+			$data["billing_name"],
 			$data["address1"], $data["address2"], $data["city"],
 			$data["state"], $data["zip"], $data["country"],
 			$data["email"], $data["phone"],
