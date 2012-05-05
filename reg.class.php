@@ -44,7 +44,8 @@ class reg {
 		//
 		//"year" => 2009,
 		//"year" => 2010,
-		"year" => 2011,
+		//"year" => 2011,
+		"year" => 2012,
 		"start_badge_num" => 250,
 		//
 		// Define constants for our permission names.
@@ -743,9 +744,14 @@ class reg {
 	*/
 	function get_badge_num($year = "") {
 
+		$message = "Year: $year";
+
 		if (empty($year)) {
 			$year = $this->get_constant("YEAR");
+			$message = "Empty year, setting to $year";
 		}
+
+		reg_log($message, "", "notice", true);
 
 		$query = "UPDATE {reg_badge_num} "
 			. "SET badge_num = @val := badge_num+1 "
@@ -754,7 +760,11 @@ class reg {
 		$cursor = db_query("SELECT @val AS badge_num");
 		$results = db_fetch_array($cursor);
 
-		return($results["badge_num"]);
+		$badge_num = $results["badge_num"];
+		$message = "Badge num assigned: ${year}-${badge_num}";
+		reg_log($message, "", "notice", true);
+
+		return($badge_num);
 
 	} // End of get_badge_num()
 
