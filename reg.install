@@ -1000,7 +1000,7 @@ function reg_requirements_authorize_net() {
 	$retval["title"] = "Anthrocon Reg - authorize_net module";
 	$retval["description"] = "The authorize_net module is enabled.";
 	$retval["severity"] = REQUIREMENT_OK;
-	if (!module_exists("authorize_net")) {
+	if (!module_exists("reg_authorize_net")) {
 
 			$retval["description"] = "The authorize_net module is not enabled. "
 				. "Please enable it in order to use this module."

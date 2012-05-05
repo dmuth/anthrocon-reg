@@ -373,8 +373,8 @@ class reg_factory {
 	protected function get_OnsiteDisplay() {
 		$reg = $this->get_reg();
 		$form_core = $this->get_FormCore();
-		$auth_factory = new authorize_net_factory();
-		$cc_gateway = $auth_factory->get_object("authorize_net");
+		$auth_factory = new reg_authorize_net_factory();
+		$cc_gateway = $auth_factory->get_object("reg_authorize_net");
 		$log = $this->get_log();
 		$message = $this->get_message();
 		$captcha = $this->get_captcha();

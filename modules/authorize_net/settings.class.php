@@ -3,7 +3,7 @@
 /**
 * This class is responsible for the settings page.
 */
-class authorize_net_settings extends authorize_net {
+class reg_authorize_net_settings extends reg_authorize_net {
 
 	function __construct($reg, $log) {
 		parent::__construct($reg, $log);
@@ -24,7 +24,7 @@ class authorize_net_settings extends authorize_net {
 			$this->sanity_check();
 		}
 
-		$retval .= drupal_get_form("authorize_net_settings_form");
+		$retval .= drupal_get_form("reg_authorize_net_settings_form");
 
 		return($retval);
 
@@ -59,7 +59,7 @@ class authorize_net_settings extends authorize_net {
 			//
 			// Different function to be called if this button is clicked.
 			//
-			"#submit" => array("authorize_net_settings_form_submit_test_gateway"),
+			"#submit" => array("reg_authorize_net_settings_form_submit_test_gateway"),
 			);
 
 		return($retval);
@@ -311,5 +311,5 @@ class authorize_net_settings extends authorize_net {
 	} // End of submit()
 
 
-} // End of authorize_net_settings class
+} // End of reg_authorize_net_settings class
 

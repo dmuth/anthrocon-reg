@@ -5,7 +5,7 @@
 *
 * It is extended by any other classes, and contains core functions and data.
 */
-class authorize_net {
+class reg_authorize_net {
 
 	/**
 	* Our reg class.
@@ -499,5 +499,5 @@ class authorize_net {
 	} // End of get_constant()
 
 
-} // End of authorize_net class
+} // End of reg_authorize_net class
 

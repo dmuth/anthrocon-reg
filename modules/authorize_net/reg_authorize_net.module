@@ -10,18 +10,19 @@
 /**
 * Define our autoloader, and register it.
 */
-function authorize_net_autoload($class) {
+function reg_authorize_net_autoload($class) {
 
 	//
 	// Only load classes we're responsible for.
 	//
-	if (!preg_match("/^authorize_net/", $class)) {
+	if (!preg_match("/^reg_authorize_net/", $class)) {
+		//print "(authorize_net) NO MATCH ON CLASS: $class<br/>\n"; // Debugging
 		return(null);
 	}
 
-	//print "Class: $class<br>\n"; // Debugging
+	//print "Class (authorize_net): $class<br>\n"; // Debugging
 
-	$dir = drupal_get_path("module", "authorize_net");
+	$dir = drupal_get_path("module", "reg_authorize_net");
 	//print "DIR: $dir<br/>\n"; // Debugging
 
 	//
@@ -29,57 +30,58 @@ function authorize_net_autoload($class) {
 	// we're only dealing with these 4 classes, and I'm going to phase 
 	// them back into functions at some point anyway for my general sanity.
 	//
-	if ($class == "authorize_net") {
+	if ($class == "reg_authorize_net") {
 		$file = $dir . "/" . "authorize_net.class.php";
 
-	} else if ($class == "authorize_net_factory") {
+	} else if ($class == "reg_authorize_net_factory") {
 		$file = $dir . "/" . "factory.class.php";
 
-	} else if ($class == "authorize_net_menu") {
+	} else if ($class == "reg_authorize_net_menu") {
 		$file = $dir . "/" . "menu.class.php";
 
-	} else if ($class == "authorize_net_settings") {
+	} else if ($class == "reg_authorize_net_settings") {
 		$file = $dir . "/" . "settings.class.php";
 
 	}
 
-	//print "FILE: $file<br/>\n"; // Debugging
+	//print "FILE (authorize_net): $file<br/>\n"; // Debugging
+	//drupal_set_message("FILE (authorize_net): $file"); // Debugging
 
 	include_once($file);
 
-} // End of authorload_net_autoload()
+} // End of reg_authorize_net_autoload()
 
 
 //
 // Register our autoloader.
 //
-spl_autoload_register("authorize_net_autoload");
+spl_autoload_register("reg_authorize_net_autoload");
 
 
-function authorize_net_init() {
+function reg_authorize_net_init() {
 
 	//
 	// Load our Javascript
 	//
-	$path = drupal_get_path("module", "authorize_net");
-	drupal_add_js($path . "/authorize_net.js", "module");
+	$path = drupal_get_path("module", "reg_authorize_net");
+	drupal_add_js($path . "/reg_authorize_net.js", "module");
 
-} // End of authorize_net_init()
+} // End of reg_authorize_net_init()
 
 
 /**
 * Create our menu items.
 */
-function authorize_net_menu() {
+function reg_authorize_net_menu() {
 
-	$factory = new authorize_net_factory();
+	$factory = new reg_authorize_net_factory();
 	$menu = $factory->get_object("menu");
 
 	$items = $menu->get_menu();
 
 	return($items);
 
-} // End of authorize_net_menu()
+} // End of reg_authorize_net_menu()
 
 
 /**
@@ -89,7 +91,7 @@ function authorize_net_menu() {
 * the same as a the class, it completely breaks under PHP 5.2.4.  I learned 
 *	this the hard way.
 */
-function authorize_net_settings_page() {
+function reg_authorize_net_settings_page() {
 
 	//
 	// If the reg module wasn't loaded, then the factory doesn't exist, 
@@ -105,41 +107,41 @@ function authorize_net_settings_page() {
 	$reg = $reg_factory->get_object("reg");
 	$reg->force_ssl();
 
-	$factory = new authorize_net_factory();
+	$factory = new reg_authorize_net_factory();
 	$settings = $factory->get_object("settings");
 
 	return($settings->settings());
 
-} // End of authorize_net_settings()
+} // End of reg_authorize_net_settings()
 
 
-function authorize_net_settings_form() {
+function reg_authorize_net_settings_form() {
 
-	$factory = new authorize_net_factory();
+	$factory = new reg_authorize_net_factory();
 	$settings = $factory->get_object("settings");
 
 	return($settings->form());
 }
 
-function authorize_net_settings_form_validate($form, &$form_state) {
+function reg_authorize_net_settings_form_validate($form, &$form_state) {
 
-	$factory = new authorize_net_factory();
+	$factory = new reg_authorize_net_factory();
 	$settings = $factory->get_object("settings");
 
 	$settings->validate($form_state["values"]);
 }
 
-function authorize_net_settings_form_submit($form, &$form_state) {
+function reg_authorize_net_settings_form_submit($form, &$form_state) {
 
-	$factory = new authorize_net_factory();
+	$factory = new reg_authorize_net_factory();
 	$settings = $factory->get_object("settings");
 
 	$settings->submit($form_state["values"]);
 }
 
-function authorize_net_settings_form_submit_test_gateway($form, &$form_state) {
+function reg_authorize_net_settings_form_submit_test_gateway($form, &$form_state) {
 
-	$factory = new authorize_net_factory();
+	$factory = new reg_authorize_net_factory();
 	$settings = $factory->get_object("settings");
 
 	$settings->submit($form_state["values"], true);

@@ -20,15 +20,18 @@ function reg_autoload($class) {
 	//
 	// Only load classes we're responsible for.
 	//
-	if (!preg_match("/^reg/", $class)) {
+	if (
+		!preg_match("/^reg/", $class)
+		|| preg_match("/^reg_authorize_net/", $class)
+		) {
 		return(null);
 	}
 
-	//print "$class<br>\n"; // Debugging
+	//print "CLASS: $class<br>\n"; // Debugging
 	$file = str_replace("_", "/", $class);
 	//print __FUNCTION__ . "(): $class<br>\n"; // Debugging
 	$file = $file . ".class.php";
-	//print "$file<br>\n"; // Debugging
+	//print "FILE: $file<br>\n"; // Debugging
 
 	include_once($file);
 
@@ -186,9 +189,9 @@ function reg_registration() {
 
 function reg_registration_form($form_state, $id = "") {
 
-	$auth_factory = new authorize_net_factory();
+	$auth_factory = new reg_authorize_net_factory();
 
-	$cc_gateway = $auth_factory->get_object("authorize_net");
+	$cc_gateway = $auth_factory->get_object("reg_authorize_net");
 	$form = $GLOBALS["reg_factory"]->get_object("form");
 
 	return($form->reg($id, $cc_gateway));
@@ -197,9 +200,9 @@ function reg_registration_form($form_state, $id = "") {
 
 function reg_registration_form_validate($form, &$data) {
 
-	$auth_factory = new authorize_net_factory();
+	$auth_factory = new reg_authorize_net_factory();
 
-	$cc_gateway = $auth_factory->get_object("authorize_net");
+	$cc_gateway = $auth_factory->get_object("reg_authorize_net");
 	$form = $GLOBALS["reg_factory"]->get_object("form");
 
 	$form->reg_validate($data["values"], $cc_gateway);

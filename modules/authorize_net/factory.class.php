@@ -6,7 +6,7 @@
 * All of the object creation is done here, so that it is easier
 *	to keep track of class dependencies.
 */
-class authorize_net_factory {
+class reg_authorize_net_factory {
 
 	/**
 	* This is the main function that is called by the outside world.
@@ -17,7 +17,7 @@ class authorize_net_factory {
 	*/
 	function get_object($name) {
 
-		if ($name == "authorize_net") {
+		if ($name == "reg_authorize_net") {
 			$retval = $this->get_authorize_net();
 
 		} else if ($name == "menu") {
@@ -43,7 +43,7 @@ class authorize_net_factory {
 		$reg = $factory->get_object("reg");
 		$log = $factory->get_object("log");
 
-		$retval = new authorize_net($reg, $log);
+		$retval = new reg_authorize_net($reg, $log);
 		return($retval);
 	}
 
@@ -53,7 +53,7 @@ class authorize_net_factory {
 		$factory = new reg_factory();
 		$reg = $factory->get_object("reg");
 
-		$retval = new authorize_net_menu($reg);
+		$retval = new reg_authorize_net_menu($reg);
 		return($retval);
 	}
 
@@ -64,11 +64,11 @@ class authorize_net_factory {
 		$reg = $factory->get_object("reg");
 		$log = $factory->get_object("log");
 
-		$retval = new authorize_net_settings($reg, $log);
+		$retval = new reg_authorize_net_settings($reg, $log);
 
 		return($retval);
 
 	} 
 
-} // End of authorize_net_factory class
+} // End of reg_authorize_net_factory class
 
