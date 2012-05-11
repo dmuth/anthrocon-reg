@@ -1,13 +1,9 @@
 
-Git/svn things
+Git things
 
 #
-# Start at a relatively recent revision
+# Clone from github
 #
-git svn clone https://anthrocon-reg.googlecode.com/svn/trunk/ anthrocon-reg --username -r300 doug.muth
+git clone git://github.com/dmuth/anthrocon-reg.git
 
-#
-# Get caught up to the latest revision
-#
-git svn rebase
 
