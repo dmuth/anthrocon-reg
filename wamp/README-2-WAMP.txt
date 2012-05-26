@@ -9,6 +9,12 @@ WAMP:
 	reg -> www/sites/all/modules/reg
 	wamp -> reg/wamp
 
+- Add the following to the end of $HOME/.bashrc:
+	cd $HOME/wamp/
+	. ./bashrc
+	cd ..
+
+
 - Drupal on WAMP:
 	- Back up live site with bin/backup.php
 	- Make sure that the settings.php file is readable
