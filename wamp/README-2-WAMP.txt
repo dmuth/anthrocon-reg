@@ -14,11 +14,13 @@ WAMP:
 	. ./bashrc
 	cd ..
 
-
 - Drupal on WAMP:
 	- Back up live site with bin/backup.php
+	- Drop www files into /cygdrive/c/wamp/www/
+	- Create filecache/ directory if necessary
+	- UNABLE to log in?
+		- Comment out $base_url if it's set in settings.php
 	- Make sure that the settings.php file is readable
-		- Comment out $base_url if it's set
 	- Get database credentials from settings.php and create that user in phpMyAdmin
 	- Create the database in phpMyAdmin
 	- Import the data
@@ -27,10 +29,8 @@ WAMP:
 			- Run mysql-reg with "-f" parameter to force
 		- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 		- TRUNCATE huge tables that we don't need: sessions, accesslog, watchdog
-	- Create filecache/ directory if necessary
 
 	- If seeing the main page over and over, make sure the rewrite module is enabled
-
 
 	- Optionally replace sites/all/modules/reg/ directory with checked out version
 
@@ -44,6 +44,5 @@ WAMP:
 		- If mod_ssl isn't being loaded, edit httpd.conf itself and uncomment the line to load mod_ssl
 	- Onsite reg:
 		- Permissions for onsite reg
-
 
 
