@@ -21,7 +21,7 @@ my.ini:
 - Scripts to run:
 	- mysql-master-1-lock-tables
 	- mysql-slave-1-dump-from-host (IP) drupal_ac | mysql-reg
-		(takes about 6 minutes as of AC 2011's reg system)
+		(takes about 11 minutes as of AC 2012's reg system)
 	- mysql-master-2-status
 	- mysql-slave-2-change-master
 		(get database credentials from "drush sql-connect"
