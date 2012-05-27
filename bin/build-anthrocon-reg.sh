@@ -13,43 +13,33 @@ set -e
 #
 #set -x
 
-if test "$1" == "-h"
-then
-	echo "Syntax: $0 [git]"
-	exit 1
-fi
-
-GIT=""
-if test "$1" == "git"
-then
-	GIT=1
-fi
 
 #
-# Grab our highest version, so we can get a uniquely named file.
+# Set the version based on the date
 #
-echo "Checking version...  Make sure you have svn set up!"
-#VERSION=`svn stat -v |cut -c20-26 |sort -r |head -n1 |sed -e s/" "//g`
-VERSION=`git svn info |grep "Revision" |cut -d: -f2 |sed -e s/[^0-9]//`
+VERSION=`date +%Y%m%dT%H%M%S`
 
 PWD=`pwd`
 DIR=`basename $PWD`
 
 #
-# We don't want any revision control files included in the atrball.
+# We don't want any old revision control files included in the atrball.
 #
 OPTIONS="--exclude RCS --exclude .svn "
 
-if test ! "$GIT"
-then
-	TARBALL=${DIR}/anthrocon-reg-build_${VERSION}.tgz
-	OPTIONS="$OPTIONS --exclude .git"
-	FILES="${DIR}/*"
-else 
-	TARBALL=${DIR}/anthrocon-reg-build_${VERSION}-git.tgz
-	FILES="${DIR}/* ${DIR}/.git"
-fi
+#
+# We don't want any previously created tarballs, either.
+#
+OPTIONS="${OPTIONS} --exclude *.tgz"
 
+TARBALL=${DIR}/anthrocon-reg-build_${VERSION}.tgz
+
+#
+# The reason we're going up a directory and using all of the 
+# filenames is that in my test environment, the reg directory 
+# is a symlink, and tar doesn't follow symlinks by default.
+#
+FILES="${DIR}/* ${DIR}/.git"
 cd ..
 
 tar cfzv ${TARBALL} ${FILES} ${OPTIONS}
