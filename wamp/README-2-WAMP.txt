@@ -15,26 +15,33 @@ WAMP:
 	cd ..
 
 - Drupal on WAMP:
-	- Back up live site with bin/backup.php
-	- Drop www files into /cygdrive/c/wamp/www/
-	- Create filecache/ directory if necessary
-	- UNABLE to log in?
+	- Files
+		- Back up live site with bin/backup.php
+		- Drop www files into /cygdrive/c/wamp/www/
+			- Create filecache/ directory if necessary
+		- Make sure that the settings.php file is readable
 		- Comment out $base_url if it's set in settings.php
-	- Make sure that the settings.php file is readable
-	- Get database credentials from settings.php and create that user in phpMyAdmin
-	- Create the database in phpMyAdmin
+
+	- Create the database (if necessary):
+		- Get database credentials from settings.php and create that user in phpMyAdmin
+		- Create the database in phpMyAdmin
+
 	- Import the data
 		- Helpful MySQL wrappers can be found in (reg module path)/wamp/bin
 		- Getting errors about primary keys?
 			- Run mysql-reg with "-f" parameter to force
 		- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 		- TRUNCATE huge tables that we don't need: sessions, accesslog, watchdog
+		- Unblock the regadmin and regstaff users
 
-	- If seeing the main page over and over, make sure the rewrite module is enabled
+	- Troubleshooting:
+		- If seeing the main page over and over, make sure the rewrite module is enabled
+		- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
+		- Run "./bin/deploy.sh anthrocon-2012 copy" in theme you want to deploy
+			- You mean need to remove the contents of filecache/ after that
 
-	- Optionally replace sites/all/modules/reg/ directory with checked out version
-
-	- If the theme is non-existant, go to the themes page (admin/build/themes) and make sure that the theme you want is set to the default.
+	- Misc:
+		- Optionally replace sites/all/modules/reg/ directory with checked out version
 
 	- SSL:
 		- Run generate-ssl-key
