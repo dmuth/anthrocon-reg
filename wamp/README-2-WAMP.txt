@@ -33,6 +33,7 @@ WAMP:
 		- Run reg/wamp/bin/make-local.sh to disable modules that talk to the network, such as aggregator
 		- TRUNCATE huge tables that we don't need: sessions, accesslog, watchdog
 		- Unblock the regadmin and regstaff users
+		- Put this in my.cnf: query-cache-size = 128M
 
 	- Troubleshooting:
 		- If seeing the main page over and over, make sure the rewrite module is enabled
