@@ -27,6 +27,16 @@ class Reg_OnsiteDisplay {
 
 		$retval = "";
 
+		//
+		// Send the user forward to the next page, if it exists. This keeps 
+		// people from the hitting the back button for wholesale 
+		// to see other members' personally identifying data.
+		//
+		$retval .= "<script language=\"javascript\">\n"
+			. "window.history.forward(1);\n"
+			. "</script>\n"
+			;
+
         $retval .= drupal_get_form("reg_onsitereg_form");
 
 		return($retval);
@@ -215,10 +225,20 @@ class Reg_OnsiteDisplay {
 
 		$retval = "";
 
+		//
+		// Send the user forward to the next page, if it exists. This keeps 
+		// people from the hitting the back button for wholesale 
+		// to see other members' personally identifying data.
+		//
+		$retval .= "<script language=\"javascript\">\n"
+			. "window.history.forward(1);\n"
+			. "</script>\n"
+			;
+
 		$data = array();
 		$data["!link"] = $this->reg->get_base() . "onsitereg";
 		$message = $this->message->load_display("onsite-thankyou", $data);
-		$retval = $message["value"];
+		$retval .= $message["value"];
 
 		return($retval);
 
