@@ -1,4 +1,3 @@
-
 What is this?
 =============
 
@@ -56,7 +55,7 @@ for the following conventions:
 - Furry Connection North 2011
 - Furry Connection North 2012
 
-To date, this software is responsible for approximately **$800,000 in 
+To date, this software is responsible for over **$1 Million in 
 convention revenue**.
 
 More Tools
