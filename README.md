@@ -62,6 +62,6 @@ More Tools
 ----------
 
 ...looking for a way to audit administrator actions on your community website? 
-Check out my Drupal Tools: http://code.google.com/p/dougs-drupal-tools/
+Check out my Drupal Tools: https://github.com/dmuth/Dougs-Drupal-Tools
 
 
