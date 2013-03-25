@@ -50,6 +50,18 @@ class reg_authorize_net_factory {
 
 	protected function get_menu() {
 
+		//
+		// Load the registration autoloader so that we acan access 
+		// registration objects. This is only needed when installing 
+		// this module.
+		// Incidentally, things like this happen when software 
+		// undergoes drastic rearchitecture, as this software did. :-(
+		//
+		if (!function_exists("reg_autoload")) {
+			require_once(dirname(__FILE__) . "/../../reg/autoload.php");
+			spl_autoload_register("reg_autoload");
+		}
+
 		$factory = new reg_factory();
 		$reg = $factory->get_object("reg");
 
