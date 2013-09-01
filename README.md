@@ -51,9 +51,11 @@ for the following conventions:
 - Anthrocon 2010
 - Anthrocon 2011
 - Anthrocon 2012
+- Anthrocon 2013
 - Furry Connection North 2010
 - Furry Connection North 2011
 - Furry Connection North 2012
+- Furry Connection North 2013
 
 To date, this software is responsible for over **$1 Million in 
 convention revenue**.
