@@ -45,7 +45,7 @@ class reg {
 		//"year" => 2009,
 		//"year" => 2010,
 		//"year" => 2011,
-		"year" => 2012,
+		"year" => 2014,
 		"start_badge_num" => 250,
 		//
 		// Define constants for our permission names.
