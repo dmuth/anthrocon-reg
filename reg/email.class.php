@@ -66,14 +66,27 @@ class reg_email extends reg {
 
 		$result = true;
 		if (!$fake_email) {
-			$result = mail($address, $retval["subject"], 
-				$retval["value"], $headers);
+			$message = array(
+				"to" => $address,
+				"subject" => $retval["subject"],
+				"body" => $retval["value"],
+				"from" => $our_email,
+				"headers" => array(
+					"MIME-Version" => "1.0",
+					"Content-Type" => "text/html; charset=iso-8859-1",
+					"X-Mailer" => "Anthrocon-reg https://github.com/dmuth/anthrocon-reg",
+					"Errors-To" => $from,
+					"Sender" => $from,
+					),
+				);
+			$result = drupal_mail_send($message);
+
 		}
 
 		//
 		// If there was an error sending the email, be sure to log it.
 		//
-		if (empty($result)) {
+		if (!$result) {
 			$message = t("An error occured when attempting to send an "
 				. "email to '%email'.",
 				array(
