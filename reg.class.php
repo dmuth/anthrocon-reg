@@ -363,6 +363,14 @@ class reg {
 				$data["cc_num"] = ereg_replace("[^0-9]", "", 
 					$data["cc_num"]);
 
+				//
+				// Note sure why I hardcoded logic to check 
+				// credit card types here.
+				// Since it was 5 years ago, I'm going 
+				// to chalk that up to inexperience on my part.
+				// For now, we'll just comment this out.
+				//
+				/*
 				if ($data["cc_num"][0] == "3") {
 					$display = $reg_message->load_display("cc-no-amex");
 					$error = $display["value"];
@@ -370,6 +378,7 @@ class reg {
 					$this->log->log($error, "", WATCHDOG_WARNING);
 					return(null);
 				}
+				*/
 
 				//
 				// Create a fairly random invoice number with our timestamp
