@@ -25,7 +25,7 @@ class reg_fake extends reg {
 		$message = "get_data(): This function is deprecated!";
 		reg_log($message, "", "notice", true);
 
-		reg_fake_get_data(&$data);
+		reg_fake_get_data($data);
 
 	} // End of fake_data()
 
