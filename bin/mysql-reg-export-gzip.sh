@@ -12,9 +12,11 @@ set -e
 # Get our SQL command line
 #
 MYSQL=`drush sql-connect`
-MYSQLDUMP=`drush sql-connect |sed -e s/^mysql/mysqldump/ `
+MYSQLDUMP=`drush sql-connect |sed -e s/^mysql/mysqldump/ -e "s/--database=[^ ]\+//" `
+MYSQLDUMP="${MYSQLDUMP} reg "
 
 SQL="SHOW TABLES LIKE 'reg%'"
+#SQL="SHOW TABLES LIKE 'reg_level%'" # Debugging
 TABLES=""
 for ROW in `echo $SQL | $MYSQL -s`
 do
@@ -26,12 +28,19 @@ do
 	TABLES="$TABLES $ROW"
 done
 
-
 #
 # Name the file in YYYYMMDDHHMMSS format.
 #
 FILE=reg-dump-`date +%Y%m%d%H%M%S`.gz
+FILE="${HOME}/${FILE}"
 
+#set -x # Debug
+#echo $MYSQL # Debug
+#echo $MYSQLDUMP # Debug
+#echo $TABLES # Debug
+#$MYSQLDUMP $TABLES # Debug
+#exit 1 # Debug
+#${MYSQLDUMP} ${TABLES} | gzip > ${FILE}
 ${MYSQLDUMP} ${TABLES} | gzip > ${FILE}
 
 echo "File '${FILE}' written."
