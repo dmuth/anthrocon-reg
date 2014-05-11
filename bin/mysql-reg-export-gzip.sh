@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # This script exports registration data and gzips it into a unique filename.
 #
@@ -17,6 +17,11 @@ TARGET_DIR=$HOME/reg-backups
 # Name the file in YYYYMMDDHHMMSS format.
 #
 FILE=${TARGET_DIR}/reg-dump-`date +%Y%m%d%H%M%S`.gz
+
+#
+# Change to the directory of this script
+#
+pushd `dirname $0` >/dev/null
 
 #
 # Get our SQL command line
@@ -51,6 +56,7 @@ then
 	else
 		echo "Making target directory ${TARGET_DIR}..."
 		mkdir ${TARGET_DIR}
+		echo "Done!"
 
 	fi
 
