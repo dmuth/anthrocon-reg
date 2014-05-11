@@ -9,6 +9,16 @@
 set -e
 
 #
+# Our target directory for writing backups
+#
+TARGET_DIR=$HOME/reg-backups
+
+#
+# Name the file in YYYYMMDDHHMMSS format.
+#
+FILE=${TARGET_DIR}/reg-dump-`date +%Y%m%d%H%M%S`.gz
+
+#
 # Get our SQL command line
 #
 MYSQL=`drush sql-connect`
@@ -28,11 +38,24 @@ do
 	TABLES="$TABLES $ROW"
 done
 
+
 #
-# Name the file in YYYYMMDDHHMMSS format.
+# If the target directory does not exist, create it
 #
-FILE=reg-dump-`date +%Y%m%d%H%M%S`.gz
-FILE="${HOME}/${FILE}"
+if test ! -d ${TARGET_DIR}
+then
+	if test -f ${TARGET_DIR}
+	then
+		echo "ERROR: File ${TARGET_DIR} exists, but not as a directory, stopping."
+		exit 1
+	else
+		echo "Making target directory ${TARGET_DIR}..."
+		mkdir ${TARGET_DIR}
+
+	fi
+
+fi
+
 
 #set -x # Debug
 #echo $MYSQL # Debug
