@@ -1,3 +1,8 @@
+
+
+**Note:** This project has been sunsetted as of August, 2014.  The replacement project can be found at [https://github.com/Anthrocon-Reg](https://github.com/Anthrocon-Reg).  No future development will take place on this project.
+
+
 What is this?
 =============
 
